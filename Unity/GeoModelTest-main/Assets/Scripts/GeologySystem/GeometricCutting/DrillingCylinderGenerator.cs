@@ -1,0 +1,572 @@
+using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
+
+/// <summary>
+/// 钻探圆柱体几何生成器
+/// 创建高精度的钻探圆柱体网格，用于与地层网格进行布尔运算
+/// </summary>
+public class DrillingCylinderGenerator : MonoBehaviour
+{
+    [Header("圆柱体参数")]
+    public int radialSegments = 32; // 圆周分段数
+    public int heightSegments = 20; // 高度分段数
+    public bool generateCaps = true; // 是否生成顶底面
+    
+    [Header("调试")]
+    public bool showDebugGizmos = false;
+    public Material debugMaterial;
+    
+    private Mesh lastGeneratedMesh;
+    private Vector3 lastStartPoint;
+    private Vector3 lastDirection;
+    
+    /// <summary>
+    /// 创建钻探圆柱体网格
+    /// </summary>
+    /// <param name="startPoint">起始点（钻探起始位置）</param>
+    /// <param name="direction">钻探方向（通常为Vector3.down）</param>
+    /// <param name="radius">钻探半径</param>
+    /// <param name="depth">钻探深度</param>
+    /// <returns>生成的圆柱体网格</returns>
+    public Mesh CreateDrillingCylinder(Vector3 startPoint, Vector3 direction, float radius, float depth)
+    {
+        Debug.Log($"创建钻探圆柱体 - 起点: {startPoint}, 方向: {direction}, 半径: {radius}, 深度: {depth}");
+        
+        // 缓存参数用于调试
+        lastStartPoint = startPoint;
+        lastDirection = direction.normalized;
+        
+        List<Vector3> vertices = new List<Vector3>();
+        List<int> triangles = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
+        List<Vector3> normals = new List<Vector3>();
+        
+        // 计算圆柱体的局部坐标系
+        Vector3 up = lastDirection;
+        Vector3 right = Vector3.Cross(up, Vector3.forward);
+        if (right.magnitude < 0.1f) // 如果方向接近forward，使用right作为参考
+        {
+            right = Vector3.Cross(up, Vector3.right);
+        }
+        right = right.normalized;
+        Vector3 forward = Vector3.Cross(right, up).normalized;
+        
+        // 生成圆柱体侧面顶点
+        GenerateCylinderSides(vertices, triangles, uvs, normals, 
+                             startPoint, right, forward, up, radius, depth);
+        
+        // 生成顶底面
+        if (generateCaps)
+        {
+            GenerateCylinderCaps(vertices, triangles, uvs, normals,
+                               startPoint, right, forward, up, radius, depth);
+        }
+        
+        // 创建网格
+        Mesh cylinderMesh = new Mesh();
+        cylinderMesh.name = "DrillingCylinder";
+        cylinderMesh.vertices = vertices.ToArray();
+        cylinderMesh.triangles = triangles.ToArray();
+        cylinderMesh.uv = uvs.ToArray();
+        cylinderMesh.normals = normals.ToArray();
+        
+        // 重新计算边界和切线
+        cylinderMesh.RecalculateBounds();
+        cylinderMesh.RecalculateTangents();
+        
+        lastGeneratedMesh = cylinderMesh;
+        
+        // Debug.Log($"圆柱体网格生成完成 - 顶点数: {vertices.Count}, 三角形数: {triangles.Count / 3}");
+        
+        return cylinderMesh;
+    }
+    
+    /// <summary>
+    /// 生成圆柱体侧面
+    /// </summary>
+    private void GenerateCylinderSides(List<Vector3> vertices, List<int> triangles, 
+                                     List<Vector2> uvs, List<Vector3> normals,
+                                     Vector3 startPoint, Vector3 right, Vector3 forward, Vector3 up,
+                                     float radius, float depth)
+    {
+        // 生成圆柱体侧面的顶点
+        for (int h = 0; h <= heightSegments; h++)
+        {
+            float t = (float)h / heightSegments;
+            Vector3 heightOffset = up * (depth * t);
+            
+            for (int r = 0; r < radialSegments; r++)
+            {
+                float angle = (float)r / radialSegments * 2f * Mathf.PI;
+                
+                // 计算圆周上的点
+                Vector3 circlePoint = right * Mathf.Cos(angle) + forward * Mathf.Sin(angle);
+                Vector3 vertex = startPoint + heightOffset + circlePoint * radius;
+                
+                vertices.Add(vertex);
+                
+                // 计算UV坐标
+                Vector2 uv = new Vector2((float)r / radialSegments, t);
+                uvs.Add(uv);
+                
+                // 计算法向量（指向圆柱体外侧）
+                Vector3 normal = circlePoint.normalized;
+                normals.Add(normal);
+            }
+        }
+        
+        // 生成侧面三角形
+        for (int h = 0; h < heightSegments; h++)
+        {
+            for (int r = 0; r < radialSegments; r++)
+            {
+                int current = h * radialSegments + r;
+                int next = h * radialSegments + (r + 1) % radialSegments;
+                int currentNext = (h + 1) * radialSegments + r;
+                int nextNext = (h + 1) * radialSegments + (r + 1) % radialSegments;
+                
+                // 第一个三角形 (逆时针)
+                triangles.Add(current);
+                triangles.Add(next);
+                triangles.Add(currentNext);
+                
+                // 第二个三角形 (逆时针)
+                triangles.Add(next);
+                triangles.Add(nextNext);
+                triangles.Add(currentNext);
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 生成圆柱体顶底面
+    /// </summary>
+    private void GenerateCylinderCaps(List<Vector3> vertices, List<int> triangles,
+                                    List<Vector2> uvs, List<Vector3> normals,
+                                    Vector3 startPoint, Vector3 right, Vector3 forward, Vector3 up,
+                                    float radius, float depth)
+    {
+        int sideVertexCount = vertices.Count;
+        
+        // 顶面中心顶点
+        int topCenterIndex = vertices.Count;
+        vertices.Add(startPoint);
+        uvs.Add(new Vector2(0.5f, 0.5f));
+        normals.Add(-up); // 顶面法向量向上
+        
+        // 顶面圆周顶点
+        for (int r = 0; r < radialSegments; r++)
+        {
+            float angle = (float)r / radialSegments * 2f * Mathf.PI;
+            Vector3 circlePoint = right * Mathf.Cos(angle) + forward * Mathf.Sin(angle);
+            Vector3 vertex = startPoint + circlePoint * radius;
+            
+            vertices.Add(vertex);
+            
+            // UV坐标映射到圆形
+            Vector2 uv = new Vector2(
+                0.5f + Mathf.Cos(angle) * 0.5f,
+                0.5f + Mathf.Sin(angle) * 0.5f
+            );
+            uvs.Add(uv);
+            normals.Add(-up);
+        }
+        
+        // 底面中心顶点
+        int bottomCenterIndex = vertices.Count;
+        vertices.Add(startPoint + up * depth);
+        uvs.Add(new Vector2(0.5f, 0.5f));
+        normals.Add(up); // 底面法向量向下
+        
+        // 底面圆周顶点
+        for (int r = 0; r < radialSegments; r++)
+        {
+            float angle = (float)r / radialSegments * 2f * Mathf.PI;
+            Vector3 circlePoint = right * Mathf.Cos(angle) + forward * Mathf.Sin(angle);
+            Vector3 vertex = startPoint + up * depth + circlePoint * radius;
+            
+            vertices.Add(vertex);
+            
+            Vector2 uv = new Vector2(
+                0.5f + Mathf.Cos(angle) * 0.5f,
+                0.5f + Mathf.Sin(angle) * 0.5f
+            );
+            uvs.Add(uv);
+            normals.Add(up);
+        }
+        
+        // 生成顶面三角形
+        for (int r = 0; r < radialSegments; r++)
+        {
+            int current = topCenterIndex + 1 + r;
+            int next = topCenterIndex + 1 + (r + 1) % radialSegments;
+            
+            triangles.Add(topCenterIndex);
+            triangles.Add(current);
+            triangles.Add(next);
+        }
+        
+        // 生成底面三角形
+        for (int r = 0; r < radialSegments; r++)
+        {
+            int current = bottomCenterIndex + 1 + r;
+            int next = bottomCenterIndex + 1 + (r + 1) % radialSegments;
+            
+            triangles.Add(bottomCenterIndex);
+            triangles.Add(next);
+            triangles.Add(current);
+        }
+    }
+    
+    /// <summary>
+    /// 获取钻探范围内的所有地层 - 改进版：支持精确位置检测
+    /// </summary>
+    public GeologyLayer[] GetLayersInDrillingRange(Vector3 startPoint, Vector3 direction, float maxDistance)
+    {
+        List<GeologyLayer> layersInRange = new List<GeologyLayer>();
+        GeologyLayer[] allLayers = FindObjectsByType<GeologyLayer>(FindObjectsSortMode.None);
+        
+        Debug.Log($"🔍 开始精确地层检测: 钻探点 {startPoint}, 方向 {direction}, 最大距离 {maxDistance}m, 场景中总地层数 {allLayers.Length}");
+        Debug.Log($"📝 场景中的所有地层: {string.Join(", ", allLayers.Select(l => l.name))}");
+        
+        // 预筛选：只检测钻探点附近的地层（提高效率和准确性）
+        List<GeologyLayer> nearbyLayers = PrefilterNearbyLayers(allLayers, startPoint, maxDistance * 2f);
+        Debug.Log($"🔍 预筛选结果: 附近地层数 {nearbyLayers.Count}/{allLayers.Length}");
+        
+        foreach (GeologyLayer layer in nearbyLayers)
+        {
+            // 多级检测：边界框 + 射线检测 + 深度验证
+            if (IsLayerInDrillingPath(layer, startPoint, direction, maxDistance))
+            {
+                layersInRange.Add(layer);
+                Debug.Log($"✅ 地层 {layer.layerName} 在钻探路径中");
+            }
+            else
+            {
+                Debug.Log($"❌ 地层 {layer.layerName} 不在钻探路径中");
+            }
+        }
+        
+        // 按照钻探方向上的深度排序（更准确的地层顺序）
+        // 优先级：地表地层 > 深度顺序
+        layersInRange.Sort((a, b) => {
+            bool aAtSurface = IsPointInLayer(startPoint, a);
+            bool bAtSurface = IsPointInLayer(startPoint, b);
+            
+            // 地表地层优先
+            if (aAtSurface && !bAtSurface) return -1;
+            if (!aAtSurface && bAtSurface) return 1;
+            
+            // 如果都是地表地层或都不是，按深度排序
+            float depthA = GetLayerDepthFromStart(a, startPoint, direction);
+            float depthB = GetLayerDepthFromStart(b, startPoint, direction);
+            return depthA.CompareTo(depthB);
+        });
+        
+        // Debug.Log($"🎯 精确检测完成，找到 {layersInRange.Count} 个相关地层");
+        
+        // 输出最终的地层顺序（用于调试）
+        for (int i = 0; i < layersInRange.Count; i++)
+        {
+            GeologyLayer layer = layersInRange[i];
+            bool atSurface = IsPointInLayer(startPoint, layer);
+            float depth = GetLayerDepthFromStart(layer, startPoint, direction);
+            // Debug.Log($"📋 排序后地层 {i}: {layer.layerName}, 地表: {atSurface}, 深度: {depth:F2}m");
+        }
+        
+        return layersInRange.ToArray();
+    }
+    
+    /// <summary>
+    /// 预筛选附近的地层，减少不必要的检测
+    /// </summary>
+    private List<GeologyLayer> PrefilterNearbyLayers(GeologyLayer[] allLayers, Vector3 startPoint, float searchRadius)
+    {
+        List<GeologyLayer> nearbyLayers = new List<GeologyLayer>();
+        
+        foreach (GeologyLayer layer in allLayers)
+        {
+            Bounds layerBounds = GetLayerBounds(layer);
+            
+            // 计算钻探点到地层边界框的最短距离
+            Vector3 closestPoint = layerBounds.ClosestPoint(startPoint);
+            float distance = Vector3.Distance(startPoint, closestPoint);
+            
+            // Debug.Log($"🔍 预筛选 - 地层 {layer.layerName}: 最短距离 {distance:F2}m, 搜索半径 {searchRadius:F2}m");
+            
+            if (distance <= searchRadius)
+            {
+                nearbyLayers.Add(layer);
+                // Debug.Log($"✅ 地层 {layer.layerName} 通过预筛选");
+            }
+            else
+            {
+                // Debug.Log($"❌ 地层 {layer.layerName} 距离过远，跳过");
+            }
+        }
+        
+        return nearbyLayers;
+    }
+    
+    /// <summary>
+    /// 精确检测地层是否在钻探路径中 - 改进版：优先检测钻探起点处的地层
+    /// </summary>
+    private bool IsLayerInDrillingPath(GeologyLayer layer, Vector3 startPoint, Vector3 direction, float maxDistance)
+    {
+        Bounds layerBounds = GetLayerBounds(layer);
+        
+        // 重要：先检测钻探起点是否在地层内（地表检测）
+        if (IsPointInLayer(startPoint, layer))
+        {
+            // Debug.Log($"🎯 地层 {layer.layerName} 包含钻探起点（地表检测）");
+            return true;
+        }
+        
+        // 第1步：快速边界框检测
+        if (!IsLayerInBounds(layerBounds, startPoint, direction, maxDistance))
+        {
+            // Debug.Log($"📏 地层 {layer.layerName} 边界框检测：不相交");
+            return false;
+        }
+        
+        // 第2步：射线-边界框交点检测（更精确）
+        Ray drillingRay = new Ray(startPoint, direction);
+        if (!layerBounds.IntersectRay(drillingRay, out float distance))
+        {
+            // Debug.Log($"📐 地层 {layer.layerName} 射线检测：无交点");
+            return false;
+        }
+        
+        if (distance > maxDistance)
+        {
+            // Debug.Log($"📐 地层 {layer.layerName} 射线检测：距离超出范围 ({distance:F2}m > {maxDistance:F2}m)");
+            return false;
+        }
+        
+        // 第3步：精确的网格交点检测（如果需要更高精度）
+        if (layer.GetComponent<MeshCollider>() != null)
+        {
+            return IsLayerIntersectedByMesh(layer, startPoint, direction, maxDistance);
+        }
+        
+        Debug.Log($"📍 地层 {layer.layerName} 通过边界框和射线检测，距离: {distance:F2}m");
+        return true;
+    }
+    
+    /// <summary>
+    /// 检测点是否在地层内部（用于地表检测）- 修复版：更严格的检测
+    /// </summary>
+    private bool IsPointInLayer(Vector3 point, GeologyLayer layer)
+    {
+        Bounds layerBounds = GetLayerBounds(layer);
+        
+        // 严格的3D边界框检测（避免过于宽松的容差）
+        bool inBounds = layerBounds.Contains(point);
+        
+        Debug.Log($"🔍 严格边界框检测 - 点 {point} 与地层 {layer.layerName}: 边界 {layerBounds.min}-{layerBounds.max}, 结果: {inBounds}");
+        
+        if (!inBounds)
+        {
+            return false;
+        }
+        
+        // 进一步验证：使用MeshCollider进行精确检测
+        MeshCollider meshCollider = layer.GetComponent<MeshCollider>();
+        if (meshCollider != null)
+        {
+            // 使用射线从点向下检测，看是否击中地层
+            Ray downwardRay = new Ray(point + Vector3.up * 0.1f, Vector3.down);
+            if (meshCollider.Raycast(downwardRay, out RaycastHit hit, 0.2f))
+            {
+                Debug.Log($"🎯 射线检测命中: 地层 {layer.layerName}, 击中点 {hit.point}, 距离 {hit.distance:F3}m");
+                return true;
+            }
+            else
+            {
+                Debug.Log($"🎯 射线检测未命中: 地层 {layer.layerName}");
+                return false;
+            }
+        }
+        
+        // 如果没有MeshCollider，但在边界框内，谨慎返回true
+        return true;
+    }
+    
+    /// <summary>
+    /// 简单的边界框检测 - 改进版：更严格的位置检测
+    /// </summary>
+    private bool IsLayerInBounds(Bounds layerBounds, Vector3 startPoint, Vector3 direction, float maxDistance)
+    {
+        // 获取钻探半径
+        BoringTool boringTool = FindFirstObjectByType<BoringTool>();
+        float drillingRadius = boringTool?.boringRadius ?? 0.25f;
+        
+        // 检查钻探起点是否在地层的水平范围内（XZ平面）
+        Vector2 startPointXZ = new Vector2(startPoint.x, startPoint.z);
+        Vector2 layerCenterXZ = new Vector2(layerBounds.center.x, layerBounds.center.z);
+        Vector2 layerSizeXZ = new Vector2(layerBounds.size.x, layerBounds.size.z);
+        
+        // 创建地层在XZ平面的矩形
+        Rect layerRect = new Rect(
+            layerCenterXZ.x - layerSizeXZ.x * 0.5f,
+            layerCenterXZ.y - layerSizeXZ.y * 0.5f,
+            layerSizeXZ.x,
+            layerSizeXZ.y
+        );
+        
+        // 扩展矩形以包含钻探半径
+        layerRect.x -= drillingRadius;
+        layerRect.y -= drillingRadius;
+        layerRect.width += drillingRadius * 2f;
+        layerRect.height += drillingRadius * 2f;
+        
+        bool inHorizontalBounds = layerRect.Contains(startPointXZ);
+        
+        // Debug.Log($"📐 地层 {layerBounds} 水平边界检测: 钻探点XZ {startPointXZ}, 地层范围 {layerRect}, 结果: {inHorizontalBounds}");
+        
+        if (!inHorizontalBounds)
+        {
+            return false;
+        }
+        
+        // 检查垂直方向的交集
+        Vector3 endPoint = startPoint + direction * maxDistance;
+        float drillingTop = Mathf.Max(startPoint.y, endPoint.y);
+        float drillingBottom = Mathf.Min(startPoint.y, endPoint.y);
+        
+        bool inVerticalBounds = !(layerBounds.max.y < drillingBottom || layerBounds.min.y > drillingTop);
+        
+        // Debug.Log($"📐 地层垂直边界检测: 钻探范围 {drillingBottom:F2}m - {drillingTop:F2}m, 地层范围 {layerBounds.min.y:F2}m - {layerBounds.max.y:F2}m, 结果: {inVerticalBounds}");
+        
+        return inVerticalBounds;
+    }
+    
+    /// <summary>
+    /// 使用网格碰撞器进行精确检测
+    /// </summary>
+    private bool IsLayerIntersectedByMesh(GeologyLayer layer, Vector3 startPoint, Vector3 direction, float maxDistance)
+    {
+        MeshCollider meshCollider = layer.GetComponent<MeshCollider>();
+        if (meshCollider == null) return true; // 如果没有网格碰撞器，默认认为相交
+        
+        // 使用多个采样点进行射线检测
+        int sampleCount = 5;
+        BoringTool boringTool = FindFirstObjectByType<BoringTool>();
+        float drillingRadius = boringTool?.boringRadius ?? 0.25f;
+        
+        for (int i = 0; i < sampleCount; i++)
+        {
+            // 在钻探圆柱体内生成采样点
+            float angle = (float)i / sampleCount * 2f * Mathf.PI;
+            float sampleRadius = drillingRadius * 0.8f; // 略小于钻探半径
+            
+            Vector3 right = Vector3.Cross(direction, Vector3.up).normalized;
+            Vector3 forward = Vector3.Cross(right, direction).normalized;
+            Vector3 offset = (right * Mathf.Cos(angle) + forward * Mathf.Sin(angle)) * sampleRadius;
+            Vector3 sampleStart = startPoint + offset;
+            
+            Ray sampleRay = new Ray(sampleStart, direction);
+            
+            if (meshCollider.Raycast(sampleRay, out RaycastHit hit, maxDistance))
+            {
+                Debug.Log($"🎯 地层 {layer.layerName} 网格精确检测：命中点 {hit.point}, 距离 {hit.distance:F2}m");
+                return true;
+            }
+        }
+        
+        Debug.Log($"🎯 地层 {layer.layerName} 网格精确检测：无命中");
+        return false;
+    }
+    
+    /// <summary>
+    /// 计算地层在钻探方向上距离起点的深度 - 修复版
+    /// </summary>
+    private float GetLayerDepthFromStart(GeologyLayer layer, Vector3 startPoint, Vector3 direction)
+    {
+        Bounds layerBounds = GetLayerBounds(layer);
+        
+        // 关键修复：正确计算地层顶部的深度
+        // 因为direction是向下的(Vector3.down)，我们需要计算Y坐标差
+        float groundLevel = startPoint.y;
+        float layerTopY = layerBounds.max.y;
+        float layerBottomY = layerBounds.min.y;
+        
+        // 计算地层顶部距离地面的深度
+        float depthToTop = groundLevel - layerTopY;
+        float depthToBottom = groundLevel - layerBottomY;
+        
+        // 确保深度为正值，并处理特殊情况
+        if (layerTopY > groundLevel)
+        {
+            // 地层顶部高于地面，深度为0（地表层）
+            depthToTop = 0f;
+        }
+        
+        if (layerBottomY > groundLevel)
+        {
+            // 地层完全高于地面，这种情况很少见
+            depthToTop = 0f;
+            depthToBottom = 0f;
+        }
+        
+        // 使用地层顶部深度作为排序依据
+        float finalDepth = Mathf.Max(0f, depthToTop);
+        
+        Debug.Log($"📏 地层 {layer.layerName} 深度修复计算: 地面Y={groundLevel:F2}m, 地层顶Y={layerTopY:F2}m, 地层底Y={layerBottomY:F2}m, 顶部深度={depthToTop:F2}m, 最终深度={finalDepth:F2}m");
+        
+        return finalDepth;
+    }
+    
+    private Bounds GetLayerBounds(GeologyLayer layer)
+    {
+        MeshRenderer renderer = layer.GetComponent<MeshRenderer>();
+        if (renderer != null)
+        {
+            return renderer.bounds;
+        }
+        
+        // 回退方案
+        return new Bounds(layer.transform.position, layer.transform.localScale);
+    }
+    
+    /// <summary>
+    /// 创建调试用的可视化对象
+    /// </summary>
+    public GameObject CreateDebugVisualization()
+    {
+        if (lastGeneratedMesh == null) return null;
+        
+        GameObject debugObj = new GameObject("DrillingCylinder_Debug");
+        debugObj.transform.position = lastStartPoint;
+        
+        MeshFilter meshFilter = debugObj.AddComponent<MeshFilter>();
+        meshFilter.mesh = lastGeneratedMesh;
+        
+        MeshRenderer meshRenderer = debugObj.AddComponent<MeshRenderer>();
+        if (debugMaterial != null)
+        {
+            meshRenderer.material = debugMaterial;
+        }
+        else
+        {
+            Material defaultMat = new Material(Shader.Find("Standard"));
+            defaultMat.color = new Color(1f, 0f, 0f, 0.3f);
+            defaultMat.SetFloat("_Mode", 3); // 透明模式
+            meshRenderer.material = defaultMat;
+        }
+        
+        return debugObj;
+    }
+    
+    void OnDrawGizmos()
+    {
+        if (!showDebugGizmos || lastGeneratedMesh == null) return;
+        
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(lastStartPoint, 0.1f);
+        
+        Gizmos.color = Color.blue;
+        Gizmos.DrawRay(lastStartPoint, lastDirection * 2f);
+    }
+}
