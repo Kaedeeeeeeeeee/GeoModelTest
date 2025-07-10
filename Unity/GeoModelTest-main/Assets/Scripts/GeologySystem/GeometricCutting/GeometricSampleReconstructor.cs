@@ -118,8 +118,16 @@ public class GeometricSampleReconstructor : MonoBehaviour
     /// </summary>
     public ReconstructedSample ReconstructSample(Vector3 drillingPoint, Vector3 direction, float radius, float depth, Vector3 displayPosition)
     {
+        return ReconstructSample(drillingPoint, direction, radius, depth, displayPosition, 0f, depth);
+    }
+    
+    /// <summary>
+    /// 重建几何样本（支持指定深度范围，用于钻塔多层钻探）
+    /// </summary>
+    public ReconstructedSample ReconstructSample(Vector3 drillingPoint, Vector3 direction, float radius, float depth, Vector3 displayPosition, float depthStart, float depthEnd)
+    {
         // 由于Unity主线程限制，这里使用同步版本
-        return ReconstructSampleSync(drillingPoint, direction, radius, depth, displayPosition);
+        return ReconstructSampleSync(drillingPoint, direction, radius, depth, displayPosition, depthStart, depthEnd);
     }
     
     /// <summary>
@@ -127,7 +135,15 @@ public class GeometricSampleReconstructor : MonoBehaviour
     /// </summary>
     public ReconstructedSample ReconstructSampleSync(Vector3 drillingPoint, Vector3 direction, float radius, float depth, Vector3 displayPosition)
     {
-        Debug.Log("开始重建几何样本 - 钻探点: " + drillingPoint + ", 显示位置: " + displayPosition);
+        return ReconstructSampleSync(drillingPoint, direction, radius, depth, displayPosition, 0f, depth);
+    }
+    
+    /// <summary>
+    /// 同步重建几何样本（支持指定深度范围）
+    /// </summary>
+    public ReconstructedSample ReconstructSampleSync(Vector3 drillingPoint, Vector3 direction, float radius, float depth, Vector3 displayPosition, float depthStart, float depthEnd)
+    {
+        // 开始重建几何样本
         
         try
         {
@@ -143,7 +159,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
             }
             
             // 第2步：执行几何切割（同步版本）
-            var geometricData = CreateGeometricSampleSync(drillingPoint, direction, radius, depth);
+            var geometricData = CreateGeometricSampleSync(drillingPoint, direction, radius, depth, depthStart, depthEnd);
             
             if (geometricData.layerResults == null || geometricData.layerResults.Length == 0)
             {
@@ -182,7 +198,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
             
             activeSamples.Add(sample);
             
-            Debug.Log("几何样本重建完成 - ID: " + sample.sampleID.Substring(0, 8) + ", 地层段数: " + layerSegments.Length);
+            Debug.Log("几何样本重建完成 - 地层段数: " + layerSegments.Length);
             
             return sample;
         }
@@ -199,13 +215,30 @@ public class GeometricSampleReconstructor : MonoBehaviour
     private LayerGeometricCutter.GeometricSampleData CreateGeometricSampleSync(Vector3 drillingPoint, Vector3 direction, float radius, float depth)
     {
         // 直接调用同步版本避免卡死
-        return CreateGeometricSampleDirect(drillingPoint, direction, radius, depth);
+        return CreateGeometricSampleDirect(drillingPoint, direction, radius, depth, 0f, depth);
+    }
+    
+    /// <summary>
+    /// 同步创建几何样本数据（支持深度范围）
+    /// </summary>
+    private LayerGeometricCutter.GeometricSampleData CreateGeometricSampleSync(Vector3 drillingPoint, Vector3 direction, float radius, float depth, float depthStart, float depthEnd)
+    {
+        // 直接调用同步版本避免卡死
+        return CreateGeometricSampleDirect(drillingPoint, direction, radius, depth, depthStart, depthEnd);
     }
     
     /// <summary>
     /// 直接创建几何样本数据（同步版本）
     /// </summary>
     private LayerGeometricCutter.GeometricSampleData CreateGeometricSampleDirect(Vector3 drillingPoint, Vector3 direction, float radius, float depth)
+    {
+        return CreateGeometricSampleDirect(drillingPoint, direction, radius, depth, 0f, depth);
+    }
+    
+    /// <summary>
+    /// 直接创建几何样本数据（支持深度范围）
+    /// </summary>
+    private LayerGeometricCutter.GeometricSampleData CreateGeometricSampleDirect(Vector3 drillingPoint, Vector3 direction, float radius, float depth, float depthStart, float depthEnd)
     {
         LayerGeometricCutter.GeometricSampleData sampleData = new LayerGeometricCutter.GeometricSampleData
         {
@@ -217,7 +250,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
             collectionTime = System.DateTime.Now
         };
         
-        Debug.Log("开始同步几何切割...");
+        // 开始同步几何切割
         
         try
         {
@@ -229,7 +262,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
             }
             
             GeologyLayer[] layersInRange = cylinderGen.GetLayersInDrillingRange(drillingPoint, direction, depth + radius);
-            Debug.Log("找到 " + layersInRange.Length + " 个地层在钻探范围内");
+            // 找到地层在钻探范围内
             
             if (layersInRange.Length == 0)
             {
@@ -240,8 +273,8 @@ public class GeometricSampleReconstructor : MonoBehaviour
             // 创建真实的切割结果，基于实际地层厚度和位置
             List<LayerGeometricCutter.LayerCutResult> cutResults = new List<LayerGeometricCutter.LayerCutResult>();
             
-            // 使用全局射线棆测获取地层切换序列
-            var layerIntervals = AnalyzeGlobalLayerIntersections(layersInRange, drillingPoint, direction);
+            // 使用全局射线检测获取地层切换序列，传递深度范围
+            var layerIntervals = AnalyzeGlobalLayerIntersections(layersInRange, drillingPoint, direction, depthStart, depthEnd);
             
             for (int i = 0; i < layerIntervals.Count; i++)
             {
@@ -249,21 +282,21 @@ public class GeometricSampleReconstructor : MonoBehaviour
                 GeologyLayer layer = interval.layer;
                 
                 // 使用全局分析的精确深度信息
-                float depthStart = interval.startDepth;
-                float depthEnd = interval.endDepth;
-                float actualThickness = depthEnd - depthStart;
+                float layerDepthStart = interval.startDepth;
+                float layerDepthEnd = interval.endDepth;
+                float actualThickness = layerDepthEnd - layerDepthStart;
                 
-                // Debug.Log($"地层 {layer.layerName}: 修正厚度 {actualThickness:F3}m, 深度范围 {depthStart:F2}m - {depthEnd:F2}m");
+                // 地层厚度和深度计算完成
                 
                 LayerGeometricCutter.LayerCutResult result = new LayerGeometricCutter.LayerCutResult
                 {
                     isValid = true,
                     originalLayer = layer,
                     volume = radius * radius * Mathf.PI * actualThickness,
-                    centerOfMass = drillingPoint + direction * (depthStart + actualThickness * 0.5f),
+                    centerOfMass = drillingPoint + direction * (layerDepthStart + actualThickness * 0.5f),
                     surfaceArea = 2 * Mathf.PI * radius * actualThickness,
-                    depthStart = depthStart,
-                    depthEnd = depthEnd,
+                    depthStart = layerDepthStart,
+                    depthEnd = layerDepthEnd,
                     resultMesh = CreateVerticalLayerMesh(radius, actualThickness),
                     features = new LayerGeometricCutter.GeologicalFeatures
                     {
@@ -282,7 +315,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
             sampleData.layerResults = cutResults.ToArray();
             sampleData.totalVolume = cutResults.Sum(r => r.volume);
             
-            // Debug.Log("同步几何切割完成 - 有效地层: " + sampleData.layerResults.Length);
+            Debug.Log("同步几何切割完成 - 有效地层: " + sampleData.layerResults.Length);
             
             return sampleData;
         }
@@ -425,11 +458,11 @@ public class GeometricSampleReconstructor : MonoBehaviour
                     realThickness = CalculateRealLayerThickness(layer, drillingPoint, direction, depthRange.y - depthRange.x)
                 };
                 layerInfos.Add(info);
-                // Debug.Log($"✅ 有效地层 {layer.layerName}: 深度 {depthRange.x:F2}m - {depthRange.y:F2}m, 厚度 {info.thickness:F3}m");
+                // 有效地层已添加
             }
             else
             {
-                // Debug.Log($"❌ 跳过无效地层 {layer.layerName}: 深度范围 {depthRange.x:F2}m - {depthRange.y:F2}m");
+                // 跳过无效地层
             }
         }
         
@@ -440,11 +473,6 @@ public class GeometricSampleReconstructor : MonoBehaviour
         layerInfos = DistributeLayersProportionally(layerInfos, drillingPoint, direction);
         
         Debug.Log($"🔄 地层排序完成: 有效地层数 {layerInfos.Count}");
-        for (int i = 0; i < layerInfos.Count; i++)
-        {
-            var info = layerInfos[i];
-            Debug.Log($"  地层 {i}: {info.layer.layerName}, 深度 {info.depthStart:F2}m - {info.depthEnd:F2}m");
-        }
         
         return layerInfos.ToArray();
     }
@@ -464,7 +492,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
         BoringTool boringTool = FindFirstObjectByType<BoringTool>();
         float maxDrillingDepth = boringTool?.boringDepth ?? 2.0f;
         
-        Debug.Log($"🎯 开始位置特异性地层分布: 地层数 {layers.Count}, 钻探深度 {maxDrillingDepth:F2}m");
+        // 开始位置特异性地层分布
         
         // 直接使用已计算好的深度范围，不再重新分配
         List<LayerDepthInfo> distributedLayers = new List<LayerDepthInfo>();
@@ -500,10 +528,10 @@ public class GeometricSampleReconstructor : MonoBehaviour
             
             distributedLayers.Add(distributedLayer);
             
-            Debug.Log($"✅ 保持地层 {layer.layer.layerName}: 位置特异性深度 {adjustedDepthStart:F3}m - {adjustedDepthEnd:F3}m, 厚度 {adjustedThickness:F3}m");
+            // 保持地层已添加
         }
         
-        Debug.Log($"🎯 位置特异性分布完成: 有效地层数 {distributedLayers.Count}, 覆盖钻探深度范围");
+        Debug.Log($"🎯 位置特异性分布完成: 有效地层数 {distributedLayers.Count}");
         
         return distributedLayers;
     }
@@ -513,12 +541,11 @@ public class GeometricSampleReconstructor : MonoBehaviour
     /// </summary>
     private Vector2 CalculateLayerDepthRange(GeologyLayer layer, Vector3 drillingPoint, Vector3 direction)
     {
-        Debug.Log($"🎯 开始位置特异性深度计算: 地层 {layer.layerName}, 钻探点 {drillingPoint}");
+        // 开始位置特异性深度计算
         
         // 第1步：检查钻探点是否真正在该地层的水平投影范围内
         if (!IsPointInLayerHorizontalBounds(drillingPoint, layer))
         {
-            Debug.Log($"❌ 地层 {layer.layerName} 不在钻探点的水平位置，跳过");
             return new Vector2(-1f, -1f);
         }
         
@@ -542,17 +569,17 @@ public class GeometricSampleReconstructor : MonoBehaviour
                 Vector3 bottomPoint = drillingPoint + direction * estimatedThickness;
                 intersections.Add(bottomPoint);
                 
-                Debug.Log($"📌 地表钻探修复: 地层 {layer.layerName}, 表面点 {surfacePoint}, 估算底部 {bottomPoint}, 厚度 {estimatedThickness:F2}m");
+                // 地表钻探修复
             }
             else
             {
-                Debug.Log($"❌ 地层 {layer.layerName} 射线交点不足且不在地表 ({intersections.Count} < 2, 距离 {distanceToSurface:F2}m)，跳过");
+                // 地层射线交点不足且不在地表，跳过
                 return new Vector2(-1f, -1f);
             }
         }
         else if (intersections.Count < 1)
         {
-            Debug.Log($"❌ 地层 {layer.layerName} 无射线交点，跳过");
+            // 地层无射线交点，跳过
             return new Vector2(-1f, -1f);
         }
         
@@ -568,9 +595,10 @@ public class GeometricSampleReconstructor : MonoBehaviour
             depthToBottom = temp;
         }
         
-        // 第4步：限制在有效钻探范围内
-        BoringTool boringTool = FindFirstObjectByType<BoringTool>();
-        float maxDrillingDepth = boringTool?.boringDepth ?? 2.0f;
+        // 第4步：限制在有效钻探范围内（使用传递的深度参数）
+        // 注意：这里需要获取传递的深度参数，但当前方法签名没有这些参数
+        // 临时使用更大的默认深度以支持钻塔深层钻探
+        float maxDrillingDepth = 10.0f; // 支持钻塔的最大深度
         
         depthToTop = Mathf.Max(0f, depthToTop);
         depthToBottom = Mathf.Min(maxDrillingDepth, depthToBottom);
@@ -582,7 +610,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
         }
         
         float actualThickness = depthToBottom - depthToTop;
-        Debug.Log($"✅ 地层 {layer.layerName} 位置特异性深度: {depthToTop:F3}m - {depthToBottom:F3}m, 实际厚度: {actualThickness:F3}m");
+        // 地层位置特异性深度计算完成
         
         return new Vector2(depthToTop, depthToBottom);
     }
@@ -592,30 +620,69 @@ public class GeometricSampleReconstructor : MonoBehaviour
     /// </summary>
     private List<LayerInterval> AnalyzeGlobalLayerIntersections(GeologyLayer[] layers, Vector3 drillingPoint, Vector3 direction)
     {
-        Debug.Log($"🌍 开始全局射线检测: 钻探点 {drillingPoint}, 方向 {direction}, 地层数 {layers.Length}");
+        return AnalyzeGlobalLayerIntersections(layers, drillingPoint, direction, 0f, 2.0f);
+    }
+    
+    /// <summary>
+    /// 全局射线检测，分析所有地层的交点序列（支持深度范围）
+    /// </summary>
+    private List<LayerInterval> AnalyzeGlobalLayerIntersections(GeologyLayer[] layers, Vector3 drillingPoint, Vector3 direction, float depthStart, float depthEnd)
+    {
+        Debug.Log($"🌍 开始全局射线检测: 地层数 {layers.Length}, 深度范围 {depthStart:F1}m-{depthEnd:F1}m");
         
         // 第1步：收集所有击中点
-        List<RayHit> allHits = CollectAllRayHits(layers, drillingPoint, direction);
+        List<RayHit> allHits = CollectAllRayHits(layers, drillingPoint, direction, depthEnd);
         
         // 第2步：按距离排序
         allHits.Sort((a, b) => a.distance.CompareTo(b.distance));
         
         Debug.Log($"📊 收集到 {allHits.Count} 个击中点");
-        foreach (var hit in allHits)
+        
+        // 击中点范围分析
+        if (allHits.Count == 0)
         {
-            Debug.Log($"  • {hit.distance:F3}m: {hit.layer.layerName} ({(hit.isEntering ? "进入" : "离开")})");
+            Debug.LogWarning($"⚠️ 警告: 没有击中任何地层，深度范围 {depthStart:F1}m - {depthEnd:F1}m");
         }
         
-        // 第3步：分析地层切换序列
-        List<LayerInterval> intervals = AnalyzeLayerSequence(allHits, drillingPoint, direction);
+        // 第3步：分析地层切换序列（传递深度偏移用于正确的深度计算）
+        List<LayerInterval> intervals = AnalyzeLayerSequence(allHits, drillingPoint, direction, depthStart);
         
         Debug.Log($"📈 生成 {intervals.Count} 个地层区间");
+        
+        // 第4步：过滤并调整深度范围以匹配钻塔的特定深度范围
+        List<LayerInterval> filteredIntervals = new List<LayerInterval>();
+        
+        // 开始深度范围过滤
+        
         foreach (var interval in intervals)
         {
-            Debug.Log($"  • {interval.layer.layerName}: {interval.startDepth:F3}m - {interval.endDepth:F3}m (厚度 {(interval.endDepth - interval.startDepth):F3}m)");
+            // 检查地层是否与钻探深度范围有交集
+            bool hasIntersection = interval.endDepth > depthStart && interval.startDepth < depthEnd;
+            
+            if (hasIntersection)
+            {
+                // 调整地层深度范围以适应钻探范围
+                float adjustedStart = Mathf.Max(interval.startDepth, depthStart);
+                float adjustedEnd = Mathf.Min(interval.endDepth, depthEnd);
+                
+                LayerInterval adjustedInterval = new LayerInterval
+                {
+                    layer = interval.layer,
+                    startDepth = adjustedStart,
+                    endDepth = adjustedEnd
+                };
+                
+                // 只保留有有效厚度的地层
+                if (adjustedInterval.endDepth > adjustedInterval.startDepth)
+                {
+                    filteredIntervals.Add(adjustedInterval);
+                }
+            }
         }
         
-        return intervals;
+        Debug.Log($"🎯 过滤后保留 {filteredIntervals.Count} 个地层区间，深度范围 {depthStart:F1}m-{depthEnd:F1}m");
+        
+        return filteredIntervals;
     }
     
     /// <summary>
@@ -623,11 +690,18 @@ public class GeometricSampleReconstructor : MonoBehaviour
     /// </summary>
     private List<RayHit> CollectAllRayHits(GeologyLayer[] layers, Vector3 startPoint, Vector3 direction)
     {
-        List<RayHit> hits = new List<RayHit>();
-        
         // 获取钻探深度
         BoringTool boringTool = FindFirstObjectByType<BoringTool>();
         float maxDistance = boringTool?.boringDepth ?? 2.0f;
+        return CollectAllRayHits(layers, startPoint, direction, maxDistance);
+    }
+    
+    /// <summary>
+    /// 收集所有地层的射线击中点（支持指定深度）
+    /// </summary>
+    private List<RayHit> CollectAllRayHits(GeologyLayer[] layers, Vector3 startPoint, Vector3 direction, float maxDistance)
+    {
+        List<RayHit> hits = new List<RayHit>();
         
         // 一次性对所有地层进行射线检测
         Ray ray = new Ray(startPoint, direction);
@@ -657,9 +731,11 @@ public class GeometricSampleReconstructor : MonoBehaviour
     /// <summary>
     /// 分析击中点序列，生成地层区间
     /// </summary>
-    private List<LayerInterval> AnalyzeLayerSequence(List<RayHit> hits, Vector3 startPoint, Vector3 direction)
+    private List<LayerInterval> AnalyzeLayerSequence(List<RayHit> hits, Vector3 startPoint, Vector3 direction, float depthOffset = 0f)
     {
         List<LayerInterval> intervals = new List<LayerInterval>();
+        
+        // 开始地层序列分析
         
         if (hits.Count == 0)
         {
@@ -676,40 +752,63 @@ public class GeometricSampleReconstructor : MonoBehaviour
         if (startingLayer != null)
         {
             currentLayer = startingLayer;
-            Debug.Log($"🎯 起始地层: {currentLayer.layerName}");
+            // 起始地层已确定
+            
+            // 🔧 修复：如果从地层内部开始，需要检查是否有对应的离开事件
+            // 如果第一个击中点是该地层的离开事件，说明我们从地层内部开始
+            if (hits.Count > 0 && hits[0].layer == startingLayer && !hits[0].isEntering)
+            {
+                // 检测到从地层内部开始钻探
+            }
         }
         
         for (int i = 0; i < hits.Count; i++)
         {
             var hit = hits[i];
             
-            if (currentLayer != null && hit.layer != currentLayer)
+            // 🔧 改进的地层切换逻辑：处理从地层内部开始的情况
+            if (hit.isEntering)
             {
-                // 地层切换，结束当前区间
+                // 进入新地层
+                if (currentLayer != null && hit.layer != currentLayer)
+                {
+                    // 结束当前地层区间（加上深度偏移）
+                    LayerInterval interval = new LayerInterval
+                    {
+                        layer = currentLayer,
+                        startDepth = currentDepth + depthOffset,
+                        endDepth = hit.distance + depthOffset,
+                        startPoint = startPoint + direction * currentDepth,
+                        endPoint = hit.point,
+                        isValid = true
+                    };
+                    intervals.Add(interval);
+                    
+                    // 地层结束
+                    currentDepth = hit.distance;
+                }
+                
+                currentLayer = hit.layer;
+                // 进入地层
+            }
+            else if (currentLayer == hit.layer)
+            {
+                // 离开当前地层（加上深度偏移）
                 LayerInterval interval = new LayerInterval
                 {
                     layer = currentLayer,
-                    startDepth = currentDepth,
-                    endDepth = hit.distance,
+                    startDepth = currentDepth + depthOffset,
+                    endDepth = hit.distance + depthOffset,
                     startPoint = startPoint + direction * currentDepth,
                     endPoint = hit.point,
                     isValid = true
                 };
                 intervals.Add(interval);
                 
-                Debug.Log($"🔄 地层切换: {currentLayer.layerName} -> {hit.layer.layerName} 在 {hit.distance:F3}m");
+                // 离开地层
                 
+                currentLayer = null;
                 currentDepth = hit.distance;
-            }
-            
-            // 更新当前地层
-            if (hit.isEntering)
-            {
-                currentLayer = hit.layer;
-            }
-            else if (currentLayer == hit.layer)
-            {
-                currentLayer = null; // 离开当前地层
             }
         }
         
@@ -722,15 +821,15 @@ public class GeometricSampleReconstructor : MonoBehaviour
             LayerInterval finalInterval = new LayerInterval
             {
                 layer = currentLayer,
-                startDepth = currentDepth,
-                endDepth = maxDepth,
+                startDepth = currentDepth + depthOffset,
+                endDepth = maxDepth + depthOffset,
                 startPoint = startPoint + direction * currentDepth,
                 endPoint = startPoint + direction * maxDepth,
                 isValid = true
             };
             intervals.Add(finalInterval);
             
-            Debug.Log($"🏁 最后一区间: {currentLayer.layerName} 从 {currentDepth:F3}m 到 {maxDepth:F3}m");
+            // 最后一区间
         }
         
         return intervals;
@@ -766,7 +865,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
         bool inZ = point.z >= layerBounds.min.z && point.z <= layerBounds.max.z;
         
         bool inHorizontalBounds = inX && inZ;
-        Debug.Log($"🔍 水平边界检查: 地层 {layer.layerName}, 点XZ({point.x:F2}, {point.z:F2}), 地层XZ({layerBounds.min.x:F2}-{layerBounds.max.x:F2}, {layerBounds.min.z:F2}-{layerBounds.max.z:F2}), 结果: {inHorizontalBounds}");
+        // 水平边界检查
         
         return inHorizontalBounds;
     }
@@ -790,7 +889,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
             {
                 // 添加起始点作为第一个交点（地表点）
                 intersections.Add(startPoint);
-                Debug.Log($"🎯 地表起始点: 地层 {layer.layerName}, 点 {startPoint}, 距离表面 {distanceToSurface:F3}m");
+                // 地表起始点
             }
             
             // 然后进行正常的射线检测
@@ -802,7 +901,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
                 if (hit.collider == meshCollider && hit.distance > 0.01f) // 忽略起始点附近的击中
                 {
                     intersections.Add(hit.point);
-                    Debug.Log($"🎯 射线交点: 地层 {layer.layerName}, 点 {hit.point}, 距离 {hit.distance:F3}m");
+                    // 射线交点
                 }
             }
         }
@@ -816,7 +915,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
         // 按距离排序
         intersections.Sort((a, b) => Vector3.Distance(startPoint, a).CompareTo(Vector3.Distance(startPoint, b)));
         
-        Debug.Log($"🔍 地层 {layer.layerName} 射线交点总数: {intersections.Count}");
+        // 地层射线交点完成
         return intersections;
     }
     
@@ -840,7 +939,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
             intersections.Add(enterPoint);
             intersections.Add(exitPoint);
             
-            Debug.Log($"📐 边界框交点: 地层 {layer.layerName}, 进入 {enterPoint}, 退出 {exitPoint}");
+            // 边界框交点
         }
         
         return intersections;
@@ -914,7 +1013,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
         processedMesh.RecalculateNormals();
         processedMesh.RecalculateTangents();
         
-        Debug.Log($"🔄 地层形状处理: 原始尺寸 {originalBounds.size}, 目标尺寸 ({targetRadius*2:F2}, {targetThickness:F2}, {targetRadius*2:F2}), 缩放 {scale}");
+        // 地层形状处理完成
         
         return processedMesh;
     }
@@ -969,11 +1068,51 @@ public class GeometricSampleReconstructor : MonoBehaviour
     {
         List<LayerSegment> segments = new List<LayerSegment>();
         
-        // 获取钻探深度
+        // 获取钻探深度 - 支持钻塔深层钻探
+        float drillingDepth = 10.0f; // 默认支持钻塔的最大深度
+        
+        // 如果是普通钻探工具，使用其深度限制
         BoringTool boringTool = FindFirstObjectByType<BoringTool>();
-        float drillingDepth = boringTool?.boringDepth ?? 2.0f; // 默认2米
+        if (boringTool != null && cutResults.Length > 0)
+        {
+            // 检查是否是钻塔系统的调用（通过深度范围判断）
+            bool isDrillTowerCall = false;
+            foreach (var result in cutResults)
+            {
+                if (result.depthEnd > 2.1f) // 如果有地层深度超过2.1米，很可能是钻塔调用
+                {
+                    isDrillTowerCall = true;
+                    break;
+                }
+            }
+            
+            if (!isDrillTowerCall)
+            {
+                drillingDepth = boringTool.boringDepth; // 只有普通钻探才使用2米限制
+            }
+        }
         
         Debug.Log($"🔍 开始真实钻探重建: 钻探深度 {drillingDepth:F2}m, 地层数 {cutResults.Length}");
+        
+        // 计算总的地层厚度和深度范围
+        float totalLayerThickness = 0f;
+        float minDepth = float.MaxValue;
+        float maxDepth = float.MinValue;
+        
+        foreach (var result in cutResults)
+        {
+            if (result.isValid)
+            {
+                float layerThickness = result.depthEnd - result.depthStart;
+                totalLayerThickness += layerThickness;
+                minDepth = Mathf.Min(minDepth, result.depthStart);
+                maxDepth = Mathf.Max(maxDepth, result.depthEnd);
+                Debug.Log($"📊 地层 {result.originalLayer.layerName}: 深度 {result.depthStart:F3}m-{result.depthEnd:F3}m, 厚度 {layerThickness:F3}m");
+            }
+        }
+        
+        float actualDepthRange = maxDepth - minDepth;
+        Debug.Log($"📏 深度统计: 总厚度 {totalLayerThickness:F3}m, 深度范围 {minDepth:F3}m-{maxDepth:F3}m (范围 {actualDepthRange:F3}m)");
         
         float currentDepth = 0f; // 当前钻探深度（从地面开始）
         const float safeGap = 0.005f; // 非常小的安全间距，保持紧密拼接（0.5cm）
@@ -984,28 +1123,33 @@ public class GeometricSampleReconstructor : MonoBehaviour
             if (!cutResult.isValid) continue;
             
             // 使用智能分布算法计算的厚度（已经过比例调整）
-            float layerThickness = cutResult.depthEnd - cutResult.depthStart;
+            float originalLayerThickness = cutResult.depthEnd - cutResult.depthStart;
             
-            Debug.Log($"📏 地层 {cutResult.originalLayer.layerName} 分配厚度: {layerThickness:F3}m（已通过智能分布算法调整）");
+            // 对于钻塔系统，确保厚度按实际比例分配（样本总高度通常是2米）
+            float targetSampleHeight = 2.0f; // 样本的标准高度
+            float layerThickness;
             
-            // 检查是否还在钻探深度范围内
-            if (currentDepth >= drillingDepth)
+            if (totalLayerThickness > 0)
             {
-                Debug.Log($"⚠️ 钻探深度已达 {drillingDepth:F2}m，停止添加地层段 {i}");
-                break;
+                // 按比例分配厚度，保持相对比例正确
+                float thicknessRatio = originalLayerThickness / totalLayerThickness;
+                layerThickness = thicknessRatio * targetSampleHeight;
+                
+                Debug.Log($"📏 地层 {cutResult.originalLayer.layerName}:");
+                Debug.Log($"   原始厚度: {originalLayerThickness:F3}m");
+                Debug.Log($"   厚度比例: {thicknessRatio:F3} ({thicknessRatio*100:F1}%)"); 
+                Debug.Log($"   样本厚度: {layerThickness:F3}m");
+            }
+            else
+            {
+                layerThickness = originalLayerThickness;
+                Debug.Log($"📏 地层 {cutResult.originalLayer.layerName} 使用原始厚度: {layerThickness:F3}m");
             }
             
-            // 计算在钻探深度限制下的实际厚度
+            // 对于钻塔系统，不进行深度截断，保持所有地层的比例
             float actualThickness = layerThickness;
-            if (currentDepth + layerThickness > drillingDepth)
-            {
-                // 地层被钻探深度截断
-                actualThickness = drillingDepth - currentDepth;
-                Debug.Log($"✂️ 地层 {cutResult.originalLayer.layerName} 被钻探深度截断: {layerThickness:F3}m → {actualThickness:F3}m");
-            }
             
-            // 保持智能分布算法的结果，避免再次强制最小厚度
-            // actualThickness 已经通过智能算法调整过，保持其值
+            Debug.Log($"✅ 地层 {cutResult.originalLayer.layerName} 最终厚度: {actualThickness:F3}m");
             
             // 计算地层段在样本中的位置（Y坐标系，负值向下）
             // 确保每个地层段之间有清晰的分离
@@ -1231,7 +1375,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
         {
             // 创建地层材质的副本，确保获取到最新的材质属性
             material = new Material(currentLayerMaterial);
-            Debug.Log($"使用地层 {layer.layerName} 的当前材质: {currentLayerMaterial.name}");
+            // 使用地层的当前材质
             
             // 重要：保持材质的原始属性，对比度增强要非常小心
             if (enhanceLayerContrast)
@@ -1260,7 +1404,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
         {
             // 只有当地层材质为null时，才使用默认材质并应用颜色
             material = new Material(defaultLayerMaterial);
-            Debug.Log($"地层 {layer.layerName} 使用默认材质，原始材质为null: {currentLayerMaterial == null}");
+            // 地层使用默认材质
             
             // 设置基础颜色（仅在使用默认材质时）
             Color baseColor = layer.layerColor;

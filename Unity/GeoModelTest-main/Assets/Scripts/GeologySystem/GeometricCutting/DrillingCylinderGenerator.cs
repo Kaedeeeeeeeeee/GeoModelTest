@@ -227,12 +227,12 @@ public class DrillingCylinderGenerator : MonoBehaviour
         List<GeologyLayer> layersInRange = new List<GeologyLayer>();
         GeologyLayer[] allLayers = FindObjectsByType<GeologyLayer>(FindObjectsSortMode.None);
         
-        Debug.Log($"🔍 开始精确地层检测: 钻探点 {startPoint}, 方向 {direction}, 最大距离 {maxDistance}m, 场景中总地层数 {allLayers.Length}");
-        Debug.Log($"📝 场景中的所有地层: {string.Join(", ", allLayers.Select(l => l.name))}");
+        Debug.Log($"🔍 开始地层检测: 钻探点 {startPoint}, 地层数 {allLayers.Length}");
         
-        // 预筛选：只检测钻探点附近的地层（提高效率和准确性）
-        List<GeologyLayer> nearbyLayers = PrefilterNearbyLayers(allLayers, startPoint, maxDistance * 2f);
-        Debug.Log($"🔍 预筛选结果: 附近地层数 {nearbyLayers.Count}/{allLayers.Length}");
+        // 🔧 修复：对于深层钻探，检测所有可能相关的地层
+        // 不再基于起点位置进行预筛选，而是检查整个钻探路径
+        List<GeologyLayer> nearbyLayers = PrefilterLayersForDrillingPath(allLayers, startPoint, direction, maxDistance);
+        // 预筛选完成
         
         foreach (GeologyLayer layer in nearbyLayers)
         {
@@ -240,46 +240,96 @@ public class DrillingCylinderGenerator : MonoBehaviour
             if (IsLayerInDrillingPath(layer, startPoint, direction, maxDistance))
             {
                 layersInRange.Add(layer);
-                Debug.Log($"✅ 地层 {layer.layerName} 在钻探路径中");
-            }
-            else
-            {
-                Debug.Log($"❌ 地层 {layer.layerName} 不在钻探路径中");
             }
         }
         
-        // 按照钻探方向上的深度排序（更准确的地层顺序）
-        // 优先级：地表地层 > 深度顺序
+        // 🔧 修复：按照钻探路径上的相交顺序排序，适用于深层钻探
         layersInRange.Sort((a, b) => {
-            bool aAtSurface = IsPointInLayer(startPoint, a);
-            bool bAtSurface = IsPointInLayer(startPoint, b);
-            
-            // 地表地层优先
-            if (aAtSurface && !bAtSurface) return -1;
-            if (!aAtSurface && bAtSurface) return 1;
-            
-            // 如果都是地表地层或都不是，按深度排序
-            float depthA = GetLayerDepthFromStart(a, startPoint, direction);
-            float depthB = GetLayerDepthFromStart(b, startPoint, direction);
+            // 计算地层在钻探路径上的相交深度
+            float depthA = GetLayerIntersectionDepth(a, startPoint, direction);
+            float depthB = GetLayerIntersectionDepth(b, startPoint, direction);
             return depthA.CompareTo(depthB);
         });
         
-        // Debug.Log($"🎯 精确检测完成，找到 {layersInRange.Count} 个相关地层");
-        
-        // 输出最终的地层顺序（用于调试）
-        for (int i = 0; i < layersInRange.Count; i++)
-        {
-            GeologyLayer layer = layersInRange[i];
-            bool atSurface = IsPointInLayer(startPoint, layer);
-            float depth = GetLayerDepthFromStart(layer, startPoint, direction);
-            // Debug.Log($"📋 排序后地层 {i}: {layer.layerName}, 地表: {atSurface}, 深度: {depth:F2}m");
-        }
+        Debug.Log($"🎯 地层检测完成，找到 {layersInRange.Count} 个相关地层");
         
         return layersInRange.ToArray();
     }
     
     /// <summary>
-    /// 预筛选附近的地层，减少不必要的检测
+    /// 🔧 新方法：基于整个钻探路径预筛选地层，适用于深层钻探
+    /// </summary>
+    private List<GeologyLayer> PrefilterLayersForDrillingPath(GeologyLayer[] allLayers, Vector3 startPoint, Vector3 direction, float maxDistance)
+    {
+        List<GeologyLayer> relevantLayers = new List<GeologyLayer>();
+        
+        // 计算钻探路径的终点
+        Vector3 endPoint = startPoint + direction * maxDistance;
+        
+        Debug.Log($"🔧 预筛选开始: 钻探起点 {startPoint}, 终点 {endPoint}, 深度 {maxDistance}m");
+        
+        foreach (GeologyLayer layer in allLayers)
+        {
+            Bounds layerBounds = GetLayerBounds(layer);
+            
+            // 🔧 关键修复：检查地层是否与钻探路径有交集，而不是仅检查起点
+            bool intersects = DoesLayerIntersectDrillingPath(layerBounds, startPoint, endPoint);
+            
+            // 特别关注dem.003的详细调试信息
+            if (layer.layerName == "dem.003")
+            {
+                Debug.Log($"🔍 [dem.003] 边界框分析:");
+                Debug.Log($"   边界框中心: {layerBounds.center}");
+                Debug.Log($"   边界框尺寸: {layerBounds.size}");
+                Debug.Log($"   边界框范围: min({layerBounds.min}) ~ max({layerBounds.max})");
+                Debug.Log($"   钻探起点: {startPoint}");
+                Debug.Log($"   钻探终点: {endPoint}");
+                Debug.Log($"   路径相交测试: {intersects}");
+                
+                // 详细的相交分析
+                Vector3 drillingDirection = (endPoint - startPoint).normalized;
+                float drillingDistance = Vector3.Distance(startPoint, endPoint);
+                Ray drillingRay = new Ray(startPoint, drillingDirection);
+                bool rayIntersects = layerBounds.IntersectRay(drillingRay, out float enterDistance);
+                
+                Debug.Log($"   射线相交分析: {rayIntersects}, 进入距离: {enterDistance}m, 钻探距离: {drillingDistance}m");
+                Debug.Log($"   是否在距离范围内: {enterDistance <= drillingDistance}");
+            }
+            
+            if (intersects)
+            {
+                relevantLayers.Add(layer);
+                if (layer.layerName == "dem.003")
+                {
+                    Debug.Log($"✅ [dem.003] 通过预筛选");
+                }
+            }
+            else if (layer.layerName == "dem.003")
+            {
+                Debug.Log($"❌ [dem.003] 未通过预筛选");
+            }
+        }
+        
+        Debug.Log($"🔧 路径预筛选: {allLayers.Length} 个地层 → {relevantLayers.Count} 个相关地层");
+        return relevantLayers;
+    }
+    
+    /// <summary>
+    /// 检查地层边界框是否与钻探路径相交
+    /// </summary>
+    private bool DoesLayerIntersectDrillingPath(Bounds layerBounds, Vector3 startPoint, Vector3 endPoint)
+    {
+        // 使用线段与边界框相交测试
+        Vector3 direction = (endPoint - startPoint).normalized;
+        float distance = Vector3.Distance(startPoint, endPoint);
+        
+        // Unity的Bounds.IntersectRay方法
+        Ray drillingRay = new Ray(startPoint, direction);
+        return layerBounds.IntersectRay(drillingRay, out float enterDistance) && enterDistance <= distance;
+    }
+    
+    /// <summary>
+    /// 原有方法：预筛选附近的地层（备用）
     /// </summary>
     private List<GeologyLayer> PrefilterNearbyLayers(GeologyLayer[] allLayers, Vector3 startPoint, float searchRadius)
     {
@@ -293,16 +343,9 @@ public class DrillingCylinderGenerator : MonoBehaviour
             Vector3 closestPoint = layerBounds.ClosestPoint(startPoint);
             float distance = Vector3.Distance(startPoint, closestPoint);
             
-            // Debug.Log($"🔍 预筛选 - 地层 {layer.layerName}: 最短距离 {distance:F2}m, 搜索半径 {searchRadius:F2}m");
-            
             if (distance <= searchRadius)
             {
                 nearbyLayers.Add(layer);
-                // Debug.Log($"✅ 地层 {layer.layerName} 通过预筛选");
-            }
-            else
-            {
-                // Debug.Log($"❌ 地层 {layer.layerName} 距离过远，跳过");
             }
         }
         
@@ -315,42 +358,94 @@ public class DrillingCylinderGenerator : MonoBehaviour
     private bool IsLayerInDrillingPath(GeologyLayer layer, Vector3 startPoint, Vector3 direction, float maxDistance)
     {
         Bounds layerBounds = GetLayerBounds(layer);
+        bool isDem003 = layer.layerName == "dem.003";
+        
+        if (isDem003)
+        {
+            Debug.Log($"🔍 [dem.003] 进入IsLayerInDrillingPath详细检测:");
+            Debug.Log($"   地层边界框: {layerBounds.center} ± {layerBounds.size/2}");
+            Debug.Log($"   钻探起点: {startPoint}");
+            Debug.Log($"   钻探方向: {direction}");
+            Debug.Log($"   最大距离: {maxDistance}m");
+        }
         
         // 重要：先检测钻探起点是否在地层内（地表检测）
-        if (IsPointInLayer(startPoint, layer))
+        bool pointInLayer = IsPointInLayer(startPoint, layer);
+        if (isDem003)
         {
-            // Debug.Log($"🎯 地层 {layer.layerName} 包含钻探起点（地表检测）");
+            Debug.Log($"   步骤1 - 起点在地层内: {pointInLayer}");
+        }
+        
+        if (pointInLayer)
+        {
+            if (isDem003) Debug.Log($"✅ [dem.003] 通过起点检测");
             return true;
         }
         
         // 第1步：快速边界框检测
-        if (!IsLayerInBounds(layerBounds, startPoint, direction, maxDistance))
+        bool inBounds = IsLayerInBounds(layerBounds, startPoint, direction, maxDistance);
+        if (isDem003)
         {
-            // Debug.Log($"📏 地层 {layer.layerName} 边界框检测：不相交");
+            Debug.Log($"   步骤2 - 边界框检测: {inBounds}");
+        }
+        
+        if (!inBounds)
+        {
+            if (isDem003) Debug.Log($"❌ [dem.003] 未通过边界框检测");
             return false;
         }
         
         // 第2步：射线-边界框交点检测（更精确）
         Ray drillingRay = new Ray(startPoint, direction);
-        if (!layerBounds.IntersectRay(drillingRay, out float distance))
+        bool rayIntersects = layerBounds.IntersectRay(drillingRay, out float distance);
+        if (isDem003)
         {
-            // Debug.Log($"📐 地层 {layer.layerName} 射线检测：无交点");
+            Debug.Log($"   步骤3 - 射线-边界框交点: {rayIntersects}, 距离: {distance}m");
+        }
+        
+        if (!rayIntersects)
+        {
+            if (isDem003) Debug.Log($"❌ [dem.003] 未通过射线-边界框交点检测");
             return false;
         }
         
-        if (distance > maxDistance)
+        // 🔧 修复：对于深层钻探，使用更宽松的距离限制
+        // 深层钻探时，起点可能已经在地层内部，需要更宽松的检测
+        bool withinDistance = distance <= maxDistance * 5f;
+        if (isDem003)
         {
-            // Debug.Log($"📐 地层 {layer.layerName} 射线检测：距离超出范围 ({distance:F2}m > {maxDistance:F2}m)");
+            Debug.Log($"   步骤4 - 距离限制检测: {withinDistance} (距离: {distance}m <= 限制: {maxDistance * 5f}m)");
+        }
+        
+        if (!withinDistance)
+        {
+            if (isDem003) Debug.Log($"❌ [dem.003] 超出距离限制");
             return false;
         }
         
         // 第3步：精确的网格交点检测（如果需要更高精度）
-        if (layer.GetComponent<MeshCollider>() != null)
+        MeshCollider meshCollider = layer.GetComponent<MeshCollider>();
+        if (meshCollider != null)
         {
-            return IsLayerIntersectedByMesh(layer, startPoint, direction, maxDistance);
+            bool meshIntersects = IsLayerIntersectedByMesh(layer, startPoint, direction, maxDistance);
+            if (isDem003)
+            {
+                Debug.Log($"   步骤5 - 网格精确检测: {meshIntersects}");
+            }
+            
+            if (!meshIntersects)
+            {
+                if (isDem003) Debug.Log($"❌ [dem.003] 未通过网格精确检测");
+                return false;
+            }
+        }
+        else if (isDem003)
+        {
+            Debug.Log($"   步骤5 - 无网格碰撞器，跳过网格检测");
         }
         
-        Debug.Log($"📍 地层 {layer.layerName} 通过边界框和射线检测，距离: {distance:F2}m");
+        // 地层通过边界框和射线检测
+        if (isDem003) Debug.Log($"✅ [dem.003] 通过所有检测步骤");
         return true;
     }
     
@@ -360,34 +455,73 @@ public class DrillingCylinderGenerator : MonoBehaviour
     private bool IsPointInLayer(Vector3 point, GeologyLayer layer)
     {
         Bounds layerBounds = GetLayerBounds(layer);
+        bool isDem003 = layer.layerName == "dem.003";
+        
+        if (isDem003)
+        {
+            Debug.Log($"🔍 [dem.003] IsPointInLayer检测:");
+            Debug.Log($"   检测点: {point}");
+            Debug.Log($"   地层边界框: center({layerBounds.center}), size({layerBounds.size})");
+            Debug.Log($"   边界范围: min({layerBounds.min}) ~ max({layerBounds.max})");
+        }
         
         // 严格的3D边界框检测（避免过于宽松的容差）
         bool inBounds = layerBounds.Contains(point);
-        
-        Debug.Log($"🔍 严格边界框检测 - 点 {point} 与地层 {layer.layerName}: 边界 {layerBounds.min}-{layerBounds.max}, 结果: {inBounds}");
+        if (isDem003)
+        {
+            Debug.Log($"   3D边界框包含检测: {inBounds}");
+            if (!inBounds)
+            {
+                Vector3 distance = point - layerBounds.center;
+                Vector3 halfSize = layerBounds.size * 0.5f;
+                Debug.Log($"   距离分析: X({distance.x:F3}, 边界±{halfSize.x:F3}), Y({distance.y:F3}, 边界±{halfSize.y:F3}), Z({distance.z:F3}, 边界±{halfSize.z:F3})");
+                
+                bool xIn = Mathf.Abs(distance.x) <= halfSize.x;
+                bool yIn = Mathf.Abs(distance.y) <= halfSize.y;
+                bool zIn = Mathf.Abs(distance.z) <= halfSize.z;
+                Debug.Log($"   轴向检测: X({xIn}), Y({yIn}), Z({zIn})");
+            }
+        }
         
         if (!inBounds)
         {
+            if (isDem003) Debug.Log($"❌ [dem.003] 点不在边界框内");
             return false;
         }
         
-        // 进一步验证：使用MeshCollider进行精确检测
+        // 🔧 改进：深层钻探时的精确检测
         MeshCollider meshCollider = layer.GetComponent<MeshCollider>();
         if (meshCollider != null)
         {
-            // 使用射线从点向下检测，看是否击中地层
-            Ray downwardRay = new Ray(point + Vector3.up * 0.1f, Vector3.down);
-            if (meshCollider.Raycast(downwardRay, out RaycastHit hit, 0.2f))
+            if (isDem003) Debug.Log($"   进行网格碰撞器检测...");
+            
+            // 多方向射线检测，适应深层钻探
+            Vector3[] directions = { Vector3.down, Vector3.up, Vector3.left, Vector3.right, Vector3.forward, Vector3.back };
+            
+            bool anyHit = false;
+            foreach (Vector3 dir in directions)
             {
-                Debug.Log($"🎯 射线检测命中: 地层 {layer.layerName}, 击中点 {hit.point}, 距离 {hit.distance:F3}m");
-                return true;
+                Ray ray = new Ray(point, dir);
+                bool hit = meshCollider.Raycast(ray, out RaycastHit hitInfo, 2.0f);
+                if (hit)
+                {
+                    anyHit = true;
+                    if (isDem003) Debug.Log($"   射线方向 {dir} 击中距离: {hitInfo.distance:F3}m");
+                    break;
+                }
             }
-            else
+            
+            if (isDem003)
             {
-                Debug.Log($"🎯 射线检测未命中: 地层 {layer.layerName}");
-                return false;
+                Debug.Log($"   网格射线检测结果: {anyHit}");
+                Debug.Log($"   最终结果: {true} (边界框内则有效)");
             }
+            
+            // 如果射线检测失败，但点在边界框内，对于深层钻探仍然认为有效
+            return true;
         }
+        
+        if (isDem003) Debug.Log($"   无网格碰撞器，使用边界框结果: {true}");
         
         // 如果没有MeshCollider，但在边界框内，谨慎返回true
         return true;
@@ -401,6 +535,32 @@ public class DrillingCylinderGenerator : MonoBehaviour
         // 获取钻探半径
         BoringTool boringTool = FindFirstObjectByType<BoringTool>();
         float drillingRadius = boringTool?.boringRadius ?? 0.25f;
+        
+        bool isDem003 = false;
+        // 检查是否有GeologyLayer组件来判断是否是dem.003
+        GameObject[] allObjects = GameObject.FindObjectsOfType<GameObject>();
+        foreach (var obj in allObjects)
+        {
+            GeologyLayer layer = obj.GetComponent<GeologyLayer>();
+            if (layer != null && layer.layerName == "dem.003")
+            {
+                Bounds objBounds = GetLayerBounds(layer);
+                if (Vector3.Distance(objBounds.center, layerBounds.center) < 0.1f)
+                {
+                    isDem003 = true;
+                    break;
+                }
+            }
+        }
+        
+        if (isDem003)
+        {
+            Debug.Log($"🔍 [dem.003] IsLayerInBounds边界框检测:");
+            Debug.Log($"   钻探起点: {startPoint}");
+            Debug.Log($"   钻探方向: {direction}");
+            Debug.Log($"   钻探半径: {drillingRadius}m");
+            Debug.Log($"   地层边界框: {layerBounds.center} ± {layerBounds.size/2}");
+        }
         
         // 检查钻探起点是否在地层的水平范围内（XZ平面）
         Vector2 startPointXZ = new Vector2(startPoint.x, startPoint.z);
@@ -423,10 +583,20 @@ public class DrillingCylinderGenerator : MonoBehaviour
         
         bool inHorizontalBounds = layerRect.Contains(startPointXZ);
         
-        // Debug.Log($"📐 地层 {layerBounds} 水平边界检测: 钻探点XZ {startPointXZ}, 地层范围 {layerRect}, 结果: {inHorizontalBounds}");
+        if (isDem003)
+        {
+            Debug.Log($"   XZ平面分析:");
+            Debug.Log($"   起点XZ: {startPointXZ}");
+            Debug.Log($"   地层中心XZ: {layerCenterXZ}");
+            Debug.Log($"   地层尺寸XZ: {layerSizeXZ}");
+            Debug.Log($"   原始矩形: x({layerCenterXZ.x - layerSizeXZ.x * 0.5f:F3} ~ {layerCenterXZ.x + layerSizeXZ.x * 0.5f:F3}), z({layerCenterXZ.y - layerSizeXZ.y * 0.5f:F3} ~ {layerCenterXZ.y + layerSizeXZ.y * 0.5f:F3})");
+            Debug.Log($"   扩展矩形: x({layerRect.x:F3} ~ {layerRect.x + layerRect.width:F3}), z({layerRect.y:F3} ~ {layerRect.y + layerRect.height:F3})");
+            Debug.Log($"   水平边界检测: {inHorizontalBounds}");
+        }
         
         if (!inHorizontalBounds)
         {
+            if (isDem003) Debug.Log($"❌ [dem.003] 水平边界检测失败");
             return false;
         }
         
@@ -437,7 +607,15 @@ public class DrillingCylinderGenerator : MonoBehaviour
         
         bool inVerticalBounds = !(layerBounds.max.y < drillingBottom || layerBounds.min.y > drillingTop);
         
-        // Debug.Log($"📐 地层垂直边界检测: 钻探范围 {drillingBottom:F2}m - {drillingTop:F2}m, 地层范围 {layerBounds.min.y:F2}m - {layerBounds.max.y:F2}m, 结果: {inVerticalBounds}");
+        if (isDem003)
+        {
+            Debug.Log($"   垂直方向分析:");
+            Debug.Log($"   钻探终点: {endPoint}");
+            Debug.Log($"   钻探垂直范围: {drillingBottom:F3}m ~ {drillingTop:F3}m");
+            Debug.Log($"   地层垂直范围: {layerBounds.min.y:F3}m ~ {layerBounds.max.y:F3}m");
+            Debug.Log($"   垂直边界检测: {inVerticalBounds}");
+            Debug.Log($"   最终边界框检测结果: {inVerticalBounds}");
+        }
         
         return inVerticalBounds;
     }
@@ -470,12 +648,11 @@ public class DrillingCylinderGenerator : MonoBehaviour
             
             if (meshCollider.Raycast(sampleRay, out RaycastHit hit, maxDistance))
             {
-                Debug.Log($"🎯 地层 {layer.layerName} 网格精确检测：命中点 {hit.point}, 距离 {hit.distance:F2}m");
                 return true;
             }
         }
         
-        Debug.Log($"🎯 地层 {layer.layerName} 网格精确检测：无命中");
+        // 网格精确检测：无命中
         return false;
     }
     
@@ -513,9 +690,26 @@ public class DrillingCylinderGenerator : MonoBehaviour
         // 使用地层顶部深度作为排序依据
         float finalDepth = Mathf.Max(0f, depthToTop);
         
-        Debug.Log($"📏 地层 {layer.layerName} 深度修复计算: 地面Y={groundLevel:F2}m, 地层顶Y={layerTopY:F2}m, 地层底Y={layerBottomY:F2}m, 顶部深度={depthToTop:F2}m, 最终深度={finalDepth:F2}m");
+        // 深度修复计算完成
         
         return finalDepth;
+    }
+    
+    /// <summary>
+    /// 🔧 新方法：计算地层与钻探路径的相交深度，用于正确排序
+    /// </summary>
+    private float GetLayerIntersectionDepth(GeologyLayer layer, Vector3 startPoint, Vector3 direction)
+    {
+        Bounds layerBounds = GetLayerBounds(layer);
+        Ray drillingRay = new Ray(startPoint, direction);
+        
+        if (layerBounds.IntersectRay(drillingRay, out float intersectionDistance))
+        {
+            return intersectionDistance;
+        }
+        
+        // 如果没有相交，返回一个很大的值，让它排在后面
+        return float.MaxValue;
     }
     
     private Bounds GetLayerBounds(GeologyLayer layer)

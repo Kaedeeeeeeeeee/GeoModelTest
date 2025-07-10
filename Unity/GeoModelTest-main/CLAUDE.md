@@ -7,6 +7,7 @@ Unity 3D geological drilling and sample collection system for educational geolog
 
 ### 1. Drilling System
 - BoringTool.cs: Main drilling tool (2m depth, 0.1m radius) + real-time preview
+- **DrillTowerTool.cs**: Placeable drill tower for multi-depth sampling (0-10m in 2m increments)
 - LayerGeometricCutter.cs: Geometric cutting with mesh boolean operations
 - DrillingCylinderGenerator.cs: High-precision drilling cylinder generation
 
@@ -58,6 +59,9 @@ Assets/Scripts/
 │   ├── GeologyLayer.cs
 │   └── LayerDetectionSystem.cs
 ├── BoringTool.cs (with preview system)
+├── **DrillTowerTool.cs (multi-depth drilling tower)**
+├── **DrillTowerSetup.cs (tower initialization)**
+├── **GameInitializer.cs (system initialization)**
 ├── PlaceableTool.cs (abstract base)
 ├── DroneController.cs (vehicle control + camera)
 ├── DrillCarController.cs (vehicle control + camera)
@@ -221,8 +225,9 @@ Assets/Scripts/
 
 ## Current Tool Arsenal
 1. **钻探工具 (BoringTool)**: Geological sampling with real-time preview
-2. **无人机 (Drone)**: Flying vehicle with ground detection
-3. **钻探车 (DrillCar)**: Ground vehicle with physics simulation
+2. **钻塔工具 (DrillTowerTool)**: Multi-depth drilling tower (0-10m, 5 layers)
+3. **无人机 (Drone)**: Flying vehicle with ground detection
+4. **钻探车 (DrillCar)**: Ground vehicle with physics simulation
 
 All tools feature:
 - Real-time position previews
@@ -231,6 +236,37 @@ All tools feature:
 - F-key vehicle interaction
 - Third-person camera systems
 
+### New DrillTower Features (2025-07-08)
+- **Multi-depth sampling**: 5 drilling cycles (0-2m, 2-4m, 4-6m, 6-8m, 8-10m)
+- **Circular sample arrangement**: Samples automatically arranged in circle around tower
+- **Interactive drilling**: Click tower to perform next drilling cycle
+- **Depth labeling**: Each sample shows drilling sequence and depth range
+- **Tower status indicators**: Visual feedback for active/inactive states
+- **Global ray detection integration**: Uses v1.1 geological detection system
+
+## Recent Implementations (2025-07-08)
+
+### DrillTower System
+**Achievement**: Complete multi-depth drilling and sample management system
+- **DrillTowerTool Class**: Placeable tool with 5-layer drilling capability
+- **DrillTower Component**: State management for drilling cycles and sample tracking
+- **DepthSampleMarker**: Component for depth identification and labeling
+- **Circular Sample Layout**: Automatic positioning around tower with collision avoidance
+
+### Integration Features
+**Seamless System Integration**:
+- Uses existing GeometricSampleReconstructor for real sample generation
+- Compatible with v1.1 global ray detection algorithm
+- Integrates with InventoryUISystem for tool selection
+- Automatic tool initialization via GameInitializer
+
+### Sample Management
+**Advanced Sample Organization**:
+- Environmental sample positioning (ground height detection)
+- Dynamic radius adjustment based on sample count
+- Depth-based height variation for visual clarity
+- Player-facing text labels with rotation tracking
+
 ---
-Last updated: 2025-07-01
-Project status: Complete tool placement system with vehicle controls and unified preview system
+Last updated: 2025-07-08
+Project status: Complete tool placement system + multi-depth drilling tower with circular sample arrangement
