@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// dem.003运行时调试器
@@ -8,11 +9,10 @@ public class Dem003RuntimeDebugger : MonoBehaviour
 {
     [Header("调试设置")]
     public bool enableDebug = true;
-    public KeyCode debugKey = KeyCode.F8;
     
     private void Update()
     {
-        if (enableDebug && Input.GetKeyDown(debugKey))
+        if (enableDebug && Keyboard.current.pKey.wasPressedThisFrame)
         {
             PerformDrillingDebugTest();
         }

@@ -116,8 +116,7 @@ public class GameInitializer : MonoBehaviour
         
         Dem003RuntimeDebugger dem003Debugger = dem003DebuggerObj.AddComponent<Dem003RuntimeDebugger>();
         dem003Debugger.enableDebug = true;
-        dem003Debugger.debugKey = KeyCode.F8; // 按F8键触发调试
         
-        Debug.Log("🔍 dem.003专用调试器初始化完成 - 按F8键进行调试分析");
+        Debug.Log("🔍 dem.003专用调试器初始化完成 - 按P键进行调试分析");
     }
 }

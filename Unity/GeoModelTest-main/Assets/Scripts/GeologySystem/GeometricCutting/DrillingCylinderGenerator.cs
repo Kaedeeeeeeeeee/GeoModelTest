@@ -237,9 +237,18 @@ public class DrillingCylinderGenerator : MonoBehaviour
         foreach (GeologyLayer layer in nearbyLayers)
         {
             // 多级检测：边界框 + 射线检测 + 深度验证
-            if (IsLayerInDrillingPath(layer, startPoint, direction, maxDistance))
+            Debug.Log($"🔥 开始检测地层 [{layer.layerName}] 是否在钻探路径中...");
+            bool layerInPath = IsLayerInDrillingPath(layer, startPoint, direction, maxDistance);
+            Debug.Log($"🔥 地层 [{layer.layerName}] 检测结果: {layerInPath}");
+            
+            if (layerInPath)
             {
                 layersInRange.Add(layer);
+                Debug.Log($"✅ [{layer.layerName}] 已添加到layersInRange，当前总数: {layersInRange.Count}");
+            }
+            else
+            {
+                Debug.Log($"❌ [{layer.layerName}] 未通过详细检测，被排除");
             }
         }
         
@@ -268,23 +277,77 @@ public class DrillingCylinderGenerator : MonoBehaviour
         
         Debug.Log($"🔧 预筛选开始: 钻探起点 {startPoint}, 终点 {endPoint}, 深度 {maxDistance}m");
         
+        // 🔧 额外检查：钻塔正下方是否有地层（扩大检测范围）
+        Debug.Log($"🎯 钻塔正下方地层检查:");
+        List<GeologyLayer> directlyDetectedLayers = new List<GeologyLayer>();
+        
+        // 使用更大的检测范围，确保能检测到表层地层
+        Collider[] overlappingColliders = Physics.OverlapSphere(startPoint, 2.0f);
+        foreach (var collider in overlappingColliders)
+        {
+            GeologyLayer layer = collider.GetComponent<GeologyLayer>();
+            if (layer != null)
+            {
+                Debug.Log($"   🎯 钻塔正下方发现地层: {layer.layerName}");
+                directlyDetectedLayers.Add(layer);
+            }
+        }
+        
+        // 🔧 如果OverlapSphere没有检测到表层地层，用射线检测补充
+        if (!directlyDetectedLayers.Any(l => l.layerName == "dem"))
+        {
+            Debug.Log($"🔍 OverlapSphere未检测到表层地层，使用射线检测补充");
+            RaycastHit[] rayHits = Physics.RaycastAll(startPoint + Vector3.up * 1f, Vector3.down, 5f);
+            foreach (var hit in rayHits)
+            {
+                GeologyLayer layer = hit.collider.GetComponent<GeologyLayer>();
+                if (layer != null && layer.layerName == "dem")
+                {
+                    Debug.Log($"   🎯 射线检测发现表层地层: {layer.layerName}");
+                    directlyDetectedLayers.Add(layer);
+                    break;
+                }
+            }
+        }
+        
+        // 🔧 关键修复：扩大距离限制，确保包含所有相关地层
+        const float maxHorizontalDistance = 100.0f; // 调整到100米，确保包含dem(79.30m)和所有相关地层
+        
         foreach (GeologyLayer layer in allLayers)
         {
             Bounds layerBounds = GetLayerBounds(layer);
             
-            // 🔧 关键修复：检查地层是否与钻探路径有交集，而不是仅检查起点
-            bool intersects = DoesLayerIntersectDrillingPath(layerBounds, startPoint, endPoint);
+            // 🔧 第1步：严格的水平距离检查（忽略边界框包含检查）
+            Vector3 layerCenter = layerBounds.center;
+            float horizontalDistance = Vector2.Distance(
+                new Vector2(startPoint.x, startPoint.z),
+                new Vector2(layerCenter.x, layerCenter.z)
+            );
             
-            // 特别关注dem.003的详细调试信息
-            if (layer.layerName == "dem.003")
+            // 🔧 第2步：优先包含直接检测到的地层，或者距离足够近的地层，或者是重要的表层地层
+            bool isDirectlyDetected = directlyDetectedLayers.Contains(layer);
+            bool nearEnough = horizontalDistance <= maxHorizontalDistance;
+            bool isImportantLayer = layer.layerName == "dem" || layer.layerName == "dem.001" || layer.layerName == "dem.002";
+            bool shouldConsider = isDirectlyDetected || nearEnough || isImportantLayer;
+            
+            // 🔧 第3步：检查地层是否与钻探路径有交集（对重要地层更宽松）
+            bool intersects = shouldConsider && (DoesLayerIntersectDrillingPath(layerBounds, startPoint, endPoint) || isImportantLayer);
+            
+            // 特别关注关键地层的详细调试信息
+            if (layer.layerName == "dem" || layer.layerName == "dem.001" || layer.layerName == "dem.003")
             {
-                Debug.Log($"🔍 [dem.003] 边界框分析:");
+                Debug.Log($"🔍 [{layer.layerName}] 边界框分析:");
                 Debug.Log($"   边界框中心: {layerBounds.center}");
                 Debug.Log($"   边界框尺寸: {layerBounds.size}");
                 Debug.Log($"   边界框范围: min({layerBounds.min}) ~ max({layerBounds.max})");
                 Debug.Log($"   钻探起点: {startPoint}");
                 Debug.Log($"   钻探终点: {endPoint}");
-                Debug.Log($"   路径相交测试: {intersects}");
+                Debug.Log($"   水平距离: {horizontalDistance:F2}m (严格限制: {maxHorizontalDistance:F2}m)");
+                Debug.Log($"   距离检查 nearEnough: {nearEnough}");
+                Debug.Log($"   直接检测 isDirectlyDetected: {isDirectlyDetected}");
+                Debug.Log($"   应考虑 shouldConsider: {shouldConsider}");
+                Debug.Log($"   路径相交测试结果: {DoesLayerIntersectDrillingPath(layerBounds, startPoint, endPoint)}");
+                Debug.Log($"   最终 intersects: {intersects}");
                 
                 // 详细的相交分析
                 Vector3 drillingDirection = (endPoint - startPoint).normalized;
@@ -294,19 +357,37 @@ public class DrillingCylinderGenerator : MonoBehaviour
                 
                 Debug.Log($"   射线相交分析: {rayIntersects}, 进入距离: {enterDistance}m, 钻探距离: {drillingDistance}m");
                 Debug.Log($"   是否在距离范围内: {enterDistance <= drillingDistance}");
+                
+                // 水平范围检查
+                bool horizontalIntersects = (startPoint.x >= layerBounds.min.x && startPoint.x <= layerBounds.max.x &&
+                                           startPoint.z >= layerBounds.min.z && startPoint.z <= layerBounds.max.z);
+                Debug.Log($"   水平范围相交: {horizontalIntersects}");
+                Debug.Log($"   起点X {startPoint.x} 在范围 [{layerBounds.min.x}, {layerBounds.max.x}] 内: {startPoint.x >= layerBounds.min.x && startPoint.x <= layerBounds.max.x}");
+                Debug.Log($"   起点Z {startPoint.z} 在范围 [{layerBounds.min.z}, {layerBounds.max.z}] 内: {startPoint.z >= layerBounds.min.z && startPoint.z <= layerBounds.max.z}");
             }
             
             if (intersects)
             {
                 relevantLayers.Add(layer);
-                if (layer.layerName == "dem.003")
-                {
-                    Debug.Log($"✅ [dem.003] 通过预筛选");
-                }
+                string reason = isDirectlyDetected ? "直接检测到" : $"距离{horizontalDistance:F2}m ≤ {maxHorizontalDistance:F2}m";
+                Debug.Log($"✅ [{layer.layerName}] 通过预筛选 ({reason})");
             }
-            else if (layer.layerName == "dem.003")
+            else
             {
-                Debug.Log($"❌ [dem.003] 未通过预筛选");
+                string reason;
+                if (isDirectlyDetected)
+                {
+                    reason = "直接检测到但路径不相交";
+                }
+                else if (nearEnough)
+                {
+                    reason = $"距离{horizontalDistance:F2}m ≤ {maxHorizontalDistance:F2}m 但路径不相交";
+                }
+                else
+                {
+                    reason = $"距离{horizontalDistance:F2}m > {maxHorizontalDistance:F2}m";
+                }
+                Debug.Log($"❌ [{layer.layerName}] 未通过预筛选 ({reason})");
             }
         }
         
@@ -315,17 +396,42 @@ public class DrillingCylinderGenerator : MonoBehaviour
     }
     
     /// <summary>
-    /// 检查地层边界框是否与钻探路径相交
+    /// 🔧 修复：检查地层边界框是否与钻探路径相交（扩展检测）
     /// </summary>
     private bool DoesLayerIntersectDrillingPath(Bounds layerBounds, Vector3 startPoint, Vector3 endPoint)
     {
-        // 使用线段与边界框相交测试
+        // 方法1：使用线段与边界框相交测试
         Vector3 direction = (endPoint - startPoint).normalized;
         float distance = Vector3.Distance(startPoint, endPoint);
         
-        // Unity的Bounds.IntersectRay方法
         Ray drillingRay = new Ray(startPoint, direction);
-        return layerBounds.IntersectRay(drillingRay, out float enterDistance) && enterDistance <= distance;
+        bool rayIntersects = layerBounds.IntersectRay(drillingRay, out float enterDistance) && enterDistance <= distance;
+        
+        // 方法2：检查边界框是否与钻探线段相交（更宽松的检测）
+        bool boundsIntersects = layerBounds.size.magnitude > 0 && (
+            layerBounds.Contains(startPoint) || 
+            layerBounds.Contains(endPoint) ||
+            layerBounds.IntersectRay(drillingRay)
+        );
+        
+        // 方法3：检查钻探路径是否穿过地层的垂直范围
+        bool verticalIntersects = (layerBounds.min.y <= startPoint.y && layerBounds.max.y >= endPoint.y) ||
+                                 (layerBounds.min.y <= endPoint.y && layerBounds.max.y >= startPoint.y) ||
+                                 (startPoint.y <= layerBounds.min.y && endPoint.y >= layerBounds.max.y);
+        
+        // 🔧 方法4：水平范围检查 - 特别对表层地层重要
+        // 检查钻探起点的XZ坐标是否在地层的水平范围内
+        bool horizontalIntersects = (startPoint.x >= layerBounds.min.x && startPoint.x <= layerBounds.max.x &&
+                                   startPoint.z >= layerBounds.min.z && startPoint.z <= layerBounds.max.z);
+        
+        // 🔧 方法5：松散垂直检查 - 只要钻探路径与地层在垂直方向有任何重叠
+        bool looseVerticalCheck = !(endPoint.y > layerBounds.max.y || startPoint.y < layerBounds.min.y);
+        
+        // 🔧 综合判断：任何一种方法通过都认为相交
+        bool result = rayIntersects || boundsIntersects || verticalIntersects || 
+                     (horizontalIntersects && looseVerticalCheck);
+        
+        return result;
     }
     
     /// <summary>
@@ -360,66 +466,62 @@ public class DrillingCylinderGenerator : MonoBehaviour
         Bounds layerBounds = GetLayerBounds(layer);
         bool isDem003 = layer.layerName == "dem.003";
         
-        if (isDem003)
-        {
-            Debug.Log($"🔍 [dem.003] 进入IsLayerInDrillingPath详细检测:");
-            Debug.Log($"   地层边界框: {layerBounds.center} ± {layerBounds.size/2}");
-            Debug.Log($"   钻探起点: {startPoint}");
-            Debug.Log($"   钻探方向: {direction}");
-            Debug.Log($"   最大距离: {maxDistance}m");
-        }
+        // 🔧 调试：为所有地层添加详细调试信息
+        Debug.Log($"🔍 [{layer.layerName}] 进入IsLayerInDrillingPath详细检测:");
+        Debug.Log($"   地层边界框: {layerBounds.center} ± {layerBounds.size/2}");
+        Debug.Log($"   钻探起点: {startPoint}");
+        Debug.Log($"   钻探方向: {direction}");
+        Debug.Log($"   最大距离: {maxDistance}m");
         
         // 重要：先检测钻探起点是否在地层内（地表检测）
-        bool pointInLayer = IsPointInLayer(startPoint, layer);
-        if (isDem003)
+        Debug.Log($"   🔍 开始步骤1：检测起点是否在地层内...");
+        bool pointInLayer = false;
+        try
         {
+            pointInLayer = IsPointInLayer(startPoint, layer);
             Debug.Log($"   步骤1 - 起点在地层内: {pointInLayer}");
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"   步骤1 - IsPointInLayer异常: {ex.Message}");
+            pointInLayer = false;
         }
         
         if (pointInLayer)
         {
-            if (isDem003) Debug.Log($"✅ [dem.003] 通过起点检测");
+            Debug.Log($"✅ [{layer.layerName}] 通过起点检测");
             return true;
         }
         
         // 第1步：快速边界框检测
         bool inBounds = IsLayerInBounds(layerBounds, startPoint, direction, maxDistance);
-        if (isDem003)
-        {
-            Debug.Log($"   步骤2 - 边界框检测: {inBounds}");
-        }
+        Debug.Log($"   步骤2 - 边界框检测: {inBounds}");
         
         if (!inBounds)
         {
-            if (isDem003) Debug.Log($"❌ [dem.003] 未通过边界框检测");
+            Debug.Log($"❌ [{layer.layerName}] 未通过边界框检测");
             return false;
         }
         
         // 第2步：射线-边界框交点检测（更精确）
         Ray drillingRay = new Ray(startPoint, direction);
         bool rayIntersects = layerBounds.IntersectRay(drillingRay, out float distance);
-        if (isDem003)
-        {
-            Debug.Log($"   步骤3 - 射线-边界框交点: {rayIntersects}, 距离: {distance}m");
-        }
+        Debug.Log($"   步骤3 - 射线-边界框交点: {rayIntersects}, 距离: {distance}m");
         
         if (!rayIntersects)
         {
-            if (isDem003) Debug.Log($"❌ [dem.003] 未通过射线-边界框交点检测");
+            Debug.Log($"❌ [{layer.layerName}] 未通过射线-边界框交点检测");
             return false;
         }
         
         // 🔧 修复：对于深层钻探，使用更宽松的距离限制
         // 深层钻探时，起点可能已经在地层内部，需要更宽松的检测
         bool withinDistance = distance <= maxDistance * 5f;
-        if (isDem003)
-        {
-            Debug.Log($"   步骤4 - 距离限制检测: {withinDistance} (距离: {distance}m <= 限制: {maxDistance * 5f}m)");
-        }
+        Debug.Log($"   步骤4 - 距离限制检测: {withinDistance} (距离: {distance}m <= 限制: {maxDistance * 5f}m)");
         
         if (!withinDistance)
         {
-            if (isDem003) Debug.Log($"❌ [dem.003] 超出距离限制");
+            Debug.Log($"❌ [{layer.layerName}] 超出距离限制");
             return false;
         }
         
@@ -428,24 +530,21 @@ public class DrillingCylinderGenerator : MonoBehaviour
         if (meshCollider != null)
         {
             bool meshIntersects = IsLayerIntersectedByMesh(layer, startPoint, direction, maxDistance);
-            if (isDem003)
-            {
-                Debug.Log($"   步骤5 - 网格精确检测: {meshIntersects}");
-            }
+            Debug.Log($"   步骤5 - 网格精确检测: {meshIntersects}");
             
             if (!meshIntersects)
             {
-                if (isDem003) Debug.Log($"❌ [dem.003] 未通过网格精确检测");
+                Debug.Log($"❌ [{layer.layerName}] 未通过网格精确检测");
                 return false;
             }
         }
-        else if (isDem003)
+        else
         {
             Debug.Log($"   步骤5 - 无网格碰撞器，跳过网格检测");
         }
         
         // 地层通过边界框和射线检测
-        if (isDem003) Debug.Log($"✅ [dem.003] 通过所有检测步骤");
+        Debug.Log($"✅ [{layer.layerName}] 通过所有检测步骤");
         return true;
     }
     
@@ -454,76 +553,27 @@ public class DrillingCylinderGenerator : MonoBehaviour
     /// </summary>
     private bool IsPointInLayer(Vector3 point, GeologyLayer layer)
     {
+        // 🔧 关键修复：对于不同深度的钻探，要正确判断点是否在地层内
+        // 特别是要考虑Y轴（垂直）位置，确保深层钻探不会检测到表层地层
+        
         Bounds layerBounds = GetLayerBounds(layer);
-        bool isDem003 = layer.layerName == "dem.003";
         
-        if (isDem003)
+        // 关键：Y轴位置检查 - 确保钻探点在地层的垂直范围内
+        if (point.y < layerBounds.min.y || point.y > layerBounds.max.y)
         {
-            Debug.Log($"🔍 [dem.003] IsPointInLayer检测:");
-            Debug.Log($"   检测点: {point}");
-            Debug.Log($"   地层边界框: center({layerBounds.center}), size({layerBounds.size})");
-            Debug.Log($"   边界范围: min({layerBounds.min}) ~ max({layerBounds.max})");
-        }
-        
-        // 严格的3D边界框检测（避免过于宽松的容差）
-        bool inBounds = layerBounds.Contains(point);
-        if (isDem003)
-        {
-            Debug.Log($"   3D边界框包含检测: {inBounds}");
-            if (!inBounds)
-            {
-                Vector3 distance = point - layerBounds.center;
-                Vector3 halfSize = layerBounds.size * 0.5f;
-                Debug.Log($"   距离分析: X({distance.x:F3}, 边界±{halfSize.x:F3}), Y({distance.y:F3}, 边界±{halfSize.y:F3}), Z({distance.z:F3}, 边界±{halfSize.z:F3})");
-                
-                bool xIn = Mathf.Abs(distance.x) <= halfSize.x;
-                bool yIn = Mathf.Abs(distance.y) <= halfSize.y;
-                bool zIn = Mathf.Abs(distance.z) <= halfSize.z;
-                Debug.Log($"   轴向检测: X({xIn}), Y({yIn}), Z({zIn})");
-            }
-        }
-        
-        if (!inBounds)
-        {
-            if (isDem003) Debug.Log($"❌ [dem.003] 点不在边界框内");
+            Debug.Log($"❌ [{layer.layerName}] Y轴位置不符: 点Y={point.y:F2}, 地层Y范围=[{layerBounds.min.y:F2}, {layerBounds.max.y:F2}]");
             return false;
         }
         
-        // 🔧 改进：深层钻探时的精确检测
-        MeshCollider meshCollider = layer.GetComponent<MeshCollider>();
-        if (meshCollider != null)
+        // 水平位置检查（XZ平面）
+        if (point.x < layerBounds.min.x || point.x > layerBounds.max.x ||
+            point.z < layerBounds.min.z || point.z > layerBounds.max.z)
         {
-            if (isDem003) Debug.Log($"   进行网格碰撞器检测...");
-            
-            // 多方向射线检测，适应深层钻探
-            Vector3[] directions = { Vector3.down, Vector3.up, Vector3.left, Vector3.right, Vector3.forward, Vector3.back };
-            
-            bool anyHit = false;
-            foreach (Vector3 dir in directions)
-            {
-                Ray ray = new Ray(point, dir);
-                bool hit = meshCollider.Raycast(ray, out RaycastHit hitInfo, 2.0f);
-                if (hit)
-                {
-                    anyHit = true;
-                    if (isDem003) Debug.Log($"   射线方向 {dir} 击中距离: {hitInfo.distance:F3}m");
-                    break;
-                }
-            }
-            
-            if (isDem003)
-            {
-                Debug.Log($"   网格射线检测结果: {anyHit}");
-                Debug.Log($"   最终结果: {true} (边界框内则有效)");
-            }
-            
-            // 如果射线检测失败，但点在边界框内，对于深层钻探仍然认为有效
-            return true;
+            Debug.Log($"❌ [{layer.layerName}] XZ平面位置不符");
+            return false;
         }
         
-        if (isDem003) Debug.Log($"   无网格碰撞器，使用边界框结果: {true}");
-        
-        // 如果没有MeshCollider，但在边界框内，谨慎返回true
+        Debug.Log($"✅ [{layer.layerName}] 点在地层内 Y={point.y:F2} 在范围[{layerBounds.min.y:F2}, {layerBounds.max.y:F2}]");
         return true;
     }
     
@@ -714,6 +764,7 @@ public class DrillingCylinderGenerator : MonoBehaviour
     
     private Bounds GetLayerBounds(GeologyLayer layer)
     {
+        // 🔧 简化版本：直接使用MeshRenderer.bounds，避免调试信息导致的性能问题
         MeshRenderer renderer = layer.GetComponent<MeshRenderer>();
         if (renderer != null)
         {

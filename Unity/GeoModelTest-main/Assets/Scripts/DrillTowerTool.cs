@@ -429,50 +429,87 @@ public class DrillTower : MonoBehaviour
         float actualDrillingDepth;
         float drillingRadius = 0.1f;
         
-        // 恢复正确的钻探逻辑
-        if (currentDrillCount == 0)
+        // 🔧 钻塔连续钻探修复：先找到真正的地面位置，然后从地面开始钻探
+        // 关键修复：避免射线检测到钻塔自身，使用真正的地面位置作为起点
+        
+        // 第1步：从钻塔上方检测地面位置
+        Vector3 skyPosition = drillingPosition + Vector3.up * 10f;
+        RaycastHit groundHit;
+        Vector3 realGroundPosition = drillingPosition; // 默认使用钻塔位置
+        
+        // 检测真正的地面位置（忽略钻塔自身，优先检测表层）
+        RaycastHit[] allHits = Physics.RaycastAll(skyPosition, Vector3.down, 15f);
+        
+        // 🔧 修复：优先寻找表层地层（dem），而不是第一个击中的地层
+        GeologyLayer surfaceLayer = null;
+        RaycastHit surfaceHit = new RaycastHit();
+        bool foundSurface = false;
+        
+        Debug.Log($"🔍 地面检测：从 {skyPosition} 向下射线检测，共击中 {allHits.Length} 个对象");
+        
+        foreach (RaycastHit hit in allHits)
         {
-            // 第一次钻探：从地表开始
-            actualDrillingStart = drillingPosition;
-            actualDrillingDepth = toolReference.depthPerDrill;
+            // 跳过钻塔自身的组件
+            if (hit.collider.name.Contains("DrillTower") || hit.collider.name.Contains("Tower") || hit.collider.name.Contains("Drill"))
+            {
+                Debug.Log($"   跳过钻塔组件: {hit.collider.name}");
+                continue;
+            }
+            
+            GeologyLayer geoLayer = hit.collider.GetComponent<GeologyLayer>();
+            if (geoLayer != null)
+            {
+                Debug.Log($"   击中地层: {geoLayer.layerName} 距离: {hit.distance:F2}m 位置: {hit.point}");
+                
+                // 🔧 优先选择表层地层（dem）
+                if (geoLayer.layerName == "dem")
+                {
+                    surfaceLayer = geoLayer;
+                    surfaceHit = hit;
+                    foundSurface = true;
+                    Debug.Log($"   ✅ 找到表层地层: {geoLayer.layerName}");
+                    break;
+                }
+                // 如果还没找到表层，记录第一个找到的地层作为备选
+                else if (!foundSurface)
+                {
+                    surfaceLayer = geoLayer;
+                    surfaceHit = hit;
+                    Debug.Log($"   📝 记录备选地层: {geoLayer.layerName}");
+                }
+            }
+        }
+        
+        if (foundSurface || surfaceLayer != null)
+        {
+            realGroundPosition = surfaceHit.point;
+            Debug.Log($"🌍 确定地面位置: {realGroundPosition} (地层: {surfaceLayer.layerName})");
         }
         else
         {
-            // 后续钻探：从上次记录的位置继续
-            if (depthRecords.Count > 0)
-            {
-                DrillDepthRecord lastRecord = depthRecords[depthRecords.Count - 1];
-                actualDrillingStart = lastRecord.worldPosition;
-                actualDrillingDepth = toolReference.depthPerDrill;
-            }
-            else
-            {
-                Debug.LogError("❌ 没有找到之前的钻探记录，无法进行连续钻探");
-                return;
-            }
+            Debug.LogWarning($"⚠️ 未找到有效地面，使用钻塔位置: {realGroundPosition}");
         }
         
-        Debug.Log($"🔧 恢复正确钻探逻辑（第{currentDrillCount + 1}次）:");
-        Debug.Log($"   起点: {actualDrillingStart}");
-        Debug.Log($"   深度: {actualDrillingDepth:F2}m");
-        Debug.Log($"   目标深度范围: {depthStart:F1}m-{depthEnd:F1}m");
+        // 第2步：直接从地面位置开始钻探，确保检测到表层地层
+        actualDrillingStart = realGroundPosition; // 直接从地面开始
+        actualDrillingDepth = depthEnd; // 标准深度，不需要补偿
+        
+        Debug.Log($"   射线起点: {actualDrillingStart} (直接从地面开始)");
+        Debug.Log($"   检测深度: {actualDrillingDepth:F2}m (标准深度)");
+        Debug.Log($"   提取范围: {depthStart:F1}m-{depthEnd:F1}m (通过深度范围参数筛选地层)");
+        Debug.Log($"   策略: 地面射线检测+深度范围筛选，确保检测表层地层");
         
         GeometricSampleReconstructor.ReconstructedSample geometricSample;
         
-        // 🔧 最终修复：使用5参数版本，依靠改进的地层检测算法
-        Debug.Log($"🔧 使用改进的地层检测算法（第{currentDrillCount + 1}次）:");
-        Debug.Log($"   起点: {actualDrillingStart}");
-        Debug.Log($"   深度: {actualDrillingDepth:F2}m");
-        Debug.Log($"   目标深度范围: {depthStart:F1}m-{depthEnd:F1}m");
-        Debug.Log($"   使用5参数ReconstructSample方法 + 改进的深层检测");
-        
-        // 使用5参数版本，依靠我们改进的DrillingCylinderGenerator检测算法
+        // 使用6参数版本，传递正确的深度范围
         geometricSample = reconstructor.ReconstructSample(
             actualDrillingStart,
             drillingDirection,
             drillingRadius,
             actualDrillingDepth,
-            samplePosition
+            samplePosition,
+            depthStart,
+            depthEnd
         );
         
         if (geometricSample != null && geometricSample.sampleContainer != null)
