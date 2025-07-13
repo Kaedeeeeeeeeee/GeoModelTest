@@ -62,7 +62,7 @@ public class ReconstructedGeologicalSample : MonoBehaviour
         string info = $"地质样本\\n深度: {sampleData.drillingDepth:F1}m\\n地层数: {sampleData.layerStats.Length}\\n按 {inspectKey} 键详细查看";
         
         // 这里可以显示UI提示
-        Debug.Log(info);
+        
     }
     
     void HideQuickInfo()
@@ -191,7 +191,7 @@ public class LayerSegmentInfo : MonoBehaviour
                      $"占比: {layerInfo.areaPercentage * 100:F1}%\\n" +
                      $"倾角: {layerInfo.dipAngle:F1}°";
         
-        Debug.Log(info);
+        
         
         // 这里可以显示UI信息面板
     }
@@ -232,7 +232,7 @@ public class ContactInfo : MonoBehaviour
                      $"接触角: {contactInterface.contactAngle:F1}°\\n" +
                      $"接触类型: {GetContactTypeDescription(contactInterface.contactType)}";
         
-        Debug.Log(info);
+        
     }
     
     void HideContactInfo()
@@ -312,7 +312,7 @@ public class SampleInfoDisplay : MonoBehaviour
         if (isInfoVisible)
         {
             string info = GenerateSampleSummary();
-            Debug.Log(info);
+            
         }
     }
     

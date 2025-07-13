@@ -34,7 +34,7 @@ public class SampleReconstructionSystem : MonoBehaviour
     
     public GameObject ReconstructSample(GeologicalSampleData sampleData, Vector3 position)
     {
-        Debug.Log($"开始重建地质样本 {sampleData.sampleID}");
+        
         
         // 创建样本容器
         GameObject sampleContainer = new GameObject($"GeologicalSample_{sampleData.sampleID}");
@@ -85,7 +85,7 @@ public class SampleReconstructionSystem : MonoBehaviour
         floatingDisplay.enablePulse = false; // 禁用脉冲
         floatingDisplay.preserveOriginalMaterials = true; // 保持原始材质
         
-        Debug.Log($"样本重建完成，共 {segmentObjects.Count} 个段，已启用悬浮展示");
+        
         
         return sampleContainer;
     }
@@ -187,7 +187,7 @@ public class SampleReconstructionSystem : MonoBehaviour
         
         meshRenderer.material = instanceMaterial;
         
-        Debug.Log($"创建段 {segmentIndex}: 深度 {segment.depth:F2}m, 高度 {segmentHeight:F2}m, 位置Y: {segmentCenterY:F2}m, 地层: {layerInfo.layer.layerName}");
+        
         
         return layerObj;
     }

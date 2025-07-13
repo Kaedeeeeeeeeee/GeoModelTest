@@ -31,7 +31,7 @@ public class SimpleGeometricTool : MonoBehaviour
         
         if (enableDebugLogs)
         {
-            Debug.Log("简化几何工具初始化完成");
+            
         }
     }
     
@@ -42,7 +42,7 @@ public class SimpleGeometricTool : MonoBehaviour
     {
         if (enableDebugLogs)
         {
-            Debug.Log("开始几何钻探 - 位置: " + position);
+            
         }
         
         StartCoroutine(GeometricDrillingCoroutine(position, direction));
@@ -54,7 +54,7 @@ public class SimpleGeometricTool : MonoBehaviour
         if (terrainHoleSystem != null)
         {
             terrainHoleSystem.CreateCylindricalHole(position, drillingRadius, drillingDepth, direction);
-            Debug.Log("创建了地形洞");
+            
         }
         
         yield return new WaitForSeconds(1f);
@@ -67,7 +67,7 @@ public class SimpleGeometricTool : MonoBehaviour
             // 第3步：添加悬浮效果
             AddFloatingEffect(sample);
             
-            Debug.Log("简化几何样本创建完成");
+            
         }
         
         yield return null;
@@ -196,7 +196,7 @@ public class SimpleGeometricTool : MonoBehaviour
         
         if (enableDebugLogs)
         {
-            Debug.Log("钻探参数已更新 - 半径: " + radius + ", 深度: " + depth);
+            
         }
     }
 }

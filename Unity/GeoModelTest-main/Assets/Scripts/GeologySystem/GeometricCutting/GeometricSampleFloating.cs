@@ -61,7 +61,7 @@ public class GeometricSampleFloating : MonoBehaviour
             StartFloating();
         }
         
-        Debug.Log("几何样本悬浮组件初始化完成: " + gameObject.name);
+        
     }
     
     void SetupFloatingPhysics()
@@ -85,7 +85,7 @@ public class GeometricSampleFloating : MonoBehaviour
     public void StartFloating()
     {
         isFloating = true;
-        Debug.Log("开始悬浮: " + gameObject.name);
+        
     }
     
     public void StopFloating()
@@ -108,7 +108,7 @@ public class GeometricSampleFloating : MonoBehaviour
             }
         }
         
-        Debug.Log("停止悬浮: " + gameObject.name);
+        
     }
     
     void Update()

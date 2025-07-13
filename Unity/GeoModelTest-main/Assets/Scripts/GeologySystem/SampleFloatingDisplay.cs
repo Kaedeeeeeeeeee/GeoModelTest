@@ -54,7 +54,7 @@ public class SampleFloatingDisplay : MonoBehaviour
         // 开始悬浮（保持原始材质）
         isFloating = true;
         
-        Debug.Log($"地质样本开始悬浮展示：{gameObject.name}");
+        
     }
     
     void SetupPhysicsForFloating()
@@ -148,7 +148,7 @@ public class SampleFloatingDisplay : MonoBehaviour
         // 恢复正常缩放
         transform.localScale = baseScale;
         
-        Debug.Log($"地质样本停止悬浮：{gameObject.name}");
+        
     }
     
     // 公共方法：开始悬浮
@@ -160,7 +160,7 @@ public class SampleFloatingDisplay : MonoBehaviour
         isFloating = true;
         floatingTimer = 0f;
         
-        Debug.Log($"地质样本开始悬浮：{gameObject.name}");
+        
     }
     
     // 公共方法：设置悬浮参数

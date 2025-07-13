@@ -17,7 +17,7 @@ public class PlayerInventory : MonoBehaviour
     void Start()
     {
         collectedSamples = new List<GeologicalSampleData>();
-        Debug.Log("玩家库存系统初始化完成");
+        
     }
     
     void Update()
@@ -32,12 +32,12 @@ public class PlayerInventory : MonoBehaviour
     {
         if (collectedSamples.Count >= maxSamples)
         {
-            Debug.LogWarning("库存已满，无法添加更多样本！");
+            
             return false;
         }
         
         collectedSamples.Add(sampleData);
-        Debug.Log($"样本已添加到库存：{sampleData.sampleID} (总数: {collectedSamples.Count})");
+        
         
         return true;
     }
@@ -46,7 +46,7 @@ public class PlayerInventory : MonoBehaviour
     {
         if (collectedSamples.Remove(sampleData))
         {
-            Debug.Log($"样本已从库存移除：{sampleData.sampleID}");
+            
         }
     }
     
@@ -68,7 +68,7 @@ public class PlayerInventory : MonoBehaviour
     void ToggleInventory()
     {
         isInventoryOpen = !isInventoryOpen;
-        Debug.Log($"库存界面 {(isInventoryOpen ? "打开" : "关闭")}");
+        
         
         if (isInventoryOpen)
         {
@@ -78,8 +78,8 @@ public class PlayerInventory : MonoBehaviour
     
     void ShowInventorySummary()
     {
-        Debug.Log("=== 库存摘要 ===");
-        Debug.Log($"样本总数: {collectedSamples.Count}/{maxSamples}");
+        
+        
         
         Dictionary<LayerType, int> layerCounts = new Dictionary<LayerType, int>();
         
@@ -95,10 +95,10 @@ public class PlayerInventory : MonoBehaviour
             }
         }
         
-        Debug.Log("地层类型统计:");
+        
         foreach (var kvp in layerCounts)
         {
-            Debug.Log($"  {kvp.Key}: {kvp.Value} 个样本");
+            
         }
     }
     

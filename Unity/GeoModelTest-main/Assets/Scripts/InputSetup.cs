@@ -15,7 +15,7 @@ public class InputSetup : MonoBehaviour
         
         if (firstPersonController == null)
         {
-            Debug.LogError("FirstPersonController component not found on " + gameObject.name);
+            
             return;
         }
         
@@ -29,12 +29,12 @@ public class InputSetup : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("Player action map not found in input actions");
+                
             }
         }
         else
         {
-            Debug.LogWarning("Input actions not assigned");
+            
         }
     }
     

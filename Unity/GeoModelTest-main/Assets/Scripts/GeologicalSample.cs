@@ -70,7 +70,7 @@ public class GeologicalSample : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log($"获得地层样本: {sampleName} (类型: {sampleType})");
+            
         }
     }
 }

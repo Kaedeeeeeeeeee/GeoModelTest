@@ -58,10 +58,8 @@ public class GeologyLayer : MonoBehaviour
         }
         catch (UnityException)
         {
-            Debug.LogWarning($"GeologyLayer标签未定义，跳过标签设置。建议在Unity中添加'GeologyLayer'标签。对象: {gameObject.name}");
         }
         
-        Debug.Log($"地层初始化完成: {layerName} (类型: {layerType})");
     }
     
     public Vector3 GetNormalAtPoint(Vector3 worldPoint)

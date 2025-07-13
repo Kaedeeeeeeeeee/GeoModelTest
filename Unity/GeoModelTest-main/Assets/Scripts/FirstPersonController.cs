@@ -38,7 +38,7 @@ public class FirstPersonController : MonoBehaviour
         
         if (playerCamera == null)
         {
-            Debug.LogError("No camera found in children! Please assign a camera as a child of this GameObject.");
+            
         }
         
         Cursor.lockState = CursorLockMode.Locked;

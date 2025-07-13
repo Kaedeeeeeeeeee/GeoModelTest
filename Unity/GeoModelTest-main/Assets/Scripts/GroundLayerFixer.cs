@@ -23,7 +23,7 @@ public class GroundLayerFixer : MonoBehaviour
     [ContextMenu("修复地面Layer设置")]
     public void FixGroundLayers()
     {
-        Debug.Log("🔧 开始修复地面Layer设置...");
+        
         
         int fixedCount = 0;
         
@@ -42,18 +42,18 @@ public class GroundLayerFixer : MonoBehaviour
             {
                 if (obj.layer != targetGroundLayer)
                 {
-                    Debug.Log($"🔄 修复 {obj.name}: Layer {obj.layer} → {targetGroundLayer}");
+                    
                     obj.layer = targetGroundLayer;
                     fixedCount++;
                 }
                 else
                 {
-                    Debug.Log($"✅ {obj.name} Layer已正确: {obj.layer}");
+                    
                 }
             }
         }
         
-        Debug.Log($"🎯 地面Layer修复完成，共修复 {fixedCount} 个对象");
+        
         
         // 测试射线检测
         TestRaycastAfterFix();
@@ -119,7 +119,7 @@ public class GroundLayerFixer : MonoBehaviour
     
     void TestRaycastAfterFix()
     {
-        Debug.Log("🎯 测试修复后的射线检测...");
+        
         
         Camera cam = Camera.main;
         if (cam == null) cam = FindFirstObjectByType<Camera>();
@@ -133,20 +133,20 @@ public class GroundLayerFixer : MonoBehaviour
             
             if (Physics.Raycast(ray, out RaycastHit hit, 50f, testMask))
             {
-                Debug.Log($"✅ 射线检测成功!");
-                Debug.Log($"   击中对象: {hit.collider.name}");
-                Debug.Log($"   Layer: {hit.collider.gameObject.layer}");
-                Debug.Log($"   位置: {hit.point}");
-                Debug.Log($"   距离: {hit.distance:F2}m");
+                
+                
+                
+                
+                
             }
             else
             {
-                Debug.LogWarning("❌ 射线检测仍然失败");
+                
                 
                 // 尝试不使用LayerMask
                 if (Physics.Raycast(ray, out RaycastHit anyHit, 50f))
                 {
-                    Debug.LogWarning($"   但击中了其他Layer的对象: {anyHit.collider.name} (Layer: {anyHit.collider.gameObject.layer})");
+                    
                 }
             }
         }
@@ -155,7 +155,7 @@ public class GroundLayerFixer : MonoBehaviour
     [ContextMenu("显示场景中所有对象的Layer信息")]
     public void ShowAllObjectLayers()
     {
-        Debug.Log("📋 场景中所有对象的Layer信息:");
+        
         
         GameObject[] allObjects = FindObjectsOfType<GameObject>();
         
@@ -175,13 +175,13 @@ public class GroundLayerFixer : MonoBehaviour
         foreach (var group in layerGroups)
         {
             string layerName = LayerMask.LayerToName(group.Key);
-            Debug.Log($"Layer {group.Key} ({layerName}): {group.Value.Count} 个对象");
+            
             
             if (group.Value.Count < 10) // 只显示少量对象的详细信息
             {
                 foreach (string objName in group.Value)
                 {
-                    Debug.Log($"  - {objName}");
+                    
                 }
             }
         }

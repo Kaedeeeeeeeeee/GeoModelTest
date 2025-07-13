@@ -23,7 +23,7 @@ public class GeometricSampleInfo : MonoBehaviour
         sampleData = sample;
         playerCamera = Camera.main;
         
-        Debug.Log("几何样本信息组件初始化: " + sample.sampleID.Substring(0, 8));
+        
     }
     
     void Update()
@@ -74,7 +74,7 @@ public class GeometricSampleInfo : MonoBehaviour
         if (isInfoVisible) return;
         
         string basicInfo = GenerateBasicInfo();
-        Debug.Log(basicInfo);
+        
         
         isInfoVisible = true;
     }
@@ -82,7 +82,7 @@ public class GeometricSampleInfo : MonoBehaviour
     void ShowDetailedInfo()
     {
         string detailedInfo = GenerateDetailedInfo();
-        Debug.Log(detailedInfo);
+        
     }
     
     void HideInfo()
@@ -92,11 +92,17 @@ public class GeometricSampleInfo : MonoBehaviour
     
     string GenerateBasicInfo()
     {
-        var data = sampleData.originalData;
+        if (sampleData == null)
+        {
+            return "样本数据不可用";
+        }
         
-        string info = "=== 几何地质样本 " + data.sampleID.Substring(0, 8) + " ===" + "\n";
-        info += "地层段数: " + sampleData.layerSegments.Length + "\n";
-        info += "总体积: " + data.totalVolume.ToString("F3") + "m³" + "\n";
+        string sampleID = sampleData.sampleID ?? "Unknown";
+        string shortID = sampleID.Length >= 8 ? sampleID.Substring(0, 8) : sampleID;
+        
+        string info = "=== 几何地质样本 " + shortID + " ===" + "\n";
+        info += "地层段数: " + (sampleData.layerSegments?.Length ?? 0) + "\n";
+        info += "总体积: " + sampleData.totalVolume.ToString("F3") + "m³" + "\n";
         info += "总高度: " + sampleData.totalHeight.ToString("F2") + "m" + "\n";
         info += "按 " + detailKey + " 键查看详细信息";
         
@@ -105,47 +111,57 @@ public class GeometricSampleInfo : MonoBehaviour
     
     string GenerateDetailedInfo()
     {
-        var data = sampleData.originalData;
+        if (sampleData == null)
+        {
+            return "样本数据不可用";
+        }
         
         string info = "=== 详细几何样本分析 ===" + "\n";
-        info += "样本ID: " + data.sampleID + "\n";
-        info += "采集位置: " + data.drillingPosition + "\n";
-        info += "钻探方向: " + data.drillingDirection + "\n";
-        info += "钻探半径: " + data.drillingRadius.ToString("F2") + "m" + "\n";
-        info += "钻探深度: " + data.drillingDepth.ToString("F2") + "m" + "\n";
-        info += "采集时间: " + data.collectionTime.ToString("yyyy-MM-dd HH:mm:ss") + "\n";
-        info += "总体积: " + data.totalVolume.ToString("F4") + "m³" + "\n";
-        info += "总质量: " + sampleData.physics.totalMass.ToString("F2") + "kg" + "\n";
-        info += "质心: " + sampleData.centerOfMass + "\n";
-        info += "边界: " + data.overallBounds + "\n\n";
+        info += "样本ID: " + (sampleData.sampleID ?? "Unknown") + "\n";
+        
+        // 检查originalData是否有效（结构体不能与null比较）
+        bool hasOriginalData = !string.IsNullOrEmpty(sampleData.originalData.sampleID);
+        if (hasOriginalData)
+        {
+            var data = sampleData.originalData;
+            info += "采集位置: " + data.drillingPosition + "\n";
+            info += "钻探方向: " + data.drillingDirection + "\n";
+            info += "钻探半径: " + data.drillingRadius.ToString("F2") + "m" + "\n";
+            info += "钻探深度: " + data.drillingDepth.ToString("F2") + "m" + "\n";
+            info += "采集时间: " + data.collectionTime.ToString("yyyy-MM-dd HH:mm:ss") + "\n";
+        }
+        
+        info += "总体积: " + sampleData.totalVolume.ToString("F4") + "m³" + "\n";
+        info += "总质量: " + (sampleData.physics?.totalMass.ToString("F2") ?? "0") + "kg" + "\n";
+        info += "质心: " + sampleData.centerOfMass + "\n\n";
         
         info += "=== 地层段分析 ===" + "\n";
-        for (int i = 0; i < sampleData.layerSegments.Length; i++)
+        
+        if (sampleData.layerSegments != null && sampleData.layerSegments.Length > 0)
         {
-            var segment = sampleData.layerSegments[i];
-            var cutResult = segment.cutResult;
-            
-            info += "段 " + (i + 1) + ": " + segment.sourceLayer.layerName + "\n";
-            info += "  地层类型: " + segment.sourceLayer.layerType + "\n";
-            info += "  体积: " + cutResult.volume.ToString("F4") + "m³" + "\n";
-            info += "  表面积: " + cutResult.surfaceArea.ToString("F3") + "m²" + "\n";
-            info += "  深度范围: " + cutResult.depthStart.ToString("F2") + "m - " + cutResult.depthEnd.ToString("F2") + "m" + "\n";
-            info += "  平均倾角: " + cutResult.features.averageDip.ToString("F1") + "°" + "\n";
-            info += "  倾向: " + cutResult.features.dipDirection + "\n";
-            info += "  表面粗糙度: " + cutResult.features.surfaceRoughness.ToString("F2") + "\n";
-            info += "  厚度变化: " + cutResult.features.thicknessVariation.ToString("F3") + "m" + "\n";
-            
-            if (cutResult.features.foldPoints != null && cutResult.features.foldPoints.Count > 0)
+            for (int i = 0; i < sampleData.layerSegments.Length; i++)
             {
-                info += "  褶皱点数: " + cutResult.features.foldPoints.Count + "\n";
+                var segment = sampleData.layerSegments[i];
+                if (segment?.sourceLayer != null && segment.cutResult.isValid)
+                {
+                    var cutResult = segment.cutResult;
+                    
+                    info += "段 " + (i + 1) + ": " + segment.sourceLayer.layerName + "\n";
+                    info += "  地层类型: " + segment.sourceLayer.layerType + "\n";
+                    info += "  体积: " + cutResult.volume.ToString("F4") + "m³" + "\n";
+                    info += "  表面积: " + cutResult.surfaceArea.ToString("F3") + "m²" + "\n";
+                    info += "  深度范围: " + cutResult.depthStart.ToString("F2") + "m - " + cutResult.depthEnd.ToString("F2") + "m" + "\n";
+                    info += "\n";
+                }
+                else
+                {
+                    info += "段 " + (i + 1) + ": 数据不可用\n\n";
+                }
             }
-            
-            if (cutResult.features.faultLines != null && cutResult.features.faultLines.Count > 0)
-            {
-                info += "  断层线数: " + cutResult.features.faultLines.Count + "\n";
-            }
-            
-            info += "\n";
+        }
+        else
+        {
+            info += "无地层段数据\n";
         }
         
         return info;
@@ -251,7 +267,7 @@ public class GeometricSampleInteraction : MonoBehaviour
         // 记录原始材质
         StoreOriginalMaterials();
         
-        Debug.Log("几何样本交互组件初始化: " + sample.sampleID.Substring(0, 8));
+        
     }
     
     void StoreOriginalMaterials()
@@ -311,7 +327,7 @@ public class GeometricSampleInteraction : MonoBehaviour
     
     void StartInspection()
     {
-        Debug.Log("开始检查样本: " + sampleData.sampleID.Substring(0, 8));
+        
         
         // 停止悬浮动画以便仔细观察
         if (floatingComponent != null)
@@ -326,7 +342,7 @@ public class GeometricSampleInteraction : MonoBehaviour
     
     void StopInspection()
     {
-        Debug.Log("停止检查样本: " + sampleData.sampleID.Substring(0, 8));
+        
         
         // 恢复悬浮动画
         if (floatingComponent != null)
@@ -414,7 +430,7 @@ public class GeometricSampleInteraction : MonoBehaviour
     {
         if (!canBePickedUp) return;
         
-        Debug.Log("拾取样本: " + sampleData.sampleID.Substring(0, 8));
+        
         
         // 添加到玩家库存
         PlayerInventory inventory = FindFirstObjectByType<PlayerInventory>();
@@ -548,7 +564,7 @@ public class GeometricSampleInteraction : MonoBehaviour
             hint += "\n按 " + pickupKey + " 键拾取样本";
         }
         
-        Debug.Log(hint);
+        
     }
     
     void HideInteractionHints()

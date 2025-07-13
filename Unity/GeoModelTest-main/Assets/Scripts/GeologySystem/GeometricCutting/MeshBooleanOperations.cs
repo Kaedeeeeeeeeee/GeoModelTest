@@ -76,18 +76,18 @@ public class MeshBooleanOperations : MonoBehaviour
     /// </summary>
     public CSGResult IntersectMeshes(Mesh meshA, Mesh meshB, Transform transformA, Transform transformB, Material materialA = null, Material materialB = null)
     {
-        Debug.Log($"开始网格交集运算 - 网格A: {meshA.vertexCount}顶点, 网格B: {meshB.vertexCount}顶点");
+        
         
         // 转换网格到世界坐标
         var trianglesA = ConvertMeshToTriangles(meshA, transformA, materialA);
         var trianglesB = ConvertMeshToTriangles(meshB, transformB, materialB);
         
-        Debug.Log($"转换完成 - 三角形A: {trianglesA.Length}, 三角形B: {trianglesB.Length}");
+        
         
         // 执行相交运算
         CSGResult result = PerformIntersectionOperation(trianglesA, trianglesB);
         
-        Debug.Log($"交集运算完成 - 结果顶点数: {(result.isValid ? result.vertices.Length : 0)}");
+        
         
         return result;
     }
@@ -150,7 +150,7 @@ public class MeshBooleanOperations : MonoBehaviour
         
         // 第一步：找到所有相交的三角形
         List<TriangleIntersection> intersections = FindAllTriangleIntersections(trianglesA, trianglesB);
-        Debug.Log($"找到 {intersections.Count} 个三角形相交");
+        
         
         // 第二步：处理相交区域
         foreach (var intersection in intersections)
@@ -220,7 +220,7 @@ public class MeshBooleanOperations : MonoBehaviour
             if (i % 100 == 0)
             {
                 float progress = (float)i / trianglesA.Length;
-                Debug.Log($"相交检测进度: {progress:P1}");
+                
             }
         }
         

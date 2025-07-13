@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public abstract class CollectionTool : MonoBehaviour
 {
     [Header("Tool Settings")]
+    public string toolID = "0000"; // 工具ID用于排序和分类
     public string toolName = "Collection Tool";
     public Sprite toolIcon;
     public GameObject toolModel;
@@ -115,12 +116,12 @@ public abstract class CollectionTool : MonoBehaviour
     
     protected virtual void OnEquip()
     {
-        Debug.Log($"装备了工具: {toolName}");
+        
     }
     
     protected virtual void OnUnequip()
     {
-        Debug.Log($"卸下了工具: {toolName}");
+        
     }
     
     protected virtual void OnDrawGizmosSelected()

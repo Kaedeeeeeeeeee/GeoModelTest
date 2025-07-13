@@ -57,7 +57,7 @@ public class TerrainHoleSystem : MonoBehaviour
         HoleData newHole = new HoleData(localPosition, radius, depth, localNormal);
         holes.Add(newHole);
         
-        Debug.Log($"在位置 {localPosition} 创建了半径 {radius}，深度 {depth} 的圆柱形洞");
+        
         
         CreateHoleVisual(newHole);
     }

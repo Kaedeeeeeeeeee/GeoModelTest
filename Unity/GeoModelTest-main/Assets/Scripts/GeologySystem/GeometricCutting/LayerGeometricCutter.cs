@@ -89,7 +89,7 @@ public class LayerGeometricCutter : MonoBehaviour
             booleanOps = gameObject.AddComponent<MeshBooleanOperations>();
         }
         
-        Debug.Log("地层几何切割系统初始化完成");
+        
     }
     
     /// <summary>
@@ -97,7 +97,7 @@ public class LayerGeometricCutter : MonoBehaviour
     /// </summary>
     public async Task<GeometricSampleData> CreateRealGeologicalSampleAsync(Vector3 drillingPoint, Vector3 direction, float radius, float depth)
     {
-        Debug.Log("开始创建真实地质样本 - 位置: " + drillingPoint + ", 方向: " + direction + ", 半径: " + radius + ", 深度: " + depth);
+        
         
         GeometricSampleData sampleData = new GeometricSampleData
         {
@@ -121,17 +121,17 @@ public class LayerGeometricCutter : MonoBehaviour
             Mesh drillingCylinder = cylinderGenerator.CreateDrillingCylinder(drillingPoint, direction, radius, depth);
             if (drillingCylinder == null)
             {
-                Debug.LogError("钻探圆柱体创建失败");
+                
                 return sampleData;
             }
             
             // 第2步：获取钻探范围内的地层
             GeologyLayer[] layersInRange = cylinderGenerator.GetLayersInDrillingRange(drillingPoint, direction, depth + radius);
-            Debug.Log("找到 " + layersInRange.Length + " 个地层在钻探范围内");
+            
             
             if (layersInRange.Length == 0)
             {
-                Debug.LogWarning("钻探范围内没有找到地层");
+                
                 return sampleData;
             }
             
@@ -156,13 +156,13 @@ public class LayerGeometricCutter : MonoBehaviour
             
             lastResults = sampleData.layerResults;
             
-            Debug.Log("地质样本创建完成 - 有效地层: " + sampleData.layerResults.Length + ", 总体积: " + sampleData.totalVolume.ToString("F4") + "m³");
+            
             
             return sampleData;
         }
         catch (System.Exception e)
         {
-            Debug.LogError("创建地质样本时发生错误: " + e.Message + "\n" + e.StackTrace);
+            
             return sampleData;
         }
     }
@@ -179,7 +179,7 @@ public class LayerGeometricCutter : MonoBehaviour
             if (enableProgressReporting)
             {
                 float progress = (float)i / layers.Length;
-                Debug.Log("处理地层进度: " + (progress * 100f).ToString("F1") + "% - " + layers[i].layerName);
+                
             }
             
             LayerCutResult result = CutLayerWithCylinder(layers[i], drillingCylinder, drillingPoint, direction);
@@ -221,7 +221,7 @@ public class LayerGeometricCutter : MonoBehaviour
             if (enableProgressReporting)
             {
                 float progress = (float)batchEnd / layers.Length;
-                Debug.Log("批次处理进度: " + (progress * 100f).ToString("F1") + "%");
+                
             }
         }
         
@@ -245,7 +245,7 @@ public class LayerGeometricCutter : MonoBehaviour
             if (layerMeshFilter == null || layerMeshFilter.mesh == null)
             {
                 if (logDetailedInfo)
-                    Debug.LogWarning("地层 " + layer.layerName + " 没有有效的网格数据");
+                    
                 return result;
             }
             
@@ -261,7 +261,7 @@ public class LayerGeometricCutter : MonoBehaviour
             if (!booleanResult.isValid || booleanResult.vertices.Length == 0)
             {
                 if (logDetailedInfo)
-                    Debug.Log("地层 " + layer.layerName + " 与钻探圆柱体无交集");
+                    
                 return result;
             }
             
@@ -290,14 +290,14 @@ public class LayerGeometricCutter : MonoBehaviour
             
             if (logDetailedInfo)
             {
-                Debug.Log("成功切割地层 " + layer.layerName + " - 体积: " + result.volume.ToString("F4") + "m³, 深度范围: " + result.depthStart.ToString("F2") + "m - " + result.depthEnd.ToString("F2") + "m");
+                
             }
             
             return result;
         }
         catch (System.Exception e)
         {
-            Debug.LogError("切割地层 " + layer.layerName + " 时发生错误: " + e.Message);
+            
             return result;
         }
     }
@@ -482,7 +482,7 @@ public class LayerGeometricCutter : MonoBehaviour
             debugObjects.Add(debugObj);
         }
         
-        Debug.Log("创建了 " + debugObjects.Count + " 个调试可视化对象");
+        
     }
     
     /// <summary>

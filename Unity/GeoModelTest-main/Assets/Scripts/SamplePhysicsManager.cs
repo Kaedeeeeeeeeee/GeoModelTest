@@ -52,7 +52,7 @@ public class SamplePhysicsManager : MonoBehaviour
             mainCollider = capsule;
         }
         
-        Debug.Log($"地层样本物理系统设置完成 - 质量: {mass}, 重力: {useGravity}");
+        
     }
     
     void OnCollisionEnter(Collision collision)
@@ -63,7 +63,7 @@ public class SamplePhysicsManager : MonoBehaviour
         if (rb.linearVelocity.magnitude < 0.1f)
         {
             rb.isKinematic = true;
-            Debug.Log($"地层样本 {gameObject.name} 已静止");
+            
         }
     }
     
@@ -74,7 +74,7 @@ public class SamplePhysicsManager : MonoBehaviour
             GeologicalSample sample = GetComponent<GeologicalSample>();
             if (sample != null)
             {
-                Debug.Log($"玩家接触到地层样本: {sample.sampleName}");
+                
             }
         }
     }

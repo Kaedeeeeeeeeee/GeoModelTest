@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 1618193901977628654}
   - component: {fileID: 2439580261489008715}
   - component: {fileID: 450313901042275457}
-  - component: {fileID: 455837795016246105}
   - component: {fileID: 5225845903093384998}
   - component: {fileID: -6862917112859015268}
+  - component: {fileID: 1077864743525194347}
   m_Layer: 0
   m_Name: Drill Car
   m_TagString: Untagged
@@ -89,28 +89,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &455837795016246105
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2107449791220036948}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56ef78901a2b3c4d5e6f78901234abcd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isActive: 1
-  drillAnimationSpeed: 2
-  drillPart: {fileID: 0}
-  interactionRange: 3
-  driveSpeed: 5
-  turnSpeed: 90
-  playerSeatPosition: {fileID: 0}
-  cameraPosition: {fileID: 0}
-  cameraDistance: 5
-  cameraHeight: 2
 --- !u!54 &5225845903093384998
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -159,3 +137,25 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.00847457, y: 0.020023398, z: 0.01234235}
   m_Center: {x: 0.0000067648944, y: 0.000008600298, z: -0.000015344936}
+--- !u!114 &1077864743525194347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2107449791220036948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cc21d70cd914475c8a51934659fd475, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isActive: 1
+  drillAnimationSpeed: 2
+  drillPart: {fileID: 0}
+  interactionRange: 3
+  driveSpeed: 5
+  turnSpeed: 90
+  playerSeatPosition: {fileID: 0}
+  cameraPosition: {fileID: 0}
+  cameraDistance: 3
+  cameraHeight: 1.5

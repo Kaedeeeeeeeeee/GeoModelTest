@@ -25,14 +25,14 @@ public class LayerDetectionSystem : MonoBehaviour
     {
         // 查找所有地层对象
         allLayers = FindObjectsByType<GeologyLayer>(FindObjectsSortMode.None);
-        Debug.Log($"地层检测系统初始化完成，找到 {allLayers.Length} 个地层");
+        
         
         detectedSegments = new List<LayerSampleSegment>();
     }
     
     public GeologicalSampleData AnalyzeDrillingSample(Vector3 drillingStart, float drillingDepth, float drillingRadius)
     {
-        Debug.Log($"开始分析钻探样本 - 位置: {drillingStart}, 深度: {drillingDepth}, 半径: {drillingRadius}");
+        
         
         // 创建样本数据容器
         GeologicalSampleData sampleData = new GeologicalSampleData(drillingStart, drillingDepth, drillingRadius);
@@ -57,7 +57,7 @@ public class LayerDetectionSystem : MonoBehaviour
         sampleData.segments = segments.ToArray();
         sampleData.layerStats = CalculateLayerStatistics(segments);
         
-        Debug.Log($"样本分析完成，共 {segments.Count} 个段，涉及 {sampleData.layerStats.Length} 种地层");
+        
         
         return sampleData;
     }
@@ -145,7 +145,7 @@ public class LayerDetectionSystem : MonoBehaviour
         layerInfo.strikeDirection = layer.strikeDirection;
         layerInfo.dipAngle = layer.dipAngle;
         
-        // Debug.Log($"地层 {layer.layerName} 在相对深度 {depth:F2}m 处相交，占比: {areaPercentage:F2}"); // 减少日志输出
+        //  // 减少日志输出
         
         return layerInfo;
     }
