@@ -62,7 +62,7 @@ public class DroneController : MonoBehaviour
         {
             CheckForPlayerInteraction();
             PerformHoverBehavior();
-            PerformRotation();
+            // PerformRotation(); // 移除旋转效果
         }
     }
     

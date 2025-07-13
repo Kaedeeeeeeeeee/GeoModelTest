@@ -313,12 +313,18 @@ public class InventoryUISystem : MonoBehaviour
         InitializeTools();
     }
     
+    private float lastScreenSize = 0f;
+    
     void UpdateWheelSize()
     {
         if (wheelUI == null) return;
         
         // 使用80%的屏幕大小
         float screenSize = Mathf.Min(Screen.width, Screen.height);
+        
+        // 只有屏幕大小变化时才更新
+        if (Mathf.Abs(screenSize - lastScreenSize) < 1f) return;
+        
         float wheelSize = screenSize * 0.8f; // 80%屏幕大小
         
         RectTransform wheelRect = wheelUI.GetComponent<RectTransform>();
@@ -337,7 +343,8 @@ public class InventoryUISystem : MonoBehaviour
         UpdateSlotPositions(wheelSize);
         UpdateSeparators(wheelSize);
         
-        Debug.Log($"轮盘尺寸已设置为: {wheelSize}x{wheelSize} (屏幕大小: {screenSize})");
+        lastScreenSize = screenSize;
+        Debug.Log($"轮盘尺寸已更新为: {wheelSize}x{wheelSize} (屏幕大小: {screenSize})");
     }
     
     void SetupWheelAppearance()

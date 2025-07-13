@@ -140,6 +140,17 @@ public class DrillCarTool : PlaceableTool
         // 确保钻探车有必要的组件
         SetupDrillCarComponents(placedObject);
         
+        // 添加收回组件
+        PlacedToolRecaller recaller = placedObject.GetComponent<PlacedToolRecaller>();
+        if (recaller == null)
+        {
+            recaller = placedObject.AddComponent<PlacedToolRecaller>();
+            recaller.toolName = "钻探车";
+            recaller.interactionRange = 5f;
+            recaller.recallKey = KeyCode.G;
+            Debug.Log("已为钻探车添加收回功能 (按G键收回)");
+        }
+        
         placedDrillCar = placedObject;
     }
     

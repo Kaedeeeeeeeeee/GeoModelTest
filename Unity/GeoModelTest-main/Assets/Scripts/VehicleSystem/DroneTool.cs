@@ -59,12 +59,24 @@ public class DroneTool : PlaceableTool
         // 确保无人机有必要的组件
         SetupDroneComponents(placedObject);
         
+        // 添加收回组件
+        PlacedToolRecaller recaller = placedObject.GetComponent<PlacedToolRecaller>();
+        if (recaller == null)
+        {
+            recaller = placedObject.AddComponent<PlacedToolRecaller>();
+            recaller.toolName = "无人机";
+            recaller.interactionRange = 5f;
+            recaller.recallKey = KeyCode.G;
+            Debug.Log("已为无人机添加收回功能 (按G键收回)");
+        }
+        
         // 检查组件是否存在（用于调试）
         bool hasCollider = placedObject.GetComponent<Collider>() != null;
         bool hasRigidbody = placedObject.GetComponent<Rigidbody>() != null;
         bool hasController = placedObject.GetComponent<DroneController>() != null;
+        bool hasRecaller = placedObject.GetComponent<PlacedToolRecaller>() != null;
         
-        Debug.Log($"无人机组件检查 - Collider: {hasCollider}, Rigidbody: {hasRigidbody}, Controller: {hasController}");
+        Debug.Log($"无人机组件检查 - Collider: {hasCollider}, Rigidbody: {hasRigidbody}, Controller: {hasController}, Recaller: {hasRecaller}");
     }
     
     void SetupDroneComponents(GameObject drone)
