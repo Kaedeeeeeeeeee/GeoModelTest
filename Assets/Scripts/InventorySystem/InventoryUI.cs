@@ -1,0 +1,717 @@
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.InputSystem;
+using System.Collections.Generic;
+
+/// <summary>
+/// 背包UI系统 - 管理样本背包的用户界面
+/// </summary>
+public class InventoryUI : MonoBehaviour
+{
+    [Header("UI组件")]
+    public Canvas inventoryCanvas;
+    public GameObject inventoryPanel;
+    public GridLayoutGroup samplesGrid;
+    public Text capacityText;
+    public Text titleText;
+    public Button closeButton;
+    
+    [Header("样本详情面板")]
+    public GameObject detailPanel;
+    public Text detailTitleText;
+    public Text detailInfoText;
+    public Button takeOutButton;
+    public Button discardButton;
+    public Button closeDetailButton;
+    
+    [Header("样本槽位")]
+    public GameObject sampleSlotPrefab;
+    public int gridColumns = 5;
+    public int gridRows = 4;
+    
+    [Header("输入设置")]
+    public KeyCode toggleKey = KeyCode.I;
+    
+    [Header("UI设置")]
+    public Vector2 panelSize = new Vector2(1200, 1000);
+    public Color backgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.9f);
+    
+    // 私有成员
+    private bool isInventoryOpen = false;
+    private SampleInventory sampleInventory;
+    private List<InventorySlot> slotComponents = new List<InventorySlot>();
+    private SampleItem selectedSample;
+    private FirstPersonController fpController;
+    
+    void Start()
+    {
+        InitializeComponents();
+        SetupUI();
+        SetupEventListeners();
+        
+        // 确保初始鼠标状态正确
+        if (!isInventoryOpen)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
+    
+    void Update()
+    {
+        HandleInput();
+    }
+    
+    /// <summary>
+    /// 初始化组件引用
+    /// </summary>
+    void InitializeComponents()
+    {
+        sampleInventory = FindFirstObjectByType<SampleInventory>();
+        fpController = FindFirstObjectByType<FirstPersonController>();
+        
+        if (sampleInventory == null)
+        {
+            Debug.LogError("未找到SampleInventory组件！");
+        }
+        
+        // 如果UI组件为空，自动创建
+        if (inventoryCanvas == null)
+        {
+            CreateInventoryUI();
+        }
+    }
+    
+    /// <summary>
+    /// 创建背包UI
+    /// </summary>
+    void CreateInventoryUI()
+    {
+        // 创建Canvas
+        GameObject canvasObj = new GameObject("InventoryCanvas");
+        canvasObj.transform.SetParent(transform);
+        
+        inventoryCanvas = canvasObj.AddComponent<Canvas>();
+        inventoryCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        inventoryCanvas.sortingOrder = 200; // 确保在其他UI之上
+        
+        canvasObj.AddComponent<GraphicRaycaster>();
+        
+        // 确保有EventSystem
+        if (FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>() == null)
+        {
+            GameObject eventSystemObj = new GameObject("EventSystem");
+            eventSystemObj.AddComponent<UnityEngine.EventSystems.EventSystem>();
+            eventSystemObj.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+        }
+        
+        // 创建背景面板
+        CreateInventoryPanel();
+        
+        // 创建详情面板
+        CreateDetailPanel();
+        
+        // 初始时隐藏UI
+        inventoryPanel.SetActive(false);
+        detailPanel.SetActive(false);
+    }
+    
+    /// <summary>
+    /// 创建背包面板
+    /// </summary>
+    void CreateInventoryPanel()
+    {
+        // 主面板
+        GameObject panel = new GameObject("InventoryPanel");
+        panel.transform.SetParent(inventoryCanvas.transform);
+        
+        RectTransform panelRect = panel.AddComponent<RectTransform>();
+        panelRect.sizeDelta = panelSize;
+        panelRect.anchorMin = new Vector2(0.5f, 0.5f);
+        panelRect.anchorMax = new Vector2(0.5f, 0.5f);
+        panelRect.pivot = new Vector2(0.5f, 0.5f);
+        panelRect.anchoredPosition = Vector2.zero;
+        
+        Image panelImage = panel.AddComponent<Image>();
+        panelImage.color = backgroundColor;
+        
+        inventoryPanel = panel;
+        
+        // 标题
+        CreateTitleText();
+        
+        // 容量显示
+        CreateCapacityText();
+        
+        // 关闭按钮
+        CreateCloseButton();
+        
+        // 样本网格
+        CreateSamplesGrid();
+    }
+    
+    /// <summary>
+    /// 创建标题文本
+    /// </summary>
+    void CreateTitleText()
+    {
+        GameObject titleObj = new GameObject("TitleText");
+        titleObj.transform.SetParent(inventoryPanel.transform);
+        
+        RectTransform titleRect = titleObj.AddComponent<RectTransform>();
+        titleRect.sizeDelta = new Vector2(800, 80);
+        titleRect.anchorMin = new Vector2(0.5f, 1f);
+        titleRect.anchorMax = new Vector2(0.5f, 1f);
+        titleRect.pivot = new Vector2(0.5f, 1f);
+        titleRect.anchoredPosition = new Vector2(0, -40);
+        
+        titleText = titleObj.AddComponent<Text>();
+        titleText.text = "样本背包";
+        titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        titleText.fontSize = 40;
+        titleText.color = Color.white;
+        titleText.alignment = TextAnchor.MiddleCenter;
+    }
+    
+    /// <summary>
+    /// 创建容量显示文本
+    /// </summary>
+    void CreateCapacityText()
+    {
+        GameObject capacityObj = new GameObject("CapacityText");
+        capacityObj.transform.SetParent(inventoryPanel.transform);
+        
+        RectTransform capacityRect = capacityObj.AddComponent<RectTransform>();
+        capacityRect.sizeDelta = new Vector2(300, 60);
+        capacityRect.anchorMin = new Vector2(0f, 1f);
+        capacityRect.anchorMax = new Vector2(0f, 1f);
+        capacityRect.pivot = new Vector2(0f, 1f);
+        capacityRect.anchoredPosition = new Vector2(40, -120);
+        
+        capacityText = capacityObj.AddComponent<Text>();
+        capacityText.text = "0/20";
+        capacityText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        capacityText.fontSize = 32;
+        capacityText.color = Color.yellow;
+        capacityText.alignment = TextAnchor.MiddleLeft;
+    }
+    
+    /// <summary>
+    /// 创建关闭按钮
+    /// </summary>
+    void CreateCloseButton()
+    {
+        GameObject buttonObj = new GameObject("CloseButton");
+        buttonObj.transform.SetParent(inventoryPanel.transform);
+        
+        RectTransform buttonRect = buttonObj.AddComponent<RectTransform>();
+        buttonRect.sizeDelta = new Vector2(160, 60);
+        buttonRect.anchorMin = new Vector2(1f, 1f);
+        buttonRect.anchorMax = new Vector2(1f, 1f);
+        buttonRect.pivot = new Vector2(1f, 1f);
+        buttonRect.anchoredPosition = new Vector2(-40, -40);
+        
+        Image buttonImage = buttonObj.AddComponent<Image>();
+        buttonImage.color = new Color(0.8f, 0.2f, 0.2f, 0.8f);
+        
+        closeButton = buttonObj.AddComponent<Button>();
+        closeButton.targetGraphic = buttonImage;
+        
+        // 按钮文本
+        GameObject textObj = new GameObject("Text");
+        textObj.transform.SetParent(buttonObj.transform);
+        
+        RectTransform textRect = textObj.AddComponent<RectTransform>();
+        textRect.sizeDelta = Vector2.zero;
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.anchoredPosition = Vector2.zero;
+        
+        Text buttonText = textObj.AddComponent<Text>();
+        buttonText.text = "关闭";
+        buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        buttonText.fontSize = 28;
+        buttonText.color = Color.white;
+        buttonText.alignment = TextAnchor.MiddleCenter;
+    }
+    
+    /// <summary>
+    /// 创建样本网格
+    /// </summary>
+    void CreateSamplesGrid()
+    {
+        GameObject gridObj = new GameObject("SamplesGrid");
+        gridObj.transform.SetParent(inventoryPanel.transform);
+        
+        RectTransform gridRect = gridObj.AddComponent<RectTransform>();
+        gridRect.sizeDelta = new Vector2(1000, 700);
+        gridRect.anchorMin = new Vector2(0.5f, 0f);
+        gridRect.anchorMax = new Vector2(0.5f, 0f);
+        gridRect.pivot = new Vector2(0.5f, 0f);
+        gridRect.anchoredPosition = new Vector2(0, 40);
+        
+        samplesGrid = gridObj.AddComponent<GridLayoutGroup>();
+        samplesGrid.cellSize = new Vector2(160, 160);
+        samplesGrid.spacing = new Vector2(20, 20);
+        samplesGrid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        samplesGrid.constraintCount = gridColumns;
+        samplesGrid.padding = new RectOffset(20, 20, 20, 20);
+        
+        // 创建槽位
+        CreateSampleSlots();
+    }
+    
+    /// <summary>
+    /// 创建样本槽位
+    /// </summary>
+    void CreateSampleSlots()
+    {
+        int totalSlots = gridColumns * gridRows;
+        
+        for (int i = 0; i < totalSlots; i++)
+        {
+            GameObject slotObj = CreateSampleSlot(i);
+            InventorySlot slotComponent = slotObj.GetComponent<InventorySlot>();
+            if (slotComponent != null)
+            {
+                slotComponents.Add(slotComponent);
+                slotComponent.OnSlotClicked += OnSlotClicked;
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 创建单个样本槽位
+    /// </summary>
+    GameObject CreateSampleSlot(int index)
+    {
+        GameObject slotObj = new GameObject($"SampleSlot_{index}");
+        slotObj.transform.SetParent(samplesGrid.transform);
+        
+        // 添加槽位组件
+        InventorySlot slotComponent = slotObj.AddComponent<InventorySlot>();
+        slotComponent.SetupSlot(index);
+        
+        return slotObj;
+    }
+    
+    /// <summary>
+    /// 创建详情面板
+    /// </summary>
+    void CreateDetailPanel()
+    {
+        GameObject panel = new GameObject("DetailPanel");
+        panel.transform.SetParent(inventoryCanvas.transform);
+        
+        RectTransform panelRect = panel.AddComponent<RectTransform>();
+        panelRect.sizeDelta = new Vector2(800, 600);
+        panelRect.anchorMin = new Vector2(0.5f, 0.5f);
+        panelRect.anchorMax = new Vector2(0.5f, 0.5f);
+        panelRect.pivot = new Vector2(0.5f, 0.5f);
+        panelRect.anchoredPosition = new Vector2(700, 0); // 显示在背包右侧
+        
+        Image panelImage = panel.AddComponent<Image>();
+        panelImage.color = backgroundColor;
+        
+        detailPanel = panel;
+        
+        // 创建详情面板内容
+        CreateDetailPanelContent();
+    }
+    
+    /// <summary>
+    /// 创建详情面板内容
+    /// </summary>
+    void CreateDetailPanelContent()
+    {
+        // 标题
+        GameObject titleObj = new GameObject("DetailTitle");
+        titleObj.transform.SetParent(detailPanel.transform);
+        
+        RectTransform titleRect = titleObj.AddComponent<RectTransform>();
+        titleRect.sizeDelta = new Vector2(700, 60);
+        titleRect.anchorMin = new Vector2(0.5f, 1f);
+        titleRect.anchorMax = new Vector2(0.5f, 1f);
+        titleRect.pivot = new Vector2(0.5f, 1f);
+        titleRect.anchoredPosition = new Vector2(0, -40);
+        
+        detailTitleText = titleObj.AddComponent<Text>();
+        detailTitleText.text = "样本详情";
+        detailTitleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        detailTitleText.fontSize = 36;
+        detailTitleText.color = Color.white;
+        detailTitleText.alignment = TextAnchor.MiddleCenter;
+        
+        // 详情信息
+        GameObject infoObj = new GameObject("DetailInfo");
+        infoObj.transform.SetParent(detailPanel.transform);
+        
+        RectTransform infoRect = infoObj.AddComponent<RectTransform>();
+        infoRect.sizeDelta = new Vector2(700, 360);
+        infoRect.anchorMin = new Vector2(0.5f, 1f);
+        infoRect.anchorMax = new Vector2(0.5f, 1f);
+        infoRect.pivot = new Vector2(0.5f, 1f);
+        infoRect.anchoredPosition = new Vector2(0, -120);
+        
+        detailInfoText = infoObj.AddComponent<Text>();
+        detailInfoText.text = "选择一个样本查看详情";
+        detailInfoText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        detailInfoText.fontSize = 24;
+        detailInfoText.color = Color.white;
+        detailInfoText.alignment = TextAnchor.UpperLeft;
+        
+        // 按钮区域
+        CreateDetailButtons();
+    }
+    
+    /// <summary>
+    /// 创建详情面板按钮
+    /// </summary>
+    void CreateDetailButtons()
+    {
+        float buttonWidth = 160f;
+        float buttonHeight = 60f;
+        float spacing = 20f;
+        
+        // 拿出按钮
+        takeOutButton = CreateDetailButton("拿出", new Vector2(-90, -500), buttonWidth, buttonHeight, new Color(0.2f, 0.8f, 0.2f, 0.8f));
+        
+        // 丢弃按钮
+        discardButton = CreateDetailButton("丢弃", new Vector2(90, -500), buttonWidth, buttonHeight, new Color(0.8f, 0.2f, 0.2f, 0.8f));
+        
+        // 关闭按钮
+        closeDetailButton = CreateDetailButton("关闭", new Vector2(0, -500 - buttonHeight - spacing), buttonWidth, buttonHeight, new Color(0.5f, 0.5f, 0.5f, 0.8f));
+    }
+    
+    /// <summary>
+    /// 创建详情面板按钮
+    /// </summary>
+    Button CreateDetailButton(string text, Vector2 position, float width, float height, Color color)
+    {
+        GameObject buttonObj = new GameObject($"{text}Button");
+        buttonObj.transform.SetParent(detailPanel.transform);
+        
+        RectTransform buttonRect = buttonObj.AddComponent<RectTransform>();
+        buttonRect.sizeDelta = new Vector2(width, height);
+        buttonRect.anchorMin = new Vector2(0.5f, 1f);
+        buttonRect.anchorMax = new Vector2(0.5f, 1f);
+        buttonRect.pivot = new Vector2(0.5f, 1f);
+        buttonRect.anchoredPosition = position;
+        
+        Image buttonImage = buttonObj.AddComponent<Image>();
+        buttonImage.color = color;
+        
+        Button button = buttonObj.AddComponent<Button>();
+        button.targetGraphic = buttonImage;
+        
+        // 按钮文本
+        GameObject textObj = new GameObject("Text");
+        textObj.transform.SetParent(buttonObj.transform);
+        
+        RectTransform textRect = textObj.AddComponent<RectTransform>();
+        textRect.sizeDelta = Vector2.zero;
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.anchoredPosition = Vector2.zero;
+        
+        Text buttonText = textObj.AddComponent<Text>();
+        buttonText.text = text;
+        buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        buttonText.fontSize = 28;
+        buttonText.color = Color.white;
+        buttonText.alignment = TextAnchor.MiddleCenter;
+        
+        return button;
+    }
+    
+    /// <summary>
+    /// 设置UI
+    /// </summary>
+    void SetupUI()
+    {
+        if (inventoryPanel != null)
+        {
+            inventoryPanel.SetActive(false);
+        }
+        
+        if (detailPanel != null)
+        {
+            detailPanel.SetActive(false);
+        }
+        
+        UpdateCapacityDisplay();
+    }
+    
+    /// <summary>
+    /// 设置事件监听器
+    /// </summary>
+    void SetupEventListeners()
+    {
+        // 背包事件
+        if (sampleInventory != null)
+        {
+            sampleInventory.OnInventoryChanged += RefreshInventoryDisplay;
+        }
+        
+        // 按钮事件
+        if (closeButton != null)
+        {
+            closeButton.onClick.AddListener(CloseInventory);
+        }
+        
+        if (takeOutButton != null)
+        {
+            takeOutButton.onClick.AddListener(OnTakeOutButtonClicked);
+        }
+        
+        if (discardButton != null)
+        {
+            discardButton.onClick.AddListener(OnDiscardButtonClicked);
+        }
+        
+        if (closeDetailButton != null)
+        {
+            closeDetailButton.onClick.AddListener(CloseDetailPanel);
+        }
+    }
+    
+    /// <summary>
+    /// 处理输入
+    /// </summary>
+    void HandleInput()
+    {
+        if (Keyboard.current.iKey.wasPressedThisFrame)
+        {
+            ToggleInventory();
+        }
+        
+        if (isInventoryOpen && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            CloseInventory();
+        }
+    }
+    
+    /// <summary>
+    /// 切换背包显示
+    /// </summary>
+    public void ToggleInventory()
+    {
+        if (isInventoryOpen)
+        {
+            CloseInventory();
+        }
+        else
+        {
+            OpenInventory();
+        }
+    }
+    
+    /// <summary>
+    /// 打开背包
+    /// </summary>
+    public void OpenInventory()
+    {
+        isInventoryOpen = true;
+        inventoryPanel.SetActive(true);
+        
+        // 禁用鼠标视角控制
+        if (fpController != null)
+        {
+            fpController.enableMouseLook = false;
+        }
+        
+        // 激活鼠标指针
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        RefreshInventoryDisplay();
+    }
+    
+    /// <summary>
+    /// 关闭背包
+    /// </summary>
+    public void CloseInventory()
+    {
+        isInventoryOpen = false;
+        inventoryPanel.SetActive(false);
+        CloseDetailPanel();
+        
+        // 恢复鼠标视角控制
+        if (fpController != null)
+        {
+            fpController.enableMouseLook = true;
+        }
+        
+        // 恢复鼠标状态
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+    
+    /// <summary>
+    /// 关闭详情面板
+    /// </summary>
+    void CloseDetailPanel()
+    {
+        detailPanel.SetActive(false);
+        selectedSample = null;
+    }
+    
+    /// <summary>
+    /// 刷新背包显示
+    /// </summary>
+    void RefreshInventoryDisplay()
+    {
+        if (sampleInventory == null) return;
+        
+        var inventorySamples = sampleInventory.GetInventorySamples();
+        
+        // 更新槽位
+        for (int i = 0; i < slotComponents.Count; i++)
+        {
+            if (i < inventorySamples.Count)
+            {
+                slotComponents[i].SetSample(inventorySamples[i]);
+            }
+            else
+            {
+                slotComponents[i].SetSample(null);
+            }
+        }
+        
+        UpdateCapacityDisplay();
+    }
+    
+    /// <summary>
+    /// 更新容量显示
+    /// </summary>
+    void UpdateCapacityDisplay()
+    {
+        if (sampleInventory != null && capacityText != null)
+        {
+            var (current, max) = sampleInventory.GetCapacityInfo();
+            capacityText.text = $"{current}/{max}";
+        }
+    }
+    
+    /// <summary>
+    /// 槽位点击事件
+    /// </summary>
+    void OnSlotClicked(InventorySlot slot, SampleItem sample)
+    {
+        if (sample != null)
+        {
+            selectedSample = sample;
+            ShowSampleDetail(sample);
+        }
+    }
+    
+    /// <summary>
+    /// 显示样本详情
+    /// </summary>
+    void ShowSampleDetail(SampleItem sample)
+    {
+        detailPanel.SetActive(true);
+        detailTitleText.text = sample.displayName;
+        detailInfoText.text = sample.GetDetailedInfo();
+    }
+    
+    /// <summary>
+    /// 拿出按钮点击事件
+    /// </summary>
+    void OnTakeOutButtonClicked()
+    {
+        if (selectedSample != null)
+        {
+            try
+            {
+                var placer = FindFirstObjectByType<SamplePlacer>();
+                if (placer != null)
+                {
+                    string sampleName = selectedSample.displayName ?? "未知样本";
+                    Debug.Log($"开始放置样本: {sampleName}");
+                    
+                    placer.StartPlacingMode(selectedSample);
+                    CloseInventory();
+                }
+                else
+                {
+                    Debug.LogWarning("未找到SamplePlacer组件，无法拿出样本");
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"拿出样本时发生错误: {e.Message}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("无法拿出样本：selectedSample 为 null");
+        }
+    }
+    
+    /// <summary>
+    /// 丢弃按钮点击事件
+    /// </summary>
+    void OnDiscardButtonClicked()
+    {
+        if (selectedSample == null)
+        {
+            Debug.LogWarning("无法丢弃样本：selectedSample 为 null");
+            return;
+        }
+        
+        if (sampleInventory == null)
+        {
+            Debug.LogWarning("无法丢弃样本：sampleInventory 为 null");
+            return;
+        }
+        
+        // 保存样本引用和信息，避免在事件处理中被清空
+        SampleItem sampleToRemove = selectedSample;
+        
+        // 额外的null检查
+        if (sampleToRemove == null)
+        {
+            Debug.LogWarning("无法丢弃样本：sampleToRemove 为 null");
+            selectedSample = null;
+            CloseDetailPanel();
+            return;
+        }
+        
+        string sampleName = sampleToRemove.displayName ?? "未知样本";
+        string sampleID = sampleToRemove.sampleID ?? "无ID";
+        
+        try
+        {
+            // 先清理选中状态和关闭详情面板
+            selectedSample = null;
+            CloseDetailPanel();
+            
+            // 然后从背包中移除样本（这会触发事件）
+            bool removed = sampleInventory.RemoveSample(sampleToRemove);
+            
+            if (removed)
+            {
+                Debug.Log($"已丢弃样本: {sampleName} (ID: {sampleID})");
+            }
+            else
+            {
+                Debug.LogWarning($"样本移除失败: {sampleName} (ID: {sampleID})");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"丢弃样本时发生错误: {e.Message}");
+            Debug.LogError($"样本信息: {sampleName} (ID: {sampleID})");
+            Debug.LogError($"堆栈跟踪: {e.StackTrace}");
+        }
+    }
+    
+    void OnDestroy()
+    {
+        // 移除事件监听
+        if (sampleInventory != null)
+        {
+            sampleInventory.OnInventoryChanged -= RefreshInventoryDisplay;
+        }
+    }
+}
