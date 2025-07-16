@@ -51,9 +51,22 @@ public class InventoryUISystem : MonoBehaviour
         bgRect.anchoredPosition = Vector2.zero;
         bgRect.localPosition = Vector3.zero;
         
-        // 创建圆形背景图像
+        // 创建圆形背景图像 - 使用自定义图片
         UnityEngine.UI.Image bgImage = wheelBG.AddComponent<UnityEngine.UI.Image>();
-        bgImage.color = new Color(0.1f, 0.1f, 0.1f, 0.95f);
+        
+        // 尝试加载自定义背景图片
+        Sprite customBgSprite = LoadCustomBackgroundSprite();
+        if (customBgSprite != null)
+        {
+            bgImage.sprite = customBgSprite;
+            bgImage.color = Color.white; // 保持原图颜色
+        }
+        else
+        {
+            // 如果加载失败，使用默认颜色
+            bgImage.color = new Color(0.1f, 0.1f, 0.1f, 0.95f);
+        }
+        
         bgImage.type = UnityEngine.UI.Image.Type.Simple;
         
         // 初始化数组
@@ -128,6 +141,47 @@ public class InventoryUISystem : MonoBehaviour
         wheelUI = wheelBG;
         wheelBackground = bgImage;
         wheelCenter = wheelBG.transform;
+        
+        // 立即设置为隐藏状态，避免意外显示
+        wheelUI.SetActive(false);
+    }
+    
+    /// <summary>
+    /// 加载自定义背景图片
+    /// </summary>
+    Sprite LoadCustomBackgroundSprite()
+    {
+        try
+        {
+            // 尝试从AssetDatabase加载（Editor模式）
+#if UNITY_EDITOR
+            Texture2D texture = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Picture/Image.png");
+            if (texture != null)
+            {
+                // 创建Sprite
+                Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                Debug.Log("✅ 成功加载自定义TabUI背景图片");
+                return sprite;
+            }
+#endif
+            
+            // 尝试从Resources加载（运行时）
+            Texture2D resourceTexture = Resources.Load<Texture2D>("Picture/Image");
+            if (resourceTexture != null)
+            {
+                Sprite sprite = Sprite.Create(resourceTexture, new Rect(0, 0, resourceTexture.width, resourceTexture.height), new Vector2(0.5f, 0.5f));
+                Debug.Log("✅ 从Resources加载自定义TabUI背景图片");
+                return sprite;
+            }
+            
+            Debug.LogWarning("❌ 无法找到自定义背景图片，使用默认背景");
+            return null;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"❌ 加载自定义背景图片时出错: {e.Message}");
+            return null;
+        }
     }
     
     void Start()
@@ -136,26 +190,42 @@ public class InventoryUISystem : MonoBehaviour
         fpController = FindFirstObjectByType<FirstPersonController>();
         canvas = GetComponent<Canvas>();
         
-        // 检测现有UI或创建新UI
-        if (!DetectExistingUI())
-        {
-            Debug.Log("未检测到现有UI，创建新的圆形UI");
-            DestroyOldUI();
-            CreateWheelUI();
-        }
-        else
-        {
-            Debug.Log("检测到现有UI，使用现有结构");
-        }
+        // 强制创建标准的UI结构
+        Debug.Log("创建标准的圆形UI");
+        DestroyOldUI();
+        CreateWheelUI();
         
         if (wheelUI != null)
         {
+            // 确保UI处于隐藏状态
             wheelUI.SetActive(false);
             SetupWheelAppearance();
             UpdateWheelSize();
+            Debug.Log("✅ TabUI已初始化并设置为隐藏状态");
+        }
+        else
+        {
+            Debug.LogError("❌ wheelUI为null，TabUI初始化失败");
         }
         
         StartCoroutine(DelayedInitialize());
+        
+        // 额外的安全检查：确保UI在一秒后仍然是隐藏状态
+        StartCoroutine(SafetyCheck());
+    }
+    
+    /// <summary>
+    /// 安全检查：确保UI在初始化后处于正确的隐藏状态
+    /// </summary>
+    IEnumerator SafetyCheck()
+    {
+        yield return new WaitForSeconds(1f);
+        
+        if (wheelUI != null && wheelUI.activeSelf && !isWheelOpen)
+        {
+            Debug.LogWarning("⚠️ 检测到TabUI意外显示，强制隐藏");
+            wheelUI.SetActive(false);
+        }
     }
     
     bool DetectExistingUI()
@@ -259,6 +329,13 @@ public class InventoryUISystem : MonoBehaviour
         if (isWheelOpen)
         {
             UpdateSelection();
+        }
+        
+        // 持续的安全检查：确保UI状态与isWheelOpen一致
+        if (wheelUI != null && wheelUI.activeSelf != isWheelOpen)
+        {
+            Debug.LogWarning($"⚠️ TabUI状态不一致：wheelUI.activeSelf={wheelUI.activeSelf}, isWheelOpen={isWheelOpen}，正在修复");
+            wheelUI.SetActive(isWheelOpen);
         }
         
         // F2键：调试圆形布局
@@ -448,6 +525,8 @@ public class InventoryUISystem : MonoBehaviour
     
     void HandleInput()
     {
+        if (wheelUI == null) return; // 安全检查
+        
         if (Keyboard.current.tabKey.isPressed && !isWheelOpen)
         {
             OpenWheel();
@@ -460,6 +539,12 @@ public class InventoryUISystem : MonoBehaviour
     
     void OpenWheel()
     {
+        if (wheelUI == null) 
+        {
+            Debug.LogError("❌ 无法打开TabUI：wheelUI为null");
+            return;
+        }
+        
         isWheelOpen = true;
         wheelUI.SetActive(true);
         SetupWheelAppearance();
@@ -474,11 +559,17 @@ public class InventoryUISystem : MonoBehaviour
         
         // 不暂停游戏，保持正常时间流逝
         Time.timeScale = 1.0f;
+        
+        Debug.Log("📂 TabUI已打开");
     }
     
     void CloseWheel()
     {
-        
+        if (wheelUI == null) 
+        {
+            Debug.LogError("❌ 无法关闭TabUI：wheelUI为null");
+            return;
+        }
         
         if (selectedSlot >= 0 && selectedSlot < availableTools.Count)
         {
@@ -501,6 +592,8 @@ public class InventoryUISystem : MonoBehaviour
         
         selectedSlot = -1;
         ResetSlotColors();
+        
+        Debug.Log("📁 TabUI已关闭");
     }
     
     void UpdateSelection()
@@ -646,11 +739,19 @@ public class InventoryUISystem : MonoBehaviour
             }
         }
         
-        // 按toolID排序工具列表
+        // 按toolID排序工具列表（数字ID从小到大排序，按顺时针方向排列）
         availableTools.Sort((a, b) => {
             if (a == null && b == null) return 0;
             if (a == null) return 1;
             if (b == null) return -1;
+            
+            // 尝试将toolID转换为数字进行比较
+            if (int.TryParse(a.toolID, out int idA) && int.TryParse(b.toolID, out int idB))
+            {
+                return idA.CompareTo(idB); // 从小到大排序
+            }
+            
+            // 如果不是数字，使用字符串比较
             return string.Compare(a.toolID, b.toolID);
         });
         
@@ -662,13 +763,58 @@ public class InventoryUISystem : MonoBehaviour
         if (!availableTools.Contains(tool))
         {
             availableTools.Add(tool);
+            
+            // 按toolID排序工具列表（数字ID从小到大排序，按顺时针方向排列）
+            availableTools.Sort((a, b) => {
+                if (a == null && b == null) return 0;
+                if (a == null) return 1;
+                if (b == null) return -1;
+                
+                // 尝试将toolID转换为数字进行比较
+                if (int.TryParse(a.toolID, out int idA) && int.TryParse(b.toolID, out int idB))
+                {
+                    return idA.CompareTo(idB); // 从小到大排序
+                }
+                
+                // 如果不是数字，使用字符串比较
+                return string.Compare(a.toolID, b.toolID);
+            });
+            
             UpdateWheelDisplay();
+            Debug.Log($"工具已添加到UI: {tool.toolName} (ID: {tool.toolID})");
         }
     }
     
     public void RefreshTools()
     {
         InitializeTools();
+    }
+    
+    /// <summary>
+    /// 获取可用工具数量
+    /// </summary>
+    public int GetAvailableToolsCount()
+    {
+        return availableTools.Count;
+    }
+    
+    /// <summary>
+    /// 获取所有可用工具的信息
+    /// </summary>
+    public void LogAvailableTools()
+    {
+        Debug.Log($"=== Tab UI 工具列表 (共{availableTools.Count}个) ===");
+        for (int i = 0; i < availableTools.Count; i++)
+        {
+            if (availableTools[i] != null)
+            {
+                Debug.Log($"Slot {i}: {availableTools[i].toolName} (ID: {availableTools[i].toolID})");
+            }
+            else
+            {
+                Debug.Log($"Slot {i}: null");
+            }
+        }
     }
     
     void UpdateWheelDisplay()

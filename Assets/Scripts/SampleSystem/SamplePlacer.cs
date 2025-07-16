@@ -466,6 +466,7 @@ public class SamplePlacer : MonoBehaviour
             // 添加收回组件
             PlacedSampleCollector collector = sampleObj.AddComponent<PlacedSampleCollector>();
             collector.Setup(sampleData);
+            Debug.Log($"PlacedSampleCollector已添加到样本: {sampleData.displayName}");
             
             // 只为地质锤样本添加特殊的悬浮效果，钻探样本保持原有逻辑
             if (sampleData.sourceToolID == "1002") // 只处理地质锤样本
