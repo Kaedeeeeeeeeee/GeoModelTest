@@ -23,6 +23,18 @@ Unity 3D geological drilling and sample collection system for educational geolog
 - Visual feedback: Semi-transparent previews with validity colors
 - Supports 8 tool slots with real-time mouse selection
 
+#### TabUI排序规则
+- **排序方式**: 按toolID数字从小到大排序
+- **布局方向**: 顺时针方向排列（从12点位置开始）
+- **Slot 0**: 12点位置（最小ID工具）
+- **Slot 1**: 1:30位置 
+- **Slot 2**: 3点位置
+- **Slot 3**: 4:30位置
+- **Slot 4**: 6点位置
+- **Slot 5**: 7:30位置
+- **Slot 6**: 9点位置
+- **Slot 7**: 10:30位置（最大ID工具）
+
 ### 4. Sample Reconstruction
 - GeometricSampleReconstructor.cs: Core reconstruction logic
 - GeometricSampleFloating.cs: Floating display effects
@@ -32,6 +44,13 @@ Unity 3D geological drilling and sample collection system for educational geolog
 - GeologyLayer.cs: Layer data structure with dip, strike, materials
 - LayerDetectionSystem.cs: Layer detection and identification
 - LayerSampleData.cs: Sample data structures
+
+### 6. Scene Management System
+- **SceneSwitcherTool.cs**: Scene switching tool (Tool ID: 999) with hand-held device
+- **GameSceneManager.cs**: Multi-scene management with async loading and data persistence
+- **PlayerPersistentData.cs**: Player state persistence across scene transitions
+- **SceneSwitcherInitializer.cs**: System initialization and tool integration
+- Supports MainScene (野外) and Laboratory Scene (研究室) switching
 
 ## Key Technical Solutions
 
@@ -68,8 +87,16 @@ Assets/Scripts/
 ├── InventoryUISystem.cs (Tab wheel UI)
 ├── FirstPersonController.cs (mouse look control)
 ├── ToolManager.cs
+├── SceneSystem/
+│   ├── GameSceneManager.cs (multi-scene management)
+│   ├── PlayerPersistentData.cs (data persistence)
+│   ├── SceneSwitcherInitializer.cs (system initialization)
+│   └── README.md (system documentation)
+├── Tools/
+│   └── SceneSwitcherTool.cs (scene switching tool)
 └── Editor/
-    └── PrefabSetupTool.cs (component setup utility)
+    ├── PrefabSetupTool.cs (component setup utility)
+    └── SceneSwitcherSetupTool.cs (scene system setup)
 ```
 
 ## Core Parameters
@@ -77,6 +104,16 @@ Assets/Scripts/
 - Drilling radius: 0.1m
 - Minimum layer thickness: 0.01m (1cm)
 - Safety gap: 0.005m (0.5cm)
+
+### Tool IDs（按TabUI排序）
+- SceneSwitcherTool: "999" (scene switching) → **Slot 0** (12点位置)
+- SimpleDrillTool: "1000" (basic drilling) → **Slot 1** (1:30位置)
+- DrillTowerTool: "1001" (multi-depth drilling) → **Slot 2** (3点位置)
+- HammerTool: "1002" (geological sampling) → **Slot 3** (4:30位置)
+- DroneTool: "1100" (flying vehicle) → **Slot 4** (6点位置)
+- DrillCarTool: "1101" (ground vehicle) → **Slot 5** (7:30位置)
+
+**说明**: 工具按ID从小到大排序，在TabUI中按顺时针方向排列，999作为最小ID排在12点位置（Slot 0）。
 
 ## Major Issues Resolved
 
@@ -267,6 +304,38 @@ All tools feature:
 - Depth-based height variation for visual clarity
 - Player-facing text labels with rotation tracking
 
+## Recent Implementations (2025-07-15)
+
+### Scene Management System
+**Achievement**: Complete multi-scene switching and data persistence system
+- **SceneSwitcherTool**: Special tool (ID: 999) for scene switching with hand-held device
+- **Scene Selection UI**: Modal UI with current scene grayed out, click to switch
+- **Async Scene Loading**: Smooth scene transitions with loading feedback
+- **Data Persistence**: Player position, equipped tools, and sample data preserved across scenes
+
+### Scene System Features
+**Seamless Scene Transitions**:
+- Two-scene support: MainScene (野外) and Laboratory Scene (研究室)
+- Real-time scene selection UI with visual feedback
+- Automatic player state restoration after scene switching
+- Tool integration with existing Tab wheel system
+
+### Technical Implementation
+**Multi-Scene Architecture**:
+- Singleton GameSceneManager for global scene control
+- PlayerPersistentData for cross-scene data management
+- SceneSwitcherInitializer for automatic system setup
+- Editor tools for easy system configuration
+
+### Tool Arsenal Update
+**Complete Tool Collection**:
+1. **钻探工具 (BoringTool)**: Geological sampling with real-time preview
+2. **钻塔工具 (DrillTowerTool)**: Multi-depth drilling tower (0-10m, 5 layers)
+3. **无人机 (Drone)**: Flying vehicle with ground detection
+4. **钻探车 (DrillCar)**: Ground vehicle with physics simulation
+5. **地质锤 (HammerTool)**: Thin section sampling tool
+6. **场景切换器 (SceneSwitcherTool)**: Multi-scene navigation tool
+
 ---
-Last updated: 2025-07-08
-Project status: Complete tool placement system + multi-depth drilling tower with circular sample arrangement
+Last updated: 2025-07-15
+Project status: Complete multi-scene system with tool integration and data persistence
