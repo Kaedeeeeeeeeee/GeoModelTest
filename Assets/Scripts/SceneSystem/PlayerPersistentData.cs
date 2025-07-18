@@ -275,8 +275,17 @@ public class PlayerPersistentData : MonoBehaviour
         cameraObj.transform.position = position + Vector3.up * 1.6f;
         cameraObj.transform.rotation = rotation;
         
-        // 添加音频监听器
-        cameraObj.AddComponent<AudioListener>();
+        // 添加音频监听器（确保场景中只有一个）
+        AudioListener[] existingListeners = FindObjectsByType<AudioListener>(FindObjectsSortMode.None);
+        if (existingListeners.Length == 0)
+        {
+            cameraObj.AddComponent<AudioListener>();
+            Debug.Log("✅ 添加AudioListener到紧急摄像机");
+        }
+        else
+        {
+            Debug.Log($"⚠️ 场景中已存在 {existingListeners.Length} 个AudioListener，跳过添加");
+        }
         
         Debug.Log("创建紧急摄像机完成");
     }

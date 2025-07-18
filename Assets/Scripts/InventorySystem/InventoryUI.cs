@@ -23,6 +23,7 @@ public class InventoryUI : MonoBehaviour
     public Button takeOutButton;
     public Button discardButton;
     public Button closeDetailButton;
+    private GameObject detailBackgroundOverlay; // 详情面板的背景覆盖层
     
     [Header("样本槽位")]
     public GameObject sampleSlotPrefab;
@@ -114,6 +115,11 @@ public class InventoryUI : MonoBehaviour
         // 初始时隐藏UI
         inventoryPanel.SetActive(false);
         detailPanel.SetActive(false);
+        
+        if (detailBackgroundOverlay != null)
+        {
+            detailBackgroundOverlay.SetActive(false);
+        }
     }
     
     /// <summary>
@@ -300,6 +306,9 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     void CreateDetailPanel()
     {
+        // 创建背景覆盖层（用于点击外部区域关闭面板）
+        CreateDetailBackgroundOverlay();
+        
         GameObject panel = new GameObject("DetailPanel");
         panel.transform.SetParent(inventoryCanvas.transform);
         
@@ -317,6 +326,40 @@ public class InventoryUI : MonoBehaviour
         
         // 创建详情面板内容
         CreateDetailPanelContent();
+    }
+    
+    /// <summary>
+    /// 创建详情面板背景覆盖层
+    /// </summary>
+    void CreateDetailBackgroundOverlay()
+    {
+        // 创建透明背景覆盖层
+        GameObject overlay = new GameObject("DetailBackgroundOverlay");
+        overlay.transform.SetParent(inventoryCanvas.transform);
+        
+        RectTransform overlayRect = overlay.AddComponent<RectTransform>();
+        overlayRect.anchorMin = Vector2.zero;
+        overlayRect.anchorMax = Vector2.one;
+        overlayRect.offsetMin = Vector2.zero;
+        overlayRect.offsetMax = Vector2.zero;
+        
+        // 添加半透明背景
+        Image overlayImage = overlay.AddComponent<Image>();
+        overlayImage.color = new Color(0, 0, 0, 0.3f); // 半透明黑色背景
+        overlayImage.raycastTarget = true;
+        
+        // 添加按钮组件用于检测点击
+        Button overlayButton = overlay.AddComponent<Button>();
+        overlayButton.image = overlayImage;
+        overlayButton.onClick.AddListener(CloseDetailPanel);
+        
+        // 设置层级顺序：背景覆盖层在详情面板之下
+        overlay.transform.SetAsFirstSibling();
+        
+        detailBackgroundOverlay = overlay;
+        
+        // 初始时隐藏覆盖层
+        detailBackgroundOverlay.SetActive(false);
     }
     
     /// <summary>
@@ -439,6 +482,11 @@ public class InventoryUI : MonoBehaviour
             detailPanel.SetActive(false);
         }
         
+        if (detailBackgroundOverlay != null)
+        {
+            detailBackgroundOverlay.SetActive(false);
+        }
+        
         UpdateCapacityDisplay();
     }
     
@@ -551,7 +599,15 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     void CloseDetailPanel()
     {
+        // 隐藏详情面板
         detailPanel.SetActive(false);
+        
+        // 隐藏背景覆盖层
+        if (detailBackgroundOverlay != null)
+        {
+            detailBackgroundOverlay.SetActive(false);
+        }
+        
         selectedSample = null;
     }
     
@@ -609,9 +665,22 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     void ShowSampleDetail(SampleItem sample)
     {
+        // 设置选中的样本（重要：支持仓库调用）
+        selectedSample = sample;
+        
+        // 显示背景覆盖层
+        if (detailBackgroundOverlay != null)
+        {
+            detailBackgroundOverlay.SetActive(true);
+        }
+        
+        // 显示详情面板
         detailPanel.SetActive(true);
         detailTitleText.text = sample.displayName;
         detailInfoText.text = sample.GetDetailedInfo();
+        
+        // 确保详情面板在覆盖层之上
+        detailPanel.transform.SetAsLastSibling();
     }
     
     /// <summary>
@@ -659,12 +728,6 @@ public class InventoryUI : MonoBehaviour
             return;
         }
         
-        if (sampleInventory == null)
-        {
-            Debug.LogWarning("无法丢弃样本：sampleInventory 为 null");
-            return;
-        }
-        
         // 保存样本引用和信息，避免在事件处理中被清空
         SampleItem sampleToRemove = selectedSample;
         
@@ -686,8 +749,36 @@ public class InventoryUI : MonoBehaviour
             selectedSample = null;
             CloseDetailPanel();
             
-            // 然后从背包中移除样本（这会触发事件）
-            bool removed = sampleInventory.RemoveSample(sampleToRemove);
+            // 根据样本位置决定从哪里移除
+            bool removed = false;
+            if (sampleToRemove.currentLocation == SampleLocation.InInventory)
+            {
+                // 从背包中移除
+                if (sampleInventory == null)
+                {
+                    Debug.LogWarning("无法丢弃样本：sampleInventory 为 null");
+                    return;
+                }
+                removed = sampleInventory.RemoveSample(sampleToRemove);
+                Debug.Log($"从背包丢弃样本: {sampleName} (ID: {sampleID}) - 结果: {removed}");
+            }
+            else if (sampleToRemove.currentLocation == SampleLocation.InWarehouse)
+            {
+                // 从仓库中移除
+                var warehouseManager = WarehouseManager.Instance;
+                if (warehouseManager?.Storage == null)
+                {
+                    Debug.LogWarning("无法丢弃样本：仓库系统为 null");
+                    return;
+                }
+                removed = warehouseManager.Storage.RemoveItem(sampleToRemove);
+                Debug.Log($"从仓库丢弃样本: {sampleName} (ID: {sampleID}) - 结果: {removed}");
+            }
+            else
+            {
+                Debug.LogWarning($"样本位置未知，无法丢弃: {sampleToRemove.currentLocation}");
+                return;
+            }
             
             if (removed)
             {

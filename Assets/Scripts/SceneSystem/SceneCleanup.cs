@@ -8,7 +8,7 @@ public class SceneCleanup : MonoBehaviour
 {
     [Header("清理设置")]
     public bool autoCleanOnStart = true;
-    public float cleanupDelay = 0.5f;
+    public float cleanupDelay = 0.1f;
     
     void Start()
     {
