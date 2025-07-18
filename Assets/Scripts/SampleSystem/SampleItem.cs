@@ -14,7 +14,44 @@ public class SampleItem : IInventoryItem
     public string description;
     
     [Header("采集信息")]
-    public DateTime collectionTime;
+    // 用于序列化的字符串格式时间
+    [SerializeField] private string collectionTimeString;
+    
+    // 用于代码中访问的DateTime属性
+    public DateTime collectionTime
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(collectionTimeString))
+            {
+                return DateTime.Now;
+            }
+            
+            if (DateTime.TryParseExact(collectionTimeString, "yyyy-MM-ddTHH:mm:ss.fffZ", 
+                System.Globalization.CultureInfo.InvariantCulture, 
+                System.Globalization.DateTimeStyles.RoundtripKind, out DateTime parsedTime))
+            {
+                return parsedTime;
+            }
+            else if (DateTime.TryParse(collectionTimeString, out DateTime fallbackTime))
+            {
+                return fallbackTime;
+            }
+            else
+            {
+                return DateTime.Now;
+            }
+        }
+        set
+        {
+            collectionTimeString = value.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+            // 添加调试输出（仅在开发环境中）
+            #if UNITY_EDITOR
+            Debug.Log($"[SampleItem] 设置采集时间: {value:yyyy-MM-dd HH:mm:ss.fff} -> {collectionTimeString}");
+            #endif
+        }
+    }
+    
     public Vector3 originalCollectionPosition;
     public string collectorName = "Player";
     public string sourceToolID; // 来源工具ID (1000=简易钻探, 1001=钻塔)
@@ -41,6 +78,7 @@ public class SampleItem : IInventoryItem
     public string meshDataPath; // 3D模型数据路径
     
     [Header("原始模型数据")]
+    [System.NonSerialized] // 防止序列化导致Unity对象标记问题
     public GameObject originalPrefab; // 原始样本预制件引用
     public SampleMeshData[] meshData; // 存储原始网格数据
     public SampleMaterialData[] materialData; // 存储原始材质数据
@@ -55,6 +93,7 @@ public class SampleItem : IInventoryItem
     public bool CanStack => false; // 地质样本不能堆叠
     public int MaxStackSize => 1;
     public string Description => description;
+    
     
     /// <summary>
     /// 地质层信息

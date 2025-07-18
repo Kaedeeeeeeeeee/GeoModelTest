@@ -197,10 +197,44 @@ public class SampleCollector : MonoBehaviour
     }
     
     /// <summary>
+    /// 检查附近是否有WarehouseTrigger
+    /// </summary>
+    bool IsNearWarehouseTrigger()
+    {
+        // 检查附近是否有WarehouseTrigger组件
+        WarehouseTrigger[] warehouseTriggers = FindObjectsOfType<WarehouseTrigger>();
+        
+        foreach (var trigger in warehouseTriggers)
+        {
+            if (trigger != null)
+            {
+                float distance = Vector3.Distance(transform.position, trigger.transform.position);
+                // 如果样本在仓库触发器的交互范围内，则不显示样本收集提示
+                if (distance <= trigger.interactionRange + 1f) // 额外增加1米缓冲区域
+                {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    /// <summary>
     /// 检查玩家交互
     /// </summary>
     void CheckPlayerInteraction()
     {
+        // 检查是否有WarehouseTrigger在附近，如果有则不显示样本收集提示
+        if (IsNearWarehouseTrigger())
+        {
+            if (playerInRange)
+            {
+                OnPlayerExit();
+            }
+            return;
+        }
+        
         // 多种方式查找玩家，确保兼容性
         bool foundPlayer = false;
         

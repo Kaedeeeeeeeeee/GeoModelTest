@@ -41,6 +41,9 @@ public class GameInitializer : MonoBehaviour
             InitializeSampleSystem();
         }
         
+        // 初始化仓库系统
+        InitializeWarehouseSystem();
+        
         if (enableDebugMode)
         {
             InitializeDebugger();
@@ -445,6 +448,31 @@ public class GameInitializer : MonoBehaviour
         Debug.Log("- E键: 采集/收回样本");
         Debug.Log("- I键: 打开/关闭背包");
         Debug.Log("- 在背包中点击样本查看详情，可以拿出到世界中");
+    }
+    
+    /// <summary>
+    /// 初始化仓库系统
+    /// </summary>
+    void InitializeWarehouseSystem()
+    {
+        Debug.Log("开始初始化仓库系统...");
+        
+        // 创建或查找仓库系统初始化器
+        WarehouseGameInitializer warehouseInitializer = FindFirstObjectByType<WarehouseGameInitializer>();
+        if (warehouseInitializer == null)
+        {
+            GameObject initializerObj = new GameObject("WarehouseGameInitializer");
+            warehouseInitializer = initializerObj.AddComponent<WarehouseGameInitializer>();
+            Debug.Log("创建了新的WarehouseGameInitializer");
+        }
+        
+        // 确保仓库系统初始化
+        if (!warehouseInitializer.IsInitialized())
+        {
+            warehouseInitializer.InitializeWarehouseSystem();
+        }
+        
+        Debug.Log("仓库系统初始化完成！");
     }
     
     /// <summary>

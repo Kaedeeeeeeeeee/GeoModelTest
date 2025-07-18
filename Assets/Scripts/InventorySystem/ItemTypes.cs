@@ -72,7 +72,8 @@ public interface IInventoryItem
 public enum SampleLocation
 {
     InInventory,    // 在背包中
-    InWorld        // 在世界中（放置状态）
+    InWorld,        // 在世界中（放置状态）
+    InWarehouse     // 在仓库中
 }
 
 /// <summary>

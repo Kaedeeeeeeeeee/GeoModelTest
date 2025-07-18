@@ -336,6 +336,51 @@ All tools feature:
 5. **地质锤 (HammerTool)**: Thin section sampling tool
 6. **场景切换器 (SceneSwitcherTool)**: Multi-scene navigation tool
 
+## Recent Implementations (2025-07-18)
+
+### Warehouse Multi-Selection System
+**Achievement**: Complete visual feedback and batch transfer system
+- **MultiSelectSystem Core**: State machine with Ready/BackpackSelection/WarehouseSelection modes
+- **Visual Feedback**: Green checkmark icons appear on selected items (top-right corner)
+- **Smart Mode Switching**: First selected item determines selection type (backpack or warehouse)
+- **Batch Transfer UI**: Dynamic button showing "放入仓库/背包 (N)" with item count
+
+### Multi-Selection Workflow
+**User Experience Flow**:
+1. F键进入仓库 → 点击"多选"按钮 → 进入Ready模式
+2. 点击物品 → 自动切换到BackpackSelection/WarehouseSelection模式
+3. 选择更多物品 → 绿色勾选标记出现，只能选择同位置物品
+4. 批量传输 → 点击"放入仓库/背包"按钮完成操作
+5. 自动退出多选模式，界面刷新
+
+### Technical Implementation
+**Key Components**:
+- **NotifyItemSelectionChanged()**: Global notification system for visual updates
+- **CreateSelectionMark()**: Dynamic checkmark creation with 20x20 pixel custom sprite
+- **UpdateButtonStates()**: Smart batch transfer button management
+- **Intelligent State Management**: Prevents accidental mode exit, maintains user intent
+
+### Visual Feedback System
+**Selection Indicators**:
+- Green checkmark sprite (right-top corner positioning)
+- Background color changes for selected slots
+- Batch transfer button text updates with item count
+- Cross-panel synchronization (both backpack and warehouse panels)
+
+### Error Prevention & UX
+**Smart Restrictions**:
+- Cross-location selection prevention (can't mix backpack + warehouse items)
+- Capacity validation before batch operations
+- Transaction rollback on partial failures
+- Mode persistence until user explicitly exits
+
+### Debug Tools
+**Editor Integration**:
+- **Tools → 仓库系统测试**: Complete testing toolkit
+- **Context Menus**: Component-level status checking
+- **Console Commands**: Real-time system state monitoring
+- **Visual Feedback Testing**: Simulate selection states
+
 ---
-Last updated: 2025-07-15
-Project status: Complete multi-scene system with tool integration and data persistence
+Last updated: 2025-07-18
+Project status: Complete warehouse system with multi-selection visual feedback and batch transfer functionality

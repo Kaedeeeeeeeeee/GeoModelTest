@@ -33,17 +33,23 @@ public class SceneAutoSetup : MonoBehaviour
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         Debug.Log($"=== 开始自动设置场景: {sceneName} ===");
         
-        // 1. 确保有Player系统
+        // 1. 立即清理重复的AudioListener
+        CleanupDuplicateAudioListeners();
+        
+        // 2. 确保有Player系统
         SetupPlayerSystem(sceneName);
         
-        // 2. 确保有UI系统
+        // 3. 确保有UI系统
         SetupUISystem();
         
-        // 3. 确保有工具系统
+        // 4. 确保有工具系统
         SetupToolSystem();
         
-        // 4. 确保有场景管理器
+        // 5. 确保有场景管理器
         SetupSceneManager();
+        
+        // 6. 最后再次清理AudioListener（防止创建过程中产生重复）
+        CleanupDuplicateAudioListeners();
         
         Debug.Log($"=== 场景自动设置完成: {sceneName} ===");
     }
@@ -163,9 +169,15 @@ public class SceneAutoSetup : MonoBehaviour
         camera.farClipPlane = 1000f;
         
         // 添加Audio Listener（确保场景中只有一个）
-        if (FindFirstObjectByType<AudioListener>() == null)
+        AudioListener[] existingListeners = FindObjectsByType<AudioListener>(FindObjectsSortMode.None);
+        if (existingListeners.Length == 0)
         {
             cameraObj.AddComponent<AudioListener>();
+            Debug.Log("✅ 添加AudioListener到基础Player摄像机");
+        }
+        else
+        {
+            Debug.Log($"⚠️ 场景中已存在 {existingListeners.Length} 个AudioListener，跳过添加");
         }
         
         Debug.Log($"✅ 基础Player系统创建完成，位置: {playerPos}");
@@ -423,5 +435,64 @@ public class SceneAutoSetup : MonoBehaviour
         setup.setupDelay = 0.1f;
         
         Debug.Log("手动启动场景自动设置");
+    }
+    
+    /// <summary>
+    /// 清理重复的AudioListener
+    /// </summary>
+    void CleanupDuplicateAudioListeners()
+    {
+        AudioListener[] listeners = FindObjectsByType<AudioListener>(FindObjectsSortMode.None);
+        
+        if (listeners.Length > 1)
+        {
+            Debug.Log($"🧹 发现 {listeners.Length} 个AudioListener，清理重复项");
+            
+            AudioListener keepListener = null;
+            
+            foreach (var listener in listeners)
+            {
+                if (listener != null)
+                {
+                    // 优先保留MainCamera上的AudioListener
+                    Camera camera = listener.GetComponent<Camera>();
+                    if (camera != null && camera.CompareTag("MainCamera") && keepListener == null)
+                    {
+                        keepListener = listener;
+                        Debug.Log($"✅ 保留MainCamera上的AudioListener: {listener.name}");
+                    }
+                    else if (listener != keepListener)
+                    {
+                        Debug.Log($"🗑️ 删除重复AudioListener: {listener.name}");
+                        DestroyImmediate(listener);
+                    }
+                }
+            }
+            
+            // 如果没有找到MainCamera上的AudioListener，保留第一个
+            if (keepListener == null && listeners.Length > 0)
+            {
+                keepListener = listeners[0];
+                Debug.Log($"✅ 保留第一个AudioListener: {keepListener.name}");
+                
+                // 删除其他的
+                for (int i = 1; i < listeners.Length; i++)
+                {
+                    if (listeners[i] != null)
+                    {
+                        Debug.Log($"🗑️ 删除重复AudioListener: {listeners[i].name}");
+                        DestroyImmediate(listeners[i]);
+                    }
+                }
+            }
+        }
+        else if (listeners.Length == 1)
+        {
+            Debug.Log($"✅ 场景中有 1 个AudioListener，无需清理");
+        }
+        else
+        {
+            Debug.Log($"⚠️ 场景中没有AudioListener");
+        }
     }
 }
