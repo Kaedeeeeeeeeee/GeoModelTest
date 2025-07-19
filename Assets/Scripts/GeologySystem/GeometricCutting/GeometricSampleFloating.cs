@@ -1,12 +1,24 @@
 using UnityEngine;
 
 /// <summary>
-/// 几何样本悬浮显示组件
-/// 为真实几何切割的样本提供悬浮动画效果
+/// 样本显示模式
+/// </summary>
+public enum SampleDisplayMode
+{
+    Floating,   // 悬浮模式（梦幻效果）
+    Realistic   // 现实模式（重力掉落）
+}
+
+/// <summary>
+/// 几何样本显示组件
+/// 为真实几何切割的样本提供悬浮动画效果或掉落物理效果
 /// </summary>
 public class GeometricSampleFloating : MonoBehaviour
 {
-    [Header("悬浮动画")]
+    [Header("显示模式")]
+    public SampleDisplayMode displayMode = SampleDisplayMode.Realistic;
+    
+    [Header("悬浮动画（仅在浮动模式下生效）")]
     public float floatingAmplitude = 0.2f;
     public float floatingSpeed = 1.0f;
     public bool enableFloating = true;
@@ -52,16 +64,21 @@ public class GeometricSampleFloating : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         colliders = GetComponentsInChildren<Collider>();
         
-        // 设置物理状态为悬浮模式
-        SetupFloatingPhysics();
-        
-        // 开始悬浮
-        if (enableFloating)
+        // 根据显示模式初始化
+        switch (displayMode)
         {
-            StartFloating();
+            case SampleDisplayMode.Floating:
+                SetupFloatingPhysics();
+                if (enableFloating)
+                {
+                    StartFloating();
+                }
+                break;
+                
+            case SampleDisplayMode.Realistic:
+                SetupRealisticPhysics();
+                break;
         }
-        
-        
     }
     
     void SetupFloatingPhysics()
@@ -80,6 +97,21 @@ public class GeometricSampleFloating : MonoBehaviour
                 col.isTrigger = true;
             }
         }
+    }
+    
+    void SetupRealisticPhysics()
+    {
+        // 移除当前的浮动组件，添加掉落控制器
+        SampleDropController dropController = GetComponent<SampleDropController>();
+        if (dropController == null)
+        {
+            dropController = gameObject.AddComponent<SampleDropController>();
+        }
+        
+        // 禁用浮动逻辑
+        isFloating = false;
+        
+        Debug.Log($"样本切换到现实物理模式: {gameObject.name}");
     }
     
     public void StartFloating()
@@ -113,7 +145,8 @@ public class GeometricSampleFloating : MonoBehaviour
     
     void Update()
     {
-        if (!isFloating) return;
+        // 只有在浮动模式下才执行浮动逻辑
+        if (displayMode != SampleDisplayMode.Floating || !isFloating) return;
         
         float currentTime = Time.time + timeOffset;
         
@@ -395,6 +428,76 @@ public class GeometricSampleFloating : MonoBehaviour
             Vector3 point2 = center + new Vector3(Mathf.Cos(angle2) * radius, 0, Mathf.Sin(angle2) * radius);
             
             Gizmos.DrawLine(point1, point2);
+        }
+    }
+    
+    /// <summary>
+    /// 切换显示模式
+    /// </summary>
+    public void SwitchDisplayMode(SampleDisplayMode newMode)
+    {
+        if (displayMode == newMode) return;
+        
+        Debug.Log($"样本显示模式切换: {displayMode} -> {newMode}");
+        
+        // 停止当前模式
+        switch (displayMode)
+        {
+            case SampleDisplayMode.Floating:
+                StopFloating();
+                break;
+            case SampleDisplayMode.Realistic:
+                // 移除掉落控制器
+                SampleDropController dropController = GetComponent<SampleDropController>();
+                if (dropController != null)
+                {
+                    Destroy(dropController);
+                }
+                break;
+        }
+        
+        // 切换到新模式
+        displayMode = newMode;
+        
+        // 重新初始化
+        switch (newMode)
+        {
+            case SampleDisplayMode.Floating:
+                SetupFloatingPhysics();
+                StartFloating();
+                break;
+            case SampleDisplayMode.Realistic:
+                SetupRealisticPhysics();
+                break;
+        }
+    }
+    
+    /// <summary>
+    /// 获取当前显示模式
+    /// </summary>
+    public SampleDisplayMode GetDisplayMode()
+    {
+        return displayMode;
+    }
+    
+    /// <summary>
+    /// 设置为现实物理模式（静态方法，便于外部调用）
+    /// </summary>
+    public static void SetSampleToRealistic(GameObject sampleObject)
+    {
+        GeometricSampleFloating floatingComponent = sampleObject.GetComponent<GeometricSampleFloating>();
+        if (floatingComponent != null)
+        {
+            floatingComponent.SwitchDisplayMode(SampleDisplayMode.Realistic);
+        }
+        else
+        {
+            // 如果没有浮动组件，直接添加掉落控制器
+            SampleDropController dropController = sampleObject.GetComponent<SampleDropController>();
+            if (dropController == null)
+            {
+                sampleObject.AddComponent<SampleDropController>();
+            }
         }
     }
 }

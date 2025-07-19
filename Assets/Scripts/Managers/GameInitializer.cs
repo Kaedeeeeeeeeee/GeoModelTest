@@ -22,6 +22,8 @@ public class GameInitializer : MonoBehaviour
     void Start()
     {
         
+        // 首先初始化多语言系统
+        InitializeLocalizationSystem();
         
         if (initializeUISystem)
         {
@@ -473,6 +475,31 @@ public class GameInitializer : MonoBehaviour
         }
         
         Debug.Log("仓库系统初始化完成！");
+    }
+    
+    /// <summary>
+    /// 初始化多语言系统
+    /// </summary>
+    void InitializeLocalizationSystem()
+    {
+        Debug.Log("开始初始化多语言系统...");
+        
+        // 创建或查找本地化初始化器
+        LocalizationInitializer localizationInitializer = FindFirstObjectByType<LocalizationInitializer>();
+        if (localizationInitializer == null)
+        {
+            GameObject initializerObj = new GameObject("LocalizationInitializer");
+            localizationInitializer = initializerObj.AddComponent<LocalizationInitializer>();
+            Debug.Log("创建了新的LocalizationInitializer");
+        }
+        
+        // 确保本地化系统初始化
+        if (!localizationInitializer.IsInitialized)
+        {
+            localizationInitializer.InitializeLocalizationSystem();
+        }
+        
+        Debug.Log("多语言系统初始化完成！");
     }
     
     /// <summary>

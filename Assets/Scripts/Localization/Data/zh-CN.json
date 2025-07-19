@@ -1,0 +1,256 @@
+{
+  "texts": [
+    {
+      "key": "ui.settings.title",
+      "value": "设置"
+    },
+    {
+      "key": "ui.settings.language",
+      "value": "语言"
+    },
+    {
+      "key": "ui.button.close",
+      "value": "关闭"
+    },
+    {
+      "key": "ui.button.confirm",
+      "value": "确定"
+    },
+    {
+      "key": "ui.button.cancel",
+      "value": "取消"
+    },
+    {
+      "key": "ui.button.start",
+      "value": "开始游戏"
+    },
+    {
+      "key": "ui.button.quit",
+      "value": "退出"
+    },
+    {
+      "key": "ui.button.settings",
+      "value": "设置"
+    },
+    {
+      "key": "warehouse.title",
+      "value": "仓库系统"
+    },
+    {
+      "key": "warehouse.inventory.title",
+      "value": "背包 (20格)"
+    },
+    {
+      "key": "warehouse.storage.title",
+      "value": "仓库 (100格)"
+    },
+    {
+      "key": "warehouse.button.multi_select",
+      "value": "多选"
+    },
+    {
+      "key": "warehouse.button.exit_multi_select",
+      "value": "退出多选"
+    },
+    {
+      "key": "warehouse.button.batch_transfer",
+      "value": "全部放入"
+    },
+    {
+      "key": "warehouse.button.batch_discard",
+      "value": "全部丢弃"
+    },
+    {
+      "key": "warehouse.button.select_items",
+      "value": "选择物品"
+    },
+    {
+      "key": "warehouse.button.transfer_to_storage",
+      "value": "放入仓库 ({0})"
+    },
+    {
+      "key": "warehouse.button.transfer_to_inventory",
+      "value": "放入背包 ({0})"
+    },
+    {
+      "key": "warehouse.dialog.discard_title",
+      "value": "确认丢弃"
+    },
+    {
+      "key": "warehouse.dialog.discard_message",
+      "value": "确定要丢弃选中的 {0} 个样本吗？\n此操作不可撤销！"
+    },
+    {
+      "key": "warehouse.dialog.discard_all_message",
+      "value": "确定要丢弃所有选中的样本吗？\n此操作不可撤销！"
+    },
+    {
+      "key": "warehouse.interaction.prompt",
+      "value": "[F] 打开仓库"
+    },
+    {
+      "key": "tool.drill.name",
+      "value": "钻探工具"
+    },
+    {
+      "key": "tool.drill.simple.name",
+      "value": "简易钻探工具"
+    },
+    {
+      "key": "tool.drill_tower.name",
+      "value": "钻塔工具"
+    },
+    {
+      "key": "tool.hammer.name",
+      "value": "地质锤"
+    },
+    {
+      "key": "tool.drone.name",
+      "value": "无人机"
+    },
+    {
+      "key": "tool.drill_car.name",
+      "value": "钻探车"
+    },
+    {
+      "key": "sample.collection.prompt",
+      "value": "[E] 采集样本"
+    },
+    {
+      "key": "sample.retrieve.prompt",
+      "value": "[E] 收回样本"
+    },
+    {
+      "key": "sample.item.prefix",
+      "value": "地质样本_"
+    },
+    {
+      "key": "sample.description.simple_drill",
+      "value": "使用简易钻探工具采集的地质样本"
+    },
+    {
+      "key": "sample.description.drill_tower",
+      "value": "使用钻塔工具采集的地质样本"
+    },
+    {
+      "key": "sample.description.hammer",
+      "value": "使用地质锤采集的地质样本"
+    },
+    {
+      "key": "sample.description.unknown",
+      "value": "使用未知工具采集的地质样本"
+    },
+    {
+      "key": "sample.layer.default",
+      "value": "混合地质层"
+    },
+    {
+      "key": "sample.layer.description.default",
+      "value": "默认地质层数据"
+    },
+    {
+      "key": "sample.layer.unknown",
+      "value": "未知层"
+    },
+    {
+      "key": "sample.depth.range",
+      "value": "深度 {0:F2}m 的地质层"
+    },
+    {
+      "key": "inventory.title",
+      "value": "背包"
+    },
+    {
+      "key": "inventory.capacity",
+      "value": "容量: {0}/{1}"
+    },
+    {
+      "key": "inventory.empty",
+      "value": "背包为空"
+    },
+    {
+      "key": "inventory.full",
+      "value": "背包已满"
+    },
+    {
+      "key": "ui.interaction.press_f",
+      "value": "[F] 交互"
+    },
+    {
+      "key": "ui.interaction.press_e",
+      "value": "[E] 操作"
+    },
+    {
+      "key": "ui.interaction.press_esc",
+      "value": "[ESC] 设置"
+    },
+    {
+      "key": "ui.interaction.press_tab",
+      "value": "[Tab] 工具轮盘"
+    },
+    {
+      "key": "ui.interaction.press_i",
+      "value": "[I] 背包"
+    },
+    {
+      "key": "geology.layer.name_format",
+      "value": "地层_{0}"
+    },
+    {
+      "key": "geology.detection.failed",
+      "value": "地质检测失败"
+    },
+    {
+      "key": "geology.sampling.success",
+      "value": "采样成功"
+    },
+    {
+      "key": "geology.sampling.failed",
+      "value": "采样失败"
+    },
+    {
+      "key": "vehicle.drone.enter",
+      "value": "[F] 进入无人机"
+    },
+    {
+      "key": "vehicle.drone.exit",
+      "value": "[F] 退出无人机"
+    },
+    {
+      "key": "vehicle.drill_car.enter",
+      "value": "[F] 进入钻探车"
+    },
+    {
+      "key": "vehicle.drill_car.exit",
+      "value": "[F] 退出钻探车"
+    },
+    {
+      "key": "system.loading",
+      "value": "加载中..."
+    },
+    {
+      "key": "system.error",
+      "value": "错误"
+    },
+    {
+      "key": "system.warning",
+      "value": "警告"
+    },
+    {
+      "key": "system.info",
+      "value": "信息"
+    },
+    {
+      "key": "system.success",
+      "value": "成功"
+    },
+    {
+      "key": "debug.missing_key",
+      "value": "[缺失键]"
+    },
+    {
+      "key": "debug.empty_key",
+      "value": "[空键]"
+    }
+  ]
+}

@@ -447,7 +447,7 @@ public class GeometricSampleReconstructor : MonoBehaviour
     {
         SampleDisplay display = new SampleDisplay
         {
-            enableFloating = autoStartFloating,
+            enableFloating = false, // 默认禁用浮动，使用现实物理
             floatingHeight = defaultFloatingHeight,
             floatingAmplitude = floatingAmplitude,
             rotationSpeed = rotationSpeed,
@@ -455,19 +455,22 @@ public class GeometricSampleReconstructor : MonoBehaviour
             boundaryMaterial = boundaryLineMaterial
         };
         
-        if (autoStartFloating)
+        // 设置样本位置
+        container.transform.position = position;
+        
+        // 默认使用现实物理模式（重力掉落）
+        GeometricSampleFloating floating = container.GetComponent<GeometricSampleFloating>();
+        if (floating == null)
         {
-            container.transform.position = position;
-            
-            GeometricSampleFloating floating = container.GetComponent<GeometricSampleFloating>();
-            if (floating == null)
-            {
-                floating = container.AddComponent<GeometricSampleFloating>();
-            }
-            
-            floating.floatingAmplitude = floatingAmplitude;
-            floating.rotationSpeed = new Vector3(0, rotationSpeed, 0);
+            floating = container.AddComponent<GeometricSampleFloating>();
         }
+        
+        // 设置为现实物理模式
+        floating.displayMode = SampleDisplayMode.Realistic;
+        floating.floatingAmplitude = floatingAmplitude;
+        floating.rotationSpeed = new Vector3(0, rotationSpeed, 0);
+        
+        Debug.Log($"样本设置为现实物理模式: {container.name}");
         
         return display;
     }

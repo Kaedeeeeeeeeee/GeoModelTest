@@ -618,14 +618,15 @@ public class SamplePlacer : MonoBehaviour
         rb.mass = 0.5f;
         rb.linearDamping = 5f;
         rb.angularDamping = 10f;
-        rb.useGravity = false; // 禁用重力，由悬浮组件控制
-        rb.isKinematic = false; // 允许物理交互
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ; // 只允许Y轴旋转
+        // 物理属性将由显示模式组件控制
         
-        // 添加悬浮效果组件
+        // 添加样本显示效果组件
         SimpleSampleFloating floating = sampleObj.AddComponent<SimpleSampleFloating>();
         
-        // 根据样本类型设置不同的悬浮参数
+        // 设置为现实物理模式（重力掉落）
+        floating.displayMode = SampleDisplayMode.Realistic;
+        
+        // 根据样本类型设置不同的参数（仅在浮动模式下生效）
         if (sampleData.sourceToolID == "1002") // 地质锤薄片样本
         {
             floating.floatHeight = 0.15f; // 悬浮高度

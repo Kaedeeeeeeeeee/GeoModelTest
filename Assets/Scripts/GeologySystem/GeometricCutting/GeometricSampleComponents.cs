@@ -13,6 +13,9 @@ public class GeometricSampleInfo : MonoBehaviour
     public bool autoShowInfo = true;
     public KeyCode detailKey = KeyCode.E;
     
+    [Header("位置信息")]
+    public Vector3 collectionPosition; // 采集位置（用于世界坐标深度计算）
+    
     private GeometricSampleReconstructor.ReconstructedSample sampleData;
     private Camera playerCamera;
     private bool isInfoVisible = false;
@@ -158,7 +161,8 @@ public class GeometricSampleInfo : MonoBehaviour
                     info += "  地层类型: " + segment.sourceLayer.layerType + "\n";
                     info += "  体积: " + cutResult.volume.ToString("F4") + "m³" + "\n";
                     info += "  表面积: " + cutResult.surfaceArea.ToString("F3") + "m²" + "\n";
-                    info += "  深度范围: " + cutResult.depthStart.ToString("F2") + "m - " + cutResult.depthEnd.ToString("F2") + "m" + "\n";
+                    // 显示地层段的相对深度范围（保持原有逻辑）
+                    info += "  深度范围: " + cutResult.depthStart.ToString("F2") + "m - " + cutResult.depthEnd.ToString("F2") + "m (相对)" + "\n";
                     info += "\n";
                 }
                 else

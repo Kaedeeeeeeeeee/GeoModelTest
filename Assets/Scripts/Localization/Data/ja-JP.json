@@ -1,0 +1,256 @@
+{
+  "texts": [
+    {
+      "key": "ui.settings.title",
+      "value": "設定"
+    },
+    {
+      "key": "ui.settings.language",
+      "value": "言語"
+    },
+    {
+      "key": "ui.button.close",
+      "value": "閉じる"
+    },
+    {
+      "key": "ui.button.confirm",
+      "value": "確定"
+    },
+    {
+      "key": "ui.button.cancel",
+      "value": "キャンセル"
+    },
+    {
+      "key": "ui.button.start",
+      "value": "ゲーム開始"
+    },
+    {
+      "key": "ui.button.quit",
+      "value": "終了"
+    },
+    {
+      "key": "ui.button.settings",
+      "value": "設定"
+    },
+    {
+      "key": "warehouse.title",
+      "value": "倉庫システム"
+    },
+    {
+      "key": "warehouse.inventory.title",
+      "value": "インベントリ (20スロット)"
+    },
+    {
+      "key": "warehouse.storage.title",
+      "value": "倉庫 (100スロット)"
+    },
+    {
+      "key": "warehouse.button.multi_select",
+      "value": "複数選択"
+    },
+    {
+      "key": "warehouse.button.exit_multi_select",
+      "value": "選択終了"
+    },
+    {
+      "key": "warehouse.button.batch_transfer",
+      "value": "全て移動"
+    },
+    {
+      "key": "warehouse.button.batch_discard",
+      "value": "全て破棄"
+    },
+    {
+      "key": "warehouse.button.select_items",
+      "value": "アイテム選択"
+    },
+    {
+      "key": "warehouse.button.transfer_to_storage",
+      "value": "倉庫へ ({0})"
+    },
+    {
+      "key": "warehouse.button.transfer_to_inventory",
+      "value": "インベントリへ ({0})"
+    },
+    {
+      "key": "warehouse.dialog.discard_title",
+      "value": "破棄確認"
+    },
+    {
+      "key": "warehouse.dialog.discard_message",
+      "value": "選択した {0} 個のサンプルを破棄しますか？\nこの操作は元に戻せません！"
+    },
+    {
+      "key": "warehouse.dialog.discard_all_message",
+      "value": "選択したすべてのサンプルを破棄しますか？\nこの操作は元に戻せません！"
+    },
+    {
+      "key": "warehouse.interaction.prompt",
+      "value": "[F] 倉庫を開く"
+    },
+    {
+      "key": "tool.drill.name",
+      "value": "ドリルツール"
+    },
+    {
+      "key": "tool.drill.simple.name",
+      "value": "簡易ドリルツール"
+    },
+    {
+      "key": "tool.drill_tower.name",
+      "value": "ドリルタワー"
+    },
+    {
+      "key": "tool.hammer.name",
+      "value": "地質ハンマー"
+    },
+    {
+      "key": "tool.drone.name",
+      "value": "ドローン"
+    },
+    {
+      "key": "tool.drill_car.name",
+      "value": "ドリルカー"
+    },
+    {
+      "key": "sample.collection.prompt",
+      "value": "[E] サンプル採取"
+    },
+    {
+      "key": "sample.retrieve.prompt",
+      "value": "[E] サンプル回収"
+    },
+    {
+      "key": "sample.item.prefix",
+      "value": "地質サンプル_"
+    },
+    {
+      "key": "sample.description.simple_drill",
+      "value": "簡易ドリルツールで採取した地質サンプル"
+    },
+    {
+      "key": "sample.description.drill_tower",
+      "value": "ドリルタワーツールで採取した地質サンプル"
+    },
+    {
+      "key": "sample.description.hammer",
+      "value": "地質ハンマーで採取した地質サンプル"
+    },
+    {
+      "key": "sample.description.unknown",
+      "value": "不明なツールで採取した地質サンプル"
+    },
+    {
+      "key": "sample.layer.default",
+      "value": "混合地質層"
+    },
+    {
+      "key": "sample.layer.description.default",
+      "value": "デフォルト地質層データ"
+    },
+    {
+      "key": "sample.layer.unknown",
+      "value": "未知の層"
+    },
+    {
+      "key": "sample.depth.range",
+      "value": "深度 {0:F2}m の地質層"
+    },
+    {
+      "key": "inventory.title",
+      "value": "インベントリ"
+    },
+    {
+      "key": "inventory.capacity",
+      "value": "容量: {0}/{1}"
+    },
+    {
+      "key": "inventory.empty",
+      "value": "インベントリが空です"
+    },
+    {
+      "key": "inventory.full",
+      "value": "インベントリが満杯です"
+    },
+    {
+      "key": "ui.interaction.press_f",
+      "value": "[F] 操作"
+    },
+    {
+      "key": "ui.interaction.press_e",
+      "value": "[E] アクション"
+    },
+    {
+      "key": "ui.interaction.press_esc",
+      "value": "[ESC] 設定"
+    },
+    {
+      "key": "ui.interaction.press_tab",
+      "value": "[Tab] ツールホイール"
+    },
+    {
+      "key": "ui.interaction.press_i",
+      "value": "[I] インベントリ"
+    },
+    {
+      "key": "geology.layer.name_format",
+      "value": "地層_{0}"
+    },
+    {
+      "key": "geology.detection.failed",
+      "value": "地質検出に失敗しました"
+    },
+    {
+      "key": "geology.sampling.success",
+      "value": "サンプリング成功"
+    },
+    {
+      "key": "geology.sampling.failed",
+      "value": "サンプリング失敗"
+    },
+    {
+      "key": "vehicle.drone.enter",
+      "value": "[F] ドローンに乗る"
+    },
+    {
+      "key": "vehicle.drone.exit",
+      "value": "[F] ドローンから降りる"
+    },
+    {
+      "key": "vehicle.drill_car.enter",
+      "value": "[F] ドリルカーに乗る"
+    },
+    {
+      "key": "vehicle.drill_car.exit",
+      "value": "[F] ドリルカーから降りる"
+    },
+    {
+      "key": "system.loading",
+      "value": "読み込み中..."
+    },
+    {
+      "key": "system.error",
+      "value": "エラー"
+    },
+    {
+      "key": "system.warning",
+      "value": "警告"
+    },
+    {
+      "key": "system.info",
+      "value": "情報"
+    },
+    {
+      "key": "system.success",
+      "value": "成功"
+    },
+    {
+      "key": "debug.missing_key",
+      "value": "[キーが見つかりません]"
+    },
+    {
+      "key": "debug.empty_key",
+      "value": "[空のキー]"
+    }
+  ]
+}

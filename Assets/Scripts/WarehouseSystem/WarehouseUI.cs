@@ -203,8 +203,8 @@ public class WarehouseUI : MonoBehaviour
         AddPanelBorder(rightPanelObj, new Color(0.6f, 0.8f, 0.4f, 1f)); // 绿色边框
         
         // 添加标题
-        CreatePanelTitle(leftPanelObj, "背包 (20格)");
-        CreatePanelTitle(rightPanelObj, "仓库 (100格)");
+        CreatePanelTitle(leftPanelObj, "warehouse.inventory.title");
+        CreatePanelTitle(rightPanelObj, "warehouse.storage.title");
     }
     
     /// <summary>
@@ -237,7 +237,7 @@ public class WarehouseUI : MonoBehaviour
     /// <summary>
     /// 创建面板标题
     /// </summary>
-    void CreatePanelTitle(GameObject panel, string title)
+    void CreatePanelTitle(GameObject panel, string titleKey)
     {
         GameObject titleObj = new GameObject("Title");
         titleObj.transform.SetParent(panel.transform);
@@ -249,12 +249,16 @@ public class WarehouseUI : MonoBehaviour
         titleRect.offsetMax = Vector2.zero;
         
         Text titleText = titleObj.AddComponent<Text>();
-        titleText.text = title;
+        titleText.text = titleKey; // 临时文本，会被本地化组件替换
         titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         titleText.fontSize = 24;
         titleText.color = Color.white;
         titleText.alignment = TextAnchor.MiddleCenter;
         titleText.fontStyle = FontStyle.Bold;
+        
+        // 添加本地化组件
+        LocalizedText localizedTitle = titleObj.AddComponent<LocalizedText>();
+        localizedTitle.TextKey = titleKey;
     }
     
     /// <summary>
@@ -273,20 +277,20 @@ public class WarehouseUI : MonoBehaviour
         containerRect.offsetMax = Vector2.zero;
         
         // 关闭按钮
-        closeButton = CreateButton(buttonContainer, "关闭", new Vector2(0.85f, 0.5f), new Vector2(120, 50));
+        closeButton = CreateButton(buttonContainer, "ui.button.close", new Vector2(0.85f, 0.5f), new Vector2(120, 50));
         closeButton.onClick.AddListener(CloseWarehouseInterface);
         
         // 多选按钮
-        multiSelectButton = CreateButton(buttonContainer, "多选", new Vector2(0.15f, 0.5f), new Vector2(120, 50));
+        multiSelectButton = CreateButton(buttonContainer, "warehouse.button.multi_select", new Vector2(0.15f, 0.5f), new Vector2(120, 50));
         multiSelectButtonText = multiSelectButton.GetComponentInChildren<Text>();
         
         // 批量传输按钮（初始隐藏）
-        batchTransferButton = CreateButton(buttonContainer, "全部放入", new Vector2(0.35f, 0.5f), new Vector2(150, 50));
+        batchTransferButton = CreateButton(buttonContainer, "warehouse.button.batch_transfer", new Vector2(0.35f, 0.5f), new Vector2(150, 50));
         batchTransferButtonText = batchTransferButton.GetComponentInChildren<Text>();
         batchTransferButton.gameObject.SetActive(false);
         
         // 批量丢弃按钮（初始隐藏）
-        batchDiscardButton = CreateButton(buttonContainer, "全部丢弃", new Vector2(0.5f, 0.5f), new Vector2(150, 50));
+        batchDiscardButton = CreateButton(buttonContainer, "warehouse.button.batch_discard", new Vector2(0.5f, 0.5f), new Vector2(150, 50));
         batchDiscardButtonText = batchDiscardButton.GetComponentInChildren<Text>();
         batchDiscardButton.gameObject.SetActive(false);
     }
@@ -294,9 +298,9 @@ public class WarehouseUI : MonoBehaviour
     /// <summary>
     /// 创建按钮
     /// </summary>
-    Button CreateButton(GameObject parent, string text, Vector2 anchorPosition, Vector2 size)
+    Button CreateButton(GameObject parent, string textKey, Vector2 anchorPosition, Vector2 size)
     {
-        GameObject buttonObj = new GameObject($"Button_{text}");
+        GameObject buttonObj = new GameObject($"Button_{textKey}");
         buttonObj.transform.SetParent(parent.transform);
         
         RectTransform buttonRect = buttonObj.AddComponent<RectTransform>();
@@ -322,12 +326,16 @@ public class WarehouseUI : MonoBehaviour
         textRect.offsetMax = Vector2.zero;
         
         Text buttonText = textObj.AddComponent<Text>();
-        buttonText.text = text;
+        buttonText.text = textKey; // 临时文本，会被本地化组件替换
         buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         buttonText.fontSize = 18;
         buttonText.color = Color.black;
         buttonText.alignment = TextAnchor.MiddleCenter;
         buttonText.fontStyle = FontStyle.Bold;
+        
+        // 添加本地化组件
+        LocalizedText localizedText = textObj.AddComponent<LocalizedText>();
+        localizedText.TextKey = textKey;
         
         return button;
     }
