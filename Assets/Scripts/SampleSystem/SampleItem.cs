@@ -117,8 +117,14 @@ public class SampleItem : IInventoryItem
     {
         var item = new SampleItem();
         item.sampleID = GenerateUniqueSampleID();
-        item.displayName = $"地质样本_{item.sampleID[^8..]}";
-        item.description = $"使用{GetToolName(sourceToolID)}采集的地质样本";
+        // 使用本地化的样本名称
+        string samplePrefix = LocalizationManager.Instance?.GetText("sample.item.prefix") ?? "地质样本_";
+        item.displayName = $"{samplePrefix}{item.sampleID[^8..]}";
+        
+        // 使用本地化的描述
+        string toolName = GetLocalizedToolName(sourceToolID);
+        string descriptionTemplate = LocalizationManager.Instance?.GetText("sample.description.template") ?? "使用{0}采集的地质样本";
+        item.description = string.Format(descriptionTemplate, toolName);
         item.collectionTime = DateTime.Now;
         item.originalCollectionPosition = geologicalSample.transform.position;
         item.sourceToolID = sourceToolID;
@@ -161,6 +167,34 @@ public class SampleItem : IInventoryItem
             "1002" => "地质锤",
             _ => "未知工具"
         };
+    }
+    
+    /// <summary>
+    /// 获取本地化工具名称
+    /// </summary>
+    private static string GetLocalizedToolName(string toolID)
+    {
+        var localizationManager = LocalizationManager.Instance;
+        if (localizationManager != null)
+        {
+            string key = toolID switch
+            {
+                "1000" => "tool.drill.simple.name",
+                "1001" => "tool.drill_tower.name",
+                "1002" => "tool.hammer.name",
+                _ => "tool.unknown.name"
+            };
+            
+            string localizedName = localizationManager.GetText(key);
+            // 如果本地化文本存在，返回本地化版本
+            if (!string.IsNullOrEmpty(localizedName) && !localizedName.StartsWith("[") && !localizedName.EndsWith("]"))
+            {
+                return localizedName;
+            }
+        }
+        
+        // 如果没有本地化系统或本地化失败，返回默认名称
+        return GetToolName(toolID);
     }
     
     /// <summary>
@@ -330,22 +364,67 @@ public class SampleItem : IInventoryItem
     /// </summary>
     public string GetDetailedInfo()
     {
-        string info = $"样本ID: {sampleID}\n";
-        info += $"名称: {displayName}\n";
-        info += $"采集时间: {collectionTime:yyyy-MM-dd HH:mm:ss}\n";
-        info += $"采集位置: ({originalCollectionPosition.x:F2}, {originalCollectionPosition.y:F2}, {originalCollectionPosition.z:F2})\n";
-        info += $"采集工具: {GetToolName(sourceToolID)}\n";
-        info += $"采集深度: {depthStart:F1}m - {depthEnd:F1}m\n";
-        info += $"地质层数: {layerCount}\n";
-        info += $"当前状态: {(currentLocation == SampleLocation.InInventory ? "背包中" : "世界中")}\n";
+        var localizationManager = LocalizationManager.Instance;
         
-        if (geologicalLayers.Count > 0)
+        string info = "";
+        if (localizationManager != null)
         {
-            info += "\n地质层详情:\n";
-            for (int i = 0; i < geologicalLayers.Count; i++)
+            // 使用本地化文本
+            info += localizationManager.GetText("sample.info.id", sampleID) + "\n";
+            info += localizationManager.GetText("sample.info.name", displayName) + "\n";
+            info += localizationManager.GetText("sample.info.collection_time", collectionTime.ToString("yyyy-MM-dd HH:mm:ss")) + "\n";
+            info += localizationManager.GetText("sample.info.collection_position", 
+                originalCollectionPosition.x.ToString("F2"), 
+                originalCollectionPosition.y.ToString("F2"), 
+                originalCollectionPosition.z.ToString("F2")) + "\n";
+            info += localizationManager.GetText("sample.info.collection_tool", GetLocalizedToolName(sourceToolID)) + "\n";
+            // 使用世界坐标深度计算系统
+            string depthInfo = WorldDepthCalculator.GetLocalizedDepthDescription(
+                originalCollectionPosition, depthStart, depthEnd, true);
+            info += depthInfo + "\n";
+            info += localizationManager.GetText("sample.info.layer_count", layerCount.ToString()) + "\n";
+            
+            string statusText = currentLocation == SampleLocation.InInventory ? 
+                localizationManager.GetText("sample.status.inventory") : 
+                localizationManager.GetText("sample.status.world");
+            info += localizationManager.GetText("sample.info.current_status", statusText) + "\n";
+            
+            if (geologicalLayers.Count > 0)
             {
-                var layer = geologicalLayers[i];
-                info += $"  {i + 1}. {layer.layerName} - 厚度: {layer.thickness:F2}m\n";
+                info += "\n" + localizationManager.GetText("sample.info.layer_details") + "\n";
+                for (int i = 0; i < geologicalLayers.Count; i++)
+                {
+                    var layer = geologicalLayers[i];
+                    info += localizationManager.GetText("sample.info.layer_item", 
+                        (i + 1).ToString(), 
+                        layer.layerName, 
+                        layer.thickness.ToString("F2")) + "\n";
+                }
+            }
+        }
+        else
+        {
+            // 如果没有本地化系统，使用默认中文
+            info = $"样本ID: {sampleID}\n";
+            info += $"名称: {displayName}\n";
+            info += $"采集时间: {collectionTime:yyyy-MM-dd HH:mm:ss}\n";
+            info += $"采集位置: ({originalCollectionPosition.x:F2}, {originalCollectionPosition.y:F2}, {originalCollectionPosition.z:F2})\n";
+            info += $"采集工具: {GetToolName(sourceToolID)}\n";
+            // 使用世界坐标深度计算系统（默认版本）
+            var (worldDepthStart, worldDepthEnd) = WorldDepthCalculator.CalculateWorldDepthRange(
+                originalCollectionPosition, depthStart, depthEnd);
+            info += $"采集深度: {worldDepthStart:F1}m - {worldDepthEnd:F1}m (相对: {depthStart:F1}m - {depthEnd:F1}m)\n";
+            info += $"地质层数: {layerCount}\n";
+            info += $"当前状态: {(currentLocation == SampleLocation.InInventory ? "背包中" : "世界中")}\n";
+            
+            if (geologicalLayers.Count > 0)
+            {
+                info += "\n地质层详情:\n";
+                for (int i = 0; i < geologicalLayers.Count; i++)
+                {
+                    var layer = geologicalLayers[i];
+                    info += $"  {i + 1}. {layer.layerName} - 厚度: {layer.thickness:F2}m\n";
+                }
             }
         }
         

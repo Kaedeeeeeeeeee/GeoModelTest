@@ -381,6 +381,193 @@ All tools feature:
 - **Console Commands**: Real-time system state monitoring
 - **Visual Feedback Testing**: Simulate selection states
 
+## Recent Implementations (2025-07-19)
+
+### Multi-Language System (v1.8)
+**Achievement**: Complete internationalization support for Chinese, English, and Japanese
+- **LocalizationManager**: Singleton pattern with JSON-based language files
+- **LocalizedText Component**: Attachable to any Text/TextMeshPro component
+- **ESC Settings Interface**: In-game language switching with instant UI updates
+- **Format Parameter Support**: Dynamic text with `{0}`, `{1}` placeholders for samples, tools, counts
+
+### Core Localization Architecture
+**File Structure**:
+```
+Assets/Scripts/Localization/
+├── LanguageSettings.cs       # Language enum and configuration
+├── LocalizationManager.cs    # Core singleton manager
+├── LocalizedText.cs          # UI component for automatic text updates
+└── SettingsManager.cs        # ESC interface integration
+
+Assets/Resources/Localization/Data/
+├── zh-CN.json               # Chinese Simplified
+├── en-US.json               # English
+└── ja-JP.json               # Japanese
+```
+
+### Implementation Guidelines
+**Key Components Integration**:
+- **LocalizedText.SetTextKey(key, params)**: For dynamic format strings
+- **LocalizationManager.GetText(key, args)**: For programmatic text retrieval
+- **Event System**: OnLanguageChanged event for UI refresh
+- **Fallback System**: Graceful degradation to default text if localization fails
+
+### Multi-Language Coverage
+**Complete UI Localization**:
+- **WarehouseUI**: Inventory/storage panels, buttons, dialog confirmations
+- **InventoryUI**: Sample inventory, detail panels, action buttons
+- **Tool System**: Tool wheel names using localization keys
+- **Sample System**: Collection prompts, sample names, descriptions
+- **Scene System**: Scene selection UI, button text, titles
+- **Settings Interface**: Language selection dropdown
+
+### Technical Implementation
+**LocalizedText Component Usage**:
+```csharp
+// Static text
+localizedText.TextKey = "ui.button.confirm";
+
+// Dynamic text with parameters
+localizedText.SetTextKey("sample.collection.interact", sampleName);
+
+// Format strings
+localizedText.SetTextKey("warehouse.capacity", currentCount, maxCount);
+```
+
+**Naming Convention**:
+- UI elements: `ui.category.element` (e.g., `ui.button.close`)
+- Samples: `sample.action.type` (e.g., `sample.collection.interact`)
+- Tools: `tool.name.type` (e.g., `tool.drill.simple.name`)
+- Scenes: `scene.name.type` (e.g., `scene.main.name`)
+
+### Development Rule: Multi-Language First
+**MANDATORY**: All new UI creation with text display MUST implement localization from the start:
+1. Never use hardcoded strings in UI Text components
+2. Always add LocalizedText component to text elements
+3. Define localization keys in all three language files (zh-CN, en-US, ja-JP)
+4. Use format parameters for dynamic content
+5. Test language switching for all new UI elements
+
+### Language File Maintenance
+**Key Categories**:
+- UI common: buttons, labels, titles, dialogs
+- Warehouse: inventory management, transfer operations
+- Sample system: collection, display, interaction
+- Tool system: names, descriptions, actions
+- Scene system: navigation, selection
+- System messages: errors, confirmations, status  
+- **ESC Settings Interface**: In-game language switching with pause functionality
+- **Key-Value Architecture**: Organized text keys with consistent naming convention
+- **Editor Tools**: Development utilities for rapid localization setup
+- **Event-Driven Updates**: Automatic UI refresh on language changes
+
+### World Coordinate Depth System (v1.9)
+**Achievement**: Real-world coordinate depth display for geological samples
+- **WorldDepthCalculator**: Static utility class for depth coordinate conversion
+- **Real Position Integration**: Sample depths now reflect actual world Y-coordinates
+- **Multi-language Support**: Localized depth descriptions with world coordinates
+- **Enhanced Sample Info**: Shows both world coordinates and relative depth
+
+### Depth Display Enhancement
+**Technical Implementation**:
+- **World Coordinate Calculation**: Surface elevation (Y-coord) minus relative depth
+- **Sample Info Display**: "18.5m - 16.5m (相对: 0.0m - 2.0m)" format
+- **Multi-tool Integration**: SimpleDrill, DrillTower, HammerTool all use world coordinates
+- **Depth Validation**: Range checking and logical validation for depth values
+
+**Example Depth Calculation**:
+```
+Collection Position: (X, 18.5, Z)
+Relative Depth: 0.0m - 2.0m
+World Depth: 18.5m - 16.5m
+
+Collection Position: (X, 18.5, Z) 
+Relative Depth: 2.0m - 4.0m
+World Depth: 16.5m - 14.5m
+```
+
+### Debug System Optimization
+**Achievement**: Clean production environment with optional debug features
+- **Runtime Debugger Control**: Conditional compilation for debug UI display
+- **Production Ready**: Debug windows hidden in release builds
+- **Developer Tools**: Warehouse system debugging remains available in editor
+- **Performance Optimization**: Removed unnecessary UI rendering in gameplay
+
+### Realistic Sample Physics System (v2.0)
+**Achievement**: Heavy and realistic sample behavior with gravity-based physics
+- **SampleDropController**: New physics controller for realistic sample dropping
+- **Dual Display Modes**: SampleDisplayMode enum (Floating/Realistic)
+- **Weight Sensation**: Samples now fall to ground with proper mass and gravity
+- **Enhanced Immersion**: No more floating samples, realistic geological collection
+
+### Sample Physics Features
+**Technical Implementation**:
+- **Gravity Physics**: Proper Rigidbody with gravity, mass, and drag settings
+- **Bounce System**: Realistic bouncing with configurable bounce reduction
+- **Ground Detection**: LayerMask-based ground detection with settling logic
+- **Audio Integration**: Drop sounds and bounce sounds with volume scaling
+- **Dust Effects**: Particle effects on impact for visual feedback
+
+**Component Updates**:
+- **GeometricSampleFloating**: Enhanced with SampleDisplayMode switching
+- **SimpleSampleFloating**: Added realistic physics mode support
+- **GeometricSampleReconstructor**: Default to realistic mode for all new samples
+- **SamplePlacer**: Updated to use realistic physics by default
+
+### Physics Parameters
+**Sample Drop Behavior**:
+- **Drop Height**: 1.5m initial fall distance
+- **Mass Range**: 1.5kg - 3.0kg randomized for variety
+- **Bounce Limit**: Maximum 2 bounces with 30% energy retention
+- **Settle Threshold**: 0.5m/s velocity for stability detection
+- **Collection Integration**: Automatic SampleCollector activation after landing
+
+**Audio & Visual**:
+- **Impact Sounds**: Volume scales with impact force
+- **Dust Particles**: Procedural particle effects on ground impact
+- **Ground Detection**: Multi-layer ground detection with 0.1m tolerance
+- **Interaction Range**: 1.5m sphere collider for player interaction
+
+### Core Localization Features
+**Technical Implementation**:
+- JSON language files in Resources directory (zh-CN.json, en-US.json, ja-JP.json)
+- Persistent language preference storage via PlayerPrefs
+- Format string support for dynamic text with parameters
+- Real-time language switching without scene reload
+- Comprehensive error handling with fallback text display
+
+### Key Text Categories Localized
+**Content Coverage**:
+- UI elements: Settings, buttons, confirmations, interactions
+- Warehouse system: Panel titles, button labels, dialog messages
+- Tool names: Drill tools, hammer, drone, drill car
+- Sample system: Collection prompts, descriptions, inventory status
+- Vehicle interactions: Enter/exit prompts, status messages
+- System messages: Loading, error, warning, success states
+
+### Multi-Language Architecture
+**File Structure**:
+```
+Assets/Scripts/Localization/
+├── LocalizationManager.cs      # 核心管理器
+├── LocalizedText.cs            # 本地化文本组件
+├── SettingsManager.cs          # ESC设置界面
+├── LanguageSettings.cs         # 语言枚举配置
+├── LocalizationInitializer.cs  # 系统初始化器
+├── LocalizationDemo.cs         # 演示脚本
+└── Editor/LocalizationTools.cs # 开发工具
+```
+
+**Usage Example**:
+```csharp
+// 为任何Text组件添加本地化
+LocalizedText localizedText = textComponent.gameObject.AddComponent<LocalizedText>();
+localizedText.TextKey = "warehouse.button.close";
+
+// 运行时切换语言
+LocalizationManager.Instance.SwitchLanguage(LanguageSettings.Language.English);
+```
+
 ---
-Last updated: 2025-07-18
-Project status: Complete warehouse system with multi-selection visual feedback and batch transfer functionality
+Last updated: 2025-07-19
+Project status: Complete multi-language internationalization system (v1.8) with warehouse management (v1.7)

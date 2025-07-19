@@ -1,11 +1,14 @@
 using UnityEngine;
 
 /// <summary>
-/// 简单样本悬浮效果 - 为放置的样本提供悬浮和旋转动画
+/// 简单样本显示效果 - 为放置的样本提供悬浮动画或现实物理效果
 /// </summary>
 public class SimpleSampleFloating : MonoBehaviour
 {
-    [Header("悬浮设置")]
+    [Header("显示模式")]
+    public SampleDisplayMode displayMode = SampleDisplayMode.Realistic;
+    
+    [Header("悬浮设置（仅在浮动模式下生效）")]
     public bool enableFloating = true;
     public float floatHeight = 0.2f;
     public float floatSpeed = 1f;
@@ -33,13 +36,56 @@ public class SimpleSampleFloating : MonoBehaviour
         // 添加随机时间偏移以避免所有样本同步动画
         timeOffset = Random.Range(0f, 2f * Mathf.PI);
         
+        // 根据显示模式初始化
+        InitializeDisplayMode();
+    }
+    
+    void InitializeDisplayMode()
+    {
+        switch (displayMode)
+        {
+            case SampleDisplayMode.Floating:
+                SetupFloatingMode();
+                break;
+            case SampleDisplayMode.Realistic:
+                SetupRealisticMode();
+                break;
+        }
+    }
+    
+    void SetupFloatingMode()
+    {
         // 确保样本位置稍微离地面
         startPosition.y += 0.1f;
         transform.position = startPosition;
+        
+        // 设置浮动物理
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.useGravity = false;
+            rb.isKinematic = true;
+        }
+    }
+    
+    void SetupRealisticMode()
+    {
+        // 添加掉落控制器
+        SampleDropController dropController = GetComponent<SampleDropController>();
+        if (dropController == null)
+        {
+            dropController = gameObject.AddComponent<SampleDropController>();
+        }
+        
+        // 禁用浮动动画
+        enableFloating = false;
     }
     
     void Update()
     {
+        // 只有在浮动模式下才执行动画
+        if (displayMode != SampleDisplayMode.Floating) return;
+        
         float time = Time.time + timeOffset;
         
         // 悬浮动画
@@ -177,13 +223,55 @@ public class SimpleSampleFloating : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         // 绘制悬浮范围
-        if (enableFloating)
+        if (enableFloating && displayMode == SampleDisplayMode.Floating)
         {
             Gizmos.color = Color.cyan;
             Vector3 pos = Application.isPlaying ? startPosition : transform.position;
             Gizmos.DrawWireSphere(pos + Vector3.up * floatHeight, 0.1f);
             Gizmos.DrawWireSphere(pos - Vector3.up * floatHeight, 0.1f);
             Gizmos.DrawLine(pos + Vector3.up * floatHeight, pos - Vector3.up * floatHeight);
+        }
+    }
+    
+    /// <summary>
+    /// 切换显示模式
+    /// </summary>
+    public void SwitchDisplayMode(SampleDisplayMode newMode)
+    {
+        if (displayMode == newMode) return;
+        
+        Debug.Log($"简单样本显示模式切换: {displayMode} -> {newMode}");
+        
+        displayMode = newMode;
+        InitializeDisplayMode();
+    }
+    
+    /// <summary>
+    /// 获取当前显示模式
+    /// </summary>
+    public SampleDisplayMode GetDisplayMode()
+    {
+        return displayMode;
+    }
+    
+    /// <summary>
+    /// 设置为现实物理模式（静态方法，便于外部调用）
+    /// </summary>
+    public static void SetSampleToRealistic(GameObject sampleObject)
+    {
+        SimpleSampleFloating floatingComponent = sampleObject.GetComponent<SimpleSampleFloating>();
+        if (floatingComponent != null)
+        {
+            floatingComponent.SwitchDisplayMode(SampleDisplayMode.Realistic);
+        }
+        else
+        {
+            // 如果没有浮动组件，直接添加掉落控制器
+            SampleDropController dropController = sampleObject.GetComponent<SampleDropController>();
+            if (dropController == null)
+            {
+                sampleObject.AddComponent<SampleDropController>();
+            }
         }
     }
 }

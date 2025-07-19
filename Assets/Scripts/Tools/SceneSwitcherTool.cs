@@ -31,9 +31,15 @@ public class SceneSwitcherTool : CollectionTool
         
         // 配置工具基础属性
         toolID = "999";
-        toolName = "场景切换器";
+        toolName = GetLocalizedToolName();
         useRange = this.useRange;
         useCooldown = this.useCooldown;
+        
+        // 订阅语言切换事件，实时更新工具名称
+        if (LocalizationManager.Instance != null)
+        {
+            LocalizationManager.Instance.OnLanguageChanged += UpdateToolName;
+        }
         
         // 初始化音效组件
         audioSource = GetComponent<AudioSource>();
@@ -49,6 +55,38 @@ public class SceneSwitcherTool : CollectionTool
         sceneManager = GameSceneManager.Instance;
         
         Debug.Log("场景切换器工具初始化完成");
+    }
+    
+    /// <summary>
+    /// 获取本地化的工具名称
+    /// </summary>
+    private string GetLocalizedToolName()
+    {
+        return LocalizationManager.Instance?.GetText("tool.scene_switcher.name") ?? "场景切换器";
+    }
+    
+    /// <summary>
+    /// 更新工具名称（语言切换时调用）
+    /// </summary>
+    private void UpdateToolName()
+    {
+        toolName = GetLocalizedToolName();
+        Debug.Log($"场景切换器名称已更新: {toolName}");
+    }
+    
+    void OnDestroy()
+    {
+        // 清理资源
+        if (equippedSwitcher != null)
+        {
+            DestroyImmediate(equippedSwitcher);
+        }
+        
+        // 取消订阅语言切换事件
+        if (LocalizationManager.Instance != null)
+        {
+            LocalizationManager.Instance.OnLanguageChanged -= UpdateToolName;
+        }
     }
     
     /// <summary>
@@ -260,12 +298,4 @@ public class SceneSwitcherTool : CollectionTool
         // TODO: 集成UI消息系统
     }
     
-    void OnDestroy()
-    {
-        // 清理资源
-        if (equippedSwitcher != null)
-        {
-            DestroyImmediate(equippedSwitcher);
-        }
-    }
 }

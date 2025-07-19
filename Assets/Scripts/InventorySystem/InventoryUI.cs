@@ -172,11 +172,15 @@ public class InventoryUI : MonoBehaviour
         titleRect.anchoredPosition = new Vector2(0, -40);
         
         titleText = titleObj.AddComponent<Text>();
-        titleText.text = "样本背包";
+        titleText.text = "sample.inventory.title"; // 临时文本，会被本地化组件替换
         titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         titleText.fontSize = 40;
         titleText.color = Color.white;
         titleText.alignment = TextAnchor.MiddleCenter;
+        
+        // 添加本地化组件
+        LocalizedText localizedTitle = titleObj.AddComponent<LocalizedText>();
+        localizedTitle.TextKey = "sample.inventory.title";
     }
     
     /// <summary>
@@ -234,11 +238,15 @@ public class InventoryUI : MonoBehaviour
         textRect.anchoredPosition = Vector2.zero;
         
         Text buttonText = textObj.AddComponent<Text>();
-        buttonText.text = "关闭";
+        buttonText.text = "ui.button.close"; // 临时文本，会被本地化组件替换
         buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         buttonText.fontSize = 28;
         buttonText.color = Color.white;
         buttonText.alignment = TextAnchor.MiddleCenter;
+        
+        // 添加本地化组件
+        LocalizedText localizedButtonText = textObj.AddComponent<LocalizedText>();
+        localizedButtonText.TextKey = "ui.button.close";
     }
     
     /// <summary>
@@ -379,11 +387,15 @@ public class InventoryUI : MonoBehaviour
         titleRect.anchoredPosition = new Vector2(0, -40);
         
         detailTitleText = titleObj.AddComponent<Text>();
-        detailTitleText.text = "样本详情";
+        detailTitleText.text = "sample.detail.title"; // 临时文本，会被本地化组件替换
         detailTitleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         detailTitleText.fontSize = 36;
         detailTitleText.color = Color.white;
         detailTitleText.alignment = TextAnchor.MiddleCenter;
+        
+        // 添加本地化组件
+        LocalizedText localizedDetailTitle = titleObj.AddComponent<LocalizedText>();
+        localizedDetailTitle.TextKey = "sample.detail.title";
         
         // 详情信息
         GameObject infoObj = new GameObject("DetailInfo");
@@ -397,11 +409,15 @@ public class InventoryUI : MonoBehaviour
         infoRect.anchoredPosition = new Vector2(0, -120);
         
         detailInfoText = infoObj.AddComponent<Text>();
-        detailInfoText.text = "选择一个样本查看详情";
+        detailInfoText.text = "sample.detail.placeholder"; // 临时文本，会被本地化组件替换
         detailInfoText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         detailInfoText.fontSize = 24;
         detailInfoText.color = Color.white;
         detailInfoText.alignment = TextAnchor.UpperLeft;
+        
+        // 添加本地化组件
+        LocalizedText localizedDetailInfo = infoObj.AddComponent<LocalizedText>();
+        localizedDetailInfo.TextKey = "sample.detail.placeholder";
         
         // 按钮区域
         CreateDetailButtons();
@@ -417,21 +433,21 @@ public class InventoryUI : MonoBehaviour
         float spacing = 20f;
         
         // 拿出按钮
-        takeOutButton = CreateDetailButton("拿出", new Vector2(-90, -500), buttonWidth, buttonHeight, new Color(0.2f, 0.8f, 0.2f, 0.8f));
+        takeOutButton = CreateDetailButton("sample.button.take_out", new Vector2(-90, -500), buttonWidth, buttonHeight, new Color(0.2f, 0.8f, 0.2f, 0.8f));
         
         // 丢弃按钮
-        discardButton = CreateDetailButton("丢弃", new Vector2(90, -500), buttonWidth, buttonHeight, new Color(0.8f, 0.2f, 0.2f, 0.8f));
+        discardButton = CreateDetailButton("sample.button.discard", new Vector2(90, -500), buttonWidth, buttonHeight, new Color(0.8f, 0.2f, 0.2f, 0.8f));
         
         // 关闭按钮
-        closeDetailButton = CreateDetailButton("关闭", new Vector2(0, -500 - buttonHeight - spacing), buttonWidth, buttonHeight, new Color(0.5f, 0.5f, 0.5f, 0.8f));
+        closeDetailButton = CreateDetailButton("ui.button.close", new Vector2(0, -500 - buttonHeight - spacing), buttonWidth, buttonHeight, new Color(0.5f, 0.5f, 0.5f, 0.8f));
     }
     
     /// <summary>
     /// 创建详情面板按钮
     /// </summary>
-    Button CreateDetailButton(string text, Vector2 position, float width, float height, Color color)
+    Button CreateDetailButton(string textKey, Vector2 position, float width, float height, Color color)
     {
-        GameObject buttonObj = new GameObject($"{text}Button");
+        GameObject buttonObj = new GameObject($"{textKey}Button");
         buttonObj.transform.SetParent(detailPanel.transform);
         
         RectTransform buttonRect = buttonObj.AddComponent<RectTransform>();
@@ -458,11 +474,15 @@ public class InventoryUI : MonoBehaviour
         textRect.anchoredPosition = Vector2.zero;
         
         Text buttonText = textObj.AddComponent<Text>();
-        buttonText.text = text;
+        buttonText.text = textKey; // 临时文本，会被本地化组件替换
         buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         buttonText.fontSize = 28;
         buttonText.color = Color.white;
         buttonText.alignment = TextAnchor.MiddleCenter;
+        
+        // 添加本地化组件
+        LocalizedText localizedButtonText = textObj.AddComponent<LocalizedText>();
+        localizedButtonText.TextKey = textKey;
         
         return button;
     }

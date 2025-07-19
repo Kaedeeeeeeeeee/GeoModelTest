@@ -547,6 +547,7 @@ public class DrillTower : MonoBehaviour
             marker.depthStart = depthStart;
             marker.depthEnd = depthEnd;
             marker.drillIndex = currentDrillCount;
+            marker.collectionPosition = actualDrillingStart; // 设置采集位置
             marker.parentTower = this;
             
             // 立即为生成的样本添加收集组件（按需集成）
@@ -681,6 +682,9 @@ public class DepthSampleMarker : MonoBehaviour
     public float depthEnd;
     public int drillIndex;
     
+    [Header("位置信息")]
+    public Vector3 collectionPosition; // 采集点位置（用于世界坐标计算）
+    
     [Header("钻塔引用")]
     public DrillTower parentTower;
     
@@ -713,7 +717,31 @@ public class DepthSampleMarker : MonoBehaviour
     public string GetSampleDescription()
     {
         float thickness = depthEnd - depthStart;
-        return $"钻塔样本 #{drillIndex + 1}\n深度: {depthStart:F1}m - {depthEnd:F1}m\n厚度: {thickness:F1}m";
+        
+        // 使用世界坐标深度计算
+        if (collectionPosition != Vector3.zero)
+        {
+            string depthInfo = WorldDepthCalculator.GetLocalizedDepthDescription(
+                collectionPosition, depthStart, depthEnd, true);
+            
+            var localizationManager = LocalizationManager.Instance;
+            if (localizationManager != null)
+            {
+                return localizationManager.GetText("sample.drill_tower.description", 
+                    (drillIndex + 1).ToString(), depthInfo, thickness.ToString("F1"));
+            }
+            else
+            {
+                var (worldDepthStart, worldDepthEnd) = WorldDepthCalculator.CalculateWorldDepthRange(
+                    collectionPosition, depthStart, depthEnd);
+                return $"钻塔样本 #{drillIndex + 1}\n深度: {worldDepthStart:F1}m - {worldDepthEnd:F1}m (相对: {depthStart:F1}m - {depthEnd:F1}m)\n厚度: {thickness:F1}m";
+            }
+        }
+        else
+        {
+            // 如果没有位置信息，使用相对深度
+            return $"钻塔样本 #{drillIndex + 1}\n深度: {depthStart:F1}m - {depthEnd:F1}m\n厚度: {thickness:F1}m";
+        }
     }
     
 }

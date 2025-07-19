@@ -191,6 +191,10 @@ public class WarehouseTrigger : MonoBehaviour
         promptText.color = Color.white;
         promptText.alignment = TextAnchor.MiddleCenter;
         
+        // 添加本地化组件
+        LocalizedText localizedPrompt = textObj.AddComponent<LocalizedText>();
+        localizedPrompt.TextKey = "warehouse.interaction.prompt";
+        
         // 初始隐藏
         promptObj.SetActive(false);
         

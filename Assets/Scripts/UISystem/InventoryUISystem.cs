@@ -849,8 +849,18 @@ public class InventoryUISystem : MonoBehaviour
                 
                 if (slotTexts[i] != null)
                 {
-                    slotTexts[i].text = availableTools[i].toolName;
+                    // 尝试使用本地化工具名称
+                    string localizedToolName = GetLocalizedToolName(availableTools[i]);
+                    slotTexts[i].text = localizedToolName;
                     slotTexts[i].gameObject.SetActive(true);
+                    
+                    // 添加本地化组件（如果还没有）
+                    LocalizedText localizedText = slotTexts[i].GetComponent<LocalizedText>();
+                    if (localizedText == null)
+                    {
+                        localizedText = slotTexts[i].gameObject.AddComponent<LocalizedText>();
+                    }
+                    localizedText.TextKey = GetToolNameKey(availableTools[i]);
                 }
                 else
                 {
@@ -868,6 +878,80 @@ public class InventoryUISystem : MonoBehaviour
                     slotTexts[i].gameObject.SetActive(false);
                 }
             }
+        }
+    }
+    
+    /// <summary>
+    /// 获取本地化工具名称
+    /// </summary>
+    private string GetLocalizedToolName(CollectionTool tool)
+    {
+        if (tool == null) return "Unknown Tool";
+        
+        var localizationManager = LocalizationManager.Instance;
+        if (localizationManager != null)
+        {
+            string key = GetToolNameKey(tool);
+            string localizedName = localizationManager.GetText(key);
+            
+            // 如果本地化文本存在且不是缺失键格式，返回本地化文本
+            if (!string.IsNullOrEmpty(localizedName) && !localizedName.StartsWith("[") && !localizedName.EndsWith("]"))
+            {
+                return localizedName;
+            }
+        }
+        
+        // 否则返回原始名称
+        return tool.toolName;
+    }
+    
+    /// <summary>
+    /// 获取工具名称的本地化键
+    /// </summary>
+    private string GetToolNameKey(CollectionTool tool)
+    {
+        if (tool == null) return "tool.unknown.name";
+        
+        // 优先根据工具ID返回对应的本地化键（更可靠的匹配方式）
+        if (!string.IsNullOrEmpty(tool.toolID))
+        {
+            switch (tool.toolID)
+            {
+                case "999":
+                    return "tool.scene_switcher.name";
+                case "1000":
+                    return "tool.drill.simple.name";
+                case "1001":
+                    return "tool.drill_tower.name";
+                case "1002":
+                    return "tool.hammer.name";
+            }
+        }
+        
+        // 兼容基于工具名称的匹配（用于没有ID的旧工具）
+        switch (tool.toolName)
+        {
+            case "场景切换器":
+            case "Scene Switcher":
+                return "tool.scene_switcher.name";
+            case "简易钻探":
+            case "Simple Drill":
+                return "tool.drill.simple.name";
+            case "钻塔工具":
+            case "Drill Tower":
+                return "tool.drill_tower.name";
+            case "地质锤":
+            case "Geological Hammer":
+                return "tool.hammer.name";
+            case "无人机":
+            case "Drone":
+                return "tool.drone.name";
+            case "钻探车":
+            case "Drill Car":
+                return "tool.drill_car.name";
+            default:
+                // 如果都不匹配，返回未知工具
+                return "tool.unknown.name";
         }
     }
 }

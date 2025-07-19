@@ -1,0 +1,256 @@
+{
+  "texts": [
+    {
+      "key": "ui.settings.title",
+      "value": "Settings"
+    },
+    {
+      "key": "ui.settings.language",
+      "value": "Language"
+    },
+    {
+      "key": "ui.button.close",
+      "value": "Close"
+    },
+    {
+      "key": "ui.button.confirm",
+      "value": "Confirm"
+    },
+    {
+      "key": "ui.button.cancel",
+      "value": "Cancel"
+    },
+    {
+      "key": "ui.button.start",
+      "value": "Start Game"
+    },
+    {
+      "key": "ui.button.quit",
+      "value": "Quit"
+    },
+    {
+      "key": "ui.button.settings",
+      "value": "Settings"
+    },
+    {
+      "key": "warehouse.title",
+      "value": "Warehouse System"
+    },
+    {
+      "key": "warehouse.inventory.title",
+      "value": "Inventory (20 slots)"
+    },
+    {
+      "key": "warehouse.storage.title",
+      "value": "Storage (100 slots)"
+    },
+    {
+      "key": "warehouse.button.multi_select",
+      "value": "Multi-Select"
+    },
+    {
+      "key": "warehouse.button.exit_multi_select",
+      "value": "Exit Multi-Select"
+    },
+    {
+      "key": "warehouse.button.batch_transfer",
+      "value": "Transfer All"
+    },
+    {
+      "key": "warehouse.button.batch_discard",
+      "value": "Discard All"
+    },
+    {
+      "key": "warehouse.button.select_items",
+      "value": "Select Items"
+    },
+    {
+      "key": "warehouse.button.transfer_to_storage",
+      "value": "To Storage ({0})"
+    },
+    {
+      "key": "warehouse.button.transfer_to_inventory",
+      "value": "To Inventory ({0})"
+    },
+    {
+      "key": "warehouse.dialog.discard_title",
+      "value": "Confirm Discard"
+    },
+    {
+      "key": "warehouse.dialog.discard_message",
+      "value": "Are you sure you want to discard {0} selected samples?\nThis action cannot be undone!"
+    },
+    {
+      "key": "warehouse.dialog.discard_all_message",
+      "value": "Are you sure you want to discard all selected samples?\nThis action cannot be undone!"
+    },
+    {
+      "key": "warehouse.interaction.prompt",
+      "value": "[F] Open Warehouse"
+    },
+    {
+      "key": "tool.drill.name",
+      "value": "Drill Tool"
+    },
+    {
+      "key": "tool.drill.simple.name",
+      "value": "Simple Drill Tool"
+    },
+    {
+      "key": "tool.drill_tower.name",
+      "value": "Drill Tower"
+    },
+    {
+      "key": "tool.hammer.name",
+      "value": "Geological Hammer"
+    },
+    {
+      "key": "tool.drone.name",
+      "value": "Drone"
+    },
+    {
+      "key": "tool.drill_car.name",
+      "value": "Drill Car"
+    },
+    {
+      "key": "sample.collection.prompt",
+      "value": "[E] Collect Sample"
+    },
+    {
+      "key": "sample.retrieve.prompt",
+      "value": "[E] Retrieve Sample"
+    },
+    {
+      "key": "sample.item.prefix",
+      "value": "Geological Sample_"
+    },
+    {
+      "key": "sample.description.simple_drill",
+      "value": "Geological sample collected with simple drill tool"
+    },
+    {
+      "key": "sample.description.drill_tower",
+      "value": "Geological sample collected with drill tower tool"
+    },
+    {
+      "key": "sample.description.hammer",
+      "value": "Geological sample collected with geological hammer"
+    },
+    {
+      "key": "sample.description.unknown",
+      "value": "Geological sample collected with unknown tool"
+    },
+    {
+      "key": "sample.layer.default",
+      "value": "Mixed Geological Layer"
+    },
+    {
+      "key": "sample.layer.description.default",
+      "value": "Default geological layer data"
+    },
+    {
+      "key": "sample.layer.unknown",
+      "value": "Unknown Layer"
+    },
+    {
+      "key": "sample.depth.range",
+      "value": "Geological layer at depth {0:F2}m"
+    },
+    {
+      "key": "inventory.title",
+      "value": "Inventory"
+    },
+    {
+      "key": "inventory.capacity",
+      "value": "Capacity: {0}/{1}"
+    },
+    {
+      "key": "inventory.empty",
+      "value": "Inventory is empty"
+    },
+    {
+      "key": "inventory.full",
+      "value": "Inventory is full"
+    },
+    {
+      "key": "ui.interaction.press_f",
+      "value": "[F] Interact"
+    },
+    {
+      "key": "ui.interaction.press_e",
+      "value": "[E] Action"
+    },
+    {
+      "key": "ui.interaction.press_esc",
+      "value": "[ESC] Settings"
+    },
+    {
+      "key": "ui.interaction.press_tab",
+      "value": "[Tab] Tool Wheel"
+    },
+    {
+      "key": "ui.interaction.press_i",
+      "value": "[I] Inventory"
+    },
+    {
+      "key": "geology.layer.name_format",
+      "value": "Layer_{0}"
+    },
+    {
+      "key": "geology.detection.failed",
+      "value": "Geological detection failed"
+    },
+    {
+      "key": "geology.sampling.success",
+      "value": "Sampling successful"
+    },
+    {
+      "key": "geology.sampling.failed",
+      "value": "Sampling failed"
+    },
+    {
+      "key": "vehicle.drone.enter",
+      "value": "[F] Enter Drone"
+    },
+    {
+      "key": "vehicle.drone.exit",
+      "value": "[F] Exit Drone"
+    },
+    {
+      "key": "vehicle.drill_car.enter",
+      "value": "[F] Enter Drill Car"
+    },
+    {
+      "key": "vehicle.drill_car.exit",
+      "value": "[F] Exit Drill Car"
+    },
+    {
+      "key": "system.loading",
+      "value": "Loading..."
+    },
+    {
+      "key": "system.error",
+      "value": "Error"
+    },
+    {
+      "key": "system.warning",
+      "value": "Warning"
+    },
+    {
+      "key": "system.info",
+      "value": "Information"
+    },
+    {
+      "key": "system.success",
+      "value": "Success"
+    },
+    {
+      "key": "debug.missing_key",
+      "value": "[MISSING KEY]"
+    },
+    {
+      "key": "debug.empty_key",
+      "value": "[EMPTY KEY]"
+    }
+  ]
+}

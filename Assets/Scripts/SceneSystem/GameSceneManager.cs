@@ -171,11 +171,14 @@ public class GameSceneManager : MonoBehaviour
         titleRect.anchoredPosition = new Vector2(0, -80);
         
         UnityEngine.UI.Text titleText = title.AddComponent<UnityEngine.UI.Text>();
-        titleText.text = "场景选择";
         titleText.fontSize = 48;
         titleText.color = Color.white;
         titleText.alignment = TextAnchor.MiddleCenter;
         titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        
+        // 添加本地化组件
+        LocalizedText localizedTitle = title.AddComponent<LocalizedText>();
+        localizedTitle.TextKey = "scene.selection.title";
         
         // 创建按钮容器
         GameObject buttonContainer = new GameObject("ButtonContainer");
@@ -252,11 +255,21 @@ public class GameSceneManager : MonoBehaviour
         textRect.offsetMax = Vector2.zero;
         
         UnityEngine.UI.Text text = buttonText.AddComponent<UnityEngine.UI.Text>();
-        text.text = isCurrentScene ? $"{scene.displayName} (当前)" : scene.displayName;
         text.fontSize = 32;
         text.color = isCurrentScene ? Color.gray : Color.white;
         text.alignment = TextAnchor.MiddleCenter;
         text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        
+        // 添加本地化组件
+        LocalizedText localizedText = buttonText.AddComponent<LocalizedText>();
+        if (isCurrentScene)
+        {
+            localizedText.SetTextKey("scene.button.current", GetLocalizedSceneName(scene.sceneName));
+        }
+        else
+        {
+            localizedText.TextKey = GetSceneLocalizationKey(scene.sceneName);
+        }
         
         // 添加点击事件
         int sceneIndex = index;
@@ -296,11 +309,14 @@ public class GameSceneManager : MonoBehaviour
         closeTextRect.offsetMax = Vector2.zero;
         
         UnityEngine.UI.Text closeTextComponent = closeText.AddComponent<UnityEngine.UI.Text>();
-        closeTextComponent.text = "关闭";
         closeTextComponent.fontSize = 28;
         closeTextComponent.color = Color.white;
         closeTextComponent.alignment = TextAnchor.MiddleCenter;
         closeTextComponent.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        
+        // 添加本地化组件
+        LocalizedText localizedClose = closeText.AddComponent<LocalizedText>();
+        localizedClose.TextKey = "ui.button.close";
     }
     
     /// <summary>
@@ -449,6 +465,28 @@ public class GameSceneManager : MonoBehaviour
                 return scene;
         }
         return null;
+    }
+    
+    /// <summary>
+    /// 获取场景本地化键
+    /// </summary>
+    private string GetSceneLocalizationKey(string sceneName)
+    {
+        return sceneName switch
+        {
+            "MainScene" => "scene.main.name",
+            "Laboratory Scene" => "scene.laboratory.name",
+            _ => "scene.unknown.name"
+        };
+    }
+    
+    /// <summary>
+    /// 获取本地化的场景名称
+    /// </summary>
+    private string GetLocalizedSceneName(string sceneName)
+    {
+        string key = GetSceneLocalizationKey(sceneName);
+        return LocalizationManager.Instance?.GetText(key) ?? sceneName;
     }
 }
 

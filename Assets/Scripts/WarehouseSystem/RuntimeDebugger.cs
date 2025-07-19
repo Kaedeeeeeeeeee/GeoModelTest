@@ -62,6 +62,8 @@ public class RuntimeDebugger : MonoBehaviour
     
     void OnGUI()
     {
+        // 调试信息已禁用 - 在发布版本中不显示
+        #if UNITY_EDITOR && WAREHOUSE_DEBUG_UI
         // 在屏幕上显示调试信息
         GUILayout.BeginArea(new Rect(10, 10, 300, 150));
         GUILayout.Box("运行时调试器");
@@ -79,5 +81,6 @@ public class RuntimeDebugger : MonoBehaviour
         GUILayout.Label($"槽位数量: {slots.Length}");
         
         GUILayout.EndArea();
+        #endif
     }
 }

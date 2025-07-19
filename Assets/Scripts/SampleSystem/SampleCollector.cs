@@ -159,11 +159,17 @@ public class SampleCollector : MonoBehaviour
         textRect.offsetMax = Vector2.zero;
         
         promptText = textObj.AddComponent<Text>();
-        promptText.text = $"[E] 采集 {sampleData?.displayName ?? "地质样本"}";
+        promptText.text = GetLocalizedCollectionText(); // 使用本地化文本
         promptText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         promptText.fontSize = 20; // 和钻塔UI类似的字体大小
         promptText.color = Color.white;
         promptText.alignment = TextAnchor.MiddleCenter;
+        
+        // 添加本地化组件
+        LocalizedText localizedPrompt = textObj.AddComponent<LocalizedText>();
+        string sampleName = sampleData?.displayName ?? "地质样本";
+        Debug.Log($"[SampleCollector] 设置交互提示，样本名称: '{sampleName}'");
+        localizedPrompt.SetTextKey("sample.collection.interact", sampleName);
         
         // 初始隐藏
         promptObj.SetActive(false);
@@ -355,7 +361,17 @@ public class SampleCollector : MonoBehaviour
             interactionPrompt.SetActive(true);
             if (promptText != null && sampleData != null)
             {
-                promptText.text = $"[E] 采集 {sampleData.displayName}";
+                // 更新本地化组件的参数
+                LocalizedText localizedText = promptText.GetComponent<LocalizedText>();
+                if (localizedText != null)
+                {
+                    localizedText.SetTextKey("sample.collection.interact", sampleData.displayName);
+                }
+                else
+                {
+                    // 如果没有本地化组件，使用默认文本
+                    promptText.text = GetLocalizedCollectionText();
+                }
             }
         }
     }
@@ -414,7 +430,16 @@ public class SampleCollector : MonoBehaviour
         // 只需要更新文本内容
         if (interactionPrompt != null && promptText != null && sampleData != null)
         {
-            promptText.text = $"[E] 采集 {sampleData.displayName}";
+            // 更新本地化文本
+            LocalizedText localizedText = promptText.GetComponent<LocalizedText>();
+            if (localizedText != null)
+            {
+                localizedText.SetTextKey("sample.collection.interact", sampleData.displayName);
+            }
+            else
+            {
+                promptText.text = GetLocalizedCollectionText();
+            }
         }
     }
     
@@ -491,7 +516,8 @@ public class SampleCollector : MonoBehaviour
         var inventory = FindFirstObjectByType<SampleInventory>();
         if (inventory == null)
         {
-            ShowMessage("未找到样本背包系统！");
+            string localizedMessage = GetLocalizedMessage("sample.message.no_inventory");
+            ShowMessage(localizedMessage);
             return;
         }
         
@@ -504,7 +530,8 @@ public class SampleCollector : MonoBehaviour
         }
         else
         {
-            ShowMessage("背包已满或无法添加样本！");
+            string localizedMessage = GetLocalizedMessage("sample.message.inventory_full");
+            ShowMessage(localizedMessage);
         }
     }
     
@@ -513,7 +540,8 @@ public class SampleCollector : MonoBehaviour
     /// </summary>
     void ShowCollectionFeedback()
     {
-        ShowMessage($"已采集样本: {sampleData.displayName}");
+        string localizedMessage = GetLocalizedMessage("sample.message.collected", sampleData.displayName);
+        ShowMessage(localizedMessage);
         
         // 播放采集音效（如果有）
         AudioSource audioSource = GetComponent<AudioSource>();
@@ -552,5 +580,42 @@ public class SampleCollector : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, interactionRange);
+    }
+    
+    /// <summary>
+    /// 获取本地化采集文本
+    /// </summary>
+    private string GetLocalizedCollectionText()
+    {
+        var localizationManager = LocalizationManager.Instance;
+        if (localizationManager != null && sampleData != null)
+        {
+            return localizationManager.GetText("sample.collection.interact", sampleData.displayName);
+        }
+        return $"[E] 采集 {sampleData?.displayName ?? "地质样本"}"; // 默认文本
+    }
+    
+    /// <summary>
+    /// 获取本地化消息
+    /// </summary>
+    private string GetLocalizedMessage(string key, params object[] args)
+    {
+        var localizationManager = LocalizationManager.Instance;
+        if (localizationManager != null)
+        {
+            return localizationManager.GetText(key, args);
+        }
+        // 如果没有本地化系统，返回默认文本
+        switch (key)
+        {
+            case "sample.message.collected":
+                return $"已采集样本: {args[0]}";
+            case "sample.message.inventory_full":
+                return "背包已满或无法添加样本！";
+            case "sample.message.no_inventory":
+                return "未找到样本背包系统！";
+            default:
+                return key;
+        }
     }
 }
