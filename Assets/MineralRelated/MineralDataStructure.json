@@ -1,0 +1,73 @@
+{
+  "mineralDatabase": {
+    "version": "1.0",
+    "lastUpdated": "2025-01-27",
+    "description": "仙台地区地质样本矿物数据库",
+    "stratigraphicLayers": [
+      {
+        "layerId": "sendai_aobayama",
+        "layerName": "青葉山層",
+        "layerNameEN": "Aobayama Formation",
+        "layerNameJA": "青葉山層",
+        "rockTypes": [
+          {
+            "rockId": "aobayama_conglomerate",
+            "rockName": "砾岩",
+            "rockNameEN": "Conglomerate",
+            "rockNameJA": "砾岩",
+            "minerals": [
+              {
+                "mineralId": "plagioclase_001",
+                "mineralName": "斜长石",
+                "mineralNameEN": "Plagioclase",
+                "mineralNameJA": "斜長石",
+                "percentage": 0.25,
+                "properties": {
+                  "mohsHardness": "6–6.5",
+                  "acidReaction": false,
+                  "uvFluorescence": "无",
+                  "magnetism": "无（抗磁性）",
+                  "density": "2.62–2.76",
+                  "polarizedColor": "无色/无褪色",
+                  "appearance": "通常呈白色或灰色，有时带淡蓝或淡绿；玻璃光泽。",
+                  "imageFile": "",
+                  "modelFile": ""
+                }
+              },
+              {
+                "mineralId": "pyroxene_001",
+                "mineralName": "辉石",
+                "mineralNameEN": "Pyroxene", 
+                "mineralNameJA": "輝石",
+                "percentage": 0.1,
+                "properties": {
+                  "mohsHardness": "5.5–6",
+                  "acidReaction": false,
+                  "uvFluorescence": "无",
+                  "magnetism": "弱磁性（顺磁性）",
+                  "density": "3.19–3.56",
+                  "polarizedColor": "X=浅绿/浅褐黄，Y=浅褐/浅黄绿/紫色，Z=浅绿/灰绿/紫色",
+                  "appearance": "呈深绿色、褐色至黑色等深色，柱状晶形，光泽玻璃至暗淡。",
+                  "imageFile": "",
+                  "modelFile": ""
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fileStructure": {
+    "images": {
+      "minerals": "Assets/MineralData/Images/Minerals/",
+      "rocks": "Assets/MineralData/Images/Rocks/",
+      "namingConvention": "{mineralName}_{id}.jpg"
+    },
+    "models": {
+      "minerals": "Assets/MineralData/Models/Minerals/",
+      "rocks": "Assets/MineralData/Models/Rocks/",
+      "namingConvention": "{mineralName}_{id}.fbx"
+    }
+  }
+}

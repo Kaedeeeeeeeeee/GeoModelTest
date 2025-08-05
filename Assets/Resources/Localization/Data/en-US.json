@@ -102,7 +102,7 @@
     },
     {
       "key": "tool.hammer.name",
-      "value": "Geological Hammer"
+      "value": "Rock Hammer"
     },
     {
       "key": "tool.drone.name",
@@ -383,6 +383,530 @@
     {
       "key": "sample.drill_tower.description",
       "value": "Drill Tower Sample #{0}\n{1}\nThickness: {2}m"
+    },
+    {
+      "key": "encyclopedia.system_status.title",
+      "value": "System Status"
+    },
+    {
+      "key": "encyclopedia.data_system.label",
+      "value": "Data System"
+    },
+    {
+      "key": "encyclopedia.collection_system.label",
+      "value": "Collection System"
+    },
+    {
+      "key": "encyclopedia.status.loaded",
+      "value": "Loaded"
+    },
+    {
+      "key": "encyclopedia.status.not_initialized",
+      "value": "Not Initialized"
+    },
+    {
+      "key": "encyclopedia.status.running",
+      "value": "Running"
+    },
+    {
+      "key": "encyclopedia.status.data_error",
+      "value": "Data Error"
+    },
+    {
+      "key": "encyclopedia.progress.overall",
+      "value": "Overall"
+    },
+    {
+      "key": "encyclopedia.progress.minerals",
+      "value": "Minerals"
+    },
+    {
+      "key": "encyclopedia.progress.fossils",
+      "value": "Fossils"
+    },
+    {
+      "key": "encyclopedia.progress.discovery",
+      "value": "Discovery"
+    },
+    {
+      "key": "encyclopedia.current_layer.title",
+      "value": "Current Layer: {0}"
+    },
+    {
+      "key": "encyclopedia.current_layer.total_entries",
+      "value": "Total Entries"
+    },
+    {
+      "key": "encyclopedia.current_layer.minerals",
+      "value": "Minerals"
+    },
+    {
+      "key": "encyclopedia.current_layer.fossils",
+      "value": "Fossils"
+    },
+    {
+      "key": "encyclopedia.detail.title",
+      "value": "Entry Details"
+    },
+    {
+      "key": "encyclopedia.detail.basic_info",
+      "value": "Basic Information"
+    },
+    {
+      "key": "encyclopedia.detail.name",
+      "value": "Name"
+    },
+    {
+      "key": "encyclopedia.detail.type",
+      "value": "Type"
+    },
+    {
+      "key": "encyclopedia.detail.layer",
+      "value": "Layer"
+    },
+    {
+      "key": "encyclopedia.detail.rock_type",
+      "value": "Rock Type"
+    },
+    {
+      "key": "encyclopedia.detail.percentage",
+      "value": "Percentage"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_probability",
+      "value": "Discovery Probability"
+    },
+    {
+      "key": "encyclopedia.detail.rarity",
+      "value": "Rarity"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_status",
+      "value": "Discovery Status"
+    },
+    {
+      "key": "encyclopedia.detail.discovered",
+      "value": "Discovered"
+    },
+    {
+      "key": "encyclopedia.detail.not_discovered",
+      "value": "Not Discovered"
+    },
+    {
+      "key": "encyclopedia.detail.description",
+      "value": "Description"
+    },
+    {
+      "key": "encyclopedia.detail.appearance",
+      "value": "Appearance"
+    },
+    {
+      "key": "encyclopedia.detail.physical_properties",
+      "value": "Physical Properties"
+    },
+    {
+      "key": "encyclopedia.detail.mohs_hardness",
+      "value": "Mohs Hardness"
+    },
+    {
+      "key": "encyclopedia.detail.density",
+      "value": "Density"
+    },
+    {
+      "key": "encyclopedia.detail.uv_fluorescence",
+      "value": "UV Fluorescence"
+    },
+    {
+      "key": "encyclopedia.detail.magnetism",
+      "value": "Magnetism"
+    },
+    {
+      "key": "encyclopedia.detail.polarized_color",
+      "value": "Polarized Color"
+    },
+    {
+      "key": "encyclopedia.detail.acid_reaction",
+      "value": "Acid Reaction"
+    },
+    {
+      "key": "encyclopedia.detail.acid_reaction_yes",
+      "value": "Reactive"
+    },
+    {
+      "key": "encyclopedia.detail.acid_reaction_no",
+      "value": "Non-reactive"
+    },
+    {
+      "key": "encyclopedia.detail.collection_info",
+      "value": "Collection Information"
+    },
+    {
+      "key": "encyclopedia.detail.first_discovered",
+      "value": "First Discovered"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_count",
+      "value": "Discovery Count"
+    },
+    {
+      "key": "encyclopedia.detail.times",
+      "value": "times"
+    },
+    {
+      "key": "encyclopedia.type.mineral",
+      "value": "Mineral"
+    },
+    {
+      "key": "encyclopedia.type.fossil",
+      "value": "Fossil"
+    },
+    {
+      "key": "encyclopedia.rarity.common",
+      "value": "Common"
+    },
+    {
+      "key": "encyclopedia.rarity.uncommon",
+      "value": "Uncommon"
+    },
+    {
+      "key": "encyclopedia.rarity.rare",
+      "value": "Rare"
+    },
+    {
+      "key": "encyclopedia.rarity.unknown",
+      "value": "Unknown"
+    },
+    {
+      "key": "encyclopedia.entry_list.title",
+      "value": "Entry List"
+    },
+    {
+      "key": "rock.conglomerate",
+      "value": "Conglomerate"
+    },
+    {
+      "key": "rock.volcanic_ash",
+      "value": "Volcanic Ash"
+    },
+    {
+      "key": "rock.siltstone_sandstone",
+      "value": "Siltstone/Sandstone"
+    },
+    {
+      "key": "rock.sandstone_siltstone",
+      "value": "Sandstone/Siltstone"
+    },
+    {
+      "key": "rock.dacitic_welded_tuff",
+      "value": "Dacitic Welded Tuff"
+    },
+    {
+      "key": "rock.siltstone_fine_sandstone",
+      "value": "Siltstone/Fine Sandstone"
+    },
+    {
+      "key": "rock.tuff",
+      "value": "Tuff"
+    },
+    {
+      "key": "rock.tuffaceous_sandstone",
+      "value": "Tuffaceous Sandstone"
+    },
+    {
+      "key": "rock.siltstone",
+      "value": "Siltstone"
+    },
+    {
+      "key": "encyclopedia.system.title",
+      "value": "Geological Encyclopedia System"
+    },
+    {
+      "key": "encyclopedia.layer.aoba_mountain",
+      "value": "Aoba Mountain Formation"
+    },
+    {
+      "key": "encyclopedia.layer.dainenji",
+      "value": "Dainenji Formation"
+    },
+    {
+      "key": "encyclopedia.layer.mukoyama",
+      "value": "Mukoyama Formation"
+    },
+    {
+      "key": "encyclopedia.layer.hirose_river_tuff",
+      "value": "Hirose River Tuff Member"
+    },
+    {
+      "key": "encyclopedia.layer.ryunokuchi",
+      "value": "Ryunokuchi Formation"
+    },
+    {
+      "key": "encyclopedia.layer.kameoka",
+      "value": "Kameoka Formation"
+    },
+    {
+      "key": "encyclopedia.property.none",
+      "value": "None"
+    },
+    {
+      "key": "encyclopedia.property.non_magnetic",
+      "value": "Non-magnetic"
+    },
+    {
+      "key": "encyclopedia.property.colorless_green",
+      "value": "Colorless/Green"
+    },
+    {
+      "key": "encyclopedia.property.non_reactive",
+      "value": "Non-reactive"
+    },
+    {
+      "key": "encyclopedia.property.diamagnetic",
+      "value": "None (Diamagnetic)"
+    },
+    {
+      "key": "encyclopedia.property.colorless",
+      "value": "Colorless"
+    },
+    {
+      "key": "encyclopedia.property.weak",
+      "value": "Weak"
+    },
+    {
+      "key": "encyclopedia.property.strong",
+      "value": "Strong"
+    },
+    {
+      "key": "mineral.description.plagioclase",
+      "value": "Usually white or gray, sometimes with pale blue or pale green tints; vitreous luster."
+    },
+    {
+      "key": "mineral.description.pyroxene",
+      "value": "Dark green, brown to black colors, prismatic crystal form, vitreous to dull luster."
+    },
+    {
+      "key": "mineral.description.amphibole",
+      "value": "Colors are mostly black, dark green or dark brown, with vitreous luster."
+    },
+    {
+      "key": "mineral.description.magnetite_simple",
+      "value": "Usually black or gray with brownish tones, metallic luster."
+    },
+    {
+      "key": "mineral.description.magnetite_detailed",
+      "value": "Usually black or gray with brownish tones, metallic luster; uneven fracture, black streak."
+    },
+    {
+      "key": "mineral.description.olivine",
+      "value": "Colors range from olive green to yellowish brown, vitreous luster, white streak; high-iron samples may oxidize to red on surface."
+    },
+    {
+      "key": "mineral.description.quartz",
+      "value": "Occurs in colorless, pink, orange, white, green, yellow, blue, purple or dark brown varieties; conchoidal fracture, vitreous luster, white streak."
+    },
+    {
+      "key": "mineral.description.feldspar",
+      "value": "Colors can be pink, white, gray, brown or blue; vitreous luster, white streak."
+    },
+    {
+      "key": "mineral.description.biotite",
+      "value": "Colors black to brown or yellow, vitreous to pearly luster, white streak; crystal form commonly pseudo-hexagonal tabular."
+    },
+    {
+      "key": "mineral.description.zircon_short",
+      "value": "Colors vary including dark brown, black, gray, light brown, reddish brown, orange, pink; colorless streak, resinous to adamantine luster; conchoidal to uneven fracture, crystals commonly short prismatic or water-worn grains."
+    },
+    {
+      "key": "mineral.description.zircon_long",
+      "value": "Colors vary including dark brown, black, gray, light brown, reddish brown, orange, pink; colorless streak, resinous to adamantine luster; conchoidal to uneven fracture, crystals commonly short prismatic or water-worn grains."
+    },
+    {
+      "key": "mineral.description.volcanic_glass",
+      "value": "Usually black, also green or brown; typical conchoidal fracture, smooth glassy texture, vitreous luster."
+    },
+    {
+      "key": "mineral.description.hypersthene",
+      "value": "Colors gray, brown or green; uneven fracture, vitreous to pearly luster, grayish-white or greenish-gray streak, surface with coppery-red metallic luster."
+    },
+    {
+      "key": "mineral.description.garnet",
+      "value": "Colors cover almost entire spectrum, commonly red; crystals are rhombic dodecahedra or cubes, conchoidal to uneven fracture, vitreous or resinous luster, white streak."
+    },
+    {
+      "key": "mineral.description.clay_minerals",
+      "value": "Fine-grained mineral aggregates mainly of hydrous aluminum silicates, soft texture, plastic when moist; colors mostly white, gray or light brown, earthy luster, commonly occur as earthy or powdery aggregates."
+    },
+    {
+      "key": "mineral.description.heavy_minerals",
+      "value": "Heavy minerals refer to aggregates of high-density minerals (such as zircon, titanomagnetite, garnet, etc.), commonly found in sands; usually dark colors, fine grain size, lustrous."
+    },
+    {
+      "key": "encyclopedia.property.colorless_fade",
+      "value": "Colorless/No fading"
+    },
+    {
+      "key": "encyclopedia.property.mostly_non_fluorescent",
+      "value": "Most do not fluoresce"
+    },
+    {
+      "key": "encyclopedia.property.mostly_non_fluorescent_quartz",
+      "value": "Most do not fluoresce (some quartz may fluoresce)"
+    },
+    {
+      "key": "encyclopedia.property.weak_magnetic",
+      "value": "Weak magnetic"
+    },
+    {
+      "key": "encyclopedia.property.weak_magnetic_paramagnetic",
+      "value": "Weak magnetic (paramagnetic)"
+    },
+    {
+      "key": "encyclopedia.property.strong_magnetic",
+      "value": "Strong magnetic"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism",
+      "value": "Strong pleochroism"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism_green_brown",
+      "value": "Strong pleochroism: green to dark green or brown"
+    },
+    {
+      "key": "encyclopedia.property.no_pleochroism",
+      "value": "No pleochroism"
+    },
+    {
+      "key": "encyclopedia.property.weak_pleochroism",
+      "value": "Weak pleochroism"
+    },
+    {
+      "key": "encyclopedia.property.complex_pleochroism_xyz",
+      "value": "X=light green/light brownish yellow, Y=light brown/light yellowish green/purple, Z=light green/grayish green/purple"
+    },
+    {
+      "key": "encyclopedia.property.opaque",
+      "value": "Opaque"
+    },
+    {
+      "key": "encyclopedia.property.variable",
+      "value": "Variable"
+    },
+    {
+      "key": "encyclopedia.property.variable_composition_dependent",
+      "value": "Variable/composition dependent"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism_opaque",
+      "value": "Strong pleochroism/opaque"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism_brown_green",
+      "value": "Strong pleochroism (brown/green)"
+    },
+    {
+      "key": "encyclopedia.property.none_light_color",
+      "value": "None/light color"
+    },
+    {
+      "key": "encyclopedia.property.none_glassy",
+      "value": "None/glassy"
+    },
+    {
+      "key": "encyclopedia.property.no_color_change",
+      "value": "No color change"
+    },
+    {
+      "key": "encyclopedia.property.colorless_no_change",
+      "value": "Colorless/no change"
+    },
+    {
+      "key": "encyclopedia.property.none_glassy_quality",
+      "value": "None (glassy)"
+    },
+    {
+      "key": "encyclopedia.property.mg_rich_fe_rich_pleochroism",
+      "value": "None (Mg-rich); Fe-rich samples α=γ pale yellow to β orange-yellow"
+    },
+    {
+      "key": "encyclopedia.property.gray_pink_green_pleochroism",
+      "value": "Gray to pink/green pleochroism"
+    },
+    {
+      "key": "encyclopedia.property.pink_green_pleochroism",
+      "value": "Pink to green pleochroism"
+    },
+    {
+      "key": "fossil.description.plant_remains",
+      "value": "Plant remains fossils discovered in this formation, preserving ancient plant tissue structures."
+    },
+    {
+      "key": "fossil.description.planktonic_diatoms",
+      "value": "Planktonic diatom fossils discovered in this formation, important indicators of ancient marine environments."
+    },
+    {
+      "key": "fossil.description.foraminifera",
+      "value": "Foraminifera fossils discovered in this formation, indicators of ancient ocean depth and temperature."
+    },
+    {
+      "key": "fossil.description.shellfish",
+      "value": "Shellfish fossils discovered in this formation, reflecting ancient marine or lacustrine environments."
+    },
+    {
+      "key": "fossil.description.freshwater_shellfish",
+      "value": "Freshwater shellfish fossils discovered in this formation, indicating ancient freshwater lake environments."
+    },
+    {
+      "key": "fossil.description.plant_leaf_fossils",
+      "value": "Plant leaf fossils discovered in this formation, preserving morphological features of ancient plant leaves."
+    },
+    {
+      "key": "fossil.description.pollen_fossils",
+      "value": "Pollen fossils discovered in this formation, important evidence for reconstructing ancient vegetation and paleoclimate."
+    },
+    {
+      "key": "fossil.description.fish_fossils",
+      "value": "Fish fossils discovered in this formation, reflecting ancient aquatic ecosystems."
+    },
+    {
+      "key": "fossil.description.silicified_wood",
+      "value": "Silicified wood fossils discovered in this formation, direct evidence of ancient forest environments."
+    },
+    {
+      "key": "fossil.description.sendai_clam",
+      "value": "Sendai clam fossils discovered in this formation, endemic paleobiological species of this region."
+    },
+    {
+      "key": "fossil.description.takahashi_scallop",
+      "value": "Takahashi scallop fossils discovered in this formation, indicating temperate marine environments."
+    },
+    {
+      "key": "fossil.description.cetacean_fossils",
+      "value": "Cetacean fossils discovered in this formation, precious remains of ancient marine megafauna."
+    },
+    {
+      "key": "fossil.description.ancient_coral",
+      "value": "Ancient coral fossils discovered in this formation, indicating warm shallow marine environments."
+    },
+    {
+      "key": "fossil.description.ancient_octopus",
+      "value": "Ancient octopus fossils discovered in this formation, important evidence of cephalopod evolution."
+    },
+    {
+      "key": "fossil.description.ancient_starfish",
+      "value": "Ancient starfish fossils discovered in this formation, reflecting ancient benthic ecosystems."
+    },
+    {
+      "key": "fossil.description.ammonite",
+      "value": "Ammonite fossils discovered in this formation, index fossils of Mesozoic marine environments."
+    },
+    {
+      "key": "fossil.description.trilobite",
+      "value": "Trilobite fossils discovered in this formation, representatives of Paleozoic marine life."
+    },
+    {
+      "key": "fossil.description.generic",
+      "value": "Fossils discovered in this formation, providing important information about ancient life and environments."
     }
   ]
 }

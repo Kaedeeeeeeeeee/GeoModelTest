@@ -1,0 +1,1483 @@
+{
+  "version": "1.1",
+  "lastUpdated": "2025-01-27",
+  "description": "仙台地区地质样本矿物数据库 (包含化石数据)",
+  "stratigraphicLayers": [
+    {
+      "layerId": "sendai_aobayama",
+      "layerName": "青葉山層",
+      "layerNameEN": "Aobayama Formation",
+      "layerNameJA": "青葉山層",
+      "rockTypes": [
+        {
+          "rockId": "aobayama_砾岩",
+          "rockName": "砾岩",
+          "rockNameEN": "Conglomerate",
+          "rockNameJA": "礫岩",
+          "minerals": [
+            {
+              "mineralId": "plagioclase",
+              "mineralName": "斜长石",
+              "mineralNameEN": "Plagioclase",
+              "mineralNameJA": "斜長石",
+              "percentage": 0.25,
+              "properties": {
+                "mohsHardness": "6–6.5",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "无（抗磁性）",
+                "density": "2.62–2.76",
+                "polarizedColor": "无色/无褪色",
+                "appearance": "通常呈白色或灰色，有时带淡蓝或淡绿；玻璃光泽。",
+                "imageFile": "plagioclase_001.jpg",
+                "modelFile": "plagioclase_001.glb"
+              }
+            },
+            {
+              "mineralId": "pyroxene",
+              "mineralName": "辉石",
+              "mineralNameEN": "Pyroxene",
+              "mineralNameJA": "輝石",
+              "percentage": 0.1,
+              "properties": {
+                "mohsHardness": "5.5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "3.19–3.56",
+                "polarizedColor": "X=浅绿/浅褐黄，Y=浅褐/浅黄绿/紫色，Z=浅绿/灰绿/紫色",
+                "appearance": "呈深绿色、褐色至黑色等深色，柱状晶形，光泽玻璃至暗淡。",
+                "imageFile": "pyroxene_001.jpg",
+                "modelFile": "pyroxene_001.glb"
+              }
+            },
+            {
+              "mineralId": "amphibole",
+              "mineralName": "角闪石",
+              "mineralNameEN": "Amphibole",
+              "mineralNameJA": "角閃石",
+              "percentage": 0.08,
+              "properties": {
+                "mohsHardness": "5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "3.0–3.6",
+                "polarizedColor": "强变色：绿色到深绿色或棕色",
+                "appearance": "颜色多为黑色、深绿色或深褐色，玻璃光泽。",
+                "imageFile": "amphibole_001.jpg",
+                "modelFile": "amphibole_001.glb"
+              }
+            },
+            {
+              "mineralId": "magnetite",
+              "mineralName": "磁铁矿",
+              "mineralNameEN": "Magnetite",
+              "mineralNameJA": "磁鉄鉱",
+              "percentage": 0.05,
+              "properties": {
+                "mohsHardness": "5.5–6.5",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "强磁性",
+                "density": "5.17–5.18",
+                "polarizedColor": "不透明",
+                "appearance": "颜色通常黑色或灰色带棕色调，具金属光泽。",
+                "imageFile": "magnetite_001.jpg",
+                "modelFile": "magnetite_001.glb"
+              }
+            },
+            {
+              "mineralId": "olivine",
+              "mineralName": "橄榄石",
+              "mineralNameEN": "Olivine",
+              "mineralNameJA": "橄欖石",
+              "percentage": 0.05,
+              "properties": {
+                "mohsHardness": "6.5–7",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "3.2–4.4",
+                "polarizedColor": "无（镁富石）；Fe富含样品α=γ淡黄到β橙黄",
+                "appearance": "颜色多为橄榄绿至黄褐色，玻璃光泽，条痕白色，铁含量高的样品表面会氧化呈红色。",
+                "imageFile": "olivine_001.jpg",
+                "modelFile": "olivine_001.glb"
+              }
+            },
+            {
+              "mineralId": "quartz",
+              "mineralName": "石英",
+              "mineralNameEN": "Quartz",
+              "mineralNameJA": "石英",
+              "percentage": 0.3,
+              "properties": {
+                "mohsHardness": "7",
+                "acidReaction": false,
+                "uvFluorescence": "大多数不发光（部分石英可发光）",
+                "magnetism": "无（抗磁性）",
+                "density": "2.65",
+                "polarizedColor": "无色/无变色",
+                "appearance": "呈无色、粉色、橙色、白色、绿色、黄色、蓝色、紫色或深褐色等多种颜色，断口贝壳状，玻璃光泽，条痕白色。",
+                "imageFile": "quartz_001.jpg",
+                "modelFile": "quartz_001.glb"
+              }
+            },
+            {
+              "mineralId": "feldspar",
+              "mineralName": "长石",
+              "mineralNameEN": "Feldspar",
+              "mineralNameJA": "長石",
+              "percentage": 0.1,
+              "properties": {
+                "mohsHardness": "6–6.5",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "无（抗磁性）",
+                "density": "2.55–2.76",
+                "polarizedColor": "无变色",
+                "appearance": "颜色可为粉红、白、灰、褐或蓝色，玻璃光泽，条痕白色。",
+                "imageFile": "feldspar_001.jpg",
+                "modelFile": "feldspar_001.glb"
+              }
+            },
+            {
+              "mineralId": "biotite",
+              "mineralName": "黑云母",
+              "mineralNameEN": "Biotite",
+              "mineralNameJA": "黒雲母",
+              "percentage": 0.04,
+              "properties": {
+                "mohsHardness": "2.5–3",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "2.7–3.3",
+                "polarizedColor": "强变色（棕色/绿色）",
+                "appearance": "颜色黑色至褐色或黄色，具玻璃至珍珠光泽，条痕白色，晶形常呈假六方片状。",
+                "imageFile": "biotite_001.jpg",
+                "modelFile": "biotite_001.glb"
+              }
+            },
+            {
+              "mineralId": "zircon",
+              "mineralName": "锆石",
+              "mineralNameEN": "Zircon",
+              "mineralNameJA": "ジルコン",
+              "percentage": 0.03,
+              "properties": {
+                "mohsHardness": "7.5",
+                "acidReaction": false,
+                "uvFluorescence": "常有荧光",
+                "magnetism": "弱磁性或无",
+                "density": "4.6–4.7",
+                "polarizedColor": "弱变色",
+                "appearance": "颜色深褐、黑、灰、浅褐、褐红、橙、粉红等多种,条痕无色,光泽油脂至金刚光泽。断口贝壳状至不平,晶体常为短柱状或水磨圆粒。",
+                "imageFile": "zircon_001.jpg",
+                "modelFile": "zircon_001.glb"
+              }
+            }
+          ]
+        },
+        {
+          "rockId": "aobayama_火山灰",
+          "rockName": "火山灰",
+          "rockNameEN": "Volcanic Ash",
+          "rockNameJA": "火山灰",
+          "minerals": [
+            {
+              "mineralId": "volcanic_glass",
+              "mineralName": "火山玻璃",
+              "mineralNameEN": "Volcanic Glass",
+              "mineralNameJA": "火山ガラス",
+              "percentage": 0.6,
+              "properties": {
+                "mohsHardness": "5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "无",
+                "density": "≈2.4",
+                "polarizedColor": "无（玻璃质）",
+                "appearance": "通常黑色，也有绿色或褐色，断口呈典型贝壳状，质地光滑玻璃状，玻璃光泽。",
+                "imageFile": "volcanic_glass_001.jpg",
+                "modelFile": "volcanic_glass_001.glb"
+              }
+            },
+            {
+              "mineralId": "pyroxene",
+              "mineralName": "辉石",
+              "mineralNameEN": "Pyroxene",
+              "mineralNameJA": "輝石",
+              "percentage": 0.1,
+              "properties": {
+                "mohsHardness": "5.5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "3.19–3.56",
+                "polarizedColor": "X=浅绿/浅褐黄，Y=浅褐/浅黄绿/紫色，Z=浅绿/灰绿/紫色",
+                "appearance": "呈深绿色、褐色至黑色等深色，柱状晶形，光泽玻璃至暗淡。",
+                "imageFile": "pyroxene_001.jpg",
+                "modelFile": "pyroxene_001.glb"
+              }
+            },
+            {
+              "mineralId": "plagioclase",
+              "mineralName": "斜长石",
+              "mineralNameEN": "Plagioclase",
+              "mineralNameJA": "斜長石",
+              "percentage": 0.07,
+              "properties": {
+                "mohsHardness": "6–6.5",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "无（抗磁性）",
+                "density": "2.62–2.76",
+                "polarizedColor": "无色/无褪色",
+                "appearance": "通常呈白色或灰色，有时带淡蓝或淡绿；玻璃光泽。",
+                "imageFile": "plagioclase_001.jpg",
+                "modelFile": "plagioclase_001.glb"
+              }
+            },
+            {
+              "mineralId": "hypersthene",
+              "mineralName": "紫苏辉石",
+              "mineralNameEN": "Hypersthene",
+              "mineralNameJA": "紫蘇輝石",
+              "percentage": 0.05,
+              "properties": {
+                "mohsHardness": "5.5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "3.4–3.9",
+                "polarizedColor": "灰色至粉红/绿色变色",
+                "appearance": "颜色灰色、褐色或绿色，断口不平，光泽玻璃至珍珠，条痕灰白或绿灰，表面有铜红色金属光泽。",
+                "imageFile": "hypersthene_001.jpg",
+                "modelFile": "hypersthene_001.glb"
+              }
+            },
+            {
+              "mineralId": "magnetite",
+              "mineralName": "磁铁矿",
+              "mineralNameEN": "Magnetite",
+              "mineralNameJA": "磁鉄鉱",
+              "percentage": 0.05,
+              "properties": {
+                "mohsHardness": "5.5–6.5",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "强磁性",
+                "density": "5.17–5.18",
+                "polarizedColor": "不透明",
+                "appearance": "颜色通常黑色或灰色带棕色调，具金属光泽；断口不平，条痕黑色。",
+                "imageFile": "magnetite_001.jpg",
+                "modelFile": "magnetite_001.glb"
+              }
+            },
+            {
+              "mineralId": "amphibole",
+              "mineralName": "角闪石",
+              "mineralNameEN": "Amphibole",
+              "mineralNameJA": "角閃石",
+              "percentage": 0.05,
+              "properties": {
+                "mohsHardness": "5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "3.0–3.6",
+                "polarizedColor": "强变色：绿色到深绿色或棕色",
+                "appearance": "颜色多为黑色、深绿色或深褐色，玻璃光泽。",
+                "imageFile": "amphibole_001.jpg",
+                "modelFile": "amphibole_001.glb"
+              }
+            },
+            {
+              "mineralId": "zircon",
+              "mineralName": "锆石",
+              "mineralNameEN": "Zircon",
+              "mineralNameJA": "ジルコン",
+              "percentage": 0.04,
+              "properties": {
+                "mohsHardness": "7.5",
+                "acidReaction": false,
+                "uvFluorescence": "常有荧光",
+                "magnetism": "弱磁性或无",
+                "density": "4.6–4.7",
+                "polarizedColor": "弱变色",
+                "appearance": "颜色深褐、黑、灰、浅褐、褐红、橙、粉红等多种，条痕无色，光泽油脂至金刚光泽，断口贝壳状至不平，晶体常为短柱状或水磨圆粒。",
+                "imageFile": "zircon_001.jpg",
+                "modelFile": "zircon_001.glb"
+              }
+            },
+            {
+              "mineralId": "garnet",
+              "mineralName": "石榴石",
+              "mineralNameEN": "Garnet",
+              "mineralNameJA": "ザクロ石",
+              "percentage": 0.04,
+              "properties": {
+                "mohsHardness": "6.5–7.5",
+                "acidReaction": false,
+                "uvFluorescence": "可有荧光（因品种而异）",
+                "magnetism": "弱磁性（顺磁性）；部分品种含铁磁性",
+                "density": "3.1–4.3",
+                "polarizedColor": "无变色",
+                "appearance": "颜色几乎涵盖所有色谱，常见为红色；晶体为菱形十二面体或立方体，断口贝壳状至不平，光泽玻璃或树脂光泽，条痕白色。",
+                "imageFile": "garnet_001.jpg",
+                "modelFile": "garnet_001.glb"
+              }
+            }
+          ]
+        }
+      ],
+      "fossils": [
+        {
+          "fossilId": "plant_remains",
+          "fossilName": "植物遺骸",
+          "fossilNameEN": "Plant Remains",
+          "fossilNameJA": "植物遺骸",
+          "rarity": "common",
+          "discoveryProbability": 0.05,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "plant_remains_001.jpg",
+            "modelFile": "plant_remains_001.glb",
+            "description": "在青葉山層中发现的植物遺骸"
+          }
+        }
+      ]
+    },
+    {
+      "layerId": "sendai_dainenji",
+      "layerName": "大年寺層",
+      "layerNameEN": "Dainenji Formation",
+      "layerNameJA": "大年寺層",
+      "rockTypes": [
+        {
+          "rockId": "dainenji_粉砂岩_砂岩",
+          "rockName": "粉砂岩/砂岩",
+          "rockNameEN": "Siltstone/Sandstone",
+          "rockNameJA": "シルト岩/砂岩",
+          "minerals": [
+            {
+              "mineralId": "quartz",
+              "mineralName": "石英",
+              "mineralNameEN": "Quartz",
+              "mineralNameJA": "石英",
+              "percentage": 0.55,
+              "properties": {
+                "mohsHardness": "7",
+                "acidReaction": false,
+                "uvFluorescence": "大多数不发光（部分石英可发光）",
+                "magnetism": "无（抗磁性）",
+                "density": "2.65",
+                "polarizedColor": "无色/无变色",
+                "appearance": "呈无色、粉色、橙色、白色、绿色、黄色、蓝色、紫色或深褐色等多种颜色，断口贝壳状，玻璃光泽，条痕白色。",
+                "imageFile": "quartz_001.jpg",
+                "modelFile": "quartz_001.glb"
+              }
+            },
+            {
+              "mineralId": "clay_minerals",
+              "mineralName": "粘土矿物",
+              "mineralNameEN": "Clay Minerals",
+              "mineralNameJA": "粘土鉱物",
+              "percentage": 0.25,
+              "properties": {
+                "mohsHardness": "1–2",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "2–3",
+                "polarizedColor": "无/浅色",
+                "appearance": "以含水铝硅酸盐为主的细粒矿物集合体，质地柔软，湿润时具有可塑性；颜色多为白色、灰色或浅褐色，光泽土状，常呈土状或粉末状集合体。",
+                "imageFile": "clay_minerals_001.jpg",
+                "modelFile": "clay_minerals_001.glb"
+              }
+            },
+            {
+              "mineralId": "heavy_minerals",
+              "mineralName": "重矿物",
+              "mineralNameEN": "Heavy Minerals",
+              "mineralNameJA": "重鉱物",
+              "percentage": 0.05,
+              "properties": {
+                "mohsHardness": "5–7（范围）",
+                "acidReaction": false,
+                "uvFluorescence": "可变",
+                "magnetism": "可变",
+                "density": ">2.9",
+                "polarizedColor": "多样",
+                "appearance": "重矿物指密度较大的矿物（如锆石、钛磁铁矿、石榴石等）的集合体，常出现在砂中，颜色通常较深，粒度细小，具光泽。",
+                "imageFile": "heavy_minerals_001.jpg",
+                "modelFile": "heavy_minerals_001.glb"
+              }
+            },
+            {
+              "mineralId": "magnetite",
+              "mineralName": "磁铁矿",
+              "mineralNameEN": "Magnetite",
+              "mineralNameJA": "磁鉄鉱",
+              "percentage": 0.03,
+              "properties": {
+                "mohsHardness": "5.5–6.5",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "强磁性",
+                "density": "5.17–5.18",
+                "polarizedColor": "不透明",
+                "appearance": "颜色通常黑色或灰色带棕色调，具金属光泽；断口不平，条痕黑色。",
+                "imageFile": "magnetite_001.jpg",
+                "modelFile": "magnetite_001.glb"
+              }
+            },
+            {
+              "mineralId": "orthopyroxene",
+              "mineralName": "斜方辉石",
+              "mineralNameEN": "Orthopyroxene",
+              "mineralNameJA": "斜方輝石",
+              "percentage": 0.06,
+              "properties": {
+                "mohsHardness": "5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "3.2–3.3",
+                "polarizedColor": "粉红到绿色变色",
+                "appearance": "颜色灰色、褐色或绿色，光泽玻璃至珍珠；条痕灰白或绿灰，表面有铜红色金属光泽。",
+                "imageFile": "orthopyroxene_001.jpg",
+                "modelFile": "orthopyroxene_001.glb"
+              }
+            },
+            {
+              "mineralId": "amphibole",
+              "mineralName": "角闪石",
+              "mineralNameEN": "Amphibole",
+              "mineralNameJA": "角閃石",
+              "percentage": 0.06,
+              "properties": {
+                "mohsHardness": "5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "3.0–3.6",
+                "polarizedColor": "强变色：绿色到深绿色或棕色",
+                "appearance": "颜色多为黑色、深绿色或深褐色，玻璃光泽。",
+                "imageFile": "amphibole_001.jpg",
+                "modelFile": "amphibole_001.glb"
+              }
+            }
+          ]
+        },
+        {
+          "rockId": "dainenji_火山灰",
+          "rockName": "火山灰",
+          "rockNameEN": "Volcanic Ash",
+          "rockNameJA": "火山灰",
+          "minerals": [
+            {
+              "mineralId": "volcanic_glass",
+              "mineralName": "火山玻璃",
+              "mineralNameEN": "Volcanic Glass",
+              "mineralNameJA": "火山ガラス",
+              "percentage": 0.7,
+              "properties": {
+                "mohsHardness": "5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "无",
+                "density": "≈2.4",
+                "polarizedColor": "无（玻璃质）",
+                "appearance": "通常黑色，也有绿色或褐色；断口呈典型贝壳状，质地光滑玻璃状，玻璃光泽。",
+                "imageFile": "volcanic_glass_001.jpg",
+                "modelFile": "volcanic_glass_001.glb"
+              }
+            },
+            {
+              "mineralId": "orthopyroxene",
+              "mineralName": "斜方辉石",
+              "mineralNameEN": "Orthopyroxene",
+              "mineralNameJA": "斜方輝石",
+              "percentage": 0.1,
+              "properties": {
+                "mohsHardness": "5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "3.2–3.3",
+                "polarizedColor": "粉红到绿色变色",
+                "appearance": "颜色灰色、褐色或绿色，光泽玻璃至珍珠，条痕灰白或绿灰，表面有铜红色金属光泽。",
+                "imageFile": "orthopyroxene_001.jpg",
+                "modelFile": "orthopyroxene_001.glb"
+              }
+            },
+            {
+              "mineralId": "amphibole",
+              "mineralName": "角闪石",
+              "mineralNameEN": "Amphibole",
+              "mineralNameJA": "角閃石",
+              "percentage": 0.1,
+              "properties": {
+                "mohsHardness": "5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "3.0–3.6",
+                "polarizedColor": "强变色：绿色到深绿色或棕色",
+                "appearance": "颜色黑色至深绿色或深褐色，玻璃光泽，条痕白色或无色，。",
+                "imageFile": "amphibole_001.jpg",
+                "modelFile": "amphibole_001.glb"
+              }
+            },
+            {
+              "mineralId": "biotite",
+              "mineralName": "黑云母",
+              "mineralNameEN": "Biotite",
+              "mineralNameJA": "黒雲母",
+              "percentage": 0.1,
+              "properties": {
+                "mohsHardness": "2.5–3",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "2.7–3.3",
+                "polarizedColor": "强变色（棕色/绿色）",
+                "appearance": "颜色黑色至褐色或黄色，具玻璃至珍珠光泽，条痕白色，晶形常呈假六方片状。",
+                "imageFile": "biotite_001.jpg",
+                "modelFile": "biotite_001.glb"
+              }
+            }
+          ]
+        }
+      ],
+      "fossils": [
+        {
+          "fossilId": "planktonic_diatoms",
+          "fossilName": "浮遊性珪藻",
+          "fossilNameEN": "Planktonic Diatoms",
+          "fossilNameJA": "浮遊性珪藻",
+          "rarity": "common",
+          "discoveryProbability": 0.05,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "planktonic_diatoms_001.jpg",
+            "modelFile": "planktonic_diatoms_001.glb",
+            "description": "在大年寺層中发现的浮遊性珪藻"
+          }
+        },
+        {
+          "fossilId": "foraminifera",
+          "fossilName": "有孔虫",
+          "fossilNameEN": "Foraminifera",
+          "fossilNameJA": "有孔虫",
+          "rarity": "common",
+          "discoveryProbability": 0.05,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "foraminifera_001.jpg",
+            "modelFile": "foraminifera_001.glb",
+            "description": "在大年寺層中发现的有孔虫"
+          }
+        },
+        {
+          "fossilId": "shellfish",
+          "fossilName": "貝類",
+          "fossilNameEN": "Shellfish",
+          "fossilNameJA": "貝類",
+          "rarity": "common",
+          "discoveryProbability": 0.05,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "shellfish_001.jpg",
+            "modelFile": "shellfish_001.glb",
+            "description": "在大年寺層中发现的貝類"
+          }
+        }
+      ]
+    },
+    {
+      "layerId": "sendai_mukoyama",
+      "layerName": "向山層",
+      "layerNameEN": "Mukoyama Formation",
+      "layerNameJA": "向山層",
+      "rockTypes": [
+        {
+          "rockId": "mukoyama_砾岩",
+          "rockName": "砾岩",
+          "rockNameEN": "Conglomerate",
+          "rockNameJA": "礫岩",
+          "minerals": [
+            {
+              "mineralId": "plagioclase",
+              "mineralName": "斜长石",
+              "mineralNameEN": "Plagioclase",
+              "mineralNameJA": "斜長石",
+              "percentage": 0.5,
+              "properties": {
+                "mohsHardness": "6–6.5",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "无（抗磁性）",
+                "density": "2.62–2.76",
+                "polarizedColor": "无色/无褪色",
+                "appearance": "通常呈白色或灰色，有时带淡蓝或淡绿；玻璃光泽。",
+                "imageFile": "plagioclase_001.jpg",
+                "modelFile": "plagioclase_001.glb"
+              }
+            },
+            {
+              "mineralId": "pyroxene",
+              "mineralName": "辉石",
+              "mineralNameEN": "Pyroxene",
+              "mineralNameJA": "輝石",
+              "percentage": 0.3,
+              "properties": {
+                "mohsHardness": "5.5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "3.19–3.56",
+                "polarizedColor": "X=浅绿/浅褐黄，Y=浅褐/浅黄绿/紫色，Z=浅绿/灰绿/紫色",
+                "appearance": "呈深绿色、褐色至黑色等深色，柱状晶形。",
+                "imageFile": "pyroxene_001.jpg",
+                "modelFile": "pyroxene_001.glb"
+              }
+            },
+            {
+              "mineralId": "amphibole",
+              "mineralName": "角闪石",
+              "mineralNameEN": "Amphibole",
+              "mineralNameJA": "角閃石",
+              "percentage": 0.2,
+              "properties": {
+                "mohsHardness": "5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "3.0–3.6",
+                "polarizedColor": "强变色：绿色到深绿色或棕色",
+                "appearance": "颜色多为黑色、深绿色或深褐色，玻璃光泽。",
+                "imageFile": "amphibole_001.jpg",
+                "modelFile": "amphibole_001.glb"
+              }
+            }
+          ]
+        },
+        {
+          "rockId": "mukoyama_砂岩_粉砂岩",
+          "rockName": "砂岩/粉砂岩",
+          "rockNameEN": "Sandstone/Siltstone",
+          "rockNameJA": "砂岩/シルト岩",
+          "minerals": [
+            {
+              "mineralId": "quartz",
+              "mineralName": "石英",
+              "mineralNameEN": "Quartz",
+              "mineralNameJA": "石英",
+              "percentage": 0.5,
+              "properties": {
+                "mohsHardness": "7",
+                "acidReaction": false,
+                "uvFluorescence": "大多数不发光（部分石英可发光）",
+                "magnetism": "无（抗磁性）",
+                "density": "2.65",
+                "polarizedColor": "无色/无变色",
+                "appearance": "呈无色、粉色、橙色、白色、绿色、黄色、蓝色、紫色或深褐色等多种颜色，断口贝壳状，玻璃光泽，条痕白色。",
+                "imageFile": "quartz_001.jpg",
+                "modelFile": "quartz_001.glb"
+              }
+            },
+            {
+              "mineralId": "plagioclase",
+              "mineralName": "斜长石",
+              "mineralNameEN": "Plagioclase",
+              "mineralNameJA": "斜長石",
+              "percentage": 0.1,
+              "properties": {
+                "mohsHardness": "6–6.5",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "无（抗磁性）",
+                "density": "2.62–2.76",
+                "polarizedColor": "无色/无褪色",
+                "appearance": "通常呈白色或灰色，有时带淡蓝或淡绿；玻璃光泽。",
+                "imageFile": "plagioclase_001.jpg",
+                "modelFile": "plagioclase_001.glb"
+              }
+            },
+            {
+              "mineralId": "clay_minerals",
+              "mineralName": "粘土矿物",
+              "mineralNameEN": "Clay Minerals",
+              "mineralNameJA": "粘土鉱物",
+              "percentage": 0.35,
+              "properties": {
+                "mohsHardness": "1–2",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "2–3",
+                "polarizedColor": "无/浅色",
+                "appearance": "以含水铝硅酸盐为主的细粒矿物集合体，质地柔软，湿润时具有可塑性；颜色多为白色、灰色或浅褐色，光泽土状，常呈土状或粉末状集合体。",
+                "imageFile": "clay_minerals_001.jpg",
+                "modelFile": "clay_minerals_001.glb"
+              }
+            },
+            {
+              "mineralId": "illite_alteration",
+              "mineralName": "伊利石 (蚀变产物)",
+              "mineralNameEN": "Illite (Alteration Product)",
+              "mineralNameJA": "イライト (変質産物)",
+              "percentage": 0.05,
+              "properties": {
+                "mohsHardness": "1–2",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "2.6–2.9",
+                "polarizedColor": "无/浅色",
+                "appearance": "颜色灰白、银白或绿灰色，集合体呈云母状薄片，光泽珍珠至土状；条痕白色；半透明。",
+                "imageFile": "illite_alteration_001.jpg",
+                "modelFile": "illite_alteration_001.glb"
+              }
+            }
+          ]
+        }
+      ],
+      "fossils": [
+        {
+          "fossilId": "plant_leaf_fossils",
+          "fossilName": "葉化石",
+          "fossilNameEN": "Plant Leaf Fossils",
+          "fossilNameJA": "葉化石",
+          "rarity": "common",
+          "discoveryProbability": 0.05,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "plant_leaf_fossils_001.jpg",
+            "modelFile": "plant_leaf_fossils_001.glb",
+            "description": "在向山層中发现的葉化石"
+          }
+        },
+        {
+          "fossilId": "pollen_fossils",
+          "fossilName": "花粉化石",
+          "fossilNameEN": "Pollen Fossils",
+          "fossilNameJA": "花粉化石",
+          "rarity": "common",
+          "discoveryProbability": 0.05,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "pollen_fossils_001.jpg",
+            "modelFile": "pollen_fossils_001.glb",
+            "description": "在向山層中发现的花粉化石"
+          }
+        },
+        {
+          "fossilId": "shellfish",
+          "fossilName": "淡水貝類",
+          "fossilNameEN": "Shellfish",
+          "fossilNameJA": "貝類",
+          "rarity": "common",
+          "discoveryProbability": 0.05,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "shellfish_001.jpg",
+            "modelFile": "shellfish_001.glb",
+            "description": "在向山層中发现的貝類"
+          }
+        },
+        {
+          "fossilId": "fish_fossils",
+          "fossilName": "魚類化石",
+          "fossilNameEN": "Fish Fossils",
+          "fossilNameJA": "魚類化石",
+          "rarity": "rare",
+          "discoveryProbability": 0.01,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "fish_fossils_001.jpg",
+            "modelFile": "fish_fossils_001.glb",
+            "description": "在向山層中发现的魚類化石"
+          }
+        }
+      ]
+    },
+    {
+      "layerId": "sendai_hirosegawa_tuff",
+      "layerName": "広瀬川凝灰岩部層",
+      "layerNameEN": "Hirosegawa Tuff Member",
+      "layerNameJA": "広瀬川凝灰岩部層",
+      "rockTypes": [
+        {
+          "rockId": "tuff_英安岩质熔结凝灰岩",
+          "rockName": "英安岩质熔结凝灰岩",
+          "rockNameEN": "Dacitic Welded Tuff",
+          "rockNameJA": "デイサイト質溶結凝灰岩",
+          "minerals": [
+            {
+              "mineralId": "plagioclase",
+              "mineralName": "斜长石",
+              "mineralNameEN": "Plagioclase",
+              "mineralNameJA": "斜長石",
+              "percentage": 0.3,
+              "properties": {
+                "mohsHardness": "6–6.5",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "无（抗磁性）",
+                "density": "2.62–2.76",
+                "polarizedColor": "无色/无褪色",
+                "appearance": "通常呈白色或灰色，有时带淡蓝或淡绿；玻璃光泽。",
+                "imageFile": "plagioclase_001.jpg",
+                "modelFile": "plagioclase_001.glb"
+              }
+            },
+            {
+              "mineralId": "quartz",
+              "mineralName": "石英",
+              "mineralNameEN": "Quartz",
+              "mineralNameJA": "石英",
+              "percentage": 0.3,
+              "properties": {
+                "mohsHardness": "7",
+                "acidReaction": false,
+                "uvFluorescence": "大多数不发光（部分石英可发光）",
+                "magnetism": "无（抗磁性）",
+                "density": "2.65",
+                "polarizedColor": "无色/无变色",
+                "appearance": "呈无色、粉色、橙色、白色、绿色、黄色、蓝色、紫色或深褐色等多种颜色，断口贝壳状；玻璃光泽，条痕白色。",
+                "imageFile": "quartz_001.jpg",
+                "modelFile": "quartz_001.glb"
+              }
+            },
+            {
+              "mineralId": "hypersthene",
+              "mineralName": "紫苏辉石",
+              "mineralNameEN": "Hypersthene",
+              "mineralNameJA": "紫蘇輝石",
+              "percentage": 0.1,
+              "properties": {
+                "mohsHardness": "5.5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "3.4–3.9",
+                "polarizedColor": "灰色至粉红/绿色变色",
+                "appearance": "颜色灰色、褐色或绿色，断口不平，光泽玻璃至珍珠；条痕灰白或绿灰。",
+                "imageFile": "hypersthene_001.jpg",
+                "modelFile": "hypersthene_001.glb"
+              }
+            },
+            {
+              "mineralId": "amphibole",
+              "mineralName": "角闪石",
+              "mineralNameEN": "Amphibole",
+              "mineralNameJA": "角閃石",
+              "percentage": 0.1,
+              "properties": {
+                "mohsHardness": "5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "3.0–3.6",
+                "polarizedColor": "强变色：绿色到深绿色或棕色",
+                "appearance": "颜色多为黑色、深绿色或深褐色；玻璃光泽。",
+                "imageFile": "amphibole_001.jpg",
+                "modelFile": "amphibole_001.glb"
+              }
+            },
+            {
+              "mineralId": "biotite",
+              "mineralName": "黑云母",
+              "mineralNameEN": "Biotite",
+              "mineralNameJA": "黒雲母",
+              "percentage": 0.05,
+              "properties": {
+                "mohsHardness": "2.5–3",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "2.7–3.3",
+                "polarizedColor": "强变色（棕色/绿色）",
+                "appearance": "颜色黑色至褐色或黄色，具玻璃至珍珠光泽，硬度2.5–3，条痕白色，晶形常呈假六方片状。",
+                "imageFile": "biotite_001.jpg",
+                "modelFile": "biotite_001.glb"
+              }
+            },
+            {
+              "mineralId": "magnetite",
+              "mineralName": "磁铁矿",
+              "mineralNameEN": "Magnetite",
+              "mineralNameJA": "磁鉄鉱",
+              "percentage": 0.05,
+              "properties": {
+                "mohsHardness": "5.5–6.5",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "强磁性",
+                "density": "5.17–5.18",
+                "polarizedColor": "不透明",
+                "appearance": "颜色通常黑色或灰色带棕色调，具金属光泽；断口不平，条痕黑色。",
+                "imageFile": "magnetite_001.jpg",
+                "modelFile": "magnetite_001.glb"
+              }
+            },
+            {
+              "mineralId": "zircon",
+              "mineralName": "锆石",
+              "mineralNameEN": "Zircon",
+              "mineralNameJA": "ジルコン",
+              "percentage": 0.05,
+              "properties": {
+                "mohsHardness": "7.5",
+                "acidReaction": false,
+                "uvFluorescence": "常有荧光",
+                "magnetism": "弱磁性或无",
+                "density": "4.6–4.7",
+                "polarizedColor": "弱变色",
+                "appearance": "颜色深褐、黑、灰、浅褐、褐红、橙、粉红等多种；条痕无色；光泽油脂至金刚光泽；断口贝壳状至不平；晶体常为短柱状或水磨圆粒。",
+                "imageFile": "zircon_001.jpg",
+                "modelFile": "zircon_001.glb"
+              }
+            },
+            {
+              "mineralId": "garnet",
+              "mineralName": "石榴石",
+              "mineralNameEN": "Garnet",
+              "mineralNameJA": "ザクロ石",
+              "percentage": 0.05,
+              "properties": {
+                "mohsHardness": "6.5–7.5",
+                "acidReaction": false,
+                "uvFluorescence": "可有荧光（因品种而异）",
+                "magnetism": "弱磁性（顺磁性）；部分品种含铁磁性",
+                "density": "3.1–4.3",
+                "polarizedColor": "无变色",
+                "appearance": "颜色几乎涵盖所有色谱，常见为红色；晶体为菱形十二面体或立方体；断口贝壳状至不平；光泽玻璃或树脂光泽；条痕白色。",
+                "imageFile": "garnet_001.jpg",
+                "modelFile": "garnet_001.glb"
+              }
+            }
+          ]
+        }
+      ],
+      "fossils": [
+        {
+          "fossilId": "silicified_wood",
+          "fossilName": "珪化木",
+          "fossilNameEN": "Silicified Wood",
+          "fossilNameJA": "珪化木",
+          "rarity": "uncommon",
+          "discoveryProbability": 0.03,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "silicified_wood_001.jpg",
+            "modelFile": "silicified_wood_001.glb",
+            "description": "在広瀬川凝灰岩部層中发现的珪化木"
+          }
+        }
+      ]
+    },
+    {
+      "layerId": "sendai_ryunokuchi",
+      "layerName": "竜ノ口層",
+      "layerNameEN": "Ryunokuchi Formation",
+      "layerNameJA": "竜ノ口層",
+      "rockTypes": [
+        {
+          "rockId": "ryunokuchi_粉砂岩_细粒砂岩",
+          "rockName": "粉砂岩/细粒砂岩",
+          "rockNameEN": "Siltstone/Fine Sandstone",
+          "rockNameJA": "シルト岩/細粒砂岩",
+          "minerals": [
+            {
+              "mineralId": "quartz",
+              "mineralName": "石英",
+              "mineralNameEN": "Quartz",
+              "mineralNameJA": "石英",
+              "percentage": 0.45,
+              "properties": {
+                "mohsHardness": "7",
+                "acidReaction": false,
+                "uvFluorescence": "大多数不发光（部分石英可发光）",
+                "magnetism": "无（抗磁性）",
+                "density": "2.65",
+                "polarizedColor": "无色/无变色",
+                "appearance": "呈无色、粉色、橙色、白色、绿色、黄色、蓝色、紫色或深褐色等多种颜色；断口贝壳状；玻璃光泽，条痕白色。",
+                "imageFile": "quartz_001.jpg",
+                "modelFile": "quartz_001.glb"
+              }
+            },
+            {
+              "mineralId": "plagioclase",
+              "mineralName": "斜长石",
+              "mineralNameEN": "Plagioclase",
+              "mineralNameJA": "斜長石",
+              "percentage": 0.2,
+              "properties": {
+                "mohsHardness": "6–6.5",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "无（抗磁性）",
+                "density": "2.62–2.76",
+                "polarizedColor": "无色/无褪色",
+                "appearance": "通常呈白色或灰色，有时带淡蓝或淡绿；玻璃光泽。",
+                "imageFile": "plagioclase_001.jpg",
+                "modelFile": "plagioclase_001.glb"
+              }
+            },
+            {
+              "mineralId": "zircon",
+              "mineralName": "锆石",
+              "mineralNameEN": "Zircon",
+              "mineralNameJA": "ジルコン",
+              "percentage": 0.1,
+              "properties": {
+                "mohsHardness": "7.5",
+                "acidReaction": false,
+                "uvFluorescence": "常有荧光",
+                "magnetism": "弱磁性或无",
+                "density": "4.6–4.7",
+                "polarizedColor": "弱变色",
+                "appearance": "颜色深褐、黑、灰、浅褐、褐红、橙、粉红等多种；条痕无色；光泽油脂至金刚光泽；断口贝壳状至不平；晶体常为短柱状或水磨圆粒。",
+                "imageFile": "zircon_001.jpg",
+                "modelFile": "zircon_001.glb"
+              }
+            },
+            {
+              "mineralId": "quartz",
+              "mineralName": "石英",
+              "mineralNameEN": "Quartz",
+              "mineralNameJA": "石英",
+              "percentage": 0.25,
+              "properties": {
+                "mohsHardness": "7",
+                "acidReaction": false,
+                "uvFluorescence": "大多数不发光",
+                "magnetism": "无",
+                "density": "2.65",
+                "polarizedColor": "无色/无变色",
+                "appearance": "高温形成的石英与普通石英类似，玻璃光泽，无解理，断口贝壳状。",
+                "imageFile": "quartz_001.jpg",
+                "modelFile": "quartz_001.glb"
+              }
+            }
+          ]
+        },
+        {
+          "rockId": "ryunokuchi_凝灰岩",
+          "rockName": "凝灰岩",
+          "rockNameEN": "凝灰岩",
+          "rockNameJA": "凝灰岩",
+          "minerals": [
+            {
+              "mineralId": "volcanic_glass",
+              "mineralName": "火山玻璃",
+              "mineralNameEN": "Volcanic Glass",
+              "mineralNameJA": "火山ガラス",
+              "percentage": 0.75,
+              "properties": {
+                "mohsHardness": "5–6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "无",
+                "density": "≈2.4",
+                "polarizedColor": "无（玻璃质）",
+                "appearance": "通常黑色，也有绿色或褐色；断口呈典型贝壳状，质地光滑玻璃状；玻璃光泽。",
+                "imageFile": "volcanic_glass_001.jpg",
+                "modelFile": "volcanic_glass_001.glb"
+              }
+            },
+            {
+              "mineralId": "quartz",
+              "mineralName": "石英",
+              "mineralNameEN": "Quartz",
+              "mineralNameJA": "石英",
+              "percentage": 0.1,
+              "properties": {
+                "mohsHardness": "7",
+                "acidReaction": false,
+                "uvFluorescence": "大多数不发光（部分石英可发光）",
+                "magnetism": "无（抗磁性）",
+                "density": "2.65",
+                "polarizedColor": "无色/无变色",
+                "appearance": "呈无色、粉色、橙色、白色、绿色、黄色、蓝色、紫色或深褐色等多种颜色；断口贝壳状；玻璃光泽，条痕白色。",
+                "imageFile": "quartz_001.jpg",
+                "modelFile": "quartz_001.glb"
+              }
+            },
+            {
+              "mineralId": "plagioclase",
+              "mineralName": "斜长石",
+              "mineralNameEN": "Plagioclase",
+              "mineralNameJA": "斜長石",
+              "percentage": 0.1,
+              "properties": {
+                "mohsHardness": "6–6.5",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "无（抗磁性）",
+                "density": "2.62–2.76",
+                "polarizedColor": "无色/无褪色",
+                "appearance": "通常呈白色或灰色，有时带淡蓝或淡绿；玻璃光泽。",
+                "imageFile": "plagioclase_001.jpg",
+                "modelFile": "plagioclase_001.glb"
+              }
+            },
+            {
+              "mineralId": "zircon",
+              "mineralName": "锆石",
+              "mineralNameEN": "Zircon",
+              "mineralNameJA": "ジルコン",
+              "percentage": 0.05,
+              "properties": {
+                "mohsHardness": "7.5",
+                "acidReaction": false,
+                "uvFluorescence": "常有荧光",
+                "magnetism": "弱磁性或无",
+                "density": "4.6–4.7",
+                "polarizedColor": "弱变色",
+                "appearance": "颜色深褐、黑、灰、浅褐、褐红、橙、粉红等多种；条痕无色；光泽油脂至金刚光泽；断口贝壳状至不平；晶体常为短柱状或水磨圆粒。",
+                "imageFile": "zircon_001.jpg",
+                "modelFile": "zircon_001.glb"
+              }
+            }
+          ]
+        }
+      ],
+      "fossils": [
+        {
+          "fossilId": "sendai_clam",
+          "fossilName": "センダイヌノメハマグリ",
+          "fossilNameEN": "Sendai Clam",
+          "fossilNameJA": "センダイヌノメハマグリ",
+          "rarity": "uncommon",
+          "discoveryProbability": 0.03,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "sendai_clam_001.jpg",
+            "modelFile": "sendai_clam_001.glb",
+            "description": "在竜ノ口層中发现的センダイヌノメハマグリ"
+          }
+        },
+        {
+          "fossilId": "takahashi_scallop",
+          "fossilName": "タカハシホタテ",
+          "fossilNameEN": "Takahashi Scallop",
+          "fossilNameJA": "タカハシホタテ",
+          "rarity": "uncommon",
+          "discoveryProbability": 0.03,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "takahashi_scallop_001.jpg",
+            "modelFile": "takahashi_scallop_001.glb",
+            "description": "在竜ノ口層中发现的タカハシホタテ"
+          }
+        },
+        {
+          "fossilId": "cetacean_fossils",
+          "fossilName": "鯨類化石",
+          "fossilNameEN": "Cetacean Fossils",
+          "fossilNameJA": "鯨類化石",
+          "rarity": "rare",
+          "discoveryProbability": 0.01,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "cetacean_fossils_001.jpg",
+            "modelFile": "cetacean_fossils_001.glb",
+            "description": "在竜ノ口層中发现的鯨類化石"
+          }
+        },
+        {
+          "fossilId": "shark_fossils",
+          "fossilName": "サメ化石",
+          "fossilNameEN": "Shark Fossils",
+          "fossilNameJA": "サメ化石",
+          "rarity": "rare",
+          "discoveryProbability": 0.01,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "shark_fossils_001.jpg",
+            "modelFile": "shark_fossils_001.glb",
+            "description": "在竜ノ口層中发现的サメ化石"
+          }
+        },
+        {
+          "fossilId": "elephant_fossils",
+          "fossilName": "象化石",
+          "fossilNameEN": "Elephant Fossils",
+          "fossilNameJA": "象化石",
+          "rarity": "rare",
+          "discoveryProbability": 0.01,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "elephant_fossils_001.jpg",
+            "modelFile": "elephant_fossils_001.glb",
+            "description": "在竜ノ口層中发现的象化石"
+          }
+        },
+        {
+          "fossilId": "horse_fossils",
+          "fossilName": "馬化石",
+          "fossilNameEN": "Horse Fossils",
+          "fossilNameJA": "馬化石",
+          "rarity": "rare",
+          "discoveryProbability": 0.01,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "horse_fossils_001.jpg",
+            "modelFile": "horse_fossils_001.glb",
+            "description": "在竜ノ口層中发现的馬化石"
+          }
+        }
+      ]
+    },
+    {
+      "layerId": "亀岡",
+      "layerName": "亀岡層",
+      "layerNameEN": "亀岡層",
+      "layerNameJA": "亀岡層",
+      "rockTypes": [
+        {
+          "rockId": "亀岡_凝灰质砂岩",
+          "rockName": "凝灰质砂岩",
+          "rockNameEN": "凝灰质砂岩",
+          "rockNameJA": "凝灰質砂岩",
+          "minerals": [
+            {
+              "mineralId": "quartz",
+              "mineralName": "石英",
+              "mineralNameEN": "Quartz",
+              "mineralNameJA": "石英",
+              "percentage": 0.4,
+              "properties": {
+                "mohsHardness": "7",
+                "acidReaction": false,
+                "uvFluorescence": "大多数不发光",
+                "magnetism": "无",
+                "density": "2.65",
+                "polarizedColor": "无色/无变色",
+                "appearance": "石英在沉积作用中形成的颗粒，特征与普通石英相同：玻璃光泽，断口贝壳状。",
+                "imageFile": "quartz_001.jpg",
+                "modelFile": "quartz_001.glb"
+              }
+            },
+            {
+              "mineralId": "volcanic_ash",
+              "mineralName": "火山灰",
+              "mineralNameEN": "Volcanic Ash",
+              "mineralNameJA": "火山灰",
+              "percentage": 0.3,
+              "properties": {
+                "mohsHardness": "约5",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性或无",
+                "density": "2.3–3.3",
+                "polarizedColor": "多样/取决于组成",
+                "appearance": "火山灰是由火山爆炸产生的直径小于2毫米的岩石、矿物和火山玻璃碎屑组成的细粉，多呈灰色或黑色。",
+                "imageFile": "volcanic_ash_001.jpg",
+                "modelFile": "volcanic_ash_001.glb"
+              }
+            },
+            {
+              "mineralId": "pumice",
+              "mineralName": "浮石",
+              "mineralNameEN": "Pumice",
+              "mineralNameJA": "軽石",
+              "percentage": 0.05,
+              "properties": {
+                "mohsHardness": "6",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "无",
+                "density": "2.35",
+                "polarizedColor": "无/玻璃质",
+                "appearance": "浮石是一种浅色的多孔火山岩，含大量气孔，质地轻可浮于水面，通常为白色或淡灰色，是喷出岩。",
+                "imageFile": "pumice_001.jpg",
+                "modelFile": "pumice_001.glb"
+              }
+            },
+            {
+              "mineralId": "quartz",
+              "mineralName": "石英",
+              "mineralNameEN": "Quartz",
+              "mineralNameJA": "石英",
+              "percentage": 0.05,
+              "properties": {
+                "mohsHardness": "7",
+                "acidReaction": false,
+                "uvFluorescence": "大多数不发光",
+                "magnetism": "无",
+                "density": "2.65",
+                "polarizedColor": "无色/无变色",
+                "appearance": "高温形成的石英与普通石英类似，玻璃光泽，断口贝壳状。",
+                "imageFile": "quartz_001.jpg",
+                "modelFile": "quartz_001.glb"
+              }
+            },
+            {
+              "mineralId": "plagioclase",
+              "mineralName": "斜长石",
+              "mineralNameEN": "Plagioclase",
+              "mineralNameJA": "斜長石",
+              "percentage": 0.15,
+              "properties": {
+                "mohsHardness": "6–6.5",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "无（抗磁性）",
+                "density": "2.62–2.76",
+                "polarizedColor": "无色/无褪色",
+                "appearance": "通常呈白色或灰色，有时带淡蓝或淡绿；玻璃光泽。",
+                "imageFile": "plagioclase_001.jpg",
+                "modelFile": "plagioclase_001.glb"
+              }
+            },
+            {
+              "mineralId": "heavy_minerals",
+              "mineralName": "重矿物",
+              "mineralNameEN": "Heavy Minerals",
+              "mineralNameJA": "重鉱物",
+              "percentage": 0.05,
+              "properties": {
+                "mohsHardness": "5–7（范围）",
+                "acidReaction": false,
+                "uvFluorescence": "可变",
+                "magnetism": "可变",
+                "density": ">2.9",
+                "polarizedColor": "多样",
+                "appearance": "重矿物指密度较大的矿物（如锆石、钛磁铁矿、石榴石等）的集合体，常出现在砂中，颜色通常较深，粒度细小，具光泽。",
+                "imageFile": "heavy_minerals_001.jpg",
+                "modelFile": "heavy_minerals_001.glb"
+              }
+            }
+          ]
+        },
+        {
+          "rockId": "亀岡_粉砂岩",
+          "rockName": "粉砂岩",
+          "rockNameEN": "粉砂岩",
+          "rockNameJA": "シルト岩",
+          "minerals": [
+            {
+              "mineralId": "quartz",
+              "mineralName": "石英",
+              "mineralNameEN": "Quartz",
+              "mineralNameJA": "石英",
+              "percentage": 0.6,
+              "properties": {
+                "mohsHardness": "7",
+                "acidReaction": false,
+                "uvFluorescence": "大多数不发光",
+                "magnetism": "无",
+                "density": "2.65",
+                "polarizedColor": "无色/无变色",
+                "appearance": "细粒石英为颗粒较小的石英砂，颜色多为透明或白色，玻璃光泽。",
+                "imageFile": "quartz_001.jpg",
+                "modelFile": "quartz_001.glb"
+              }
+            },
+            {
+              "mineralId": "clay_minerals",
+              "mineralName": "粘土矿物",
+              "mineralNameEN": "Clay Minerals",
+              "mineralNameJA": "粘土鉱物",
+              "percentage": 0.3,
+              "properties": {
+                "mohsHardness": "1–2",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "弱磁性（顺磁性）",
+                "density": "2–3",
+                "polarizedColor": "无/浅色",
+                "appearance": "以含水铝硅酸盐为主的细粒矿物集合体，质地柔软，湿润时具有可塑性；颜色多为白色、灰色或浅褐色，光泽土状，硬度低（1–2），常呈土状或粉末状集合体。",
+                "imageFile": "clay_minerals_001.jpg",
+                "modelFile": "clay_minerals_001.glb"
+              }
+            },
+            {
+              "mineralId": "carbonaceous_matter",
+              "mineralName": "碳质物",
+              "mineralNameEN": "carbonaceous_matter",
+              "mineralNameJA": "炭質物",
+              "percentage": 0.1,
+              "properties": {
+                "mohsHardness": "1–2",
+                "acidReaction": false,
+                "uvFluorescence": "无",
+                "magnetism": "无",
+                "density": "2.09–2.23",
+                "polarizedColor": "强变色/不透明",
+                "appearance": "富含碳的物质，颜色深黑，质地柔软或粉状，可能来源于生物残体或有机质。",
+                "imageFile": "carbonaceous_matter.png",
+                "modelFile": "carbonaceous_matter.glb"
+              }
+            }
+          ]
+        }
+      ],
+      "fossils": [
+        {
+          "fossilId": "silicified_wood",
+          "fossilName": "珪化木",
+          "fossilNameEN": "Silicified Wood",
+          "fossilNameJA": "珪化木",
+          "rarity": "uncommon",
+          "discoveryProbability": 0.03,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "silicified_wood_001.jpg",
+            "modelFile": "silicified_wood_001.glb",
+            "description": "在亀岡層中发现的珪化木"
+          }
+        },
+        {
+          "fossilId": "plant_leaf_fossils",
+          "fossilName": "葉化石",
+          "fossilNameEN": "Plant Leaf Fossils",
+          "fossilNameJA": "葉化石",
+          "rarity": "common",
+          "discoveryProbability": 0.05,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "plant_leaf_fossils_001.jpg",
+            "modelFile": "plant_leaf_fossils_001.glb",
+            "description": "在亀岡層中发现的葉化石"
+          }
+        },
+        {
+          "fossilId": "buried_wood",
+          "fossilName": "埋没木",
+          "fossilNameEN": "Buried Wood",
+          "fossilNameJA": "埋没木",
+          "rarity": "uncommon",
+          "discoveryProbability": 0.03,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "buried_wood_001.jpg",
+            "modelFile": "buried_wood_001.glb",
+            "description": "在亀岡層中发现的埋没木"
+          }
+        },
+        {
+          "fossilId": "shellfish",
+          "fossilName": "貝類",
+          "fossilNameEN": "Shellfish",
+          "fossilNameJA": "貝類",
+          "rarity": "common",
+          "discoveryProbability": 0.05,
+          "properties": {
+            "type": "fossil",
+            "imageFile": "shellfish_001.jpg",
+            "modelFile": "shellfish_001.glb",
+            "description": "在亀岡層中发现的貝類"
+          }
+        }
+      ]
+    }
+  ]
+}
