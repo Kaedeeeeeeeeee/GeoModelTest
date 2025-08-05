@@ -14,7 +14,7 @@ public class LocalizedText : MonoBehaviour
     
     [Header("调试设置")]
     [SerializeField] private bool showKeyInEditor = true;
-    [SerializeField] private bool enableDebugLog = true;
+    [SerializeField] private bool enableDebugLog = false;
     
     // 文本组件引用
     private Text uiText;

@@ -383,6 +383,530 @@
     {
       "key": "sample.drill_tower.description",
       "value": "钻塔样本 #{0}\n{1}\n厚度: {2}m"
+    },
+    {
+      "key": "encyclopedia.system_status.title",
+      "value": "系统状态"
+    },
+    {
+      "key": "encyclopedia.data_system.label",
+      "value": "数据系统"
+    },
+    {
+      "key": "encyclopedia.collection_system.label",
+      "value": "收集系统"
+    },
+    {
+      "key": "encyclopedia.status.loaded",
+      "value": "已加载"
+    },
+    {
+      "key": "encyclopedia.status.not_initialized",
+      "value": "未初始化"
+    },
+    {
+      "key": "encyclopedia.status.running",
+      "value": "正常运行"
+    },
+    {
+      "key": "encyclopedia.status.data_error",
+      "value": "数据异常"
+    },
+    {
+      "key": "encyclopedia.progress.overall",
+      "value": "总进度"
+    },
+    {
+      "key": "encyclopedia.progress.minerals",
+      "value": "矿物"
+    },
+    {
+      "key": "encyclopedia.progress.fossils",
+      "value": "化石"
+    },
+    {
+      "key": "encyclopedia.progress.discovery",
+      "value": "发现进度"
+    },
+    {
+      "key": "encyclopedia.current_layer.title",
+      "value": "当前地层: {0}"
+    },
+    {
+      "key": "encyclopedia.current_layer.total_entries",
+      "value": "总条目"
+    },
+    {
+      "key": "encyclopedia.current_layer.minerals",
+      "value": "矿物"
+    },
+    {
+      "key": "encyclopedia.current_layer.fossils",
+      "value": "化石"
+    },
+    {
+      "key": "encyclopedia.detail.title",
+      "value": "条目详情"
+    },
+    {
+      "key": "encyclopedia.detail.basic_info",
+      "value": "基本信息"
+    },
+    {
+      "key": "encyclopedia.detail.name",
+      "value": "名称"
+    },
+    {
+      "key": "encyclopedia.detail.type",
+      "value": "类型"
+    },
+    {
+      "key": "encyclopedia.detail.layer",
+      "value": "地层"
+    },
+    {
+      "key": "encyclopedia.detail.rock_type",
+      "value": "岩石类型"
+    },
+    {
+      "key": "encyclopedia.detail.percentage",
+      "value": "含量比例"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_probability",
+      "value": "发现概率"
+    },
+    {
+      "key": "encyclopedia.detail.rarity",
+      "value": "稀有度"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_status",
+      "value": "发现状态"
+    },
+    {
+      "key": "encyclopedia.detail.discovered",
+      "value": "已发现"
+    },
+    {
+      "key": "encyclopedia.detail.not_discovered",
+      "value": "未发现"
+    },
+    {
+      "key": "encyclopedia.detail.description",
+      "value": "详细描述"
+    },
+    {
+      "key": "encyclopedia.detail.appearance",
+      "value": "外观特征"
+    },
+    {
+      "key": "encyclopedia.detail.physical_properties",
+      "value": "物理属性"
+    },
+    {
+      "key": "encyclopedia.detail.mohs_hardness",
+      "value": "莫氏硬度"
+    },
+    {
+      "key": "encyclopedia.detail.density",
+      "value": "密度"
+    },
+    {
+      "key": "encyclopedia.detail.uv_fluorescence",
+      "value": "紫外荧光"
+    },
+    {
+      "key": "encyclopedia.detail.magnetism",
+      "value": "磁性"
+    },
+    {
+      "key": "encyclopedia.detail.polarized_color",
+      "value": "偏光颜色"
+    },
+    {
+      "key": "encyclopedia.detail.acid_reaction",
+      "value": "酸性反应"
+    },
+    {
+      "key": "encyclopedia.detail.acid_reaction_yes",
+      "value": "有反应"
+    },
+    {
+      "key": "encyclopedia.detail.acid_reaction_no",
+      "value": "无反应"
+    },
+    {
+      "key": "encyclopedia.detail.collection_info",
+      "value": "收集信息"
+    },
+    {
+      "key": "encyclopedia.detail.first_discovered",
+      "value": "首次发现"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_count",
+      "value": "发现次数"
+    },
+    {
+      "key": "encyclopedia.detail.times",
+      "value": "次"
+    },
+    {
+      "key": "encyclopedia.type.mineral",
+      "value": "矿物"
+    },
+    {
+      "key": "encyclopedia.type.fossil",
+      "value": "化石"
+    },
+    {
+      "key": "encyclopedia.rarity.common",
+      "value": "常见"
+    },
+    {
+      "key": "encyclopedia.rarity.uncommon",
+      "value": "少见"
+    },
+    {
+      "key": "encyclopedia.rarity.rare",
+      "value": "稀有"
+    },
+    {
+      "key": "encyclopedia.rarity.unknown",
+      "value": "未知"
+    },
+    {
+      "key": "encyclopedia.entry_list.title",
+      "value": "条目列表"
+    },
+    {
+      "key": "rock.conglomerate",
+      "value": "砾岩"
+    },
+    {
+      "key": "rock.volcanic_ash",
+      "value": "火山灰"
+    },
+    {
+      "key": "rock.siltstone_sandstone",
+      "value": "粉砂岩/砂岩"
+    },
+    {
+      "key": "rock.sandstone_siltstone",
+      "value": "砂岩/粉砂岩"
+    },
+    {
+      "key": "rock.dacitic_welded_tuff",
+      "value": "英安岩质熔结凝灰岩"
+    },
+    {
+      "key": "rock.siltstone_fine_sandstone",
+      "value": "粉砂岩/细粒砂岩"
+    },
+    {
+      "key": "rock.tuff",
+      "value": "凝灰岩"
+    },
+    {
+      "key": "rock.tuffaceous_sandstone",
+      "value": "凝灰质砂岩"
+    },
+    {
+      "key": "rock.siltstone",
+      "value": "粉砂岩"
+    },
+    {
+      "key": "encyclopedia.system.title",
+      "value": "地质图鉴系统"
+    },
+    {
+      "key": "encyclopedia.layer.aoba_mountain",
+      "value": "青葉山層"
+    },
+    {
+      "key": "encyclopedia.layer.dainenji",
+      "value": "大年寺層"
+    },
+    {
+      "key": "encyclopedia.layer.mukoyama",
+      "value": "向山層"
+    },
+    {
+      "key": "encyclopedia.layer.hirose_river_tuff",
+      "value": "広瀬川凝灰岩部層"
+    },
+    {
+      "key": "encyclopedia.layer.ryunokuchi",
+      "value": "竜ノ口層"
+    },
+    {
+      "key": "encyclopedia.layer.kameoka",
+      "value": "亀岡層"
+    },
+    {
+      "key": "encyclopedia.property.none",
+      "value": "无"
+    },
+    {
+      "key": "encyclopedia.property.non_magnetic",
+      "value": "无磁性"
+    },
+    {
+      "key": "encyclopedia.property.colorless_green",
+      "value": "无色/无绿色"
+    },
+    {
+      "key": "encyclopedia.property.non_reactive",
+      "value": "无反应"
+    },
+    {
+      "key": "encyclopedia.property.diamagnetic",
+      "value": "无（抗磁性）"
+    },
+    {
+      "key": "encyclopedia.property.colorless",
+      "value": "无色"
+    },
+    {
+      "key": "encyclopedia.property.weak",
+      "value": "弱"
+    },
+    {
+      "key": "encyclopedia.property.strong",
+      "value": "强"
+    },
+    {
+      "key": "mineral.description.plagioclase",
+      "value": "通常呈白色或灰色，有时带淡蓝或淡绿；玻璃光泽。"
+    },
+    {
+      "key": "mineral.description.pyroxene",
+      "value": "呈深绿色、褐色至黑色等深色，柱状晶形，光泽玻璃至暗淡。"
+    },
+    {
+      "key": "mineral.description.amphibole",
+      "value": "颜色多为黑色、深绿色或深褐色，玻璃光泽。"
+    },
+    {
+      "key": "mineral.description.magnetite_simple",
+      "value": "颜色通常黑色或灰色带棕色调，具金属光泽。"
+    },
+    {
+      "key": "mineral.description.magnetite_detailed",
+      "value": "颜色通常黑色或灰色带棕色调，具金属光泽；断口不平，条痕黑色。"
+    },
+    {
+      "key": "mineral.description.olivine",
+      "value": "颜色多为橄榄绿至黄褐色，玻璃光泽，条痕白色，铁含量高的样品表面会氧化呈红色。"
+    },
+    {
+      "key": "mineral.description.quartz",
+      "value": "呈无色、粉色、橙色、白色、绿色、黄色、蓝色、紫色或深褐色等多种颜色，断口贝壳状，玻璃光泽，条痕白色。"
+    },
+    {
+      "key": "mineral.description.feldspar",
+      "value": "颜色可为粉红、白、灰、褐或蓝色，玻璃光泽，条痕白色。"
+    },
+    {
+      "key": "mineral.description.biotite",
+      "value": "颜色黑色至褐色或黄色，具玻璃至珍珠光泽，条痕白色，晶形常呈假六方片状。"
+    },
+    {
+      "key": "mineral.description.zircon_short",
+      "value": "颜色深褐、黑、灰、浅褐、褐红、橙、粉红等多种，条痕无色，光泽油脂至金刚光泽。断口贝壳状至不平，晶体常为短柱状或水磨圆粒。"
+    },
+    {
+      "key": "mineral.description.zircon_long",
+      "value": "颜色深褐、黑、灰、浅褐、褐红、橙、粉红等多种，条痕无色，光泽油脂至金刚光泽，断口贝壳状至不平，晶体常为短柱状或水磨圆粒。"
+    },
+    {
+      "key": "mineral.description.volcanic_glass",
+      "value": "通常黑色，也有绿色或褐色，断口呈典型贝壳状，质地光滑玻璃状，玻璃光泽。"
+    },
+    {
+      "key": "mineral.description.hypersthene",
+      "value": "颜色灰色、褐色或绿色，断口不平，光泽玻璃至珍珠，条痕灰白或绿灰，表面有铜红色金属光泽。"
+    },
+    {
+      "key": "mineral.description.garnet",
+      "value": "颜色几乎涵盖所有色谱，常见为红色；晶体为菱形十二面体或立方体，断口贝壳状至不平，光泽玻璃或树脂光泽，条痕白色。"
+    },
+    {
+      "key": "mineral.description.clay_minerals",
+      "value": "以含水铝硅酸盐为主的细粒矿物集合体，质地柔软，湿润时具有可塑性；颜色多为白色、灰色或浅褐色，光泽土状，常呈土状或粉末状集合体。"
+    },
+    {
+      "key": "mineral.description.heavy_minerals",
+      "value": "重矿物指密度较大的矿物（如锆石、钛磁铁矿、石榴石等）的集合体，常出现在砂中，颜色通常较深，粒度细小，具光泽。"
+    },
+    {
+      "key": "encyclopedia.property.colorless_fade",
+      "value": "无色/无褪色"
+    },
+    {
+      "key": "encyclopedia.property.mostly_non_fluorescent",
+      "value": "大多数不发光"
+    },
+    {
+      "key": "encyclopedia.property.mostly_non_fluorescent_quartz",
+      "value": "大多数不发光（部分石英可发光）"
+    },
+    {
+      "key": "encyclopedia.property.weak_magnetic",
+      "value": "弱磁性"
+    },
+    {
+      "key": "encyclopedia.property.weak_magnetic_paramagnetic",
+      "value": "弱磁性（顺磁性）"
+    },
+    {
+      "key": "encyclopedia.property.strong_magnetic",
+      "value": "强磁性"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism",
+      "value": "强变色"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism_green_brown",
+      "value": "强变色：绿色到深绿色或棕色"
+    },
+    {
+      "key": "encyclopedia.property.no_pleochroism",
+      "value": "无变色"
+    },
+    {
+      "key": "encyclopedia.property.weak_pleochroism",
+      "value": "弱变色"
+    },
+    {
+      "key": "encyclopedia.property.complex_pleochroism_xyz",
+      "value": "X=浅绿/浅褐黄，Y=浅褐/浅黄绿/紫色，Z=浅绿/灰绿/紫色"
+    },
+    {
+      "key": "encyclopedia.property.opaque",
+      "value": "不透明"
+    },
+    {
+      "key": "encyclopedia.property.variable",
+      "value": "多样"
+    },
+    {
+      "key": "encyclopedia.property.variable_composition_dependent",
+      "value": "多样/取决于组成"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism_opaque",
+      "value": "强变色/不透明"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism_brown_green",
+      "value": "强变色（棕色/绿色）"
+    },
+    {
+      "key": "encyclopedia.property.none_light_color",
+      "value": "无/浅色"
+    },
+    {
+      "key": "encyclopedia.property.none_glassy",
+      "value": "无/玻璃质"
+    },
+    {
+      "key": "encyclopedia.property.no_color_change",
+      "value": "无变色"
+    },
+    {
+      "key": "encyclopedia.property.colorless_no_change",
+      "value": "无色/无变色"
+    },
+    {
+      "key": "encyclopedia.property.none_glassy_quality",
+      "value": "无（玻璃质）"
+    },
+    {
+      "key": "encyclopedia.property.mg_rich_fe_rich_pleochroism",
+      "value": "无（镁富石）；Fe富含样品α=γ淡黄到β橙黄"
+    },
+    {
+      "key": "encyclopedia.property.gray_pink_green_pleochroism",
+      "value": "灰色至粉红/绿色变色"
+    },
+    {
+      "key": "encyclopedia.property.pink_green_pleochroism",
+      "value": "粉红到绿色变色"
+    },
+    {
+      "key": "fossil.description.plant_remains",
+      "value": "在该地层中发现的植物遗骸化石，保存了古代植物的组织结构。"
+    },
+    {
+      "key": "fossil.description.planktonic_diatoms",
+      "value": "在该地层中发现的浮游性硅藻化石，是古海洋环境的重要指示生物。"
+    },
+    {
+      "key": "fossil.description.foraminifera",
+      "value": "在该地层中发现的有孔虫化石，是古海洋深度和温度的指示生物。"
+    },
+    {
+      "key": "fossil.description.shellfish",
+      "value": "在该地层中发现的贝类化石，反映了古代海洋或湖泊环境。"
+    },
+    {
+      "key": "fossil.description.freshwater_shellfish",
+      "value": "在该地层中发现的淡水贝类化石，指示古代淡水湖泊环境。"
+    },
+    {
+      "key": "fossil.description.plant_leaf_fossils",
+      "value": "在该地层中发现的叶片化石，保存了古代植物的叶片形态特征。"
+    },
+    {
+      "key": "fossil.description.pollen_fossils",
+      "value": "在该地层中发现的花粉化石，是重建古植被和古气候的重要依据。"
+    },
+    {
+      "key": "fossil.description.fish_fossils",
+      "value": "在该地层中发现的鱼类化石，反映了古代水生生态系统。"
+    },
+    {
+      "key": "fossil.description.silicified_wood",
+      "value": "在该地层中发现的硅化木化石，是古代森林环境的直接证据。"
+    },
+    {
+      "key": "fossil.description.sendai_clam",
+      "value": "在该地层中发现的仙台蛤化石，是该地区特有的古生物种类。"
+    },
+    {
+      "key": "fossil.description.takahashi_scallop",
+      "value": "在该地层中发现的高桥扇贝化石，指示温带海洋环境。"
+    },
+    {
+      "key": "fossil.description.cetacean_fossils",
+      "value": "在该地层中发现的鲸类化石，是古海洋大型哺乳动物的珍贵遗存。"
+    },
+    {
+      "key": "fossil.description.ancient_coral",
+      "value": "在该地层中发现的古珊瑚化石，指示温暖的浅海环境。"
+    },
+    {
+      "key": "fossil.description.ancient_octopus",
+      "value": "在该地层中发现的古章鱼化石，是软体动物演化的重要证据。"
+    },
+    {
+      "key": "fossil.description.ancient_starfish",
+      "value": "在该地层中发现的古海星化石，反映了古代海底生态系统。"
+    },
+    {
+      "key": "fossil.description.ammonite",
+      "value": "在该地层中发现的菊石化石，是中生代海洋的标准化石。"
+    },
+    {
+      "key": "fossil.description.trilobite",
+      "value": "在该地层中发现的三叶虫化石，是古生代海洋生物的代表。"
+    },
+    {
+      "key": "fossil.description.generic",
+      "value": "在该地层中发现的化石，为了解古代生物和环境提供了重要信息。"
     }
   ]
 }
