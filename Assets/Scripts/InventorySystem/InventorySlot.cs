@@ -145,14 +145,38 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
             
             if (sample.Icon != null)
             {
+                // 使用样本的预生成图标
                 sampleIcon.sprite = sample.Icon;
-                sampleIcon.color = Color.white;
+                sampleIcon.color = Color.white; // 预生成图标已包含颜色
+                Debug.Log($"🖼️ 使用预生成图标: {sample.Icon.name}");
             }
             else
             {
-                // 使用默认图标或颜色表示
-                sampleIcon.sprite = null;
-                sampleIcon.color = GetSampleColor(sample);
+                // 使用动态图标生成系统
+                if (SampleIconGenerator.Instance != null)
+                {
+                    Sprite dynamicIcon = SampleIconGenerator.Instance.GenerateIconForSample(sample);
+                    if (dynamicIcon != null)
+                    {
+                        sampleIcon.sprite = dynamicIcon;
+                        sampleIcon.color = Color.white; // 动态图标已包含颜色，不需要额外着色
+                        Debug.Log($"🖼️ 使用动态生成图标: {dynamicIcon.name}");
+                    }
+                    else
+                    {
+                        // 生成失败，使用颜色方案
+                        sampleIcon.sprite = CreateWhiteSquareSprite();
+                        sampleIcon.color = GetSampleColor(sample);
+                        Debug.LogWarning($"⚠️ 图标生成失败，使用颜色方案");
+                    }
+                }
+                else
+                {
+                    // 没有图标生成器，使用颜色方案
+                    sampleIcon.sprite = CreateWhiteSquareSprite();
+                    sampleIcon.color = GetSampleColor(sample);
+                    Debug.LogWarning($"⚠️ 图标生成器不存在，使用颜色方案");
+                }
             }
         }
         
@@ -199,6 +223,21 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
     }
     
     /// <summary>
+    /// 创建白色方块sprite用于显示颜色
+    /// </summary>
+    Sprite CreateWhiteSquareSprite()
+    {
+        // 创建一个简单的1x1白色texture
+        Texture2D texture = new Texture2D(1, 1);
+        texture.SetPixel(0, 0, Color.white);
+        texture.Apply();
+        
+        // 创建sprite
+        Sprite sprite = Sprite.Create(texture, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f));
+        return sprite;
+    }
+    
+    /// <summary>
     /// 获取样本颜色（当没有图标时使用）
     /// </summary>
     Color GetSampleColor(SampleItem sample)
@@ -214,7 +253,8 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
         return sample.sourceToolID switch
         {
             "1000" => new Color(0.8f, 0.6f, 0.4f), // 简易钻探 - 棕色
-            "1001" => new Color(0.6f, 0.8f, 0.4f), // 钻塔 - 绿色
+            "1001" => new Color(0.6f, 0.8f, 0.4f), // 钻塔 - 绿色  
+            "1002" => new Color(0.8f, 0.4f, 0.6f), // 地质锤 - 粉色
             _ => Color.gray
         };
     }

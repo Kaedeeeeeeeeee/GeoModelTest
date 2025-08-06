@@ -109,17 +109,34 @@ public class WarehouseItemSlot : MonoBehaviour
             
             if (sample.Icon != null)
             {
+                // 使用样本的预生成图标
                 itemIcon.sprite = sample.Icon;
                 itemIcon.color = Color.white;
             }
             else
             {
-                // 创建一个简单的白色方块sprite来显示颜色
-                if (itemIcon.sprite == null)
+                // 使用动态图标生成系统
+                if (SampleIconGenerator.Instance != null)
                 {
-                    itemIcon.sprite = CreateWhiteSquareSprite();
+                    Sprite dynamicIcon = SampleIconGenerator.Instance.GenerateIconForSample(sample);
+                    if (dynamicIcon != null)
+                    {
+                        itemIcon.sprite = dynamicIcon;
+                        itemIcon.color = Color.white;
+                    }
+                    else
+                    {
+                        // 生成失败，使用颜色方案
+                        itemIcon.sprite = CreateWhiteSquareSprite();
+                        itemIcon.color = GetSampleColor(sample);
+                    }
                 }
-                itemIcon.color = GetSampleColor(sample);
+                else
+                {
+                    // 没有图标生成器，使用颜色方案
+                    itemIcon.sprite = CreateWhiteSquareSprite();
+                    itemIcon.color = GetSampleColor(sample);
+                }
             }
         }
         
@@ -213,7 +230,6 @@ public class WarehouseItemSlot : MonoBehaviour
             "1000" => new Color(0.8f, 0.6f, 0.4f), // 简易钻探 - 棕色
             "1001" => new Color(0.6f, 0.8f, 0.4f), // 钻塔 - 绿色
             "1002" => new Color(0.8f, 0.4f, 0.6f), // 地质锤 - 粉色
-            "1003" => new Color(0.4f, 0.6f, 0.8f), // 钻探车 - 蓝色
             _ => Color.gray
         };
     }

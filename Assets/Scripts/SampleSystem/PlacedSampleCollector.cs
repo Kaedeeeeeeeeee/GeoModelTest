@@ -44,47 +44,20 @@ public class PlacedSampleCollector : MonoBehaviour
     }
     
     /// <summary>
-    /// 启动时检查Input System状态
+    /// 启动时检查Input System状态（简化版）
     /// </summary>
     System.Collections.IEnumerator CheckInputSystemOnStart()
     {
         yield return new WaitForSeconds(1f); // 等待1秒确保所有系统初始化完成
         
-        Debug.Log("=== Input System 启动检查 ===");
-        
-        if (Keyboard.current != null)
+        #if UNITY_EDITOR
+        if (Keyboard.current == null)
         {
-            Debug.Log("✅ Keyboard.current 可用");
-            Debug.Log($"✅ E键设备: {Keyboard.current.eKey.device.name}");
-        }
-        else
-        {
-            Debug.LogError("❌ Keyboard.current 为null - Input System未正确初始化");
-            
-            // 尝试强制启用Input System（不使用try-catch避免yield问题）
+            Debug.LogWarning("[PlacedSampleCollector] Input System未正确初始化");
+            // 尝试强制启用
             UnityEngine.InputSystem.InputSystem.EnableDevice(UnityEngine.InputSystem.Keyboard.current);
-            Debug.Log("尝试强制启用键盘设备");
-            
-            yield return new WaitForSeconds(0.5f);
-            
-            if (Keyboard.current != null)
-            {
-                Debug.Log("✅ 强制启用后 Keyboard.current 现在可用");
-            }
-            else
-            {
-                Debug.LogError("❌ 强制启用失败，Keyboard.current 仍为null");
-            }
         }
-        
-        // 检查InputSystem是否启用
-        var inputSystemPackage = UnityEngine.InputSystem.InputSystem.devices;
-        Debug.Log($"Input System设备数量: {inputSystemPackage.Count}");
-        
-        foreach (var device in inputSystemPackage)
-        {
-            Debug.Log($"Input设备: {device.name} - {device.GetType().Name}");
-        }
+        #endif
     }
     
     void Update()
@@ -93,18 +66,7 @@ public class PlacedSampleCollector : MonoBehaviour
         HandleInput();
         UpdatePromptPosition();
         
-        // 额外调试：每帧检查Input System状态（只在玩家范围内时）
-        if (playerInRange && Time.frameCount % 60 == 0) // 每秒检查一次
-        {
-            if (Keyboard.current != null)
-            {
-                Debug.Log($"Input System状态正常，E键当前状态: pressed={Keyboard.current.eKey.isPressed}, wasPressedThisFrame={Keyboard.current.eKey.wasPressedThisFrame}");
-            }
-            else
-            {
-                Debug.LogError("Keyboard.current为null！");
-            }
-        }
+        // Input System状态检查已简化，仅在编辑器中输出错误
     }
     
     /// <summary>
@@ -120,7 +82,10 @@ public class PlacedSampleCollector : MonoBehaviour
             promptText.text = $"[E] 收回 {originalSampleData.displayName}";
         }
         
-        Debug.Log($"PlacedSampleCollector已设置: {originalSampleData?.displayName}");
+        #if UNITY_EDITOR
+        if (originalSampleData != null)
+            Debug.Log($"PlacedSampleCollector已设置: {originalSampleData.displayName}");
+        #endif
     }
     
     /// <summary>
@@ -130,12 +95,14 @@ public class PlacedSampleCollector : MonoBehaviour
     {
         if (originalSampleData == null)
         {
-            Debug.LogWarning($"PlacedSampleCollector ({gameObject.name}) 缺少样本数据！");
+            Debug.LogError($"PlacedSampleCollector ({gameObject.name}) 缺少样本数据！");
         }
+        #if UNITY_EDITOR
         else if (originalSampleData.currentLocation != SampleLocation.InWorld)
         {
             Debug.LogWarning($"样本 {originalSampleData.displayName} 的位置状态不正确: {originalSampleData.currentLocation}");
         }
+        #endif
     }
     
     /// <summary>
@@ -288,7 +255,7 @@ public class PlacedSampleCollector : MonoBehaviour
             {
                 nearbyPlayer = collider.gameObject;
                 foundPlayer = true;
-                Debug.Log($"OverlapSphere检测到玩家: {collider.name}");
+                // 检测到玩家 - 简化输出
                 break;
             }
         }
@@ -304,7 +271,7 @@ public class PlacedSampleCollector : MonoBehaviour
                 {
                     nearbyPlayer = player.gameObject;
                     foundPlayer = true;
-                    Debug.Log($"直接距离检测到玩家: {player.name}, 距离: {distance:F2}m");
+                    // 找到玩家
                 }
             }
         }
@@ -325,7 +292,6 @@ public class PlacedSampleCollector : MonoBehaviour
     void OnPlayerEnter()
     {
         playerInRange = true;
-        Debug.Log($"玩家进入样本交互范围: {originalSampleData?.displayName}");
         ShowInteractionPrompt();
         EnableHighlight();
     }
@@ -336,7 +302,6 @@ public class PlacedSampleCollector : MonoBehaviour
     void OnPlayerExit()
     {
         playerInRange = false;
-        Debug.Log($"玩家离开样本交互范围: {originalSampleData?.displayName}");
         HideInteractionPrompt();
         DisableHighlight();
     }
@@ -497,26 +462,15 @@ public class PlacedSampleCollector : MonoBehaviour
             
             if (eKey.wasPressedThisFrame)
             {
-                eKeyPressed = true;
-                Debug.Log("✅ E键按下 - 新Input System检测到");
-            }
-            
-            // 每帧检查E键状态（用于调试）
-            if (eKey.isPressed)
-            {
-                Debug.Log($"⌨️ E键当前被按住，wasPressedThisFrame: {eKey.wasPressedThisFrame}");
+                CollectPlacedSample();
             }
         }
-        else
+        #if UNITY_EDITOR
+        else if (Time.frameCount % 300 == 0) // 每5秒检查一次
         {
             Debug.LogWarning("❌ Keyboard.current为null，Input System可能未正确初始化");
         }
-        
-        if (eKeyPressed)
-        {
-            Debug.Log("准备收回样本");
-            CollectPlacedSample();
-        }
+        #endif
     }
     
     /// <summary>
@@ -524,7 +478,7 @@ public class PlacedSampleCollector : MonoBehaviour
     /// </summary>
     void CollectPlacedSample()
     {
-        Debug.Log("CollectPlacedSample() 被调用");
+        // 收回样本逻辑
         
         if (originalSampleData == null)
         {
@@ -533,7 +487,6 @@ public class PlacedSampleCollector : MonoBehaviour
             return;
         }
         
-        Debug.Log($"准备收回样本: {originalSampleData.displayName} (ID: {originalSampleData.sampleID})");
         
         // 查找样本背包
         var inventory = SampleInventory.Instance;
@@ -544,29 +497,24 @@ public class PlacedSampleCollector : MonoBehaviour
             return;
         }
         
-        Debug.Log("找到样本背包系统");
         
         // 检查背包是否还有空间
         if (!inventory.CanAddSample())
         {
             ShowMessage("背包已满，无法收回样本！");
-            Debug.LogWarning("背包已满");
             return;
         }
         
-        Debug.Log("背包有空间，准备添加样本");
         
         // 将样本重新添加到背包
         if (inventory.AddSampleBackToInventory(originalSampleData))
         {
-            Debug.Log("样本成功添加回背包");
             ShowCollectionFeedback();
             
             // 从场景跟踪器中注销
             PlacedSampleTracker.UnregisterPlacedSample(gameObject);
             
             // 收回成功，销毁世界中的样本
-            Debug.Log("准备销毁世界中的样本对象");
             Destroy(gameObject);
         }
         else
@@ -590,7 +538,6 @@ public class PlacedSampleCollector : MonoBehaviour
             audioSource.Play();
         }
         
-        Debug.Log($"样本已收回: {originalSampleData.displayName} (ID: {originalSampleData.sampleID})");
     }
     
     /// <summary>
@@ -654,15 +601,15 @@ public class PlacedSampleCollector : MonoBehaviour
     }
     
     /// <summary>
-    /// 调试收回系统状态
+    /// 调试收回系统状态（仅编辑器模式）
     /// </summary>
     [ContextMenu("调试收回系统")]
     void DebugCollectionSystem()
     {
+        #if UNITY_EDITOR
         Debug.Log("=== 收回系统调试信息 ===");
         Debug.Log($"playerInRange: {playerInRange}");
         Debug.Log($"originalSampleData: {(originalSampleData != null ? originalSampleData.displayName : "null")}");
-        Debug.Log($"interactionPrompt: {(interactionPrompt != null ? "存在" : "null")}");
         Debug.Log($"SampleInventory.Instance: {(SampleInventory.Instance != null ? "存在" : "null")}");
         
         if (nearbyPlayer != null)
@@ -670,44 +617,6 @@ public class PlacedSampleCollector : MonoBehaviour
             float distance = Vector3.Distance(transform.position, nearbyPlayer.transform.position);
             Debug.Log($"玩家距离: {distance:F2}m (交互范围: {interactionRange}m)");
         }
-        else
-        {
-            Debug.Log("未检测到附近玩家");
-        }
-        
-        // 手动检测玩家
-        FirstPersonController player = FindFirstObjectByType<FirstPersonController>();
-        if (player != null)
-        {
-            float distance = Vector3.Distance(transform.position, player.transform.position);
-            Debug.Log($"手动查找玩家距离: {distance:F2}m");
-        }
-        
-        // 检查Input System
-        if (Keyboard.current != null)
-        {
-            Debug.Log("Input System 可用");
-            Debug.Log($"E键当前状态: pressed={Keyboard.current.eKey.isPressed}, wasPressedThisFrame={Keyboard.current.eKey.wasPressedThisFrame}");
-        }
-        else
-        {
-            Debug.Log("Input System 不可用 - Keyboard.current为null");
-        }
-        
-        // 检查是否有其他组件可能阻止输入
-        FirstPersonController fpController = FindFirstObjectByType<FirstPersonController>();
-        if (fpController != null)
-        {
-            Debug.Log($"FirstPersonController enabled: {fpController.enabled}");
-        }
-        
-        // 检查Canvas和UI状态
-        Canvas[] allCanvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
-        int activeCanvases = 0;
-        foreach (Canvas canvas in allCanvases)
-        {
-            if (canvas.gameObject.activeInHierarchy) activeCanvases++;
-        }
-        Debug.Log($"活跃的Canvas数量: {activeCanvases}");
+        #endif
     }
 }

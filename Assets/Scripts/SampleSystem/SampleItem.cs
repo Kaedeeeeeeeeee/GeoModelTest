@@ -138,8 +138,9 @@ public class SampleItem : IInventoryItem
         // 保存原始模型数据
         item.SaveOriginalModelData(geologicalSample);
         
-        // 生成预览图标
-        item.GeneratePreviewIcon(geologicalSample);
+        // 延迟生成预览图标，确保地质层数据已提取完成
+        // 将在 SampleCollector.SetupSampleData() 中强制重新生成图标
+        item.previewIcon = null; // 明确设置为null，强制后续重新生成
         
         return item;
     }
@@ -254,18 +255,65 @@ public class SampleItem : IInventoryItem
     /// </summary>
     private void SetDefaultGeologicalData(GameObject geologicalSample)
     {
+        // 尝试从样本GameObject获取材质颜色
+        Color extractedColor = ExtractColorFromSample(geologicalSample);
+        
         layerCount = 1;
         var defaultLayer = new LayerInfo
         {
-            layerName = "混合地质层",
+            layerName = "未命名地层",
             thickness = totalDepth,
             depthStart = 0f,
             depthEnd = totalDepth,
-            layerColor = new Color(0.6f, 0.3f, 0.1f), // 棕色
+            layerColor = extractedColor,
             materialName = "Default",
-            layerDescription = "默认地质层数据"
+            layerDescription = "从样本外观提取的默认地质层数据"
         };
         geologicalLayers.Add(defaultLayer);
+        
+        Debug.Log($"🔧 默认地质数据，颜色: #{ColorUtility.ToHtmlStringRGBA(extractedColor)}");
+    }
+    
+    /// <summary>
+    /// 从样本GameObject提取颜色
+    /// </summary>
+    private Color ExtractColorFromSample(GameObject geologicalSample)
+    {
+        if (geologicalSample != null)
+        {
+            // 尝试从MeshRenderer获取材质颜色
+            MeshRenderer renderer = geologicalSample.GetComponent<MeshRenderer>();
+            if (renderer != null && renderer.material != null)
+            {
+                Color materialColor = renderer.material.color;
+                // 如果材质颜色不是白色，使用它
+                if (materialColor != Color.white && materialColor.a > 0.1f)
+                {
+                    Debug.Log($"🎨 提取MeshRenderer颜色: #{ColorUtility.ToHtmlStringRGBA(materialColor)}");
+                    return materialColor;
+                }
+            }
+            
+            // 尝试从子对象的MeshRenderer获取颜色
+            MeshRenderer[] childRenderers = geologicalSample.GetComponentsInChildren<MeshRenderer>();
+            foreach (var childRenderer in childRenderers)
+            {
+                if (childRenderer.material != null)
+                {
+                    Color childColor = childRenderer.material.color;
+                    if (childColor != Color.white && childColor.a > 0.1f)
+                    {
+                        Debug.Log($"🎨 子对象颜色: #{ColorUtility.ToHtmlStringRGBA(childColor)}");
+                        return childColor;
+                    }
+                }
+            }
+        }
+        
+        // 如果无法提取有效颜色，使用合理的地质层默认颜色
+        Color defaultColor = new Color(0.6f, 0.4f, 0.2f); // 土褐色
+        Debug.LogWarning($"⚠️ 无法提取颜色，默认: #{ColorUtility.ToHtmlStringRGBA(defaultColor)}");
+        return defaultColor;
     }
     
     /// <summary>
@@ -291,7 +339,9 @@ public class SampleItem : IInventoryItem
             depthStart = 0f;
             depthEnd = 2f;
             drillIndex = 0;
+            #if UNITY_EDITOR && DEBUG_SAMPLE_DEPTH
             Debug.Log("设置普通钻探工具深度信息: 0m - 2m");
+            #endif
             return;
         }
         
@@ -302,7 +352,9 @@ public class SampleItem : IInventoryItem
             depthStart = 0f;
             depthEnd = 2f;
             drillIndex = 0;
+            #if UNITY_EDITOR && DEBUG_SAMPLE_DEPTH
             Debug.Log("钻塔工具无深度标记，使用默认深度信息: 0m - 2m");
+            #endif
             return;
         }
         
@@ -330,11 +382,34 @@ public class SampleItem : IInventoryItem
     /// </summary>
     private Color GetLayerColor(GeometricSampleReconstructor.LayerSegment segment)
     {
+        // 优先使用源地质层的颜色，这是真实的地质层颜色
+        if (segment.sourceLayer != null)
+        {
+            Color layerColor = segment.sourceLayer.layerColor;
+            
+            // 如果地质层颜色不是默认的白色，使用它
+            if (layerColor != Color.white && layerColor.a > 0.1f)
+            {
+                Debug.Log($"🎨 地质层颜色: {segment.sourceLayer.layerName} - #{ColorUtility.ToHtmlStringRGBA(layerColor)}");
+                return layerColor;
+            }
+        }
+        
+        // 备选方案：检查材质颜色（但要避免白色材质）
         if (segment.material != null)
         {
-            return segment.material.color;
+            Color materialColor = segment.material.color;
+            if (materialColor != Color.white && materialColor.a > 0.1f)
+            {
+                Debug.Log($"🎨 材质颜色: #{ColorUtility.ToHtmlStringRGBA(materialColor)}");
+                return materialColor;
+            }
         }
-        return segment.sourceLayer?.layerColor ?? Color.gray;
+        
+        // 最后备选：使用合理的默认颜色而不是纯白色
+        Color defaultColor = new Color(0.6f, 0.4f, 0.2f); // 土褐色
+        Debug.LogWarning($"⚠️ 使用默认颜色: #{ColorUtility.ToHtmlStringRGBA(defaultColor)}");
+        return defaultColor;
     }
     
     /// <summary>
@@ -354,9 +429,17 @@ public class SampleItem : IInventoryItem
     /// </summary>
     private void GeneratePreviewIcon(GameObject geologicalSample)
     {
-        // TODO: 实现截图功能生成预览图标
-        // 暂时使用默认图标
-        previewIcon = null;
+        // 使用新的动态图标生成系统
+        if (SampleIconGenerator.Instance != null)
+        {
+            previewIcon = SampleIconGenerator.Instance.GenerateIconForSample(this);
+            Debug.Log($"为样本 {displayName} 生成了动态图标");
+        }
+        else
+        {
+            Debug.LogWarning("SampleIconGenerator 实例未找到，使用默认图标");
+            previewIcon = null;
+        }
     }
     
     /// <summary>

@@ -8,7 +8,7 @@ public class ManualSampleSetup : MonoBehaviour
     [Header("设置选项")]
     public bool autoSetupOnStart = true;
     public bool includeExistingSamples = true;
-    public bool enableDebugMode = true;
+    public bool enableDebugMode = false;
     
     [Header("搜索关键词")]
     public string[] sampleKeywords = { "Sample", "样本", "Drill", "钻探", "Geometric" };

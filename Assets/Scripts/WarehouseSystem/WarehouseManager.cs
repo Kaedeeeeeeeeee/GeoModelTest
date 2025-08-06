@@ -8,7 +8,7 @@ using System.IO;
 public class WarehouseManager : MonoBehaviour
 {
     [Header("仓库设置")]
-    public bool enableDebugLog = true;
+    public bool enableDebugLog = false;
     public bool autoSave = true;
     public float autoSaveInterval = 60f; // 自动保存间隔（秒）
     

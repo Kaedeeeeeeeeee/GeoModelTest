@@ -40,7 +40,7 @@ namespace Encyclopedia
         
         [Header("设置")]
         [SerializeField] private Key toggleKey = Key.O;
-        [SerializeField] private bool showDebugInfo = true;
+        [SerializeField] private bool showDebugInfo = false;
         [SerializeField] private bool autoCreateDataSystems = true;
         
         private bool isOpen = false;
@@ -101,9 +101,9 @@ namespace Encyclopedia
             
             if (showDebugInfo)
             {
-                Debug.Log("图鉴管理器已启动，按O键开关");
+                if (showDebugInfo) Debug.Log("图鉴管理器已启动，按O键开关");
                 if (firstPersonController != null)
-                    Debug.Log("找到FirstPersonController，图鉴打开时将禁用鼠标控制");
+                    if (showDebugInfo) Debug.Log("找到FirstPersonController，图鉴打开时将禁用鼠标控制");
                 else
                     Debug.LogWarning("未找到FirstPersonController，无法禁用鼠标控制");
             }
@@ -141,7 +141,7 @@ namespace Encyclopedia
                 headerText.text = systemTitle;
                 if (showDebugInfo)
                 {
-                    Debug.Log($"主标题本地化: 'encyclopedia.system.title' -> '{systemTitle}'");
+                    if (showDebugInfo) Debug.Log($"主标题本地化: 'encyclopedia.system.title' -> '{systemTitle}'");
                 }
             }
             
@@ -155,7 +155,7 @@ namespace Encyclopedia
                     text.text = layerText;
                     if (showDebugInfo && i < 3)
                     {
-                        Debug.Log($"地层按钮 {i} 本地化: '{layerNameKeys[i]}' -> '{layerText}'");
+                        if (showDebugInfo) Debug.Log($"地层按钮 {i} 本地化: '{layerNameKeys[i]}' -> '{layerText}'");
                     }
                 }
             }
@@ -234,7 +234,7 @@ namespace Encyclopedia
                 canvasGO.AddComponent<GraphicRaycaster>();
                 
                 if (showDebugInfo)
-                    Debug.Log("创建了图鉴Canvas");
+                    if (showDebugInfo) Debug.Log("创建了图鉴Canvas");
             }
         }
         
@@ -522,8 +522,8 @@ namespace Encyclopedia
             
             if (showDebugInfo)
             {
-                Debug.Log($"条目列表容器创建完成: {contentGO.name}");
-                Debug.Log($"容器初始RectTransform: {contentRect.rect}");
+                if (showDebugInfo) Debug.Log($"条目列表容器创建完成: {contentGO.name}");
+                if (showDebugInfo) Debug.Log($"容器初始RectTransform: {contentRect.rect}");
             }
         }
 
@@ -664,9 +664,9 @@ namespace Encyclopedia
                 
                 if (showDebugInfo)
                 {
-                    Debug.Log("✅ 自动创建Model3DViewer组件");
-                    Debug.Log($"  - Model3DViewer GameObject: {model3DViewer.gameObject.name}");
-                    Debug.Log($"  - 父对象: {model3DViewer.transform.parent?.name}");
+                    if (showDebugInfo) Debug.Log("✅ 自动创建Model3DViewer组件");
+                    if (showDebugInfo) Debug.Log($"  - Model3DViewer GameObject: {model3DViewer.gameObject.name}");
+                    if (showDebugInfo) Debug.Log($"  - 父对象: {model3DViewer.transform.parent?.name}");
                     Debug.Log($"  - RectTransform: {model3DViewer.GetComponent<RectTransform>() != null}");
                 }
             }
