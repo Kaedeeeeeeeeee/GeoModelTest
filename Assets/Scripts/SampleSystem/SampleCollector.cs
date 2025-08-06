@@ -67,6 +67,35 @@ public class SampleCollector : MonoBehaviour
             sampleData = SampleItem.CreateFromGeologicalSample(gameObject, sourceToolID);
             Debug.Log($"自动为样本生成数据: {sampleData.displayName}");
         }
+        
+        // 无论sampleData是否为null，都要生成图标（因为CreateFromGeologicalSample已经设置previewIcon为null）
+        if (SampleIconGenerator.Instance != null && sampleData != null)
+        {
+            Debug.Log($"🔄 为样本生成图标: {sampleData.displayName}");
+            
+            // 清理旧图标，防止使用预生成的透明图标
+            if (sampleData.previewIcon != null)
+            {
+                Debug.Log($"   清理旧图标: {sampleData.previewIcon.name}");
+                sampleData.previewIcon = null;
+            }
+            else
+            {
+                Debug.Log($"   样本无预存图标，开始生成新图标");
+            }
+            
+            // 生成新图标
+            sampleData.previewIcon = SampleIconGenerator.Instance.GenerateIconForSample(sampleData);
+            
+            if (sampleData.previewIcon != null)
+            {
+                Debug.Log($"   ✅ 新图标生成成功: {sampleData.previewIcon.name}");
+            }
+            else
+            {
+                Debug.LogError($"   ❌ 新图标生成失败");
+            }
+        }
     }
     
     /// <summary>

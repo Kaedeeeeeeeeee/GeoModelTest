@@ -145,7 +145,9 @@ namespace Encyclopedia
         {
             try
             {
+                #if UNITY_EDITOR
                 Debug.Log("开始加载图鉴数据...");
+                #endif
 
                 // 加载JSON数据
                 TextAsset jsonFile = Resources.Load<TextAsset>($"MineralData/Data/{databaseFileName}");
@@ -163,7 +165,9 @@ namespace Encyclopedia
                     return;
                 }
 
+                #if UNITY_EDITOR
                 Debug.Log($"成功加载数据库 v{database.version}, 包含 {database.stratigraphicLayers.Length} 个地层");
+                #endif
 
                 // 处理数据
                 ProcessDatabaseData();
@@ -172,7 +176,9 @@ namespace Encyclopedia
                 LoadResources();
 
                 isDataLoaded = true;
+                #if UNITY_EDITOR
                 Debug.Log($"图鉴数据加载完成! 矿物: {totalMinerals}, 化石: {totalFossils}");
+                #endif
             }
             catch (Exception e)
             {
@@ -227,7 +233,9 @@ namespace Encyclopedia
                 }
             }
 
+            #if UNITY_EDITOR
             Debug.Log($"数据处理完成: {allEntries.Count} 个条目");
+            #endif
         }
 
         /// <summary>
@@ -320,7 +328,9 @@ namespace Encyclopedia
         /// </summary>
         private void LoadResources()
         {
+            #if UNITY_EDITOR
             Debug.Log("开始加载资源文件...");
+            #endif
 
             int loadedImages = 0;
             int loadedModels = 0;
@@ -376,7 +386,9 @@ namespace Encyclopedia
                 }
             }
 
+            #if UNITY_EDITOR
             Debug.Log($"资源加载完成: 图片 {loadedImages}/{allEntries.Count}, 模型 {loadedModels}/{allEntries.Count}");
+            #endif
         }
 
         /// <summary>

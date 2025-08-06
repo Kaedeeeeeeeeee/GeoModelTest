@@ -10,7 +10,7 @@ public class GameInitializer : MonoBehaviour
     public bool initializeDrillTower = true;
     public bool initializeUISystem = true;
     public bool initializeSampleSystem = true;
-    public bool enableDebugMode = true;
+    public bool enableDebugMode = false;
     public Sprite drillTowerIcon;
     public GameObject existingDrillTowerPrefab; // 可以拖入现有的钻塔预制件
     
@@ -41,6 +41,15 @@ public class GameInitializer : MonoBehaviour
         if (initializeSampleSystem)
         {
             InitializeSampleSystem();
+        }
+        
+        // 初始化样本图标系统
+        InitializeSampleIconSystem();
+        
+        // 初始化图标调试器（开发环境）
+        if (enableDebugMode)
+        {
+            InitializeSampleIconDebugger();
         }
         
         // 初始化仓库系统
@@ -169,7 +178,7 @@ public class GameInitializer : MonoBehaviour
             inventoryUI = canvasObj.AddComponent<InventoryUISystem>();
         }
         
-        Debug.Log("UI系统已确保存在 - 使用InventoryUISystem");
+        if (enableDebugMode) Debug.Log("UI系统已确保存在 - 使用InventoryUISystem");
     }
     
     void InitializeToolManager()
@@ -196,7 +205,7 @@ public class GameInitializer : MonoBehaviour
             if (toolManager == null)
             {
                 toolManager = lily.AddComponent<ToolManager>();
-                Debug.Log("已为玩家添加工具管理器");
+                if (enableDebugMode) Debug.Log("已为玩家添加工具管理器");
             }
             
             // 添加无人机工具
@@ -206,7 +215,7 @@ public class GameInitializer : MonoBehaviour
                 droneTool = lily.AddComponent<DroneTool>();
                 droneTool.toolID = "1100";
                 droneTool.toolName = "无人机";
-                Debug.Log("已添加无人机工具");
+                if (enableDebugMode) Debug.Log("已添加无人机工具");
             }
             
             // 添加简易钻探工具
@@ -216,7 +225,7 @@ public class GameInitializer : MonoBehaviour
                 simpleDrillTool = lily.AddComponent<SimpleDrillTool>();
                 simpleDrillTool.toolID = "1000";
                 simpleDrillTool.toolName = "简易钻探";
-                Debug.Log("已添加简易钻探工具");
+                if (enableDebugMode) Debug.Log("已添加简易钻探工具");
             }
             
             // 添加钻探车工具
@@ -257,7 +266,7 @@ public class GameInitializer : MonoBehaviour
                 {
                     // 设置预制体字段
                     drillCarTool.prefabToPlace = carPrefab;
-                    Debug.Log($"已设置DrillCar预制体: {foundPath}");
+                    if (enableDebugMode) Debug.Log($"已设置DrillCar预制体: {foundPath}");
                 }
                 else
                 {
@@ -450,6 +459,58 @@ public class GameInitializer : MonoBehaviour
         Debug.Log("- E键: 采集/收回样本");
         Debug.Log("- I键: 打开/关闭背包");
         Debug.Log("- 在背包中点击样本查看详情，可以拿出到世界中");
+    }
+    
+    /// <summary>
+    /// 初始化样本图标系统
+    /// </summary>
+    void InitializeSampleIconSystem()
+    {
+        Debug.Log("开始初始化样本图标系统...");
+        
+        // 创建或查找样本图标初始化器
+        SampleIconInitializer iconInitializer = FindFirstObjectByType<SampleIconInitializer>();
+        if (iconInitializer == null)
+        {
+            GameObject initializerObj = new GameObject("SampleIconInitializer");
+            iconInitializer = initializerObj.AddComponent<SampleIconInitializer>();
+            Debug.Log("创建了新的SampleIconInitializer");
+        }
+        
+        // 验证图标系统
+        iconInitializer.ValidateIconSystem();
+        
+        Debug.Log("样本图标系统初始化完成！");
+        Debug.Log("功能说明:");
+        Debug.Log("- 钻探样本显示为圆柱形图标");
+        Debug.Log("- 地质锤样本显示为薄片形图标");
+        Debug.Log("- 图标颜色反映样本的实际地质层颜色");
+    }
+    
+    /// <summary>
+    /// 初始化样本图标调试器
+    /// </summary>
+    void InitializeSampleIconDebugger()
+    {
+        Debug.Log("开始初始化样本图标调试器...");
+        
+        // 创建或查找调试器
+        SampleIconDebugger iconDebugger = FindFirstObjectByType<SampleIconDebugger>();
+        if (iconDebugger == null)
+        {
+            GameObject debuggerObj = new GameObject("SampleIconDebugger");
+            iconDebugger = debuggerObj.AddComponent<SampleIconDebugger>();
+            iconDebugger.enableDetailedLogging = true;
+            iconDebugger.refreshIconsOnStart = false; // 避免自动刷新，让用户手动触发
+            Debug.Log("创建了新的SampleIconDebugger");
+        }
+        
+        Debug.Log("样本图标调试器初始化完成！");
+        Debug.Log("调试功能:");
+        Debug.Log("- 右键点击SampleIconDebugger组件可访问调试菜单");
+        Debug.Log("- '调试并刷新所有样本图标' - 重新生成所有图标并输出详细日志");
+        Debug.Log("- '分析样本地质层数据' - 分析地质层颜色数据质量");
+        Debug.Log("- '测试颜色亮度判断' - 测试颜色过滤算法");
     }
     
     /// <summary>
