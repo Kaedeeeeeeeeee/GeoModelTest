@@ -43,6 +43,7 @@ public class FirstPersonController : MonoBehaviour
     private Vector2 lookInput;
     private bool runInput;
     private bool jumpInput;
+    private bool jumpEnabled = true; // 控制是否允许跳跃
     
     void Start()
     {
@@ -87,9 +88,14 @@ public class FirstPersonController : MonoBehaviour
             
             runInput = Keyboard.current.leftShiftKey.isPressed;
             
-            if (Keyboard.current.spaceKey.wasPressedThisFrame)
+            if (Keyboard.current.spaceKey.wasPressedThisFrame && jumpEnabled)  // 也需要检查jumpEnabled
             {
                 jumpInput = true;
+                Debug.Log("空格键按下：跳跃输入已设置");
+            }
+            else if (Keyboard.current.spaceKey.wasPressedThisFrame && !jumpEnabled)
+            {
+                Debug.Log("空格键按下：跳跃已禁用，忽略输入");
             }
             
             // 调试快捷键：G键显示手部位置信息
@@ -133,7 +139,7 @@ public class FirstPersonController : MonoBehaviour
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
         controller.Move(move * currentSpeed * Time.deltaTime);
         
-        if (jumpInput && isGrounded)
+        if (jumpInput && isGrounded && jumpEnabled)  // 三重检查：输入、接地、允许跳跃
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
@@ -182,10 +188,33 @@ public class FirstPersonController : MonoBehaviour
     
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (context.performed && jumpEnabled)  // 只有在允许跳跃时才处理跳跃输入
         {
             jumpInput = true;
         }
+    }
+    
+    /// <summary>
+    /// 启用或禁用跳跃功能（用于切割系统等需要禁用跳跃的场景）
+    /// </summary>
+    /// <param name="enabled">是否允许跳跃</param>
+    public void SetJumpEnabled(bool enabled)
+    {
+        jumpEnabled = enabled;
+        if (!enabled)
+        {
+            jumpInput = false; // 禁用时清除当前的跳跃输入
+        }
+        Debug.Log($"跳跃功能已{(enabled ? "启用" : "禁用")}");
+    }
+    
+    /// <summary>
+    /// 检查跳跃是否被启用
+    /// </summary>
+    /// <returns>跳跃是否被启用</returns>
+    public bool IsJumpEnabled()
+    {
+        return jumpEnabled;
     }
     
     /// <summary>

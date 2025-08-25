@@ -89,6 +89,10 @@
       "value": "[F] 打开仓库"
     },
     {
+      "key": "cutting_station.interaction.prompt",
+      "value": "[F] 使用样本切割台"
+    },
+    {
       "key": "tool.drill.name",
       "value": "钻探工具"
     },
