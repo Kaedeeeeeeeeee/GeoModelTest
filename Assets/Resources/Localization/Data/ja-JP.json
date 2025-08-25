@@ -89,6 +89,10 @@
       "value": "[F] 倉庫を開く"
     },
     {
+      "key": "cutting_station.interaction.prompt",
+      "value": "[F] サンプル切断台を使用"
+    },
+    {
       "key": "tool.drill.name",
       "value": "ドリルツール"
     },

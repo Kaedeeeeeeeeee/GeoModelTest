@@ -117,8 +117,22 @@ public class DrillToolSampleIntegrator : MonoBehaviour
         
         foreach (var obj in allObjects)
         {
+            // 排除实验台等设施对象
+            string objName = obj.name.ToLower();
+            string[] excludeKeywords = { "laboratory", "cutting", "station", "table", "desk", "workstation" };
+            bool shouldExclude = false;
+            foreach (string exclude in excludeKeywords)
+            {
+                if (objName.Contains(exclude.ToLower()))
+                {
+                    shouldExclude = true;
+                    break;
+                }
+            }
+            
             // 检查是否是钻探样本
-            if (obj.name.Contains("Sample") && 
+            if (!shouldExclude && 
+                obj.name.Contains("Sample") && 
                 (obj.name.Contains("Drill") || obj.name.Contains("Boring")) &&
                 !HasCollectionComponent(obj))
             {
@@ -318,7 +332,22 @@ public class DrillToolSampleIntegrator : MonoBehaviour
         GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
         foreach (var obj in allObjects)
         {
-            if (obj.name.Contains("Sample") && 
+            // 排除实验台等设施对象
+            string objName = obj.name.ToLower();
+            string[] excludeKeywords = { "laboratory", "cutting", "station", "table", "desk", "workstation" };
+            bool shouldExclude = false;
+            foreach (string exclude in excludeKeywords)
+            {
+                if (objName.Contains(exclude.ToLower()))
+                {
+                    shouldExclude = true;
+                    Debug.Log($"🛡️ DrillToolSampleIntegrator 排除对象: {obj.name} (包含关键词: {exclude})");
+                    break;
+                }
+            }
+            
+            if (!shouldExclude && 
+                obj.name.Contains("Sample") && 
                 (obj.name.Contains("Drill") || obj.name.Contains("Boring")) &&
                 !Instance.HasCollectionComponent(obj))
             {

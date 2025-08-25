@@ -168,8 +168,8 @@ public class SampleCollector : MonoBehaviour
         promptObj.transform.SetParent(canvasObj.transform);
         
         RectTransform rectTransform = promptObj.AddComponent<RectTransform>();
-        rectTransform.anchorMin = new Vector2(0.5f, 0.2f); // 显示在屏幕下方
-        rectTransform.anchorMax = new Vector2(0.5f, 0.2f);
+        rectTransform.anchorMin = new Vector2(0.5f, 0.35f); // 向上移动到35%位置，避开F键提示
+        rectTransform.anchorMax = new Vector2(0.5f, 0.35f);
         rectTransform.anchoredPosition = Vector2.zero;
         rectTransform.sizeDelta = new Vector2(300, 80); // 适合样本信息的大小
         

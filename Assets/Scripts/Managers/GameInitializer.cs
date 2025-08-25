@@ -55,6 +55,9 @@ public class GameInitializer : MonoBehaviour
         // 初始化仓库系统
         InitializeWarehouseSystem();
         
+        // 初始化样本切割系统（只在实验室场景中）
+        InitializeCuttingSystem();
+        
         if (enableDebugMode)
         {
             InitializeDebugger();
@@ -586,6 +589,52 @@ public class GameInitializer : MonoBehaviour
         {
             // 使用现有的清理工具
             cleanupUtility.CleanupDuplicateCanvases();
+        }
+    }
+    
+    /// <summary>
+    /// 初始化样本切割系统（只在实验室场景中）
+    /// </summary>
+    void InitializeCuttingSystem()
+    {
+        // 检查是否在实验室场景
+        string currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        if (!currentSceneName.Contains("Laboratory") && !currentSceneName.Contains("实验室"))
+        {
+            Debug.Log("当前不在实验室场景，跳过切割系统初始化");
+            return;
+        }
+        
+        Debug.Log("开始初始化样本切割系统...");
+        
+        // 查找现有的切割台
+        GameObject cuttingStation = GameObject.FindGameObjectWithTag("CuttingStation");
+        
+        if (cuttingStation == null)
+        {
+            Debug.Log("未找到切割台标签，查找按名称");
+            cuttingStation = GameObject.Find("SampleCuttingStation");
+        }
+        
+        if (cuttingStation != null)
+        {
+            Debug.Log("找到现有切割台，检查组件完整性");
+            
+            // 确保有初始化器组件
+            var initializer = cuttingStation.GetComponent<SampleCuttingSystem.SampleCuttingSystemInitializer>();
+            if (initializer == null)
+            {
+                initializer = cuttingStation.AddComponent<SampleCuttingSystem.SampleCuttingSystemInitializer>();
+                Debug.Log("添加切割系统初始化器");
+            }
+            
+            // 触发初始化
+            initializer.InitializeSystem();
+        }
+        else
+        {
+            Debug.Log("未找到切割台，将在需要时创建");
+            Debug.Log("提示：可以使用 工具→样本切割系统→集成到实验室 来手动创建切割台");
         }
     }
     

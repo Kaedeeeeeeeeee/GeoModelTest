@@ -102,6 +102,17 @@ public class ManualSampleSetup : MonoBehaviour
     {
         string objName = obj.name.ToLower();
         
+        // 首先检查排除列表 - 防止实验台被误认为样本
+        string[] excludeKeywords = { "laboratory", "cutting", "station", "table", "desk", "workstation" };
+        foreach (string exclude in excludeKeywords)
+        {
+            if (objName.Contains(exclude.ToLower()))
+            {
+                Debug.Log($"🛡️ 排除对象: {obj.name} (包含关键词: {exclude})");
+                return false;
+            }
+        }
+        
         foreach (string keyword in sampleKeywords)
         {
             if (objName.Contains(keyword.ToLower()))

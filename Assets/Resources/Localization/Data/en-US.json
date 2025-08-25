@@ -89,6 +89,10 @@
       "value": "[F] Open Warehouse"
     },
     {
+      "key": "cutting_station.interaction.prompt",
+      "value": "[F] Use Sample Cutting Station"
+    },
+    {
       "key": "tool.drill.name",
       "value": "Drill Tool"
     },
