@@ -31,6 +31,7 @@ public class WarehouseItemSlot : MonoBehaviour
     private bool hasItem = false;
     private bool isSelected = false;
     private GameObject selectionMark; // 选中标记
+    private GameObject disabledMark; // 禁用标记（红叉）
     
     // 事件
     public System.Action<WarehouseItemSlot> OnSlotClicked;
@@ -153,6 +154,9 @@ public class WarehouseItemSlot : MonoBehaviour
         {
             slotBackground.color = new Color(0.4f, 0.4f, 0.4f, 0.8f); // filledSlotColor
         }
+        
+        // 检查样本是否可以切割（层数>1）
+        UpdateCuttingEligibility(sample);
     }
     
     /// <summary>
@@ -184,6 +188,9 @@ public class WarehouseItemSlot : MonoBehaviour
         // 关键修复：更新选中标记显示
         UpdateSelectionVisual();
         UpdateVisualState();
+        
+        // 隐藏禁用标记
+        HideDisabledMark();
     }
     
     /// <summary>
@@ -623,12 +630,162 @@ public class WarehouseItemSlot : MonoBehaviour
         Debug.Log("[WarehouseItemSlot] 自动隐藏选中标记");
     }
     
+    /// <summary>
+    /// 更新样本的切割资格显示
+    /// </summary>
+    void UpdateCuttingEligibility(SampleItem sample)
+    {
+        if (sample == null) return;
+        
+        bool canBeCut = sample.layerCount > 1;
+        
+        if (canBeCut)
+        {
+            // 可以切割，隐藏禁用标记
+            HideDisabledMark();
+        }
+        else
+        {
+            // 不可切割，显示红叉标记
+            ShowDisabledMark();
+        }
+        
+        // 更新拖拽组件的可用性
+        UpdateDragComponent(canBeCut);
+    }
+    
+    /// <summary>
+    /// 显示禁用标记（红叉）
+    /// </summary>
+    void ShowDisabledMark()
+    {
+        if (disabledMark == null)
+        {
+            CreateDisabledMark();
+        }
+        
+        if (disabledMark != null)
+        {
+            disabledMark.SetActive(true);
+        }
+    }
+    
+    /// <summary>
+    /// 隐藏禁用标记
+    /// </summary>
+    void HideDisabledMark()
+    {
+        if (disabledMark != null)
+        {
+            disabledMark.SetActive(false);
+        }
+    }
+    
+    /// <summary>
+    /// 创建禁用标记（红叉图标）
+    /// </summary>
+    void CreateDisabledMark()
+    {
+        if (itemIcon == null) return;
+        
+        // 创建禁用标记对象
+        disabledMark = new GameObject("DisabledMark");
+        disabledMark.transform.SetParent(itemIcon.transform, false);
+        
+        // 添加Image组件
+        Image markImage = disabledMark.AddComponent<Image>();
+        
+        // 创建红叉纹理
+        Texture2D crossTexture = CreateRedCrossTexture();
+        Sprite crossSprite = Sprite.Create(crossTexture, new Rect(0, 0, crossTexture.width, crossTexture.height), Vector2.one * 0.5f);
+        
+        markImage.sprite = crossSprite;
+        markImage.color = Color.red;
+        
+        // 设置位置和大小（居中对齐）
+        RectTransform markRect = disabledMark.GetComponent<RectTransform>();
+        markRect.anchorMin = new Vector2(0.5f, 0.5f);
+        markRect.anchorMax = new Vector2(0.5f, 0.5f);
+        markRect.anchoredPosition = Vector2.zero;
+        markRect.sizeDelta = new Vector2(32, 32); // 增大尺寸使其更清晰
+        
+        // 默认隐藏
+        disabledMark.SetActive(false);
+    }
+    
+    /// <summary>
+    /// 创建红叉纹理
+    /// </summary>
+    Texture2D CreateRedCrossTexture()
+    {
+        int size = 32;
+        Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        Color[] colors = new Color[size * size];
+        
+        // 填充透明背景
+        for (int i = 0; i < colors.Length; i++)
+        {
+            colors[i] = Color.clear;
+        }
+        
+        // 绘制红叉
+        int thickness = 3;
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                // 主对角线
+                if (Mathf.Abs(x - y) < thickness)
+                {
+                    colors[y * size + x] = Color.red;
+                }
+                // 副对角线
+                if (Mathf.Abs(x - (size - 1 - y)) < thickness)
+                {
+                    colors[y * size + x] = Color.red;
+                }
+            }
+        }
+        
+        texture.SetPixels(colors);
+        texture.Apply();
+        return texture;
+    }
+    
+    /// <summary>
+    /// 更新拖拽组件的可用性
+    /// </summary>
+    void UpdateDragComponent(bool canBeCut)
+    {
+        // 检查SampleDragHandler组件
+        var dragHandler = GetComponent<SampleCuttingSystem.SampleDragHandler>();
+        if (dragHandler != null)
+        {
+            dragHandler.SetDraggingEnabled(canBeCut);
+            Debug.Log($"设置样本 {currentItem?.displayName} 的拖拽状态: {canBeCut}");
+        }
+    }
+    
+    /// <summary>
+    /// 检查样本是否可以被切割
+    /// </summary>
+    public bool CanSampleBeCut()
+    {
+        return currentItem != null && currentItem.layerCount > 1;
+    }
+    
     void OnDestroy()
     {
         // 清理事件订阅
         if (slotButton != null)
         {
             slotButton.onClick.RemoveListener(OnSlotClick);
+        }
+        
+        // 清理禁用标记
+        if (disabledMark != null)
+        {
+            DestroyImmediate(disabledMark);
         }
     }
 }

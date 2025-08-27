@@ -1510,7 +1510,9 @@ namespace SampleCuttingSystem
                 if (playerController != null)
                 {
                     playerController.enableMouseLook = enabled;
-                    // 这里可以添加更多控制禁用逻辑
+                    // 禁用/启用跳跃功能
+                    playerController.SetJumpEnabled(enabled);
+                    Debug.Log($"切割系统设置跳跃状态: {enabled}");
                 }
             }
             

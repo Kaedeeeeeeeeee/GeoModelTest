@@ -53,6 +53,14 @@ namespace SampleCuttingSystem
             return sampleData;
         }
         
+        /// <summary>
+        /// 检查拖拽是否启用
+        /// </summary>
+        public bool IsDraggingEnabled()
+        {
+            return enableDragging;
+        }
+        
         public void OnBeginDrag(PointerEventData eventData)
         {
             if (!enableDragging)
