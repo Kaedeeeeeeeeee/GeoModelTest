@@ -80,7 +80,6 @@ public class SampleItem : IInventoryItem
     [Header("原始模型数据")]
     [System.NonSerialized] // 防止序列化导致Unity对象标记问题
     public GameObject originalPrefab; // 原始样本预制件引用
-    public SampleMeshData[] meshData; // 存储原始网格数据
     public SampleMaterialData[] materialData; // 存储原始材质数据
     public Vector3 originalScale; // 原始缩放
     public Quaternion originalRotation; // 原始旋转
@@ -515,7 +514,7 @@ public class SampleItem : IInventoryItem
     }
     
     /// <summary>
-    /// 保存原始几何模型数据
+    /// 保存原始几何模型数据 - 简化版本，只保存材质数据
     /// </summary>
     public void SaveOriginalModelData(GameObject originalSample)
     {
@@ -525,197 +524,44 @@ public class SampleItem : IInventoryItem
         originalScale = originalSample.transform.localScale;
         originalRotation = originalSample.transform.rotation;
         
-        // 获取所有MeshRenderer和MeshFilter
+        // 获取所有MeshRenderer
         MeshRenderer[] renderers = originalSample.GetComponentsInChildren<MeshRenderer>();
-        MeshFilter[] filters = originalSample.GetComponentsInChildren<MeshFilter>();
         
         if (renderers.Length > 0)
         {
-            // 保存网格数据
-            List<SampleMeshData> meshList = new List<SampleMeshData>();
             List<SampleMaterialData> materialList = new List<SampleMaterialData>();
             
-            for (int i = 0; i < renderers.Length; i++)
+            // 只保存材质数据
+            foreach (var renderer in renderers)
             {
-                var renderer = renderers[i];
-                var filter = i < filters.Length ? filters[i] : null;
-                
-                if (filter != null && filter.sharedMesh != null)
+                if (renderer.sharedMaterial != null)
                 {
-                    // 尝试保存网格数据，如果不可读取则创建可读副本
-                    SampleMeshData meshInfo = new SampleMeshData();
-                    meshInfo.meshName = filter.sharedMesh.name;
-                    meshInfo.localPosition = renderer.transform.localPosition;
-                    meshInfo.localRotation = renderer.transform.localRotation;
-                    meshInfo.localScale = renderer.transform.localScale;
-                    meshInfo.bounds = filter.sharedMesh.bounds;
-                    
-                    try
+                    var materialInfo = new SampleMaterialData
                     {
-                        // 尝试直接访问网格数据
-                        if (filter.sharedMesh.isReadable)
-                        {
-                            meshInfo.vertices = filter.sharedMesh.vertices;
-                            meshInfo.triangles = filter.sharedMesh.triangles;
-                            meshInfo.normals = filter.sharedMesh.normals;
-                            meshInfo.uv = filter.sharedMesh.uv;
-                            Debug.Log($"成功保存可读网格数据: {filter.sharedMesh.name}");
-                        }
-                        else
-                        {
-                            // 网格不可读，创建可读副本
-                            Mesh readableMesh = CreateReadableMesh(filter.sharedMesh);
-                            if (readableMesh != null)
-                            {
-                                meshInfo.vertices = readableMesh.vertices;
-                                meshInfo.triangles = readableMesh.triangles;
-                                meshInfo.normals = readableMesh.normals;
-                                meshInfo.uv = readableMesh.uv;
-                                UnityEngine.Object.DestroyImmediate(readableMesh); // 清理临时网格
-                                Debug.Log($"成功创建并保存可读网格副本: {filter.sharedMesh.name}");
-                            }
-                            else
-                            {
-                                // 无法创建可读副本，保存基本信息
-                                Debug.LogWarning($"无法读取网格数据: {filter.sharedMesh.name}，仅保存基本信息");
-                                meshInfo.vertices = new Vector3[0];
-                                meshInfo.triangles = new int[0];
-                                meshInfo.normals = new Vector3[0];
-                                meshInfo.uv = new Vector2[0];
-                            }
-                        }
-                    }
-                    catch (System.Exception e)
-                    {
-                        Debug.LogWarning($"保存网格数据时发生错误: {e.Message}，使用空数据");
-                        meshInfo.vertices = new Vector3[0];
-                        meshInfo.triangles = new int[0];
-                        meshInfo.normals = new Vector3[0];
-                        meshInfo.uv = new Vector2[0];
-                    }
-                    
-                    meshList.Add(meshInfo);
-                    
-                    // 保存材质数据
-                    if (renderer.sharedMaterial != null)
-                    {
-                        var materialInfo = new SampleMaterialData
-                        {
-                            materialName = renderer.sharedMaterial.name,
-                            shaderName = renderer.sharedMaterial.shader.name,
-                            mainTexture = renderer.sharedMaterial.mainTexture as Texture2D,
-                            color = renderer.sharedMaterial.color,
-                            metallic = renderer.sharedMaterial.HasProperty("_Metallic") ? renderer.sharedMaterial.GetFloat("_Metallic") : 0f,
-                            smoothness = renderer.sharedMaterial.HasProperty("_Smoothness") ? renderer.sharedMaterial.GetFloat("_Smoothness") : 0f,
-                            emission = renderer.sharedMaterial.HasProperty("_EmissionColor") ? renderer.sharedMaterial.GetColor("_EmissionColor") : Color.black
-                        };
-                        materialList.Add(materialInfo);
-                    }
+                        materialName = renderer.sharedMaterial.name,
+                        shaderName = renderer.sharedMaterial.shader.name,
+                        mainTexture = renderer.sharedMaterial.mainTexture as Texture2D,
+                        bumpMap = renderer.sharedMaterial.HasProperty("_BumpMap") ? renderer.sharedMaterial.GetTexture("_BumpMap") as Texture2D : null,
+                        metallicGlossMap = renderer.sharedMaterial.HasProperty("_MetallicGlossMap") ? renderer.sharedMaterial.GetTexture("_MetallicGlossMap") as Texture2D : null,
+                        occlusionMap = renderer.sharedMaterial.HasProperty("_OcclusionMap") ? renderer.sharedMaterial.GetTexture("_OcclusionMap") as Texture2D : null,
+                        emissionMap = renderer.sharedMaterial.HasProperty("_EmissionMap") ? renderer.sharedMaterial.GetTexture("_EmissionMap") as Texture2D : null,
+                        color = renderer.sharedMaterial.color,
+                        metallic = renderer.sharedMaterial.HasProperty("_Metallic") ? renderer.sharedMaterial.GetFloat("_Metallic") : 0f,
+                        smoothness = renderer.sharedMaterial.HasProperty("_Smoothness") ? renderer.sharedMaterial.GetFloat("_Smoothness") : 0f,
+                        bumpScale = renderer.sharedMaterial.HasProperty("_BumpScale") ? renderer.sharedMaterial.GetFloat("_BumpScale") : 1f,
+                        occlusionStrength = renderer.sharedMaterial.HasProperty("_OcclusionStrength") ? renderer.sharedMaterial.GetFloat("_OcclusionStrength") : 1f,
+                        emission = renderer.sharedMaterial.HasProperty("_EmissionColor") ? renderer.sharedMaterial.GetColor("_EmissionColor") : Color.black,
+                        mainTextureScale = renderer.sharedMaterial.mainTextureScale,
+                        mainTextureOffset = renderer.sharedMaterial.mainTextureOffset
+                    };
+                    materialList.Add(materialInfo);
+                    Debug.Log($"保存材质数据: {materialInfo.materialName}, 主纹理: {materialInfo.mainTexture?.name ?? "无"}");
                 }
             }
             
-            meshData = meshList.ToArray();
             materialData = materialList.ToArray();
-            
-            Debug.Log($"已保存 {meshData.Length} 个网格和 {materialData.Length} 个材质的数据");
+            Debug.Log($"已保存 {materialData.Length} 个材质的数据");
         }
-    }
-    
-    /// <summary>
-    /// 创建可读的网格副本
-    /// </summary>
-    private Mesh CreateReadableMesh(Mesh originalMesh)
-    {
-        try
-        {
-            // 方法1: 使用Instantiate创建副本
-            Mesh readableMesh = UnityEngine.Object.Instantiate(originalMesh);
-            readableMesh.name = originalMesh.name + "_Readable";
-            
-            // 检查副本是否可读
-            if (readableMesh.isReadable)
-            {
-                return readableMesh;
-            }
-            else
-            {
-                UnityEngine.Object.DestroyImmediate(readableMesh);
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning($"方法1创建可读网格失败: {e.Message}");
-        }
-        
-        // 方法2: 使用GPU读回技术（创建简化几何体）
-        try
-        {
-            return CreateReadableMeshFromGPU(originalMesh);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning($"方法2创建可读网格失败: {e.Message}");
-        }
-        
-        return null;
-    }
-    
-    /// <summary>
-    /// 使用GPU读回创建可读网格
-    /// </summary>
-    private Mesh CreateReadableMeshFromGPU(Mesh originalMesh)
-    {
-        // 创建新的可读网格
-        Mesh readableMesh = new Mesh();
-        readableMesh.name = originalMesh.name + "_GPUReadable";
-        
-        // 备用方案：基于bounds信息创建简化几何体
-        Bounds bounds = originalMesh.bounds;
-        
-        // 创建简化的立方体网格来近似原始形状
-        Vector3[] vertices = new Vector3[]
-        {
-            // 立方体的8个顶点，基于原始网格的bounds
-            new Vector3(bounds.min.x, bounds.min.y, bounds.min.z),
-            new Vector3(bounds.max.x, bounds.min.y, bounds.min.z),
-            new Vector3(bounds.max.x, bounds.max.y, bounds.min.z),
-            new Vector3(bounds.min.x, bounds.max.y, bounds.min.z),
-            new Vector3(bounds.min.x, bounds.min.y, bounds.max.z),
-            new Vector3(bounds.max.x, bounds.min.y, bounds.max.z),
-            new Vector3(bounds.max.x, bounds.max.y, bounds.max.z),
-            new Vector3(bounds.min.x, bounds.max.y, bounds.max.z)
-        };
-        
-        int[] triangles = new int[]
-        {
-            // 立方体的12个三角形（36个索引）
-            0, 2, 1, 0, 3, 2, // 前面
-            2, 3, 6, 3, 7, 6, // 顶面
-            1, 2, 5, 2, 6, 5, // 右面
-            0, 7, 3, 0, 4, 7, // 左面
-            5, 6, 4, 6, 7, 4, // 后面
-            0, 1, 4, 1, 5, 4  // 底面
-        };
-        
-        Vector3[] normals = new Vector3[vertices.Length];
-        Vector2[] uv = new Vector2[vertices.Length];
-        
-        // 计算法线
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            normals[i] = vertices[i].normalized;
-            uv[i] = new Vector2((vertices[i].x - bounds.min.x) / bounds.size.x, 
-                               (vertices[i].z - bounds.min.z) / bounds.size.z);
-        }
-        
-        readableMesh.vertices = vertices;
-        readableMesh.triangles = triangles;
-        readableMesh.normals = normals;
-        readableMesh.uv = uv;
-        readableMesh.bounds = bounds;
-        
-        Debug.Log($"创建了基于bounds的简化网格: {readableMesh.name}");
-        return readableMesh;
     }
     
     /// <summary>
@@ -723,284 +569,130 @@ public class SampleItem : IInventoryItem
     /// </summary>
     public GameObject RecreateOriginalModel(Vector3 position)
     {
-        if (meshData == null || meshData.Length == 0)
-        {
-            Debug.LogWarning($"样本 {displayName} 没有保存的网格数据，创建备用圆柱体模型");
-            return CreateFallbackModel(position);
-        }
-        
-        // 检查是否有有效的网格数据
-        bool hasValidMeshData = false;
-        foreach (var mesh in meshData)
-        {
-            if (mesh.vertices != null && mesh.vertices.Length > 0)
-            {
-                hasValidMeshData = true;
-                break;
-            }
-        }
-        
-        if (!hasValidMeshData)
-        {
-            Debug.LogWarning($"样本 {displayName} 的网格数据为空（可能由于网格不可读），创建基于材质的备用模型");
-            return CreateMaterialBasedFallbackModel(position);
-        }
-        
         // 创建根对象
         GameObject sampleRoot = new GameObject($"ReconstructedSample_{sampleID}");
         sampleRoot.transform.position = position;
         sampleRoot.transform.rotation = originalRotation;
         sampleRoot.transform.localScale = originalScale;
         
-        // 重建每个网格组件
-        for (int i = 0; i < meshData.Length; i++)
-        {
-            var meshInfo = meshData[i];
-            
-            // 创建子对象
-            GameObject meshObj = new GameObject($"Mesh_{i}_{meshInfo.meshName}");
-            meshObj.transform.SetParent(sampleRoot.transform);
-            meshObj.transform.localPosition = meshInfo.localPosition;
-            meshObj.transform.localRotation = meshInfo.localRotation;
-            meshObj.transform.localScale = meshInfo.localScale;
-            
-            // 重建网格
-            Mesh recreatedMesh = new Mesh();
-            recreatedMesh.name = meshInfo.meshName;
-            recreatedMesh.vertices = meshInfo.vertices;
-            recreatedMesh.triangles = meshInfo.triangles;
-            recreatedMesh.normals = meshInfo.normals;
-            recreatedMesh.uv = meshInfo.uv;
-            recreatedMesh.bounds = meshInfo.bounds;
-            
-            // 添加MeshFilter和MeshRenderer
-            MeshFilter meshFilter = meshObj.AddComponent<MeshFilter>();
-            meshFilter.mesh = recreatedMesh;
-            
-            MeshRenderer meshRenderer = meshObj.AddComponent<MeshRenderer>();
-            
-            // 重建材质
-            if (i < materialData.Length)
-            {
-                var materialInfo = materialData[i];
-                Material recreatedMaterial = new Material(Shader.Find(materialInfo.shaderName));
-                
-                recreatedMaterial.name = materialInfo.materialName;
-                recreatedMaterial.color = materialInfo.color;
-                
-                if (materialInfo.mainTexture != null)
-                    recreatedMaterial.mainTexture = materialInfo.mainTexture;
-                
-                if (recreatedMaterial.HasProperty("_Metallic"))
-                    recreatedMaterial.SetFloat("_Metallic", materialInfo.metallic);
-                
-                if (recreatedMaterial.HasProperty("_Smoothness"))
-                    recreatedMaterial.SetFloat("_Smoothness", materialInfo.smoothness);
-                
-                if (recreatedMaterial.HasProperty("_EmissionColor"))
-                    recreatedMaterial.SetColor("_EmissionColor", materialInfo.emission);
-                
-                meshRenderer.material = recreatedMaterial;
-            }
-            else
-            {
-                // 使用默认材质
-                meshRenderer.material = new Material(Shader.Find("Standard"));
-                meshRenderer.material.color = geologicalLayers.Count > 0 ? geologicalLayers[0].layerColor : Color.gray;
-            }
-        }
-        
-        Debug.Log($"成功重建样本模型 {displayName}，包含 {meshData.Length} 个网格组件");
-        return sampleRoot;
-    }
-    
-    /// <summary>
-    /// 创建基于材质的备用模型（当网格数据不可读时）
-    /// </summary>
-    GameObject CreateMaterialBasedFallbackModel(Vector3 position)
-    {
-        GameObject sampleRoot = new GameObject($"MaterialBasedSample_{sampleID}");
-        sampleRoot.transform.position = position;
-        sampleRoot.transform.rotation = originalRotation;
-        sampleRoot.transform.localScale = originalScale;
-        
-        // 为每个保存的材质创建一个简单的几何体
-        for (int i = 0; i < materialData.Length; i++)
-        {
-            var materialInfo = materialData[i];
-            
-            // 创建简单的几何体（立方体或圆柱体）
-            GameObject primitiveObj;
-            if (i == 0 || totalDepth > sampleRadius * 4)
-            {
-                // 主要形状使用圆柱体
-                primitiveObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                primitiveObj.transform.localScale = new Vector3(sampleRadius * 2, totalDepth / 2, sampleRadius * 2);
-            }
-            else
-            {
-                // 其他层使用立方体表示
-                primitiveObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                float layerHeight = totalDepth / materialData.Length;
-                primitiveObj.transform.localScale = new Vector3(sampleRadius * 1.8f, layerHeight, sampleRadius * 1.8f);
-                primitiveObj.transform.localPosition = new Vector3(0, (i - materialData.Length / 2f) * layerHeight, 0);
-            }
-            
-            primitiveObj.name = $"Layer_{i}_{materialInfo.materialName}";
-            primitiveObj.transform.SetParent(sampleRoot.transform);
-            
-            // 应用保存的材质
-            Renderer renderer = primitiveObj.GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                Material recreatedMaterial = new Material(Shader.Find(materialInfo.shaderName));
-                recreatedMaterial.name = materialInfo.materialName;
-                recreatedMaterial.color = materialInfo.color;
-                
-                if (materialInfo.mainTexture != null)
-                    recreatedMaterial.mainTexture = materialInfo.mainTexture;
-                
-                if (recreatedMaterial.HasProperty("_Metallic"))
-                    recreatedMaterial.SetFloat("_Metallic", materialInfo.metallic);
-                
-                if (recreatedMaterial.HasProperty("_Smoothness"))
-                    recreatedMaterial.SetFloat("_Smoothness", materialInfo.smoothness);
-                
-                if (recreatedMaterial.HasProperty("_EmissionColor"))
-                    recreatedMaterial.SetColor("_EmissionColor", materialInfo.emission);
-                
-                renderer.material = recreatedMaterial;
-            }
-        }
-        
-        Debug.Log($"创建了基于材质的备用模型 {displayName}，包含 {materialData.Length} 个层");
-        return sampleRoot;
-    }
-    
-    /// <summary>
-    /// 创建备用模型（当没有保存数据时）
-    /// </summary>
-    GameObject CreateFallbackModel(Vector3 position)
-    {
-        GameObject fallback;
-        
-        // 根据源工具ID决定备用模型类型
-        if (sourceToolID == "1002") // 地质锤工具
-        {
-            // 创建薄片模型（使用SlabSampleGenerator）
-            fallback = CreateSlabFallbackModel(position);
-        }
-        else
-        {
-            // 创建圆柱模型（钻探样本）
-            fallback = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            fallback.name = $"FallbackSample_{sampleID}";
-            fallback.transform.position = position;
-            fallback.transform.localScale = new Vector3(sampleRadius * 2, totalDepth / 2, sampleRadius * 2);
-            
-            // 设置材质
-            Renderer renderer = fallback.GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                Material material = new Material(Shader.Find("Standard"));
-                material.color = geologicalLayers.Count > 0 ? geologicalLayers[0].layerColor : Color.gray;
-                renderer.material = material;
-            }
-        }
-        
-        return fallback;
-    }
-    
-    /// <summary>
-    /// 创建薄片备用模型（使用SlabSampleGenerator重建真实薄片）
-    /// </summary>
-    GameObject CreateSlabFallbackModel(Vector3 position)
-    {
-        // 查找或创建 SlabSampleGenerator
-        SlabSampleGenerator generator = UnityEngine.Object.FindFirstObjectByType<SlabSampleGenerator>();
-        if (generator == null)
-        {
-            GameObject generatorObj = new GameObject("SlabSampleGenerator");
-            generator = generatorObj.AddComponent<SlabSampleGenerator>();
-        }
-        
-        // 从保存的数据中获取地质层信息
-        Material originalMaterial = null;
-        GeologyLayer sourceLayer = null;
-        
-        // 尝试从材质数据中重建原始材质
+        // 统一使用材质数据重建样本
         if (materialData != null && materialData.Length > 0)
         {
-            var firstMaterial = materialData[0];
-            originalMaterial = new Material(Shader.Find(firstMaterial.shaderName));
-            originalMaterial.color = firstMaterial.color;
-            originalMaterial.name = firstMaterial.materialName;
-            
-            // 设置其他材质属性
-            if (originalMaterial.HasProperty("_Metallic"))
-                originalMaterial.SetFloat("_Metallic", firstMaterial.metallic);
-            if (originalMaterial.HasProperty("_Smoothness"))
-                originalMaterial.SetFloat("_Smoothness", firstMaterial.smoothness);
-            if (originalMaterial.HasProperty("_EmissionColor"))
-                originalMaterial.SetColor("_EmissionColor", firstMaterial.emission);
-        }
-        
-        // 如果没有材质数据，使用地质层颜色创建默认材质
-        if (originalMaterial == null)
-        {
-            originalMaterial = new Material(Shader.Find("Standard"));
-            originalMaterial.color = geologicalLayers.Count > 0 ? geologicalLayers[0].layerColor : new Color(0.7f, 0.5f, 0.3f);
-            originalMaterial.name = "SlabFallbackMaterial";
-        }
-        
-        // 使用SlabSampleGenerator重建薄片模型，禁用悬浮效果（静态放置）
-        GameObject slabSample = generator.GenerateSlabSampleWithMaterial(position, originalMaterial, sourceLayer, false);
-        
-        if (slabSample != null)
-        {
-            slabSample.name = $"FallbackSlabSample_{sampleID}";
-            Debug.Log($"使用SlabSampleGenerator重建薄片备用模型: {slabSample.name}");
+            // 为每个材质层创建一个几何体
+            for (int i = 0; i < materialData.Length; i++)
+            {
+                var materialInfo = materialData[i];
+                
+                // 创建圆柱体几何体（标准地质样本形状）
+                GameObject layerObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                layerObj.name = $"Layer_{i}_{materialInfo.materialName}";
+                layerObj.transform.SetParent(sampleRoot.transform);
+                
+                // 设置层级位置和大小
+                float layerHeight = totalDepth / materialData.Length;
+                float yOffset = (i - materialData.Length / 2f + 0.5f) * layerHeight;
+                layerObj.transform.localPosition = new Vector3(0, yOffset, 0);
+                layerObj.transform.localScale = new Vector3(sampleRadius * 2, layerHeight * 0.5f, sampleRadius * 2);
+                
+                // 应用完整的材质数据
+                Renderer renderer = layerObj.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    Material recreatedMaterial = CreateMaterialFromData(materialInfo);
+                    renderer.material = recreatedMaterial;
+                }
+            }
         }
         else
         {
-            Debug.LogWarning("使用SlabSampleGenerator创建备用模型失败，使用简单立方体");
+            // 如果没有材质数据，使用地质层颜色创建默认样本
+            GameObject defaultObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            defaultObj.name = "DefaultSample";
+            defaultObj.transform.SetParent(sampleRoot.transform);
+            defaultObj.transform.localPosition = Vector3.zero;
+            defaultObj.transform.localScale = new Vector3(sampleRadius * 2, totalDepth * 0.5f, sampleRadius * 2);
             
-            // 最后的备用方案：创建简单的薄片形状
-            slabSample = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            slabSample.name = $"SimpleFallbackSlabSample_{sampleID}";
-            slabSample.transform.position = position;
-            slabSample.transform.localScale = new Vector3(0.8f, 0.06f, 0.6f); // 薄片形状
-            
-            Renderer renderer = slabSample.GetComponent<Renderer>();
+            Renderer renderer = defaultObj.GetComponent<Renderer>();
             if (renderer != null)
             {
-                renderer.material = originalMaterial;
+                Material defaultMaterial = new Material(Shader.Find("Standard"));
+                defaultMaterial.color = geologicalLayers.Count > 0 ? geologicalLayers[0].layerColor : new Color(0.7f, 0.5f, 0.3f);
+                defaultMaterial.name = "DefaultSampleMaterial";
+                renderer.material = defaultMaterial;
             }
         }
         
-        return slabSample;
+        Debug.Log($"重建样本模型 {displayName}，包含 {materialData?.Length ?? 1} 个材质层");
+        return sampleRoot;
+    }
+
+    /// <summary>
+    /// 从SampleMaterialData创建完整的材质对象
+    /// </summary>
+    private Material CreateMaterialFromData(SampleMaterialData materialInfo)
+    {
+        // 创建材质对象
+        Material material = new Material(Shader.Find(materialInfo.shaderName));
+        material.name = materialInfo.materialName;
+        
+        // 设置基本颜色
+        material.color = materialInfo.color;
+        
+        // 设置主纹理和UV参数
+        if (materialInfo.mainTexture != null)
+        {
+            material.mainTexture = materialInfo.mainTexture;
+            material.mainTextureScale = materialInfo.mainTextureScale;
+            material.mainTextureOffset = materialInfo.mainTextureOffset;
+        }
+        
+        // 设置法线贴图
+        if (material.HasProperty("_BumpMap") && materialInfo.bumpMap != null)
+        {
+            material.SetTexture("_BumpMap", materialInfo.bumpMap);
+            if (material.HasProperty("_BumpScale"))
+                material.SetFloat("_BumpScale", materialInfo.bumpScale);
+        }
+        
+        // 设置金属度/光滑度贴图
+        if (material.HasProperty("_MetallicGlossMap") && materialInfo.metallicGlossMap != null)
+        {
+            material.SetTexture("_MetallicGlossMap", materialInfo.metallicGlossMap);
+        }
+        
+        // 设置遮挡贴图
+        if (material.HasProperty("_OcclusionMap") && materialInfo.occlusionMap != null)
+        {
+            material.SetTexture("_OcclusionMap", materialInfo.occlusionMap);
+            if (material.HasProperty("_OcclusionStrength"))
+                material.SetFloat("_OcclusionStrength", materialInfo.occlusionStrength);
+        }
+        
+        // 设置自发光贴图
+        if (material.HasProperty("_EmissionMap") && materialInfo.emissionMap != null)
+        {
+            material.SetTexture("_EmissionMap", materialInfo.emissionMap);
+        }
+        
+        // 设置数值属性
+        if (material.HasProperty("_Metallic"))
+            material.SetFloat("_Metallic", materialInfo.metallic);
+        
+        if (material.HasProperty("_Smoothness"))
+            material.SetFloat("_Smoothness", materialInfo.smoothness);
+        
+        if (material.HasProperty("_EmissionColor"))
+            material.SetColor("_EmissionColor", materialInfo.emission);
+            
+        Debug.Log($"从数据重建材质: {materialInfo.materialName}, 着色器: {materialInfo.shaderName}, 主纹理: {materialInfo.mainTexture?.name ?? "无"}");
+        
+        return material;
     }
 }
 
-/// <summary>
-/// 样本网格数据存储结构
-/// </summary>
-[System.Serializable]
-public struct SampleMeshData
-{
-    public string meshName;
-    public Vector3[] vertices;
-    public int[] triangles;
-    public Vector3[] normals;
-    public Vector2[] uv;
-    public Vector3 localPosition;
-    public Quaternion localRotation;
-    public Vector3 localScale;
-    public Bounds bounds;
-}
 
 /// <summary>
-/// 样本材质数据存储结构
+/// 样本材质数据存储结构 - 增强版本，支持完整材质数据
 /// </summary>
 [System.Serializable]
 public struct SampleMaterialData
@@ -1008,8 +700,18 @@ public struct SampleMaterialData
     public string materialName;
     public string shaderName;
     public Texture2D mainTexture;
+    public Texture2D bumpMap;           // 法线贴图
+    public Texture2D metallicGlossMap;  // 金属度/光滑度贴图
+    public Texture2D occlusionMap;      // 遮挡贴图
+    public Texture2D emissionMap;       // 自发光贴图
     public Color color;
     public float metallic;
     public float smoothness;
+    public float bumpScale;             // 法线强度
+    public float occlusionStrength;     // 遮挡强度
     public Color emission;
+    
+    // 纹理平铺和偏移信息
+    public Vector2 mainTextureScale;
+    public Vector2 mainTextureOffset;
 }

@@ -1052,7 +1052,11 @@ namespace SampleCuttingSystem
             // 将模型移动到固定的隔离渲染空间中心，抬高更多让它显示在画面中心
             Vector3 isolatedPosition = new Vector3(1000f, 1002f, 1000f);
             currentSample.transform.position = isolatedPosition;
-            Debug.Log($"模型位置设置为: {currentSample.transform.position}");
+            
+            // 翻转模型180度（上下颠倒）
+            currentSample.transform.rotation = Quaternion.Euler(180f, 0f, 0f);
+            
+            Debug.Log($"模型位置设置为: {currentSample.transform.position}, 旋转: {currentSample.transform.rotation.eulerAngles}");
             
             // 调整正交摄像机的显示范围以适应模型大小
             float maxSize = Mathf.Max(bounds.size.x, bounds.size.y, bounds.size.z);
@@ -1463,7 +1467,8 @@ namespace SampleCuttingSystem
         {
             if (currentSample != null)
             {
-                currentSample.transform.rotation = Quaternion.identity;
+                // 保持模型180度翻转（上下颠倒）
+                currentSample.transform.rotation = Quaternion.Euler(180f, 0f, 0f);
             }
             
             cameraDistance = 2f;

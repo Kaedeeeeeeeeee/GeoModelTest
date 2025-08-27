@@ -373,7 +373,7 @@ namespace SampleCuttingSystem
                     var sampleItem = warehouseSlot.GetItem();
                     if (sampleItem != null && sampleItem.layerCount > 1)
                     {
-                        Debug.Log($"从WarehouseItemSlot获取SampleItem，准备重建: {sampleItem.displayName}");
+                        Debug.Log($"从WarehouseItemSlot获取SampleItem，准备重建: {sampleItem.displayName}, 层数: {sampleItem.layerCount}");
                         return ReconstructFromSampleItem(sampleItem);
                     }
                 }
@@ -396,13 +396,19 @@ namespace SampleCuttingSystem
             try
             {
                 Debug.Log($"开始从SampleItem重建真实样本: {sampleItem.displayName}");
+                Debug.Log($"样本信息 - 材质数据数量: {sampleItem.materialData?.Length ?? 0}, 地质层数量: {sampleItem.geologicalLayers?.Count ?? 0}, 总深度: {sampleItem.totalDepth}");
                 
                 // 使用SampleItem的RecreateOriginalModel方法获取真实材质
+                Debug.Log("调用sampleItem.RecreateOriginalModel...");
                 GameObject originalModel = sampleItem.RecreateOriginalModel(Vector3.zero);
                 if (originalModel == null)
                 {
-                    Debug.LogWarning("RecreateOriginalModel失败，使用备用方案");
+                    Debug.LogError("RecreateOriginalModel返回null！这不应该发生");
                     return null;
+                }
+                else
+                {
+                    Debug.Log($"RecreateOriginalModel成功，返回对象: {originalModel.name}, 子对象数量: {originalModel.transform.childCount}");
                 }
                 
                 // 创建ReconstructedSample
@@ -432,9 +438,9 @@ namespace SampleCuttingSystem
                         // 使用真实渲染器的材质
                         if (i < renderers.Length && renderers[i] != null && renderers[i].material != null)
                         {
-                            segment.material = new Material(renderers[i].material);
+                            segment.material = CreateDeepCopyMaterial(renderers[i].material);
                             segment.material.name = $"RealLayer_{i}_{layerInfo.layerName}";
-                            Debug.Log($"使用真实材质: {segment.material.name}, 颜色: {segment.material.color}");
+                            Debug.Log($"使用真实材质: {segment.material.name}, 颜色: {segment.material.color}, MainTexture: {segment.material.mainTexture}");
                         }
                         else
                         {
@@ -510,6 +516,56 @@ namespace SampleCuttingSystem
             return geologyLayer;
         }
         
+        /// <summary>
+        /// 深度复制材质，包括所有纹理和属性
+        /// </summary>
+        private Material CreateDeepCopyMaterial(Material sourceMaterial)
+        {
+            if (sourceMaterial == null)
+                return null;
+
+            // 创建新材质实例
+            Material newMaterial = new Material(sourceMaterial.shader);
+            
+            // 复制所有纹理属性
+            if (sourceMaterial.mainTexture != null)
+                newMaterial.mainTexture = sourceMaterial.mainTexture;
+            
+            if (sourceMaterial.HasProperty("_BumpMap") && sourceMaterial.GetTexture("_BumpMap") != null)
+                newMaterial.SetTexture("_BumpMap", sourceMaterial.GetTexture("_BumpMap"));
+            
+            if (sourceMaterial.HasProperty("_MetallicGlossMap") && sourceMaterial.GetTexture("_MetallicGlossMap") != null)
+                newMaterial.SetTexture("_MetallicGlossMap", sourceMaterial.GetTexture("_MetallicGlossMap"));
+            
+            if (sourceMaterial.HasProperty("_OcclusionMap") && sourceMaterial.GetTexture("_OcclusionMap") != null)
+                newMaterial.SetTexture("_OcclusionMap", sourceMaterial.GetTexture("_OcclusionMap"));
+            
+            if (sourceMaterial.HasProperty("_EmissionMap") && sourceMaterial.GetTexture("_EmissionMap") != null)
+                newMaterial.SetTexture("_EmissionMap", sourceMaterial.GetTexture("_EmissionMap"));
+            
+            // 复制颜色和数值属性
+            newMaterial.color = sourceMaterial.color;
+            
+            if (sourceMaterial.HasProperty("_Metallic"))
+                newMaterial.SetFloat("_Metallic", sourceMaterial.GetFloat("_Metallic"));
+            
+            if (sourceMaterial.HasProperty("_Glossiness"))
+                newMaterial.SetFloat("_Glossiness", sourceMaterial.GetFloat("_Glossiness"));
+            
+            if (sourceMaterial.HasProperty("_BumpScale"))
+                newMaterial.SetFloat("_BumpScale", sourceMaterial.GetFloat("_BumpScale"));
+            
+            if (sourceMaterial.HasProperty("_OcclusionStrength"))
+                newMaterial.SetFloat("_OcclusionStrength", sourceMaterial.GetFloat("_OcclusionStrength"));
+            
+            if (sourceMaterial.HasProperty("_EmissionColor"))
+                newMaterial.SetColor("_EmissionColor", sourceMaterial.GetColor("_EmissionColor"));
+
+            Debug.Log($"深度复制材质: {sourceMaterial.name} -> {newMaterial.name}, Shader: {newMaterial.shader.name}, MainTexture: {newMaterial.mainTexture}");
+            
+            return newMaterial;
+        }
+
         /// <summary>
         /// 根据层级名称获取颜色
         /// </summary>
