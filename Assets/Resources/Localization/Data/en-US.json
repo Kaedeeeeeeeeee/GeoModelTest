@@ -325,6 +325,10 @@
       "value": "Layer Details:"
     },
     {
+      "key": "sample.info.no_layer_data",
+      "value": "No layer data"
+    },
+    {
       "key": "sample.info.layer_item",
       "value": "  {0}. {1} - Thickness: {2}m"
     },

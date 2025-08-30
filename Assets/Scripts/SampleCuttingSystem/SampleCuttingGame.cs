@@ -55,6 +55,9 @@ namespace SampleCuttingSystem
         // 角色控制器引用（用于禁用跳跃）
         private FirstPersonController playerController;
         
+        // 切割系统管理器引用（用于触发事件）
+        private SampleCuttingSystemManager systemManager;
+        
         // 音频控制
         private AudioSource audioSource;
         private Coroutine laserSoundCoroutine;
@@ -94,6 +97,17 @@ namespace SampleCuttingSystem
             if (playerController == null)
             {
                 Debug.LogWarning("未找到FirstPersonController，无法控制跳跃功能");
+            }
+            
+            // 找到切割系统管理器
+            systemManager = FindFirstObjectByType<SampleCuttingSystemManager>();
+            if (systemManager == null)
+            {
+                Debug.LogWarning("未找到SampleCuttingSystemManager，无法触发切割完成事件");
+            }
+            else
+            {
+                Debug.Log("[SampleCuttingGame] 成功找到SampleCuttingSystemManager");
             }
             
             // 只设置初始状态，不创建UI
@@ -641,10 +655,12 @@ namespace SampleCuttingSystem
         /// </summary>
         private void NotifyDropZone(bool success)
         {
+            Debug.Log($"=== [SampleCuttingGame] NotifyDropZone 开始执行，success = {success} ===");
             // 尝试在父级查找SampleDropZone
             SampleDropZone dropZone = GetComponentInParent<SampleDropZone>();
             if (dropZone != null)
             {
+                Debug.Log($"=== [SampleCuttingGame] 找到SampleDropZone，即将调用OnCuttingComplete ===");
                 dropZone.OnCuttingComplete(success);
                 Debug.Log($"通知投放区域切割结果: {success}");
             }
@@ -1067,6 +1083,13 @@ namespace SampleCuttingSystem
             // 通知投放区域切割成功
             NotifyDropZone(true);
             
+            // 通知切割系统管理器切割成功
+            if (systemManager != null && currentSample != null)
+            {
+                Debug.Log("[SampleCuttingGame] 通知SampleCuttingSystemManager切割成功");
+                systemManager.HandleCuttingSuccess(currentSample);
+            }
+            
             // 2秒后重置（因为投放区域会处理显示）
             yield return new WaitForSeconds(2f);
             ResetCuttingStation();
@@ -1087,6 +1110,13 @@ namespace SampleCuttingSystem
             
             // 通知投放区域切割失败
             NotifyDropZone(false);
+            
+            // 通知切割系统管理器切割失败
+            if (systemManager != null && currentSample != null)
+            {
+                Debug.Log("[SampleCuttingGame] 通知SampleCuttingSystemManager切割失败");
+                systemManager.HandleCuttingFailure(currentSample);
+            }
             
             // 重置切割台
             ResetCuttingStation();

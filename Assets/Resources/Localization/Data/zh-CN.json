@@ -325,6 +325,10 @@
       "value": "地质层详情:"
     },
     {
+      "key": "sample.info.no_layer_data",
+      "value": "无地层数据"
+    },
+    {
       "key": "sample.info.layer_item",
       "value": "  {0}. {1} - 厚度: {2}m"
     },
