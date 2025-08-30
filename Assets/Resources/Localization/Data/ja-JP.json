@@ -325,6 +325,10 @@
       "value": "層詳細:"
     },
     {
+      "key": "sample.info.no_layer_data",
+      "value": "層データなし"
+    },
+    {
       "key": "sample.info.layer_item",
       "value": "  {0}. {1} - 厚さ: {2}m"
     },

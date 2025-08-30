@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace SampleCuttingSystem
 {
@@ -21,6 +22,8 @@ namespace SampleCuttingSystem
         private Text instructionText;
         private bool isHighlighted = false;
         private SampleCuttingGame cuttingGame;
+        private SampleDragHandler originalSampleHandler; // 保存原始样本的引用
+        private List<GameObject> createdSampleObjects = new List<GameObject>(); // 保存切割过程中创建的所有样本对象
         
         void Awake()
         {
@@ -111,6 +114,9 @@ namespace SampleCuttingSystem
         /// </summary>
         private void StartCuttingProcess(SampleData sampleData, SampleDragHandler dragHandler)
         {
+            // 保存原始样本引用，用于切割完成后销毁
+            originalSampleHandler = dragHandler;
+            
             // 隐藏原始样本UI
             dragHandler.gameObject.SetActive(false);
             
@@ -409,6 +415,13 @@ namespace SampleCuttingSystem
                 else
                 {
                     Debug.Log($"RecreateOriginalModel成功，返回对象: {originalModel.name}, 子对象数量: {originalModel.transform.childCount}");
+                    
+                    // 标记为临时切割对象，防止被样本收集系统识别
+                    MarkAsTemporaryCuttingObject(originalModel);
+                    
+                    // 记录创建的模型对象，用于后续清理
+                    createdSampleObjects.Add(originalModel);
+                    Debug.Log($"已记录重建的样本模型用于清理: {originalModel.name}");
                 }
                 
                 // 创建ReconstructedSample
@@ -875,7 +888,70 @@ namespace SampleCuttingSystem
         /// </summary>
         public void OnCuttingComplete(bool success)
         {
+            Debug.Log($"=== [SampleDropZone] OnCuttingComplete 被调用！success = {success} ===");
             Debug.Log($"切割完成回调: {success}");
+            
+            // 如果切割成功，关闭切割台UI
+            if (success)
+            {
+                Debug.Log("[SampleDropZone] 切割成功，寻找切割台交互系统并关闭UI");
+                var cuttingStationInteraction = FindFirstObjectByType<CuttingStationInteraction>();
+                if (cuttingStationInteraction != null)
+                {
+                    Debug.Log("[SampleDropZone] 找到CuttingStationInteraction，调用关闭UI");
+                    cuttingStationInteraction.CloseCuttingInterface();
+                }
+                else
+                {
+                    Debug.LogWarning("[SampleDropZone] 未找到CuttingStationInteraction，无法自动关闭UI");
+                }
+            }
+            
+            // 如果切割成功，销毁原始样本和所有创建的样本对象，避免重复收集
+            if (success)
+            {
+                if (originalSampleHandler != null)
+                {
+                    Debug.Log($"切割成功，正在销毁原始样本: {originalSampleHandler.name}");
+                    Destroy(originalSampleHandler.gameObject);
+                    originalSampleHandler = null;
+                }
+                
+                // 销毁所有在切割过程中创建的样本对象
+                foreach (var sampleObj in createdSampleObjects)
+                {
+                    if (sampleObj != null)
+                    {
+                        Debug.Log($"切割成功，正在销毁重建的样本对象: {sampleObj.name}");
+                        Destroy(sampleObj);
+                    }
+                }
+                createdSampleObjects.Clear();
+                
+                // 额外的安全清理：搜索并销毁所有可能的原始样本对象
+                CleanupOriginalSampleObjects();
+            }
+            else if (!success)
+            {
+                // 切割失败，恢复原始样本显示
+                if (originalSampleHandler != null)
+                {
+                    Debug.Log($"切割失败，恢复原始样本显示: {originalSampleHandler.name}");
+                    originalSampleHandler.gameObject.SetActive(true);
+                    originalSampleHandler = null;
+                }
+                
+                // 切割失败时也清理创建的对象
+                foreach (var sampleObj in createdSampleObjects)
+                {
+                    if (sampleObj != null)
+                    {
+                        Debug.Log($"切割失败，清理重建的样本对象: {sampleObj.name}");
+                        Destroy(sampleObj);
+                    }
+                }
+                createdSampleObjects.Clear();
+            }
             
             // 清除3D模型显示
             Clear3DSampleModel();
@@ -964,10 +1040,103 @@ namespace SampleCuttingSystem
         }
         
         /// <summary>
+        /// 标记GameObject为临时切割对象，防止被样本收集系统识别
+        /// </summary>
+        private void MarkAsTemporaryCuttingObject(GameObject obj)
+        {
+            if (obj == null) return;
+            
+            // 移除SampleCollector组件，防止被收集
+            var collector = obj.GetComponent<SampleCollector>();
+            if (collector != null)
+            {
+                Debug.Log($"移除SampleCollector组件: {obj.name}");
+                DestroyImmediate(collector);
+            }
+            
+            // 移除所有与样本相关的MonoBehaviour组件
+            var allComponents = obj.GetComponents<MonoBehaviour>();
+            foreach (var component in allComponents)
+            {
+                if (component != null)
+                {
+                    // 检查是否是样本相关的组件
+                    string componentName = component.GetType().Name;
+                    if (componentName.Contains("Sample") && componentName != "SampleDropController")
+                    {
+                        Debug.Log($"移除样本相关组件: {componentName} 从 {obj.name}");
+                        DestroyImmediate(component);
+                    }
+                }
+            }
+            
+            // 添加临时标记标签
+            obj.tag = "TemporaryCuttingObject";
+            
+            // 递归处理所有子对象
+            foreach (Transform child in obj.transform)
+            {
+                MarkAsTemporaryCuttingObject(child.gameObject);
+            }
+            
+            Debug.Log($"已标记为临时切割对象: {obj.name}");
+        }
+        
+        /// <summary>
+        /// 清理所有可能的原始样本对象
+        /// </summary>
+        private void CleanupOriginalSampleObjects()
+        {
+            // 搜索场景中所有SampleCollector组件（这些是可收集的样本对象）
+            var allSampleCollectors = FindObjectsOfType<SampleCollector>();
+            
+            foreach (var collector in allSampleCollectors)
+            {
+                if (collector != null && collector.gameObject != null)
+                {
+                    // 获取样本数据（SampleItem是数据类，通过SampleCollector访问）
+                    var sampleData = collector.sampleData;
+                    if (sampleData != null)
+                    {
+                        // 检查是否是原始多层样本（layerCount > 1的样本）
+                        if (sampleData.layerCount > 1)
+                        {
+                            Debug.Log($"清理原始多层样本: {sampleData.displayName} (层数: {sampleData.layerCount})");
+                            Destroy(collector.gameObject);
+                        }
+                        // 检查是否是名称匹配的样本
+                        else if (sampleData.displayName.Contains("地质样本_"))
+                        {
+                            Debug.Log($"清理地质样本对象: {sampleData.displayName}");
+                            Destroy(collector.gameObject);
+                        }
+                    }
+                }
+            }
+            
+            // 清理所有临时切割对象
+            var temporaryObjects = GameObject.FindGameObjectsWithTag("TemporaryCuttingObject");
+            foreach (var tempObj in temporaryObjects)
+            {
+                if (tempObj != null)
+                {
+                    Debug.Log($"清理临时切割对象: {tempObj.name}");
+                    Destroy(tempObj);
+                }
+            }
+        }
+        
+        /// <summary>
         /// 重置投放区域状态
         /// </summary>
         private void ResetDropZoneState()
         {
+            // 清理原始样本引用
+            originalSampleHandler = null;
+            
+            // 清理创建的样本对象列表
+            createdSampleObjects.Clear();
+            
             // 重置背景色为正常状态
             if (backgroundImage != null)
             {
