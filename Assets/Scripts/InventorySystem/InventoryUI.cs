@@ -68,18 +68,64 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     void InitializeComponents()
     {
-        sampleInventory = FindFirstObjectByType<SampleInventory>();
-        fpController = FindFirstObjectByType<FirstPersonController>();
-        
-        if (sampleInventory == null)
+        // 优先使用单例实例
+        if (SampleInventory.Instance != null)
         {
-            Debug.LogError("未找到SampleInventory组件！");
+            sampleInventory = SampleInventory.Instance;
+            Debug.Log("[InventoryUI] 使用SampleInventory单例实例");
         }
+        else
+        {
+            sampleInventory = FindFirstObjectByType<SampleInventory>();
+            if (sampleInventory == null)
+            {
+                Debug.LogError("[InventoryUI] 未找到SampleInventory组件！尝试延迟初始化...");
+                // 延迟重试
+                Invoke(nameof(RetryInitializeInventory), 1f);
+            }
+            else
+            {
+                Debug.Log("[InventoryUI] 通过FindFirstObjectByType找到SampleInventory");
+            }
+        }
+        
+        fpController = FindFirstObjectByType<FirstPersonController>();
         
         // 如果UI组件为空，自动创建
         if (inventoryCanvas == null)
         {
             CreateInventoryUI();
+        }
+    }
+    
+    /// <summary>
+    /// 重试初始化背包引用
+    /// </summary>
+    void RetryInitializeInventory()
+    {
+        if (sampleInventory == null)
+        {
+            if (SampleInventory.Instance != null)
+            {
+                sampleInventory = SampleInventory.Instance;
+                Debug.Log("[InventoryUI] 延迟初始化成功：使用SampleInventory单例");
+                
+                // 重新设置事件监听
+                SetupEventListeners();
+            }
+            else
+            {
+                sampleInventory = FindFirstObjectByType<SampleInventory>();
+                if (sampleInventory != null)
+                {
+                    Debug.Log("[InventoryUI] 延迟初始化成功：通过FindFirstObjectByType找到");
+                    SetupEventListeners();
+                }
+                else
+                {
+                    Debug.LogError("[InventoryUI] 延迟初始化失败，仍未找到SampleInventory");
+                }
+            }
         }
     }
     
@@ -548,13 +594,21 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     void HandleInput()
     {
+        // 检查输入系统是否正常
+        if (Keyboard.current == null)
+        {
+            return; // 输入系统未初始化
+        }
+        
         if (Keyboard.current.iKey.wasPressedThisFrame)
         {
+            Debug.Log("[InventoryUI] 检测到I键按下");
             ToggleInventory();
         }
         
         if (isInventoryOpen && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
+            Debug.Log("[InventoryUI] 检测到ESC键按下，关闭背包");
             CloseInventory();
         }
     }
@@ -564,6 +618,8 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     public void ToggleInventory()
     {
+        Debug.Log($"[InventoryUI] ToggleInventory调用，当前状态: {(isInventoryOpen ? "打开" : "关闭")}");
+        
         if (isInventoryOpen)
         {
             CloseInventory();
@@ -579,19 +635,52 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     public void OpenInventory()
     {
+        Debug.Log("[InventoryUI] 开始打开背包");
+        
+        if (sampleInventory == null)
+        {
+            Debug.LogError("[InventoryUI] 无法打开背包：sampleInventory为null");
+            // 尝试重新获取
+            if (SampleInventory.Instance != null)
+            {
+                sampleInventory = SampleInventory.Instance;
+                Debug.Log("[InventoryUI] 重新获取到SampleInventory实例");
+            }
+            else
+            {
+                Debug.LogError("[InventoryUI] SampleInventory.Instance仍然为null");
+                return;
+            }
+        }
+        
         isInventoryOpen = true;
-        inventoryPanel.SetActive(true);
+        
+        if (inventoryPanel == null)
+        {
+            Debug.LogError("[InventoryUI] inventoryPanel为null，尝试重新创建UI");
+            CreateInventoryUI();
+        }
+        
+        if (inventoryPanel != null)
+        {
+            inventoryPanel.SetActive(true);
+            Debug.Log("[InventoryUI] 背包面板已激活");
+        }
         
         // 禁用鼠标视角控制
         if (fpController != null)
         {
             fpController.enableMouseLook = false;
+            Debug.Log("[InventoryUI] 已禁用鼠标视角控制");
         }
         
         // 激活鼠标指针
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        Debug.Log("[InventoryUI] 已激活鼠标指针");
+        
         RefreshInventoryDisplay();
+        Debug.Log("[InventoryUI] 背包打开完成");
     }
     
     /// <summary>
@@ -636,9 +725,24 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     void RefreshInventoryDisplay()
     {
-        if (sampleInventory == null) return;
+        Debug.Log("[InventoryUI] 开始刷新背包显示");
+        
+        if (sampleInventory == null)
+        {
+            Debug.LogError("[InventoryUI] 无法刷新显示：sampleInventory为null");
+            return;
+        }
         
         var inventorySamples = sampleInventory.GetInventorySamples();
+        Debug.Log($"[InventoryUI] 获取到 {inventorySamples.Count} 个背包中的样本");
+        
+        if (slotComponents == null || slotComponents.Count == 0)
+        {
+            Debug.LogError("[InventoryUI] slotComponents为空，UI可能未正确初始化");
+            return;
+        }
+        
+        Debug.Log($"[InventoryUI] 槽位数量: {slotComponents.Count}");
         
         // 更新槽位
         for (int i = 0; i < slotComponents.Count; i++)
@@ -646,6 +750,7 @@ public class InventoryUI : MonoBehaviour
             if (i < inventorySamples.Count)
             {
                 slotComponents[i].SetSample(inventorySamples[i]);
+                Debug.Log($"[InventoryUI] 槽位[{i}]设置样本: {inventorySamples[i].displayName}");
             }
             else
             {
@@ -654,6 +759,7 @@ public class InventoryUI : MonoBehaviour
         }
         
         UpdateCapacityDisplay();
+        Debug.Log("[InventoryUI] 背包显示刷新完成");
     }
     
     /// <summary>
