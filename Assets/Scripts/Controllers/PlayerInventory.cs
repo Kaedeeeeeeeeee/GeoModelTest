@@ -22,10 +22,14 @@ public class PlayerInventory : MonoBehaviour
     
     void Update()
     {
+        // 禁用I键监听以避免与新背包系统冲突
+        // 新系统使用InventoryUI.cs处理I键输入
+        /*
         if (Input.GetKeyDown(inventoryKey))
         {
             ToggleInventory();
         }
+        */
     }
     
     public bool AddSample(GeologicalSampleData sampleData)

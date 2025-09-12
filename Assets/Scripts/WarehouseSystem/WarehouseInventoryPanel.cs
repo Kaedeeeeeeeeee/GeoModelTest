@@ -43,8 +43,14 @@ public class WarehouseInventoryPanel : MonoBehaviour
         // 尝试获取多选系统引用
         SetupMultiSelectSystem();
         
-        // 如果背包系统支持事件，可以订阅背包变化事件
-        // 目前使用定时刷新作为备选方案
+        // 订阅背包变化事件，实现实时同步
+        if (inventory != null)
+        {
+            inventory.OnInventoryChanged += RefreshInventoryDisplay;
+            Debug.Log("[WarehouseInventoryPanel] 已订阅背包变化事件，实现实时同步");
+        }
+        
+        // 定时刷新作为备选方案（降低频率）
         if (gameObject.activeInHierarchy)
         {
             StartCoroutine(RefreshInventoryPeriodically());
@@ -229,6 +235,13 @@ public class WarehouseInventoryPanel : MonoBehaviour
         if (inventory == null)
         {
             inventory = SampleInventory.Instance;
+            
+            // 如果刚刚获取到inventory实例，立即订阅事件
+            if (inventory != null)
+            {
+                inventory.OnInventoryChanged += RefreshInventoryDisplay;
+                Debug.Log("[WarehouseInventoryPanel] 延迟订阅背包变化事件成功");
+            }
         }
         
         // 确保多选系统引用存在
@@ -573,6 +586,12 @@ public class WarehouseInventoryPanel : MonoBehaviour
         if (multiSelectSystem != null)
         {
             multiSelectSystem.OnSelectionChanged -= OnSelectionChanged;
+        }
+        
+        // 取消背包变化事件订阅
+        if (inventory != null)
+        {
+            inventory.OnInventoryChanged -= RefreshInventoryDisplay;
         }
         
         // 清理槽位事件

@@ -541,8 +541,8 @@ public class SampleCollector : MonoBehaviour
             return;
         }
         
-        // 查找样本背包
-        var inventory = FindFirstObjectByType<SampleInventory>();
+        // 查找样本背包 - 使用多种方式确保找到
+        var inventory = GetOrCreateSampleInventory();
         if (inventory == null)
         {
             string localizedMessage = GetLocalizedMessage("sample.message.no_inventory");
@@ -622,6 +622,57 @@ public class SampleCollector : MonoBehaviour
             return localizationManager.GetText("sample.collection.interact", sampleData.displayName);
         }
         return $"[E] 采集 {sampleData?.displayName ?? "地质样本"}"; // 默认文本
+    }
+    
+    /// <summary>
+    /// 获取或创建SampleInventory实例
+    /// </summary>
+    private SampleInventory GetOrCreateSampleInventory()
+    {
+        // 方法1：检查单例实例
+        if (SampleInventory.Instance != null)
+        {
+            Debug.Log("[SampleCollector] 使用现有的SampleInventory单例");
+            return SampleInventory.Instance;
+        }
+        
+        // 方法2：使用FindFirstObjectByType查找
+        var inventory = FindFirstObjectByType<SampleInventory>();
+        if (inventory != null)
+        {
+            Debug.Log("[SampleCollector] 通过FindFirstObjectByType找到SampleInventory");
+            return inventory;
+        }
+        
+        // 方法3：检查是否有GameInitializer来初始化系统
+        var gameInitializer = FindFirstObjectByType<GameInitializer>();
+        if (gameInitializer != null)
+        {
+            Debug.Log("[SampleCollector] 找到GameInitializer，尝试初始化样本系统");
+            
+            // 强制初始化样本系统
+            gameInitializer.initializeSampleSystem = true;
+            
+            // 使用反射调用InitializeSampleSystem方法
+            var initMethod = typeof(GameInitializer).GetMethod("InitializeSampleSystem", 
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            if (initMethod != null)
+            {
+                initMethod.Invoke(gameInitializer, null);
+                Debug.Log("[SampleCollector] 已调用InitializeSampleSystem");
+                
+                // 再次尝试查找
+                return FindFirstObjectByType<SampleInventory>();
+            }
+        }
+        
+        // 方法4：手动创建SampleInventory
+        Debug.LogWarning("[SampleCollector] 未找到任何SampleInventory，尝试手动创建");
+        GameObject inventoryObj = new GameObject("SampleInventory (Auto-Created by SampleCollector)");
+        var newInventory = inventoryObj.AddComponent<SampleInventory>();
+        
+        Debug.Log("[SampleCollector] 已手动创建SampleInventory");
+        return newInventory;
     }
     
     /// <summary>
