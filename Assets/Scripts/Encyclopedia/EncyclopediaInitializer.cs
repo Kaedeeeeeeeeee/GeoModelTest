@@ -25,9 +25,9 @@ namespace Encyclopedia
         {
             if (showDebugInfo)
             {
-                Debug.Log("图鉴系统初始化器启动...");
+                Debug.Log("[EncyclopediaInitializer] 图鉴系统初始化器启动...");
             }
-            
+
             // 初始化系统组件
             InitializeSystem();
         }
@@ -58,6 +58,9 @@ namespace Encyclopedia
         /// </summary>
         private void InitializeSystem()
         {
+            if (showDebugInfo)
+                Debug.Log("[EncyclopediaInitializer] 开始初始化图鉴系统...");
+
             // 1. 确保数据管理器存在
             if (encyclopediaData == null)
             {
@@ -67,8 +70,10 @@ namespace Encyclopedia
                     var dataGO = new GameObject("EncyclopediaData");
                     encyclopediaData = dataGO.AddComponent<EncyclopediaData>();
                     if (showDebugInfo)
-                        Debug.Log("创建了EncyclopediaData组件");
+                        Debug.Log("[EncyclopediaInitializer] 创建了EncyclopediaData组件");
                 }
+                else if (showDebugInfo)
+                    Debug.Log("[EncyclopediaInitializer] 找到现有的EncyclopediaData组件");
             }
 
             // 2. 确保收集管理器存在
@@ -80,15 +85,24 @@ namespace Encyclopedia
                     var managerGO = new GameObject("CollectionManager");
                     collectionManager = managerGO.AddComponent<CollectionManager>();
                     if (showDebugInfo)
-                        Debug.Log("创建了CollectionManager组件");
+                        Debug.Log("[EncyclopediaInitializer] 创建了CollectionManager组件");
                 }
+                else if (showDebugInfo)
+                    Debug.Log("[EncyclopediaInitializer] 找到现有的CollectionManager组件");
             }
 
             // 3. 自动创建UI（如果启用）
             if (autoCreateUI && encyclopediaUI == null)
             {
+                if (showDebugInfo)
+                    Debug.Log("[EncyclopediaInitializer] autoCreateUI=true，开始创建UI...");
                 CreateEncyclopediaUI();
             }
+            else if (showDebugInfo)
+            {
+                Debug.Log($"[EncyclopediaInitializer] 跳过UI创建: autoCreateUI={autoCreateUI}, encyclopediaUI={encyclopediaUI}");
+            }
+
         }
 
         /// <summary>
@@ -150,16 +164,20 @@ namespace Encyclopedia
         private System.Collections.IEnumerator FindUIAfterCreation()
         {
             yield return null; // 等待一帧
-            
+
+            if (showDebugInfo)
+                Debug.Log("[EncyclopediaInitializer] 开始查找EncyclopediaUI组件...");
+
             // 查找创建的UI控制器
             encyclopediaUI = FindObjectOfType<EncyclopediaUI>();
-            
+
             if (showDebugInfo)
             {
                 if (encyclopediaUI != null)
                 {
-                    Debug.Log($"成功找到图鉴UI: {encyclopediaUI.gameObject.name}");
-                    
+                    Debug.Log($"[EncyclopediaInitializer] 成功找到图鉴UI: {encyclopediaUI.gameObject.name}");
+                    Debug.Log($"[EncyclopediaInitializer] GameObject激活状态: {encyclopediaUI.gameObject.activeInHierarchy}");
+
                     // 确保新创建的UI是关闭状态
                     if (encyclopediaUI.IsOpen())
                     {
@@ -168,16 +186,28 @@ namespace Encyclopedia
                 }
                 else
                 {
-                    Debug.LogError("创建图鉴UI失败 - 未找到EncyclopediaUI组件");
-                    
+                    Debug.LogError("[EncyclopediaInitializer] 创建图鉴UI失败 - 未找到EncyclopediaUI组件");
+
+                    // 搜索所有包含"Encyclopedia"的GameObject
+                    var allGameObjects = FindObjectsOfType<GameObject>(true); // 包括非激活的
+                    Debug.Log("[EncyclopediaInitializer] 搜索所有包含Encyclopedia的GameObject:");
+                    foreach (var go in allGameObjects)
+                    {
+                        if (go.name.Contains("Encyclopedia"))
+                        {
+                            var ui = go.GetComponent<EncyclopediaUI>();
+                            Debug.Log($"  - {go.name} (激活:{go.activeInHierarchy}) EncyclopediaUI:{ui != null}");
+                        }
+                    }
+
                     // 列出场景中所有可能相关的对象
-                    var allObjects = FindObjectsOfType<MonoBehaviour>();
-                    Debug.Log("场景中的所有MonoBehaviour:");
+                    var allObjects = FindObjectsOfType<MonoBehaviour>(true);
+                    Debug.Log("[EncyclopediaInitializer] 场景中的所有Encyclopedia相关MonoBehaviour:");
                     foreach (var obj in allObjects)
                     {
                         if (obj.GetType().Namespace == "Encyclopedia")
                         {
-                            Debug.Log($"  - {obj.GetType().Name} on {obj.gameObject.name}");
+                            Debug.Log($"  - {obj.GetType().Name} on {obj.gameObject.name} (激活:{obj.gameObject.activeInHierarchy})");
                         }
                     }
                 }
@@ -295,6 +325,7 @@ namespace Encyclopedia
             }
         }
         
+
         /// <summary>
         /// 强制重新创建UI
         /// </summary>
@@ -309,7 +340,7 @@ namespace Encyclopedia
                     Debug.Log("删除现有UI: " + existingUI.gameObject.name);
                 DestroyImmediate(existingUI.gameObject);
             }
-            
+
             // 删除现有Canvas（如果只有图鉴UI在使用）
             var canvases = FindObjectsOfType<Canvas>();
             foreach (var canvas in canvases)
@@ -321,9 +352,9 @@ namespace Encyclopedia
                     DestroyImmediate(canvas.gameObject);
                 }
             }
-            
+
             encyclopediaUI = null;
-            
+
             // 重新创建
             CreateEncyclopediaUI();
         }

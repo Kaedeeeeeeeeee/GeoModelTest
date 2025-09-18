@@ -66,7 +66,7 @@ namespace Encyclopedia
         public GameObject model3D;
 
         [Header("收集状态")]
-        public bool isDiscovered;
+        public bool isDiscovered = true;
         public DateTime firstDiscoveredTime;
         public int discoveryCount;
 
@@ -150,7 +150,13 @@ namespace Encyclopedia
         /// </summary>
         public bool ShouldShowDetails()
         {
+            // 临时测试模式：始终显示详细信息
+            return true;
+
+            /*
+            // 正式版本的逻辑（只有发现的条目才显示详细信息）
             return isDiscovered;
+            */
         }
 
         /// <summary>
@@ -158,11 +164,18 @@ namespace Encyclopedia
         /// </summary>
         public string GetDisplayNameForUI()
         {
+            // 临时测试模式：显示所有条目名称
+            // 注释：为了测试图鉴系统，暂时显示所有条目信息
+            return GetFormattedDisplayName();
+
+            /*
+            // 正式版本的隐藏逻辑（未发现时显示???）
             if (!isDiscovered)
             {
                 return "???";
             }
             return GetFormattedDisplayName();
+            */
         }
 
         /// <summary>
@@ -170,11 +183,17 @@ namespace Encyclopedia
         /// </summary>
         public string GetDescriptionForUI()
         {
+            // 临时测试模式：显示所有描述信息
+            return description;
+
+            /*
+            // 正式版本的隐藏逻辑（未发现时显示默认文本）
             if (!isDiscovered)
             {
                 return "未发现的" + GetEntryTypeText();
             }
             return description;
+            */
         }
     }
 }
