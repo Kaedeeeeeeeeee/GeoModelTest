@@ -23,11 +23,14 @@ public class DroneController : MonoBehaviour
     
     private Vector3 originalPosition;
     private float timeOffset;
-    
+
     // 控制相关变量
     private bool isBeingControlled = false;
     private FirstPersonController playerController;
     private Transform playerTransform;
+    private MobileInputManager mobileInputManager; // 移动端输入管理器
+    private MobileControlsUI mobileControlsUI; // 移动端控制UI
+    private bool wasFKeyPressedLastFrame = false; // 上一帧F键状态
     private Rigidbody droneRigidbody;
     
     // 摄像机相关变量
@@ -44,8 +47,36 @@ public class DroneController : MonoBehaviour
         originalPosition = transform.position;
         timeOffset = Random.Range(0f, Mathf.PI * 2f);
         droneRigidbody = GetComponent<Rigidbody>();
-        
-        
+
+        // 获取移动端输入管理器
+        mobileInputManager = MobileInputManager.Instance;
+        if (mobileInputManager == null)
+        {
+            mobileInputManager = FindObjectOfType<MobileInputManager>();
+        }
+
+        // 获取移动端控制UI
+        mobileControlsUI = FindObjectOfType<MobileControlsUI>();
+    }
+
+    /// <summary>
+    /// 检测F键输入 - 支持键盘和移动端虚拟按钮
+    /// </summary>
+    bool IsFKeyPressed()
+    {
+        // 键盘F键检测
+        bool keyboardFPressed = UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.fKey.wasPressedThisFrame;
+
+        // 移动端F键检测
+        bool mobileFPressed = false;
+        if (mobileInputManager != null)
+        {
+            bool currentFKeyState = mobileInputManager.IsSecondaryInteracting;
+            mobileFPressed = currentFKeyState && !wasFKeyPressedLastFrame;
+            wasFKeyPressedLastFrame = currentFKeyState;
+        }
+
+        return keyboardFPressed || mobileFPressed;
     }
     
     void Update()
@@ -126,7 +157,7 @@ public class DroneController : MonoBehaviour
                     Debug.Log($"无人机交互可用 - 距离: {distance:F1}m，按F键驾驶");
                 }
                 
-                if (UnityEngine.InputSystem.Keyboard.current.fKey.wasPressedThisFrame)
+                if (IsFKeyPressed())
                 {
                     Debug.Log("检测到F键按下，开始控制无人机");
                     StartControlling(nearbyPlayer);
@@ -170,7 +201,13 @@ public class DroneController : MonoBehaviour
         }
         
         isBeingControlled = true;
-        
+
+        // 显示无人机移动端控制UI
+        if (mobileControlsUI != null)
+        {
+            mobileControlsUI.SetDroneControlsVisible(true);
+        }
+
     }
     
     void StopControlling()
@@ -266,11 +303,18 @@ public class DroneController : MonoBehaviour
         }
         
         isBeingControlled = false;
+
+        // 隐藏无人机移动端控制UI
+        if (mobileControlsUI != null)
+        {
+            mobileControlsUI.SetDroneControlsVisible(false);
+        }
+
         playerController = null;
         playerTransform = null;
         playerCamera = null;
-        
-        
+
+
     }
     
     void HandleFlying()
@@ -278,7 +322,7 @@ public class DroneController : MonoBehaviour
         if (playerController == null) return;
         
         // 检查退出控制
-        if (UnityEngine.InputSystem.Keyboard.current.fKey.wasPressedThisFrame)
+        if (IsFKeyPressed())
         {
             StopControlling();
             return;
@@ -290,10 +334,19 @@ public class DroneController : MonoBehaviour
         // 水平移动只有在空中时才允许
         if (!isOnGround)
         {
+            // 键盘输入
             if (UnityEngine.InputSystem.Keyboard.current.wKey.isPressed) moveInput.z = 1; // 前进
             if (UnityEngine.InputSystem.Keyboard.current.sKey.isPressed) moveInput.z = -1; // 后退
             if (UnityEngine.InputSystem.Keyboard.current.aKey.isPressed) moveInput.x = -1; // 左转
             if (UnityEngine.InputSystem.Keyboard.current.dKey.isPressed) moveInput.x = 1; // 右转
+
+            // 移动端输入（优先级高于键盘）
+            if (mobileInputManager != null && mobileInputManager.MoveInput.magnitude > 0.1f)
+            {
+                Vector2 mobileMove = mobileInputManager.MoveInput;
+                moveInput.x = mobileMove.x; // 左右移动
+                moveInput.z = mobileMove.y; // 前后移动
+            }
         }
         else
         {
@@ -312,8 +365,15 @@ public class DroneController : MonoBehaviour
         }
         
         // 垂直移动始终允许
+        // 键盘输入
         if (UnityEngine.InputSystem.Keyboard.current.jKey.isPressed) moveInput.y = 1; // 上升
         if (UnityEngine.InputSystem.Keyboard.current.kKey.isPressed) moveInput.y = -1; // 下降
+
+        // 移动端输入（优先级高于键盘）
+        if (mobileInputManager != null && mobileInputManager.VerticalInput != 0)
+        {
+            moveInput.y = mobileInputManager.VerticalInput; // 直接使用移动端垂直输入
+        }
         
         // 无人机移动
         if (droneRigidbody != null)
