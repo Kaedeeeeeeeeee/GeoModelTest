@@ -145,29 +145,27 @@ namespace Encyclopedia
         {
             try
             {
-                #if UNITY_EDITOR
-                Debug.Log("开始加载图鉴数据...");
-                #endif
+                Debug.Log("[EncyclopediaData] 开始加载图鉴数据...");
 
                 // 加载JSON数据
                 TextAsset jsonFile = Resources.Load<TextAsset>($"MineralData/Data/{databaseFileName}");
                 if (jsonFile == null)
                 {
-                    Debug.LogError($"无法找到数据库文件: {databaseFileName}");
+                    Debug.LogError($"[EncyclopediaData] 无法找到数据库文件: MineralData/Data/{databaseFileName}");
                     return;
                 }
+                Debug.Log($"[EncyclopediaData] 成功加载JSON文件: {databaseFileName}, 大小: {jsonFile.text.Length} 字符");
 
                 // 解析JSON
+                Debug.Log("[EncyclopediaData] 开始解析JSON数据...");
                 database = JsonUtility.FromJson<DatabaseRoot>(jsonFile.text);
                 if (database == null)
                 {
-                    Debug.LogError("JSON解析失败");
+                    Debug.LogError("[EncyclopediaData] JSON解析失败");
                     return;
                 }
 
-                #if UNITY_EDITOR
-                Debug.Log($"成功加载数据库 v{database.version}, 包含 {database.stratigraphicLayers.Length} 个地层");
-                #endif
+                Debug.Log($"[EncyclopediaData] 成功加载数据库 v{database.version}, 包含 {database.stratigraphicLayers?.Length ?? 0} 个地层");
 
                 // 处理数据
                 ProcessDatabaseData();
@@ -182,7 +180,8 @@ namespace Encyclopedia
             }
             catch (Exception e)
             {
-                Debug.LogError($"加载图鉴数据失败: {e.Message}");
+                Debug.LogError($"[EncyclopediaData] 加载图鉴数据失败: {e.Message}");
+                Debug.LogError($"[EncyclopediaData] 堆栈跟踪: {e.StackTrace}");
             }
         }
 
@@ -275,7 +274,7 @@ namespace Encyclopedia
                 rarity = Rarity.Common, // 矿物默认为常见
                 discoveryProbability = mineral.percentage,
 
-                isDiscovered = false,
+                isDiscovered = true,
                 discoveryCount = 0
             };
 
@@ -316,7 +315,7 @@ namespace Encyclopedia
                 imageFile = fossil.properties.imageFile,
                 modelFile = fossil.properties.modelFile,
 
-                isDiscovered = false,
+                isDiscovered = true,
                 discoveryCount = 0
             };
 
@@ -386,9 +385,60 @@ namespace Encyclopedia
                 }
             }
 
+            // 为缺少3D模型的条目创建默认立方体
+            int createdModels = CreateDefaultModelsForEmptyEntries();
+
             #if UNITY_EDITOR
-            Debug.Log($"资源加载完成: 图片 {loadedImages}/{allEntries.Count}, 模型 {loadedModels}/{allEntries.Count}");
+            Debug.Log($"资源加载完成: 图片 {loadedImages}/{allEntries.Count}, 模型 {loadedModels + createdModels}/{allEntries.Count} (创建默认模型: {createdModels})");
             #endif
+        }
+
+        /// <summary>
+        /// 为缺少3D模型的条目创建默认立方体
+        /// </summary>
+        private int CreateDefaultModelsForEmptyEntries()
+        {
+            int createdCount = 0;
+
+            foreach (var entry in allEntries.Values)
+            {
+                if (entry.model3D == null)
+                {
+                    // 创建一个简单的立方体作为默认模型
+                    GameObject defaultModel = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    defaultModel.name = $"DefaultModel_{entry.displayName}";
+
+                    // 根据条目类型设置不同颜色
+                    var renderer = defaultModel.GetComponent<Renderer>();
+                    if (entry.entryType == EntryType.Mineral)
+                    {
+                        // 矿物使用随机明亮色
+                        renderer.material.color = new Color(
+                            UnityEngine.Random.Range(0.3f, 1f),
+                            UnityEngine.Random.Range(0.3f, 1f),
+                            UnityEngine.Random.Range(0.3f, 1f)
+                        );
+                    }
+                    else // 化石
+                    {
+                        // 化石使用棕色系
+                        renderer.material.color = new Color(
+                            UnityEngine.Random.Range(0.4f, 0.8f),
+                            UnityEngine.Random.Range(0.3f, 0.6f),
+                            UnityEngine.Random.Range(0.2f, 0.4f)
+                        );
+                    }
+
+                    entry.model3D = defaultModel;
+                    createdCount++;
+
+                    #if UNITY_EDITOR
+                    Debug.Log($"创建默认模型: {entry.displayName} ({entry.entryType})");
+                    #endif
+                }
+            }
+
+            return createdCount;
         }
 
         /// <summary>
@@ -396,8 +446,24 @@ namespace Encyclopedia
         /// </summary>
         public List<EncyclopediaEntry> GetEntriesByLayer(string layerName)
         {
-            return entriesByLayer.ContainsKey(layerName) ? 
-                entriesByLayer[layerName] : new List<EncyclopediaEntry>();
+            Debug.Log($"[EncyclopediaData] GetEntriesByLayer被调用，layerName: '{layerName}'");
+            Debug.Log($"[EncyclopediaData] 可用地层: {string.Join(", ", entriesByLayer.Keys)}");
+
+            if (entriesByLayer.ContainsKey(layerName))
+            {
+                var entries = entriesByLayer[layerName];
+                Debug.Log($"[EncyclopediaData] 返回 {entries.Count} 个条目给地层 '{layerName}'");
+                if (entries.Count > 0)
+                {
+                    Debug.Log($"[EncyclopediaData] 示例条目: {string.Join(", ", entries.Take(3).Select(e => $"{e.displayName}({e.layerName})"))}");
+                }
+                return entries;
+            }
+            else
+            {
+                Debug.LogWarning($"[EncyclopediaData] 地层 '{layerName}' 不存在于entriesByLayer中");
+                return new List<EncyclopediaEntry>();
+            }
         }
 
         /// <summary>
