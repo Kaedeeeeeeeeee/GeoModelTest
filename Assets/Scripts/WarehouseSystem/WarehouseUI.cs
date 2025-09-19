@@ -103,7 +103,8 @@ public class WarehouseUI : MonoBehaviour
         GameObject canvasObj = new GameObject("WarehouseCanvas");
         warehouseCanvas = canvasObj.AddComponent<Canvas>();
         warehouseCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        warehouseCanvas.sortingOrder = 150; // 低于样本详情UI，但高于TabUI
+        warehouseCanvas.sortingOrder = 200; // 确保高于移动端UI(100)，但低于样本详情UI
+        warehouseCanvas.overrideSorting = true; // 强制覆盖排序
         
         CanvasScaler scaler = canvasObj.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
@@ -111,7 +112,8 @@ public class WarehouseUI : MonoBehaviour
         scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
         scaler.matchWidthOrHeight = 0.5f;
         
-        canvasObj.AddComponent<GraphicRaycaster>();
+        GraphicRaycaster raycaster = canvasObj.AddComponent<GraphicRaycaster>();
+        raycaster.enabled = true; // 确保射线检测器启用
         
         // 创建主面板
         CreateMainPanel(canvasObj);

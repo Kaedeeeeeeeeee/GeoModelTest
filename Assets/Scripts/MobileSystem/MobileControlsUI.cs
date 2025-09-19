@@ -187,7 +187,7 @@ public class MobileControlsUI : MonoBehaviour
         
         // 强制设置为屏幕覆盖模式
         controlsCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        controlsCanvas.sortingOrder = 9999; // 确保移动端控件始终在最上层
+        controlsCanvas.sortingOrder = 100; // 设置为较低层级，让仓库UI等功能性UI在上层
         
         // 重要：重置transform，确保不受父对象影响
         transform.localPosition = Vector3.zero;
@@ -557,7 +557,7 @@ public class MobileControlsUI : MonoBehaviour
         // 添加透明图像以接收触摸事件
         Image touchImage = touchArea.AddComponent<Image>();
         touchImage.color = new Color(0, 0, 0, 0); // 完全透明
-        touchImage.raycastTarget = true;
+        touchImage.raycastTarget = false; // 关闭射线检测，避免阻挡其他UI
         
         if (enableDebugVisualization)
         {
