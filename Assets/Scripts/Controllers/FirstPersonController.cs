@@ -45,6 +45,13 @@ public class FirstPersonController : MonoBehaviour
     private bool jumpInput;
     private bool jumpEnabled = true; // 控制是否允许跳跃
     
+    [Header("移动端适配")]
+    public bool enableMobileInput = true; // 启用移动端输入支持
+    public bool prioritizeMobileInput = false; // 移动端输入优先级高于桌面端
+    
+    // 移动端输入管理器引用
+    private MobileInputManager mobileInputManager;
+    
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -64,7 +71,11 @@ public class FirstPersonController : MonoBehaviour
         // 设置玩家模型可见性
         SetupPlayerVisibility();
         
-        Cursor.lockState = CursorLockMode.Locked;
+        // 初始化移动端输入管理器
+        InitializeMobileInput();
+        
+        // 桌面测试模式下不锁定鼠标，允许点击虚拟控件
+        SetCursorLockState();
     }
     
     void Update()
@@ -73,9 +84,107 @@ public class FirstPersonController : MonoBehaviour
         GroundCheck();
         HandleMovement();
         HandleLook();
+        
+        // 检测桌面测试模式状态变化，动态更新鼠标锁定状态
+        CheckDesktopTestModeChange();
+    }
+    
+    private bool lastDesktopTestMode = false;
+    
+    /// <summary>
+    /// 检测桌面测试模式状态变化
+    /// </summary>
+    void CheckDesktopTestModeChange()
+    {
+        bool currentDesktopTestMode = mobileInputManager != null && mobileInputManager.desktopTestMode;
+
+        if (currentDesktopTestMode != lastDesktopTestMode)
+        {
+            SetCursorLockState();
+
+            // 桌面测试模式下自动启用移动端输入优先
+            if (!Application.isMobilePlatform)
+            {
+                prioritizeMobileInput = currentDesktopTestMode;
+                Debug.Log($"[FirstPersonController] 桌面测试模式变化 - 移动端输入优先: {prioritizeMobileInput}");
+            }
+
+            lastDesktopTestMode = currentDesktopTestMode;
+        }
+
+        // 桌面测试模式下强制保持鼠标解锁状态
+        if (currentDesktopTestMode && Cursor.lockState != CursorLockMode.None)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Debug.Log("[FirstPersonController] 强制解锁鼠标 - 桌面测试模式");
+        }
     }
     
     void HandleInput()
+    {
+        // 优先处理移动端输入
+        bool mobileInputHandled = false;
+        if (enableMobileInput && mobileInputManager != null)
+        {
+            mobileInputHandled = HandleMobileInput();
+        }
+        
+        // 如果移动端输入未处理，或者不是优先模式，则处理桌面端输入
+        if (!mobileInputHandled || !prioritizeMobileInput)
+        {
+            HandleDesktopInput();
+        }
+    }
+    
+    /// <summary>
+    /// 处理移动端输入
+    /// </summary>
+    bool HandleMobileInput()
+    {
+        if (mobileInputManager == null) return false;
+
+        bool inputHandled = false;
+
+        // 获取移动输入（优先使用移动端输入）
+        Vector2 mobileMove = mobileInputManager.MoveInput;
+        if (mobileMove.sqrMagnitude > 0.01f)
+        {
+            moveInput = mobileMove;
+            inputHandled = true;
+
+            Debug.Log($"[FirstPersonController] 处理移动端输入: {mobileMove}");
+        }
+
+        // 获取视角输入
+        Vector2 mobileLook = mobileInputManager.LookInput;
+        if (mobileLook.sqrMagnitude > 0.01f)
+        {
+            lookInput = mobileLook;
+            inputHandled = true;
+        }
+
+        // 获取跳跃输入
+        if (mobileInputManager.IsJumping && jumpEnabled)
+        {
+            jumpInput = true;
+            inputHandled = true;
+        }
+        
+        // 获取奔跑输入
+        if (mobileInputManager.IsRunning)
+        {
+            runInput = true;
+            inputHandled = true;
+        }
+        
+        return inputHandled;
+    }
+    
+    /// <summary>
+    /// 处理桌面端输入
+    /// </summary>
+    void HandleDesktopInput()
     {
         if (Keyboard.current != null)
         {
@@ -84,14 +193,27 @@ public class FirstPersonController : MonoBehaviour
             if (Keyboard.current.sKey.isPressed) move.y = -1;
             if (Keyboard.current.aKey.isPressed) move.x = -1;
             if (Keyboard.current.dKey.isPressed) move.x = 1;
-            moveInput = move;
             
-            runInput = Keyboard.current.leftShiftKey.isPressed;
-            
-            if (Keyboard.current.spaceKey.wasPressedThisFrame && jumpEnabled)  // 也需要检查jumpEnabled
+            // 只有在移动端输入无效或不优先时才使用桌面输入
+            if (!prioritizeMobileInput || (mobileInputManager == null || mobileInputManager.MoveInput.sqrMagnitude < 0.01f))
             {
-                jumpInput = true;
-                Debug.Log("空格键按下：跳跃输入已设置");
+                moveInput = move;
+            }
+            
+            // 奔跑输入
+            if (!prioritizeMobileInput || (mobileInputManager == null || !mobileInputManager.IsRunning))
+            {
+                runInput = Keyboard.current.leftShiftKey.isPressed;
+            }
+            
+            // 跳跃输入
+            if (Keyboard.current.spaceKey.wasPressedThisFrame && jumpEnabled)
+            {
+                if (!prioritizeMobileInput || (mobileInputManager == null || !mobileInputManager.IsJumping))
+                {
+                    jumpInput = true;
+                    Debug.Log("空格键按下：跳跃输入已设置");
+                }
             }
             else if (Keyboard.current.spaceKey.wasPressedThisFrame && !jumpEnabled)
             {
@@ -105,13 +227,24 @@ public class FirstPersonController : MonoBehaviour
             }
         }
         
-        if (Mouse.current != null && enableMouseLook)
+        // 鼠标视角控制（桌面测试模式下禁用以避免冲突）
+        bool isDesktopTestMode = mobileInputManager != null && mobileInputManager.desktopTestMode;
+        if (Mouse.current != null && enableMouseLook && !isDesktopTestMode)
         {
-            lookInput = Mouse.current.delta.ReadValue();
+            Vector2 mouseLook = Mouse.current.delta.ReadValue();
+            
+            // 只有在移动端输入无效或不优先时才使用鼠标输入
+            if (!prioritizeMobileInput || (mobileInputManager == null || mobileInputManager.LookInput.sqrMagnitude < 0.01f))
+            {
+                lookInput = mouseLook;
+            }
         }
-        else
+        else if (!enableMobileInput || mobileInputManager == null)
         {
-            lookInput = Vector2.zero; // 禁用鼠标视角时，清零输入
+            if (!isDesktopTestMode)  // 桌面测试模式下保持移动端视角控制
+            {
+                lookInput = Vector2.zero; // 禁用鼠标视角时，清零输入
+            }
         }
     }
     
@@ -135,18 +268,19 @@ public class FirstPersonController : MonoBehaviour
     void HandleMovement()
     {
         float currentSpeed = runInput ? runSpeed : walkSpeed;
-        
+
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
+
         controller.Move(move * currentSpeed * Time.deltaTime);
-        
+
         if (jumpInput && isGrounded && jumpEnabled)  // 三重检查：输入、接地、允许跳跃
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
-        
+
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
-        
+
         jumpInput = false;
     }
     
@@ -418,5 +552,107 @@ public class FirstPersonController : MonoBehaviour
             Gizmos.DrawWireSphere(leftHandAnchor.position, 0.05f);
             Gizmos.DrawLine(leftHandAnchor.position, leftHandAnchor.position + leftHandAnchor.forward * 0.1f);
         }
+    }
+    
+    /// <summary>
+    /// 初始化移动端输入管理器
+    /// </summary>
+    void InitializeMobileInput()
+    {
+        if (!enableMobileInput)
+        {
+            Debug.Log("[FirstPersonController] 移动端输入支持已禁用");
+            return;
+        }
+        
+        // 查找移动端输入管理器
+        mobileInputManager = MobileInputManager.Instance;
+        
+        if (mobileInputManager == null)
+        {
+            // 如果没有找到，尝试在场景中查找
+            mobileInputManager = FindFirstObjectByType<MobileInputManager>();
+            
+            if (mobileInputManager == null)
+            {
+                Debug.LogWarning("[FirstPersonController] 未找到MobileInputManager，移动端输入功能将不可用");
+                Debug.LogWarning("请确保场景中有MobileInputManager组件，或者禁用enableMobileInput");
+                return;
+            }
+        }
+        
+        // 根据设备类型和桌面测试模式自动调整设置
+        if (Application.isMobilePlatform)
+        {
+            prioritizeMobileInput = true;
+            Debug.Log("[FirstPersonController] 检测到移动设备，启用移动端输入优先模式");
+        }
+        else
+        {
+            // 桌面测试模式下优先使用移动端输入
+            bool isDesktopTestMode = mobileInputManager != null && mobileInputManager.desktopTestMode;
+            prioritizeMobileInput = isDesktopTestMode;
+
+            Debug.Log($"[FirstPersonController] 桌面设备 - 移动端输入优先: {prioritizeMobileInput} (桌面测试模式: {isDesktopTestMode})");
+        }
+        
+        Debug.Log($"[FirstPersonController] 移动端输入初始化完成 - 优先级: {prioritizeMobileInput}");
+    }
+    
+    /// <summary>
+    /// 设置移动端输入模式
+    /// </summary>
+    public void SetMobileInputMode(bool enabled, bool priority = false)
+    {
+        enableMobileInput = enabled;
+        prioritizeMobileInput = priority;
+        
+        if (enabled && mobileInputManager == null)
+        {
+            InitializeMobileInput();
+        }
+        
+        Debug.Log($"[FirstPersonController] 移动端输入模式更新 - 启用: {enabled}, 优先: {priority}");
+    }
+    
+    /// <summary>
+    /// 设置鼠标光标锁定状态
+    /// </summary>
+    void SetCursorLockState()
+    {
+        bool isDesktopTestMode = mobileInputManager != null && mobileInputManager.desktopTestMode;
+        
+        if (isDesktopTestMode)
+        {
+            // 桌面测试模式：解锁鼠标，允许点击虚拟控件
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Debug.Log("[FirstPersonController] 桌面测试模式 - 鼠标已解锁，可以点击虚拟控件");
+        }
+        else
+        {
+            // 正常模式：锁定鼠标进行第一人称视角控制
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            Debug.Log("[FirstPersonController] 正常模式 - 鼠标已锁定用于视角控制");
+        }
+    }
+    
+    /// <summary>
+    /// 公开方法：更新鼠标锁定状态
+    /// </summary>
+    public void UpdateCursorLockState()
+    {
+        SetCursorLockState();
+    }
+    
+    /// <summary>
+    /// 获取当前输入状态信息（调试用）
+    /// </summary>
+    public string GetInputStatusInfo()
+    {
+        return $"移动输入: {moveInput}, 视角输入: {lookInput}, 跳跃: {jumpInput}, 奔跑: {runInput}\n" +
+               $"移动端支持: {enableMobileInput}, 移动端优先: {prioritizeMobileInput}\n" +
+               $"移动端管理器: {(mobileInputManager != null ? "可用" : "不可用")}";
     }
 }

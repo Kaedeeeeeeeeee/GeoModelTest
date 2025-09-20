@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 /// <summary>
 /// 玩家持久化数据管理器 - 在场景切换时保存和恢复玩家状态
@@ -17,6 +18,9 @@ public class PlayerPersistentData : MonoBehaviour
     
     // 场景特定数据
     private Dictionary<string, SceneData> sceneDataMap = new Dictionary<string, SceneData>();
+
+    // 全局样本数据（跨场景保存）
+    private List<SampleItem> globalSampleData = new List<SampleItem>();
     
     /// <summary>
     /// 保存当前场景数据
@@ -34,8 +38,9 @@ public class PlayerPersistentData : MonoBehaviour
         
         // 保存当前装备的工具
         SaveEquippedTool(sceneData);
-        
-        // 不保存样本数据 - 场景切换后样本自然消失
+
+        // 保存样本数据到全局存储
+        SaveSampleData();
         
         // 保存到字典
         sceneDataMap[sceneName] = sceneData;
@@ -59,8 +64,9 @@ public class PlayerPersistentData : MonoBehaviour
             
             // 恢复装备的工具
             RestoreEquippedTool(sceneData);
-            
-            // 不恢复样本数据 - 每个场景重新开始
+
+            // 恢复样本数据
+            RestoreSampleData();
             
             Debug.Log($"场景数据恢复完成: {sceneName}");
         }
@@ -309,6 +315,114 @@ public class PlayerPersistentData : MonoBehaviour
     {
         sceneDataMap.Clear();
         Debug.Log("清除所有场景数据");
+    }
+
+    /// <summary>
+    /// 保存样本数据
+    /// </summary>
+    void SaveSampleData()
+    {
+        SampleInventory inventory = SampleInventory.Instance;
+        if (inventory != null)
+        {
+            var samples = inventory.GetAllSamples();
+            globalSampleData.Clear();
+            globalSampleData.AddRange(samples);
+            Debug.Log($"保存了 {globalSampleData.Count} 个样本数据");
+        }
+        else
+        {
+            Debug.LogWarning("SampleInventory不存在，无法保存样本数据");
+        }
+    }
+
+    /// <summary>
+    /// 恢复样本数据
+    /// </summary>
+    void RestoreSampleData()
+    {
+        if (globalSampleData.Count == 0)
+        {
+            Debug.Log("没有样本数据需要恢复");
+            return;
+        }
+
+        StartCoroutine(RestoreSampleDataDelayed());
+    }
+
+    /// <summary>
+    /// 延迟恢复样本数据（等待SampleInventory初始化）
+    /// </summary>
+    IEnumerator RestoreSampleDataDelayed()
+    {
+        // 等待SampleInventory初始化
+        yield return new WaitForSeconds(1f);
+
+        SampleInventory inventory = SampleInventory.Instance;
+        if (inventory == null)
+        {
+            Debug.LogWarning("SampleInventory仍然不存在，尝试创建");
+            // 尝试查找或创建SampleInventory
+            GameObject inventoryObj = GameObject.Find("SampleInventory");
+            if (inventoryObj == null)
+            {
+                inventoryObj = new GameObject("SampleInventory");
+                inventory = inventoryObj.AddComponent<SampleInventory>();
+
+                // 只在播放模式下使用DontDestroyOnLoad
+                if (Application.isPlaying)
+                {
+                    DontDestroyOnLoad(inventoryObj);
+                }
+            }
+            else
+            {
+                inventory = inventoryObj.GetComponent<SampleInventory>();
+            }
+        }
+
+        if (inventory != null)
+        {
+            // 清空当前背包
+            inventory.ClearInventory();
+
+            // 恢复保存的样本
+            foreach (var sample in globalSampleData)
+            {
+                inventory.TryAddSample(sample);
+            }
+
+            Debug.Log($"恢复了 {globalSampleData.Count} 个样本到背包");
+
+            // 刷新UI显示
+            WarehouseUI warehouseUI = FindFirstObjectByType<WarehouseUI>();
+            if (warehouseUI != null && warehouseUI.inventoryPanel != null)
+            {
+                warehouseUI.inventoryPanel.RefreshInventoryDisplay();
+                Debug.Log("刷新了仓库UI显示");
+            }
+        }
+        else
+        {
+            Debug.LogError("无法创建SampleInventory，样本数据恢复失败");
+        }
+    }
+
+    /// <summary>
+    /// 获取已收集的样本数据
+    /// </summary>
+    public List<SampleItem> GetCollectedSamples()
+    {
+        return globalSampleData.ToList();
+    }
+
+    /// <summary>
+    /// 手动添加样本数据（用于测试）
+    /// </summary>
+    public void AddSampleData(SampleItem sample)
+    {
+        globalSampleData.Add(sample);
+        Debug.Log($"手动添加样本数据: {sample.displayName}");
     }
 }
 

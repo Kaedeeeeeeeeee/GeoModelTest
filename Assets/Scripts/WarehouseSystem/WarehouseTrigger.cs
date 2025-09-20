@@ -28,6 +28,8 @@ public class WarehouseTrigger : MonoBehaviour
     
     // 私有成员
     private bool playerInRange = false;
+    private MobileInputManager mobileInputManager; // 移动端输入管理器
+    private bool wasFKeyPressedLastFrame = false; // 上一帧F键状态
     private GameObject nearbyPlayer;
     private Renderer[] renderers;
     private Material[] originalMaterials;
@@ -42,8 +44,35 @@ public class WarehouseTrigger : MonoBehaviour
         SetupInteractionUI();
         SetupVisualComponents();
         SetupCollider();
-        
+
+        // 获取移动端输入管理器
+        mobileInputManager = MobileInputManager.Instance;
+        if (mobileInputManager == null)
+        {
+            mobileInputManager = FindObjectOfType<MobileInputManager>();
+        }
+
         Debug.Log($"仓库触发器初始化完成，位置: {transform.position}");
+    }
+
+    /// <summary>
+    /// 检测F键输入 - 支持键盘和移动端虚拟按钮
+    /// </summary>
+    bool IsFKeyPressed()
+    {
+        // 键盘F键检测
+        bool keyboardFPressed = Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame;
+
+        // 移动端F键检测
+        bool mobileFPressed = false;
+        if (mobileInputManager != null)
+        {
+            bool currentFKeyState = mobileInputManager.IsSecondaryInteracting;
+            mobileFPressed = currentFKeyState && !wasFKeyPressedLastFrame;
+            wasFKeyPressedLastFrame = currentFKeyState;
+        }
+
+        return keyboardFPressed || mobileFPressed;
     }
     
     void Update()
@@ -415,9 +444,28 @@ public class WarehouseTrigger : MonoBehaviour
     void HandleInput()
     {
         if (!playerInRange) return;
-        
+
+        // 检查是否有切割界面正在显示
+        var cuttingStation = FindFirstObjectByType<SampleCuttingSystem.CuttingStationInteraction>();
+        if (cuttingStation != null)
+        {
+            // 通过反射检查切割界面是否打开
+            var stationType = cuttingStation.GetType();
+            var currentInterfaceField = stationType.GetField("currentCuttingInterface",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            if (currentInterfaceField != null)
+            {
+                GameObject currentInterface = (GameObject)currentInterfaceField.GetValue(cuttingStation);
+                if (currentInterface != null && currentInterface.activeInHierarchy)
+                {
+                    // 切割界面正在显示，不响应F键
+                    return;
+                }
+            }
+        }
+
         // F键打开仓库
-        if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
+        if (IsFKeyPressed())
         {
             OpenWarehouse();
         }

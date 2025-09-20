@@ -28,6 +28,8 @@ public class PlacedSampleCollector : MonoBehaviour
     // 私有成员
     private bool playerInRange = false;
     private GameObject nearbyPlayer;
+    private MobileInputManager mobileInputManager; // 移动端输入管理器
+    private bool wasEKeyPressedLastFrame = false; // 上一帧E键状态
     private Renderer[] renderers;
     private Material[] originalMaterials;
     private Color[] originalColors;
@@ -38,7 +40,14 @@ public class PlacedSampleCollector : MonoBehaviour
         SetupInteractionUI();
         SetupVisualComponents();
         ValidateSampleData();
-        
+
+        // 获取移动端输入管理器
+        mobileInputManager = MobileInputManager.Instance;
+        if (mobileInputManager == null)
+        {
+            mobileInputManager = FindObjectOfType<MobileInputManager>();
+        }
+
         // 启动时检查Input System状态
         StartCoroutine(CheckInputSystemOnStart());
     }
@@ -451,19 +460,10 @@ public class PlacedSampleCollector : MonoBehaviour
     {
         if (!playerInRange) return;
         
-        // 只使用新Input System（移除旧Input System以避免异常）
-        bool eKeyPressed = false;
-        
-        // 检查Input System是否可用
-        if (Keyboard.current != null)
+        // 使用统一的E键检测（支持键盘和移动端）
+        if (IsEKeyPressed())
         {
-            // 详细的E键状态检查
-            var eKey = Keyboard.current.eKey;
-            
-            if (eKey.wasPressedThisFrame)
-            {
-                CollectPlacedSample();
-            }
+            CollectPlacedSample();
         }
         #if UNITY_EDITOR
         else if (Time.frameCount % 300 == 0) // 每5秒检查一次
@@ -618,5 +618,25 @@ public class PlacedSampleCollector : MonoBehaviour
             Debug.Log($"玩家距离: {distance:F2}m (交互范围: {interactionRange}m)");
         }
         #endif
+    }
+
+    /// <summary>
+    /// 检测E键输入 - 支持键盘和移动端虚拟按钮
+    /// </summary>
+    bool IsEKeyPressed()
+    {
+        // 键盘E键检测
+        bool keyboardEPressed = Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame;
+
+        // 移动端E键检测
+        bool mobileEPressed = false;
+        if (mobileInputManager != null)
+        {
+            bool currentEKeyState = mobileInputManager.IsInteracting;
+            mobileEPressed = currentEKeyState && !wasEKeyPressedLastFrame;
+            wasEKeyPressedLastFrame = currentEKeyState;
+        }
+
+        return keyboardEPressed || mobileEPressed;
     }
 }

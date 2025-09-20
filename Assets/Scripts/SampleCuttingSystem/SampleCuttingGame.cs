@@ -551,7 +551,7 @@ namespace SampleCuttingSystem
             keyText.fontStyle = FontStyle.Bold;
             keyText.color = new Color(0.8f, 0.9f, 1f, 1f);
             keyText.alignment = TextAnchor.MiddleLeft;
-            keyText.text = "按空格键\n进行切割";
+            keyText.text = "按空格键/触摸屏幕\n进行切割";
             
             // 初始状态隐藏
             panelObj.SetActive(false);
@@ -701,9 +701,37 @@ namespace SampleCuttingSystem
         /// </summary>
         private void HandleInput()
         {
-            if (currentState == CuttingState.Cutting && 
-                Keyboard.current != null && 
-                Keyboard.current.spaceKey.wasPressedThisFrame)
+            if (currentState != CuttingState.Cutting) return;
+
+            bool shouldCut = false;
+
+            // 键盘空格键检测
+            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+            {
+                shouldCut = true;
+            }
+
+            // 移动端触摸检测
+            if (Touchscreen.current != null)
+            {
+                for (int i = 0; i < Touchscreen.current.touches.Count; i++)
+                {
+                    var touch = Touchscreen.current.touches[i];
+                    if (touch.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Began)
+                    {
+                        shouldCut = true;
+                        break;
+                    }
+                }
+            }
+
+            // 鼠标点击检测（桌面端）
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                shouldCut = true;
+            }
+
+            if (shouldCut)
             {
                 PerformCut();
             }

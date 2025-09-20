@@ -30,6 +30,7 @@ public class InventoryUISystem : MonoBehaviour
     public Color textShadowColor = new Color(0f, 0f, 0f, 0.8f);
     
     private bool isWheelOpen = false;
+    private bool wheelOpenedByMobileInput = false; // 标记轮盘是否由移动端输入打开
     private int selectedSlot = -1;
     private Camera playerCamera;
     private FirstPersonController fpController;
@@ -37,6 +38,109 @@ public class InventoryUISystem : MonoBehaviour
     
     private List<CollectionTool> availableTools = new List<CollectionTool>();
     
+    [Header("移动端适配")]
+    public bool enableMobileAdaptation = true;
+    public bool showMobileToolbar = true; // 在移动端显示工具栏而非轮盘
+    public float mobileToolbarHeight = 120f;
+    public int maxVisibleTools = 5; // 移动端一次显示的最大工具数
+    
+    // 移动端相关组件
+    private MobileInputManager mobileInputManager;
+    private GameObject mobileToolbar;
+    private List<Button> mobileToolButtons = new List<Button>();
+    private ScrollRect mobileScrollRect;
+    private bool isMobileMode = false;
+
+
+    /// <summary>
+    /// 初始化移动端输入事件监听
+    /// </summary>
+    void InitializeMobileInputEvents()
+    {
+        mobileInputManager = MobileInputManager.Instance;
+        if (mobileInputManager != null)
+        {
+            // 监听移动端输入事件
+            mobileInputManager.OnToolWheelInput += HandleToolWheelInput;
+            mobileInputManager.OnInventoryInput += HandleInventoryInput;
+            mobileInputManager.OnWarehouseInput += HandleWarehouseInput;
+
+            Debug.Log("[InventoryUISystem] 移动端输入事件监听已设置");
+        }
+        else
+        {
+            Debug.LogWarning("[InventoryUISystem] 未找到MobileInputManager，移动端UI事件不可用");
+        }
+    }
+
+    /// <summary>
+    /// 处理工具轮盘输入
+    /// </summary>
+    void HandleToolWheelInput()
+    {
+        // Debug.Log("[InventoryUISystem] 收到工具轮盘输入事件");
+
+        if (isWheelOpen)
+        {
+            CloseWheel();
+        }
+        else
+        {
+            wheelOpenedByMobileInput = true; // 标记为移动端输入打开
+            OpenWheel();
+        }
+    }
+
+    /// <summary>
+    /// 处理背包输入
+    /// </summary>
+    void HandleInventoryInput()
+    {
+        // Debug.Log("[InventoryUISystem] 收到背包输入事件");
+
+        // 查找背包UI并切换状态
+        InventoryUI inventoryUI = FindFirstObjectByType<InventoryUI>();
+        if (inventoryUI != null)
+        {
+            // 检查背包是否已打开，实现切换功能
+            if (inventoryUI.IsInventoryOpen())
+            {
+                inventoryUI.CloseInventory();
+                Debug.Log("[InventoryUISystem] 背包界面已关闭");
+            }
+            else
+            {
+                inventoryUI.OpenInventory();
+                Debug.Log("[InventoryUISystem] 背包界面已打开");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[InventoryUISystem] 未找到InventoryUI组件");
+        }
+    }
+
+    /// <summary>
+    /// 处理仓库输入
+    /// </summary>
+    void HandleWarehouseInput()
+    {
+        // Debug.Log("[InventoryUISystem] 收到仓库输入事件");
+
+        // 查找并打开仓库UI
+        WarehouseUI warehouseUI = FindFirstObjectByType<WarehouseUI>();
+        if (warehouseUI != null)
+        {
+            warehouseUI.OpenWarehouseInterface();
+            Debug.Log("[InventoryUISystem] 仓库界面已打开");
+        }
+        else
+        {
+            Debug.LogWarning("[InventoryUISystem] 未找到WarehouseUI组件");
+        }
+    }
+
+
     void CreateWheelUI()
     {
         // 创建圆形轮盘背景
@@ -186,15 +290,18 @@ public class InventoryUISystem : MonoBehaviour
     
     void Start()
     {
+        // 初始化移动端输入管理器连接
+        InitializeMobileInputEvents();
+
         playerCamera = Camera.main;
         fpController = FindFirstObjectByType<FirstPersonController>();
         canvas = GetComponent<Canvas>();
-        
+
         // 强制创建标准的UI结构
         Debug.Log("创建标准的圆形UI");
         DestroyOldUI();
         CreateWheelUI();
-        
+
         if (wheelUI != null)
         {
             // 确保UI处于隐藏状态
@@ -207,9 +314,12 @@ public class InventoryUISystem : MonoBehaviour
         {
             Debug.LogError("❌ wheelUI为null，TabUI初始化失败");
         }
-        
+
+        // 初始化移动端支持
+        InitializeMobileSupport();
+
         StartCoroutine(DelayedInitialize());
-        
+
         // 额外的安全检查：确保UI在一秒后仍然是隐藏状态
         StartCoroutine(SafetyCheck());
     }
@@ -402,7 +512,7 @@ public class InventoryUISystem : MonoBehaviour
         // 只有屏幕大小变化时才更新
         if (Mathf.Abs(screenSize - lastScreenSize) < 1f) return;
         
-        float wheelSize = screenSize * 0.8f; // 80%屏幕大小
+        float wheelSize = screenSize * 0.75f; // 改为75%屏幕大小，增大轮盘
         
         RectTransform wheelRect = wheelUI.GetComponent<RectTransform>();
         if (wheelRect != null)
@@ -413,6 +523,10 @@ public class InventoryUISystem : MonoBehaviour
             wheelRect.anchorMax = new Vector2(0.5f, 0.5f);
             wheelRect.pivot = new Vector2(0.5f, 0.5f);
             wheelRect.anchoredPosition = Vector2.zero;
+
+            // 调试信息（可根据需要开启）
+            // Debug.Log($"[InventoryUISystem] 轮盘尺寸更新 - 屏幕大小: {screenSize}, 轮盘大小: {wheelSize}x{wheelSize}");
+            // Debug.Log($"[InventoryUISystem] 轮盘位置 - anchoredPosition: {wheelRect.anchoredPosition}, localPosition: {wheelRect.localPosition}");
         }
         
         selectionRadius = wheelSize * 0.2f;
@@ -421,7 +535,7 @@ public class InventoryUISystem : MonoBehaviour
         UpdateSeparators(wheelSize);
         
         lastScreenSize = screenSize;
-        Debug.Log($"轮盘尺寸已更新为: {wheelSize}x{wheelSize} (屏幕大小: {screenSize})");
+        // Debug.Log($"轮盘尺寸已更新为: {wheelSize}x{wheelSize} (屏幕大小: {screenSize})");
     }
     
     void SetupWheelAppearance()
@@ -429,6 +543,7 @@ public class InventoryUISystem : MonoBehaviour
         if (wheelBackground != null)
         {
             wheelBackground.color = wheelBackgroundColor;
+            Debug.Log($"[InventoryUISystem] 设置wheelBackground颜色: {wheelBackgroundColor}");
         }
         else
         {
@@ -436,9 +551,17 @@ public class InventoryUISystem : MonoBehaviour
             if (wheelImg != null)
             {
                 wheelImg.color = wheelBackgroundColor;
+                Debug.Log($"[InventoryUISystem] 设置wheelImg颜色: {wheelBackgroundColor}");
+            }
+            else
+            {
+                Debug.LogWarning("[InventoryUISystem] 未找到轮盘背景Image组件");
             }
         }
-        
+
+        // 使用正常的轮盘背景色（深色半透明）
+        // Color testColor = new Color(1f, 0f, 0f, 0.8f); // 临时红色背景已移除
+
         SetupSeparators();
     }
     
@@ -527,40 +650,117 @@ public class InventoryUISystem : MonoBehaviour
     {
         if (wheelUI == null) return; // 安全检查
         
+        // 处理移动端输入
+        bool mobileInputHandled = false;
+        if (enableMobileAdaptation && isMobileMode && mobileInputManager != null)
+        {
+            mobileInputHandled = HandleMobileInput();
+        }
+        
+        // 如果移动端输入未处理，使用传统桌面输入
+        if (!mobileInputHandled)
+        {
+            HandleDesktopInput();
+        }
+    }
+    
+    /// <summary>
+    /// 处理移动端输入
+    /// </summary>
+    bool HandleMobileInput()
+    {
+        // 在移动端模式下，输入由移动端按钮事件处理
+        // 但在桌面测试模式下，仍需允许桌面输入处理Tab键
+
+        // 检查是否在桌面测试模式
+        bool isDesktopTestMode = mobileInputManager != null && mobileInputManager.desktopTestMode;
+
+        if (isDesktopTestMode)
+        {
+            // 桌面测试模式下，移动端和桌面端输入可以共存
+            return false; // 允许桌面输入处理
+        }
+
+        // 真正的移动设备上，阻止桌面输入
+        return true;
+    }
+    
+    /// <summary>
+    /// 处理桌面端输入
+    /// </summary>
+    void HandleDesktopInput()
+    {
+        if (Keyboard.current == null) return;
+
         if (Keyboard.current.tabKey.isPressed && !isWheelOpen)
         {
+            wheelOpenedByMobileInput = false; // 标记为桌面输入打开
             OpenWheel();
         }
-        else if (!Keyboard.current.tabKey.isPressed && isWheelOpen)
+        else if (!Keyboard.current.tabKey.isPressed && isWheelOpen && !wheelOpenedByMobileInput)
         {
+            // 只有当轮盘不是通过移动端输入打开时，才允许Tab键关闭
             CloseWheel();
+        }
+        else if (Keyboard.current.tabKey.wasPressedThisFrame && isWheelOpen && wheelOpenedByMobileInput)
+        {
+            // 如果轮盘是通过移动端打开的，Tab键按下时可以关闭它
+            CloseWheel();
+        }
+
+        // 添加触屏点击检测（移动端工具选择）
+        if (isWheelOpen && Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
+        {
+            HandleTouchSelection();
+        }
+
+        // 添加鼠标点击检测（桌面端工具选择）
+        if (isWheelOpen && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            HandleClickSelection();
         }
     }
     
     void OpenWheel()
     {
-        if (wheelUI == null) 
+        if (wheelUI == null)
         {
             Debug.LogError("❌ 无法打开TabUI：wheelUI为null");
             return;
         }
-        
+
+        // 确保Canvas设置正确
+        if (canvas != null)
+        {
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 2000; // 设置很高的层级，确保在所有UI之上
+            // Debug.Log($"[InventoryUISystem] Canvas设置 - RenderMode: {canvas.renderMode}, SortingOrder: {canvas.sortingOrder}");
+        }
+
         isWheelOpen = true;
         wheelUI.SetActive(true);
         SetupWheelAppearance();
         UpdateWheelSize();
+
+        // 强制刷新Canvas
+        if (canvas != null)
+        {
+            canvas.enabled = false;
+            canvas.enabled = true;
+        }
+
         Cursor.lockState = CursorLockMode.None;
-        
+
         // 只禁用鼠标视角控制，保留键盘移动
         if (fpController != null)
         {
             fpController.enableMouseLook = false;
         }
-        
+
         // 不暂停游戏，保持正常时间流逝
         Time.timeScale = 1.0f;
-        
-        Debug.Log("📂 TabUI已打开");
+
+        Debug.Log($"📂 TabUI已打开 - wheelUI.activeInHierarchy: {wheelUI.activeInHierarchy}, position: {wheelUI.transform.position}");
     }
     
     void CloseWheel()
@@ -582,25 +782,97 @@ public class InventoryUISystem : MonoBehaviour
         
         isWheelOpen = false;
         wheelUI.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
         
-        // 重新启用鼠标视角控制
-        if (fpController != null)
+        // 使用统一的鼠标状态管理
+        if (!MobileCursorManager.IsDesktopTestMode())
         {
-            fpController.enableMouseLook = true; // 恢复鼠标视角
+            Cursor.lockState = CursorLockMode.Locked;
+            
+            // 重新启用鼠标视角控制
+            if (fpController != null)
+            {
+                fpController.enableMouseLook = true; // 恢复鼠标视角
+            }
+        }
+        else
+        {
+            // 桌面测试模式下强制保持鼠标解锁
+            MobileCursorManager.ForceDesktopTestCursor();
+            Debug.Log("[InventoryUISystem] 桌面测试模式 - 保持鼠标解锁");
         }
         
         selectedSlot = -1;
+        wheelOpenedByMobileInput = false; // 重置标记
         ResetSlotColors();
-        
+
         Debug.Log("📁 TabUI已关闭");
+    }
+
+    /// <summary>
+    /// 获取当前输入位置（支持鼠标和触屏）
+    /// </summary>
+    Vector2 GetInputPosition()
+    {
+        // 优先检查触屏输入（移动端）
+        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
+        {
+            Vector2 touchPosition = Touchscreen.current.primaryTouch.position.ReadValue();
+            return touchPosition;
+        }
+
+        // 检查鼠标输入（桌面端）
+        if (Mouse.current != null)
+        {
+            Vector2 mousePosition = Mouse.current.position.ReadValue();
+            // 鼠标悬停时也返回位置（用于预览选择）
+            return mousePosition;
+        }
+
+        return Vector2.zero; // 没有有效输入
+    }
+
+    /// <summary>
+    /// 处理触屏选择
+    /// </summary>
+    void HandleTouchSelection()
+    {
+        if (selectedSlot >= 0 && selectedSlot < availableTools.Count)
+        {
+            Debug.Log($"[InventoryUISystem] 触屏选择工具: {availableTools[selectedSlot].toolName}");
+            SelectToolAndStartPreview(selectedSlot);
+            CloseWheel();
+        }
+        else
+        {
+            Debug.Log($"[InventoryUISystem] 触屏点击，但未选中有效工具 (selectedSlot: {selectedSlot})");
+        }
+    }
+
+    /// <summary>
+    /// 处理鼠标点击选择
+    /// </summary>
+    void HandleClickSelection()
+    {
+        if (selectedSlot >= 0 && selectedSlot < availableTools.Count)
+        {
+            Debug.Log($"[InventoryUISystem] 鼠标点击选择工具: {availableTools[selectedSlot].toolName}");
+            SelectToolAndStartPreview(selectedSlot);
+            CloseWheel();
+        }
+        else
+        {
+            Debug.Log($"[InventoryUISystem] 鼠标点击，但未选中有效工具 (selectedSlot: {selectedSlot})");
+        }
     }
     
     void UpdateSelection()
     {
-        Vector2 mousePosition = Mouse.current.position.ReadValue();
+        // 获取输入位置（支持鼠标和触屏）
+        Vector2 inputPosition = GetInputPosition();
+        if (inputPosition == Vector2.zero) return; // 没有有效输入
+
         Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
-        Vector2 direction = mousePosition - screenCenter;
+        Vector2 direction = inputPosition - screenCenter;
         
         if (direction.magnitude > selectionRadius)
         {
@@ -954,4 +1226,349 @@ public class InventoryUISystem : MonoBehaviour
                 return "tool.unknown.name";
         }
     }
+    
+    #region 移动端适配方法
+    
+    /// <summary>
+    /// 初始化移动端支持
+    /// </summary>
+    void InitializeMobileSupport()
+    {
+        if (!enableMobileAdaptation) return;
+        
+        // 获取移动端输入管理器
+        mobileInputManager = MobileInputManager.Instance;
+        
+        // 检测是否为移动设备
+        isMobileMode = Application.isMobilePlatform || 
+                      (mobileInputManager != null && mobileInputManager.IsMobileDevice());
+        
+        if (isMobileMode && showMobileToolbar)
+        {
+            CreateMobileToolbar();
+            
+            // 订阅移动端输入事件
+            if (mobileInputManager != null)
+            {
+                mobileInputManager.OnToolWheelInput += ToggleMobileToolbar;
+            }
+        }
+        
+        Debug.Log($"[InventoryUISystem] 移动端支持初始化完成 - 移动模式: {isMobileMode}");
+    }
+    
+    /// <summary>
+    /// 创建移动端工具栏
+    /// </summary>
+    void CreateMobileToolbar()
+    {
+        if (canvas == null) return;
+        
+        // 创建工具栏容器
+        GameObject toolbar = new GameObject("MobileToolbar");
+        toolbar.transform.SetParent(canvas.transform);
+        
+        RectTransform toolbarRect = toolbar.AddComponent<RectTransform>();
+        toolbarRect.anchorMin = new Vector2(0, 0);
+        toolbarRect.anchorMax = new Vector2(1, 0);
+        toolbarRect.pivot = new Vector2(0.5f, 0);
+        toolbarRect.sizeDelta = new Vector2(0, mobileToolbarHeight);
+        toolbarRect.anchoredPosition = Vector2.zero;
+        
+        // 添加背景
+        Image toolbarBg = toolbar.AddComponent<Image>();
+        toolbarBg.color = new Color(0.1f, 0.1f, 0.1f, 0.8f);
+        
+        // 添加安全区域适配
+        SafeAreaPanel safeAreaPanel = toolbar.AddComponent<SafeAreaPanel>();
+        safeAreaPanel.adaptHeight = false; // 只适配位置，不适配高度
+        safeAreaPanel.additionalBottomMargin = 10f;
+        
+        // 创建滚动视图
+        CreateMobileScrollView(toolbar);
+        
+        mobileToolbar = toolbar;
+        mobileToolbar.SetActive(false); // 初始隐藏
+        
+        Debug.Log("[InventoryUISystem] 移动端工具栏创建完成");
+    }
+    
+    /// <summary>
+    /// 创建移动端滚动视图
+    /// </summary>
+    void CreateMobileScrollView(GameObject parent)
+    {
+        // 创建滚动视图
+        GameObject scrollView = new GameObject("ToolScrollView");
+        scrollView.transform.SetParent(parent.transform);
+        
+        RectTransform scrollRect = scrollView.AddComponent<RectTransform>();
+        scrollRect.anchorMin = Vector2.zero;
+        scrollRect.anchorMax = Vector2.one;
+        scrollRect.offsetMin = new Vector2(20, 20);
+        scrollRect.offsetMax = new Vector2(-20, -20);
+        
+        // 添加ScrollRect组件
+        mobileScrollRect = scrollView.AddComponent<ScrollRect>();
+        mobileScrollRect.horizontal = true;
+        mobileScrollRect.vertical = false;
+        mobileScrollRect.movementType = ScrollRect.MovementType.Elastic;
+        
+        // 创建内容容器
+        GameObject content = new GameObject("Content");
+        content.transform.SetParent(scrollView.transform);
+        
+        RectTransform contentRect = content.AddComponent<RectTransform>();
+        contentRect.anchorMin = new Vector2(0, 0);
+        contentRect.anchorMax = new Vector2(0, 1);
+        contentRect.pivot = new Vector2(0, 0.5f);
+        contentRect.anchoredPosition = Vector2.zero;
+        
+        // 添加水平布局组件
+        HorizontalLayoutGroup layoutGroup = content.AddComponent<HorizontalLayoutGroup>();
+        layoutGroup.spacing = 15f;
+        layoutGroup.padding = new RectOffset(15, 15, 15, 15);
+        layoutGroup.childControlWidth = false;
+        layoutGroup.childControlHeight = true;
+        layoutGroup.childForceExpandWidth = false;
+        layoutGroup.childForceExpandHeight = true;
+        
+        // 添加内容大小适配器
+        ContentSizeFitter sizeFitter = content.AddComponent<ContentSizeFitter>();
+        sizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+        sizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
+        
+        mobileScrollRect.content = contentRect;
+        
+        Debug.Log("[InventoryUISystem] 移动端滚动视图创建完成");
+    }
+    
+    /// <summary>
+    /// 更新移动端工具栏显示
+    /// </summary>
+    void UpdateMobileToolbar()
+    {
+        if (!isMobileMode || mobileScrollRect == null) return;
+        
+        // 清空现有按钮
+        foreach (Button button in mobileToolButtons)
+        {
+            if (button != null) Destroy(button.gameObject);
+        }
+        mobileToolButtons.Clear();
+        
+        // 为每个工具创建按钮
+        for (int i = 0; i < availableTools.Count; i++)
+        {
+            if (availableTools[i] != null)
+            {
+                CreateMobileToolButton(availableTools[i], i);
+            }
+        }
+        
+        Debug.Log($"[InventoryUISystem] 移动端工具栏已更新，包含{mobileToolButtons.Count}个工具");
+    }
+    
+    /// <summary>
+    /// 创建移动端工具按钮
+    /// </summary>
+    void CreateMobileToolButton(CollectionTool tool, int index)
+    {
+        if (mobileScrollRect?.content == null) return;
+        
+        float buttonSize = mobileToolbarHeight - 40f; // 留出边距
+        
+        // 创建按钮对象
+        GameObject buttonObj = new GameObject($"MobileTool_{index}");
+        buttonObj.transform.SetParent(mobileScrollRect.content);
+        
+        RectTransform buttonRect = buttonObj.AddComponent<RectTransform>();
+        buttonRect.sizeDelta = new Vector2(buttonSize, buttonSize);
+        
+        // 添加按钮组件
+        Button button = buttonObj.AddComponent<Button>();
+        Image buttonImage = buttonObj.AddComponent<Image>();
+        
+        // 设置按钮样式
+        buttonImage.sprite = tool.toolIcon;
+        buttonImage.color = normalColor;
+        button.targetGraphic = buttonImage;
+        
+        // 添加按钮事件
+        int toolIndex = index; // 闭包捕获
+        button.onClick.AddListener(() => OnMobileToolSelected(toolIndex));
+        
+        // 添加按钮文本（工具名称）
+        GameObject textObj = new GameObject("ToolName");
+        textObj.transform.SetParent(buttonObj.transform);
+        
+        RectTransform textRect = textObj.AddComponent<RectTransform>();
+        textRect.anchorMin = new Vector2(0, 0);
+        textRect.anchorMax = new Vector2(1, 0);
+        textRect.pivot = new Vector2(0.5f, 1);
+        textRect.sizeDelta = new Vector2(0, 30);
+        textRect.anchoredPosition = new Vector2(0, 0);
+        
+        Text buttonText = textObj.AddComponent<Text>();
+        buttonText.text = tool.toolName;
+        buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        buttonText.fontSize = 16;
+        buttonText.color = Color.white;
+        buttonText.alignment = TextAnchor.MiddleCenter;
+        
+        // 添加本地化支持
+        LocalizedText localizedText = textObj.AddComponent<LocalizedText>();
+        localizedText.TextKey = GetToolNameKey(tool);
+        
+        mobileToolButtons.Add(button);
+    }
+    
+    /// <summary>
+    /// 移动端工具选择事件
+    /// </summary>
+    void OnMobileToolSelected(int toolIndex)
+    {
+        if (toolIndex >= 0 && toolIndex < availableTools.Count)
+        {
+            CollectionTool selectedTool = availableTools[toolIndex];
+            
+            // 使用移动端工具选择逻辑
+            SelectMobileTool(toolIndex);
+            
+            // 隐藏工具栏
+            if (mobileToolbar != null)
+            {
+                mobileToolbar.SetActive(false);
+            }
+            
+            Debug.Log($"[InventoryUISystem] 移动端工具选择: {selectedTool.toolName}");
+        }
+    }
+    
+    /// <summary>
+    /// 切换移动端工具栏显示
+    /// </summary>
+    void ToggleMobileToolbar()
+    {
+        if (!isMobileMode || mobileToolbar == null) return;
+        
+        bool isActive = mobileToolbar.activeSelf;
+        mobileToolbar.SetActive(!isActive);
+        
+        if (!isActive)
+        {
+            // 显示前更新工具栏
+            UpdateMobileToolbar();
+            
+            // 禁用玩家控制
+            if (fpController != null)
+            {
+                fpController.enableMouseLook = false;
+            }
+            
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            // 使用统一的鼠标状态管理
+            if (!MobileCursorManager.IsDesktopTestMode())
+            {
+                // 隐藏后恢复玩家控制
+                if (fpController != null)
+                {
+                    fpController.enableMouseLook = true;
+                }
+                
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+            else
+            {
+                // 桌面测试模式下强制保持鼠标解锁
+                MobileCursorManager.ForceDesktopTestCursor();
+                Debug.Log("[InventoryUISystem] 移动端工具栏关闭 - 桌面测试模式保持鼠标解锁");
+            }
+        }
+        
+        Debug.Log($"[InventoryUISystem] 移动端工具栏: {(isActive ? "隐藏" : "显示")}");
+    }
+    
+    /// <summary>
+    /// 移动端工具选择逻辑
+    /// </summary>
+    void SelectMobileTool(int toolIndex)
+    {
+        if (toolIndex >= 0 && toolIndex < availableTools.Count)
+        {
+            CollectionTool selectedTool = availableTools[toolIndex];
+            
+            // 使用现有的SelectTool方法
+            SelectTool(toolIndex);
+            
+            Debug.Log($"[InventoryUISystem] 移动端工具选择: {selectedTool.toolName} (ID: {selectedTool.toolID})");
+        }
+    }
+    
+    /// <summary>
+    /// 重写UpdateWheelDisplay以支持移动端
+    /// </summary>
+    void RefreshDisplay()
+    {
+        if (isMobileMode && showMobileToolbar)
+        {
+            UpdateMobileToolbar();
+        }
+        else
+        {
+            // 调用原有的轮盘更新逻辑
+            UpdateWheelDisplay();
+        }
+    }
+    
+    /// <summary>
+    /// 获取移动端模式状态
+    /// </summary>
+    public bool IsMobileMode()
+    {
+        return isMobileMode;
+    }
+    
+    /// <summary>
+    /// 设置移动端模式
+    /// </summary>
+    public void SetMobileMode(bool enabled)
+    {
+        if (isMobileMode == enabled) return;
+        
+        isMobileMode = enabled;
+        
+        if (enabled && showMobileToolbar)
+        {
+            CreateMobileToolbar();
+            UpdateMobileToolbar();
+        }
+        else if (mobileToolbar != null)
+        {
+            mobileToolbar.SetActive(false);
+        }
+        
+        Debug.Log($"[InventoryUISystem] 移动端模式: {(enabled ? "启用" : "禁用")}");
+    }
+    
+    void OnDestroy()
+    {
+        // 取消事件监听
+        if (mobileInputManager != null)
+        {
+            mobileInputManager.OnToolWheelInput -= HandleToolWheelInput;
+            mobileInputManager.OnInventoryInput -= HandleInventoryInput;
+            mobileInputManager.OnWarehouseInput -= HandleWarehouseInput;
+
+            // 清理移动端输入事件订阅
+            mobileInputManager.OnToolWheelInput -= ToggleMobileToolbar;
+        }
+    }
+    
+    #endregion
 }

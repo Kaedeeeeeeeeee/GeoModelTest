@@ -37,12 +37,25 @@ public class InventoryUI : MonoBehaviour
     public Vector2 panelSize = new Vector2(1200, 1000);
     public Color backgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.9f);
     
+    [Header("移动端适配")]
+    public bool enableMobileAdaptation = true;
+    public Vector2 mobilePanelSize = new Vector2(900, 800);
+    public int mobileGridColumns = 3;
+    public int mobileGridRows = 4;
+    public float mobileButtonSize = 80f;
+    public float mobileSpacing = 10f;
+    
     // 私有成员
     private bool isInventoryOpen = false;
     private SampleInventory sampleInventory;
     private List<InventorySlot> slotComponents = new List<InventorySlot>();
     private SampleItem selectedSample;
     private FirstPersonController fpController;
+    
+    // 移动端相关成员
+    private MobileUIAdapter mobileUIAdapter;
+    private SafeAreaPanel safeAreaPanel;
+    private bool isMobileMode = false;
     
     void Start()
     {
@@ -61,6 +74,23 @@ public class InventoryUI : MonoBehaviour
     void Update()
     {
         HandleInput();
+
+        // 临时测试：按X键强制关闭背包（用于调试）
+        if (isInventoryOpen && Keyboard.current != null && Keyboard.current.xKey.wasPressedThisFrame)
+        {
+            Debug.Log("[InventoryUI] X键测试关闭背包");
+            CloseInventory();
+        }
+
+        // 调试UI交互状态
+        if (isInventoryOpen)
+        {
+            // 每秒输出一次鼠标和UI状态信息
+            if (Time.time % 1f < Time.deltaTime)
+            {
+                Debug.Log($"[InventoryUI] UI调试状态 - 鼠标锁定: {Cursor.lockState}, 鼠标可见: {Cursor.visible}, EventSystem存在: {FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>() != null}");
+            }
+        }
     }
     
     /// <summary>
@@ -91,13 +121,50 @@ public class InventoryUI : MonoBehaviour
         
         fpController = FindFirstObjectByType<FirstPersonController>();
         
+        // 初始化移动端支持
+        InitializeMobileSupport();
+        
         // 如果UI组件为空，自动创建
         if (inventoryCanvas == null)
         {
             CreateInventoryUI();
         }
+
+        // 确保Canvas有必要的组件用于UI交互
+        EnsureCanvasComponents();
     }
-    
+
+    /// <summary>
+    /// 确保Canvas有必要的UI交互组件
+    /// </summary>
+    void EnsureCanvasComponents()
+    {
+        if (inventoryCanvas != null)
+        {
+            // 确保Canvas有GraphicRaycaster组件（UI点击检测必需）
+            if (inventoryCanvas.GetComponent<UnityEngine.UI.GraphicRaycaster>() == null)
+            {
+                inventoryCanvas.gameObject.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+                Debug.Log("[InventoryUI] 为Canvas添加GraphicRaycaster组件");
+            }
+
+            // 确保Canvas设置正确
+            inventoryCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            inventoryCanvas.sortingOrder = 10000; // 确保在移动端UI之上，能够接收点击事件
+
+            Debug.Log($"[InventoryUI] Canvas组件检查完成 - RenderMode: {inventoryCanvas.renderMode}, SortingOrder: {inventoryCanvas.sortingOrder}");
+        }
+
+        // 确保EventSystem存在（UI交互必需）
+        if (FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>() == null)
+        {
+            GameObject eventSystem = new GameObject("EventSystem");
+            eventSystem.AddComponent<UnityEngine.EventSystems.EventSystem>();
+            eventSystem.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+            Debug.Log("[InventoryUI] 创建EventSystem用于UI交互");
+        }
+    }
+
     /// <summary>
     /// 重试初始化背包引用
     /// </summary>
@@ -140,7 +207,7 @@ public class InventoryUI : MonoBehaviour
         
         inventoryCanvas = canvasObj.AddComponent<Canvas>();
         inventoryCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        inventoryCanvas.sortingOrder = 200; // 确保在其他UI之上
+        inventoryCanvas.sortingOrder = 10000; // 确保在移动端UI之上，能够接收点击事件
         
         canvasObj.AddComponent<GraphicRaycaster>();
         
@@ -157,6 +224,12 @@ public class InventoryUI : MonoBehaviour
         
         // 创建详情面板
         CreateDetailPanel();
+        
+        // 应用移动端适配
+        if (isMobileMode)
+        {
+            ApplyMobileAdaptation();
+        }
         
         // 初始时隐藏UI
         inventoryPanel.SetActive(false);
@@ -178,7 +251,10 @@ public class InventoryUI : MonoBehaviour
         panel.transform.SetParent(inventoryCanvas.transform);
         
         RectTransform panelRect = panel.AddComponent<RectTransform>();
-        panelRect.sizeDelta = panelSize;
+        
+        // 根据设备类型选择面板大小
+        Vector2 currentPanelSize = isMobileMode ? mobilePanelSize : panelSize;
+        panelRect.sizeDelta = currentPanelSize;
         panelRect.anchorMin = new Vector2(0.5f, 0.5f);
         panelRect.anchorMax = new Vector2(0.5f, 0.5f);
         panelRect.pivot = new Vector2(0.5f, 0.5f);
@@ -570,7 +646,31 @@ public class InventoryUI : MonoBehaviour
         // 按钮事件
         if (closeButton != null)
         {
+            // 清除现有监听器避免重复
+            closeButton.onClick.RemoveAllListeners();
             closeButton.onClick.AddListener(CloseInventory);
+
+            // 确保按钮是可交互的
+            closeButton.interactable = true;
+
+            // 确保按钮的图像组件启用了Raycast Target
+            Image buttonImage = closeButton.GetComponent<Image>();
+            if (buttonImage != null)
+            {
+                buttonImage.raycastTarget = true;
+                Debug.Log($"[InventoryUI] 关闭按钮Raycast Target已启用");
+            }
+
+            // 添加额外的测试监听器来确认点击事件
+            closeButton.onClick.AddListener(() => {
+                Debug.Log("[InventoryUI] 关闭按钮被点击了！");
+            });
+
+            Debug.Log($"[InventoryUI] 关闭按钮事件监听器已设置 - Interactable: {closeButton.interactable}, GameObject: {closeButton.gameObject.name}");
+        }
+        else
+        {
+            Debug.LogWarning("[InventoryUI] closeButton为null，无法设置关闭事件");
         }
         
         if (takeOutButton != null)
@@ -678,9 +778,75 @@ public class InventoryUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Debug.Log("[InventoryUI] 已激活鼠标指针");
-        
+
+        // 确保背包面板不阻挡其他UI交互
+        Image panelBackground = inventoryPanel.GetComponent<Image>();
+        if (panelBackground != null && panelBackground.color.a > 0.95f)
+        {
+            // 如果背景完全不透明，可能会阻挡点击
+            Debug.LogWarning("[InventoryUI] 背包面板背景可能阻挡UI交互");
+        }
+
+        // 刷新移动端UI层级，确保背包界面在移动端按钮之上
+        RefreshMobileUILayer();
+
+        // 强制重新设置按钮事件监听器，确保关闭按钮能工作
+        ForceSetupCloseButton();
+
         RefreshInventoryDisplay();
         Debug.Log("[InventoryUI] 背包打开完成");
+    }
+
+    /// <summary>
+    /// 检查背包是否已打开
+    /// </summary>
+    public bool IsInventoryOpen()
+    {
+        return isInventoryOpen;
+    }
+
+    /// <summary>
+    /// 强制设置关闭按钮事件监听器
+    /// </summary>
+    void ForceSetupCloseButton()
+    {
+        if (closeButton != null)
+        {
+            // 清除现有监听器并重新设置
+            closeButton.onClick.RemoveAllListeners();
+            closeButton.onClick.AddListener(CloseInventory);
+            closeButton.interactable = true;
+
+            // 确保按钮的Image组件启用Raycast Target
+            Image buttonImage = closeButton.GetComponent<Image>();
+            if (buttonImage != null)
+            {
+                buttonImage.raycastTarget = true;
+            }
+
+            Debug.Log($"[InventoryUI] 强制设置关闭按钮事件 - 按钮名: {closeButton.name}, 可交互: {closeButton.interactable}");
+        }
+        else
+        {
+            Debug.LogError("[InventoryUI] closeButton为null！尝试查找关闭按钮...");
+
+            // 尝试查找关闭按钮
+            if (inventoryPanel != null)
+            {
+                Button[] buttons = inventoryPanel.GetComponentsInChildren<Button>();
+                foreach (Button button in buttons)
+                {
+                    if (button.name.Contains("Close") || button.name.Contains("关闭"))
+                    {
+                        Debug.Log($"[InventoryUI] 找到可能的关闭按钮: {button.name}");
+                        closeButton = button;
+                        ForceSetupCloseButton(); // 递归调用重新设置
+                        return;
+                    }
+                }
+                Debug.LogWarning($"[InventoryUI] 在{buttons.Length}个按钮中未找到关闭按钮");
+            }
+        }
     }
     
     /// <summary>
@@ -688,19 +854,78 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     public void CloseInventory()
     {
+        Debug.Log("[InventoryUI] CloseInventory方法被调用");
+
         isInventoryOpen = false;
         inventoryPanel.SetActive(false);
         CloseDetailPanel();
-        
+
         // 恢复鼠标视角控制
         if (fpController != null)
         {
             fpController.enableMouseLook = true;
         }
-        
-        // 恢复鼠标状态
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+
+        // 使用移动端兼容的鼠标状态管理
+        RestoreCursorState();
+
+        // 恢复移动端UI层级
+        RefreshMobileUILayer();
+
+        Debug.Log("[InventoryUI] 背包关闭完成");
+    }
+
+    /// <summary>
+    /// 刷新移动端UI层级 - 确保背包界面在移动端按钮之上
+    /// </summary>
+    void RefreshMobileUILayer()
+    {
+        MobileControlsUI mobileControlsUI = FindFirstObjectByType<MobileControlsUI>();
+        if (mobileControlsUI != null)
+        {
+            Canvas mobileCanvas = mobileControlsUI.GetComponent<Canvas>();
+            if (mobileCanvas != null)
+            {
+                // 背包打开时，确保背包界面在移动端UI之上
+                if (isInventoryOpen)
+                {
+                    mobileCanvas.sortingOrder = 9999;  // 移动端按钮
+                    if (inventoryCanvas != null)
+                    {
+                        inventoryCanvas.sortingOrder = 10000; // 背包界面在上层
+                    }
+                    Debug.Log("[InventoryUI] 背包界面层级设置为最高 (10000)，移动端UI为 (9999)");
+                }
+                else
+                {
+                    mobileCanvas.sortingOrder = 9999;
+                    Debug.Log("[InventoryUI] 移动端UI层级恢复为最高");
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 恢复鼠标状态（兼容移动端）
+    /// </summary>
+    void RestoreCursorState()
+    {
+        // 检查是否在移动端桌面测试模式
+        MobileInputManager mobileInputManager = MobileInputManager.Instance;
+        bool isDesktopTestMode = mobileInputManager != null && mobileInputManager.desktopTestMode;
+
+        if (isDesktopTestMode)
+        {
+            // 桌面测试模式下保持鼠标解锁
+            MobileCursorManager.ForceDesktopTestCursor();
+            Debug.Log("[InventoryUI] 桌面测试模式 - 保持鼠标解锁");
+        }
+        else
+        {
+            // 正常模式下锁定鼠标
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
     
     /// <summary>
@@ -922,6 +1147,162 @@ public class InventoryUI : MonoBehaviour
             Debug.LogError($"堆栈跟踪: {e.StackTrace}");
         }
     }
+    
+    #region 移动端适配方法
+    
+    /// <summary>
+    /// 初始化移动端支持
+    /// </summary>
+    void InitializeMobileSupport()
+    {
+        if (!enableMobileAdaptation) return;
+        
+        // 获取移动端UI适配器
+        mobileUIAdapter = MobileUIAdapter.Instance;
+        
+        // 检测是否为移动设备
+        isMobileMode = Application.isMobilePlatform;
+        if (mobileUIAdapter != null)
+        {
+            var screenInfo = mobileUIAdapter.GetScreenInfo();
+            isMobileMode = screenInfo.deviceType == MobileUIAdapter.DeviceType.Phone ||
+                          screenInfo.deviceType == MobileUIAdapter.DeviceType.Tablet;
+        }
+        
+        Debug.Log($"[InventoryUI] 移动端支持初始化完成 - 移动模式: {isMobileMode}");
+    }
+    
+    /// <summary>
+    /// 应用移动端UI适配
+    /// </summary>
+    void ApplyMobileAdaptation()
+    {
+        if (!isMobileMode || inventoryPanel == null) return;
+        
+        // 应用移动端面板尺寸
+        RectTransform panelRect = inventoryPanel.GetComponent<RectTransform>();
+        if (panelRect != null)
+        {
+            panelRect.sizeDelta = mobilePanelSize;
+        }
+        
+        // 添加安全区域适配
+        if (safeAreaPanel == null)
+        {
+            safeAreaPanel = inventoryPanel.AddComponent<SafeAreaPanel>();
+            safeAreaPanel.adaptToSafeArea = true;
+            safeAreaPanel.additionalTopMargin = 20f;
+            safeAreaPanel.additionalBottomMargin = 20f;
+            safeAreaPanel.additionalLeftMargin = 20f;
+            safeAreaPanel.additionalRightMargin = 20f;
+        }
+        
+        // 调整网格布局
+        ApplyMobileGridLayout();
+        
+        // 调整按钮大小
+        ApplyMobileButtonSize();
+        
+        Debug.Log("[InventoryUI] 移动端UI适配已应用");
+    }
+    
+    /// <summary>
+    /// 应用移动端网格布局
+    /// </summary>
+    void ApplyMobileGridLayout()
+    {
+        if (samplesGrid == null) return;
+        
+        // 设置移动端网格参数
+        samplesGrid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        samplesGrid.constraintCount = mobileGridColumns;
+        samplesGrid.spacing = new Vector2(mobileSpacing, mobileSpacing);
+        
+        // 调整单元格大小
+        float cellSize = (mobilePanelSize.x - (mobileGridColumns + 1) * mobileSpacing) / mobileGridColumns;
+        samplesGrid.cellSize = new Vector2(cellSize, cellSize);
+        
+        // 设置内边距
+        samplesGrid.padding = new RectOffset(
+            (int)mobileSpacing, (int)mobileSpacing, 
+            (int)mobileSpacing, (int)mobileSpacing
+        );
+        
+        Debug.Log($"[InventoryUI] 移动端网格布局已更新 - 列数: {mobileGridColumns}, 单元格大小: {cellSize}");
+    }
+    
+    /// <summary>
+    /// 应用移动端按钮大小
+    /// </summary>
+    void ApplyMobileButtonSize()
+    {
+        // 调整关闭按钮
+        if (closeButton != null)
+        {
+            RectTransform buttonRect = closeButton.GetComponent<RectTransform>();
+            if (buttonRect != null)
+            {
+                buttonRect.sizeDelta = new Vector2(mobileButtonSize, mobileButtonSize);
+            }
+        }
+        
+        // 调整详情面板按钮
+        if (takeOutButton != null)
+        {
+            RectTransform buttonRect = takeOutButton.GetComponent<RectTransform>();
+            if (buttonRect != null)
+            {
+                buttonRect.sizeDelta = new Vector2(mobileButtonSize * 1.5f, mobileButtonSize * 0.8f);
+            }
+        }
+        
+        if (discardButton != null)
+        {
+            RectTransform buttonRect = discardButton.GetComponent<RectTransform>();
+            if (buttonRect != null)
+            {
+                buttonRect.sizeDelta = new Vector2(mobileButtonSize * 1.5f, mobileButtonSize * 0.8f);
+            }
+        }
+        
+        if (closeDetailButton != null)
+        {
+            RectTransform buttonRect = closeDetailButton.GetComponent<RectTransform>();
+            if (buttonRect != null)
+            {
+                buttonRect.sizeDelta = new Vector2(mobileButtonSize, mobileButtonSize);
+            }
+        }
+        
+        Debug.Log("[InventoryUI] 移动端按钮大小已调整");
+    }
+    
+    /// <summary>
+    /// 检查是否为移动模式
+    /// </summary>
+    public bool IsMobileMode()
+    {
+        return isMobileMode;
+    }
+    
+    /// <summary>
+    /// 设置移动端模式
+    /// </summary>
+    public void SetMobileMode(bool enabled)
+    {
+        if (isMobileMode == enabled) return;
+        
+        isMobileMode = enabled;
+        
+        if (enabled)
+        {
+            ApplyMobileAdaptation();
+        }
+        
+        Debug.Log($"[InventoryUI] 移动端模式: {(enabled ? "启用" : "禁用")}");
+    }
+    
+    #endregion
     
     void OnDestroy()
     {

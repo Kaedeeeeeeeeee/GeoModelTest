@@ -48,6 +48,7 @@ namespace Encyclopedia
         private string currentLayerName = "";
         private List<Button> layerButtons = new List<Button>();
         private List<GameObject> entryItems = new List<GameObject>();
+        private MobileInputManager mobileInputManager; // 移动端输入管理器
         private EncyclopediaEntry currentDetailEntry;
         
         // 鼠标和摄像机控制
@@ -75,7 +76,24 @@ namespace Encyclopedia
             
             // 查找第一人称控制器
             firstPersonController = FindObjectOfType<FirstPersonController>();
-            
+
+            // 获取移动端输入管理器
+            mobileInputManager = MobileInputManager.Instance;
+            if (mobileInputManager == null)
+            {
+                mobileInputManager = FindObjectOfType<MobileInputManager>();
+            }
+            if (mobileInputManager != null)
+            {
+                // 订阅图鉴输入事件
+                mobileInputManager.OnEncyclopediaInput += ToggleEncyclopedia;
+                Debug.Log("[SimpleEncyclopediaManager] 已订阅移动端图鉴输入事件");
+            }
+            else
+            {
+                Debug.LogWarning("[SimpleEncyclopediaManager] 未找到MobileInputManager，移动端图鉴输入不可用");
+            }
+
             // 保存原始鼠标状态
             originalCursorLockMode = Cursor.lockState;
             originalCursorVisible = Cursor.visible;
@@ -115,6 +133,12 @@ namespace Encyclopedia
             if (LocalizationManager.Instance != null)
             {
                 LocalizationManager.Instance.OnLanguageChanged -= RefreshLocalization;
+            }
+
+            // 取消移动端输入事件订阅
+            if (mobileInputManager != null)
+            {
+                mobileInputManager.OnEncyclopediaInput -= ToggleEncyclopedia;
             }
         }
         
@@ -533,13 +557,13 @@ namespace Encyclopedia
             detailPanel.transform.SetParent(mainPanel.transform, false);
             
             var detailRect = detailPanel.AddComponent<RectTransform>();
-            detailRect.anchorMin = new Vector2(0.25f, 0);
-            detailRect.anchorMax = new Vector2(1, 0.9f);
-            detailRect.offsetMin = new Vector2(20, 30);
-            detailRect.offsetMax = new Vector2(-30, -10);
-            
+            detailRect.anchorMin = new Vector2(0f, 0f);
+            detailRect.anchorMax = new Vector2(1f, 1f);
+            detailRect.offsetMin = Vector2.zero;
+            detailRect.offsetMax = Vector2.zero;
+
             var detailBg = detailPanel.AddComponent<Image>();
-            detailBg.color = new Color(0.05f, 0.08f, 0.12f, 0.95f);
+            detailBg.color = new Color(0.05f, 0.08f, 0.12f, 1.0f);
             
             // 创建详情面板标题栏
             CreateDetailHeader();
@@ -2387,6 +2411,7 @@ namespace Encyclopedia
         /// </summary>
         public void ToggleEncyclopedia()
         {
+            Debug.Log("[SimpleEncyclopediaManager] ToggleEncyclopedia被调用，当前状态: " + (isOpen ? "打开" : "关闭"));
             if (isOpen)
             {
                 CloseEncyclopedia();
@@ -2402,8 +2427,10 @@ namespace Encyclopedia
         /// </summary>
         public void OpenEncyclopedia()
         {
+            Debug.Log("[SimpleEncyclopediaManager] OpenEncyclopedia被调用");
             if (mainPanel != null)
             {
+                Debug.Log("[SimpleEncyclopediaManager] mainPanel存在，设置为激活状态");
                 mainPanel.SetActive(true);
                 isOpen = true;
                 
@@ -2428,6 +2455,10 @@ namespace Encyclopedia
                     Debug.Log($"FirstPersonController找到: {firstPersonController != null}");
                     Debug.Log($"鼠标状态: Cursor.lockState={Cursor.lockState}, Cursor.visible={Cursor.visible}");
                 }
+            }
+            else
+            {
+                Debug.LogError("[SimpleEncyclopediaManager] mainPanel为null，无法打开图鉴！");
             }
         }
         

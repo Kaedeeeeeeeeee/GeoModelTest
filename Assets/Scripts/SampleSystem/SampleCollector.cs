@@ -29,12 +29,21 @@ public class SampleCollector : MonoBehaviour
     private GameObject nearbyPlayer;
     private Renderer[] renderers;
     private Material[] originalMaterials;
+    private MobileInputManager mobileInputManager; // 移动端输入管理器
+    private bool wasEKeyPressedLastFrame = false; // 上一帧E键状态
     
     void Start()
     {
         SetupSampleData();
         SetupInteractionUI();
         SetupVisualComponents();
+
+        // 获取移动端输入管理器
+        mobileInputManager = MobileInputManager.Instance;
+        if (mobileInputManager == null)
+        {
+            mobileInputManager = FindObjectOfType<MobileInputManager>();
+        }
     }
     
     void Update()
@@ -524,7 +533,7 @@ public class SampleCollector : MonoBehaviour
     /// </summary>
     void HandleInput()
     {
-        if (playerInRange && Keyboard.current.eKey.wasPressedThisFrame)
+        if (playerInRange && IsEKeyPressed())
         {
             CollectSample();
         }
@@ -697,5 +706,25 @@ public class SampleCollector : MonoBehaviour
             default:
                 return key;
         }
+    }
+
+    /// <summary>
+    /// 检测E键输入 - 支持键盘和移动端虚拟按钮
+    /// </summary>
+    bool IsEKeyPressed()
+    {
+        // 键盘E键检测
+        bool keyboardEPressed = Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame;
+
+        // 移动端E键检测
+        bool mobileEPressed = false;
+        if (mobileInputManager != null)
+        {
+            bool currentEKeyState = mobileInputManager.IsInteracting;
+            mobileEPressed = currentEKeyState && !wasEKeyPressedLastFrame;
+            wasEKeyPressedLastFrame = currentEKeyState;
+        }
+
+        return keyboardEPressed || mobileEPressed;
     }
 }

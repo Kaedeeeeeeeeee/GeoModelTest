@@ -512,28 +512,14 @@ namespace Encyclopedia
             
             Button button = itemPrefab.AddComponent<Button>();
             
-            // 图标
-            GameObject iconGO = new GameObject("IconImage");
-            iconGO.transform.SetParent(itemPrefab.transform, false);
-            
-            RectTransform iconRect = iconGO.AddComponent<RectTransform>();
-            iconRect.anchorMin = new Vector2(0, 0.5f);
-            iconRect.anchorMax = new Vector2(0, 0.5f);
-            iconRect.pivot = new Vector2(0, 0.5f);
-            iconRect.anchoredPosition = new Vector2(10, 0);
-            iconRect.sizeDelta = new Vector2(50, 50);
-            
-            Image iconImage = iconGO.AddComponent<Image>();
-            iconImage.color = Color.gray;
-            
-            // 名称文字
+            // 名称文字（移除图标，直接从左边开始布局）
             GameObject nameGO = new GameObject("NameText");
             nameGO.transform.SetParent(itemPrefab.transform, false);
-            
+
             RectTransform nameRect = nameGO.AddComponent<RectTransform>();
             nameRect.anchorMin = new Vector2(0, 0.5f);
             nameRect.anchorMax = new Vector2(1, 1);
-            nameRect.offsetMin = new Vector2(70, 0);
+            nameRect.offsetMin = new Vector2(15, 0);  // 从15像素开始，而不是70像素
             nameRect.offsetMax = new Vector2(-100, -5);
             
             Text nameText = nameGO.AddComponent<Text>();
@@ -584,13 +570,13 @@ namespace Encyclopedia
             detailPanel.transform.SetParent(parent.transform, false);
             
             RectTransform rect = detailPanel.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.3f, 0.1f);
-            rect.anchorMax = new Vector2(0.9f, 0.9f);
+            rect.anchorMin = new Vector2(0f, 0f);
+            rect.anchorMax = new Vector2(1f, 1f);
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
             
             Image background = detailPanel.AddComponent<Image>();
-            background.color = new Color(0.05f, 0.1f, 0.15f, 0.95f);
+            background.color = new Color(0.05f, 0.1f, 0.15f, 1.0f);
             
             // 创建详细信息内容
             CreateDetailContent(detailPanel);
@@ -619,11 +605,14 @@ namespace Encyclopedia
             Text titleText = titleGO.AddComponent<Text>();
             titleText.text = "详细信息";
             titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            titleText.fontSize = 18;
+            titleText.fontSize = 28;
             titleText.color = Color.white;
             titleText.alignment = TextAnchor.MiddleLeft;
             titleText.fontStyle = FontStyle.Bold;
-            
+
+            // 关闭按钮
+            CreateDetailCloseButton(parent);
+
             // 图标
             GameObject iconGO = new GameObject("DetailIcon");
             iconGO.transform.SetParent(parent.transform, false);
@@ -650,7 +639,7 @@ namespace Encyclopedia
             Text descText = descGO.AddComponent<Text>();
             descText.text = "描述信息";
             descText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            descText.fontSize = 12;
+            descText.fontSize = 18;
             descText.color = Color.white;
             descText.alignment = TextAnchor.UpperLeft;
             
@@ -667,7 +656,7 @@ namespace Encyclopedia
             Text propsText = propsGO.AddComponent<Text>();
             propsText.text = "属性信息";
             propsText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            propsText.fontSize = 12;
+            propsText.fontSize = 18;
             propsText.color = new Color(0.8f, 0.9f, 1f);
             propsText.alignment = TextAnchor.UpperLeft;
         }
@@ -686,22 +675,8 @@ namespace Encyclopedia
             Image background = viewerGO.AddComponent<Image>();
             background.color = new Color(0.02f, 0.05f, 0.08f, 0.9f);
             
-            // 添加Model3DViewer脚本
-            viewerGO.AddComponent<Model3DViewer>();
-            
-            // 创建相机
-            GameObject cameraGO = new GameObject("ViewerCamera");
-            cameraGO.transform.SetParent(viewerGO.transform, false);
-            cameraGO.transform.localPosition = new Vector3(0, 0, -2);
-            
-            Camera camera = cameraGO.AddComponent<Camera>();
-            camera.clearFlags = CameraClearFlags.SolidColor;
-            camera.backgroundColor = new Color(0.02f, 0.05f, 0.08f, 1f);
-            camera.cullingMask = LayerMask.GetMask("UI"); // 只渲染UI层
-            camera.orthographic = false;
-            camera.fieldOfView = 60f;
-            camera.nearClipPlane = 0.1f;
-            camera.farClipPlane = 10f;
+            // 添加Simple3DViewer脚本（使用简化版）
+            viewerGO.AddComponent<Simple3DViewer>();
             
             // 创建控制按钮
             CreateViewerControls(viewerGO);
@@ -755,6 +730,69 @@ namespace Encyclopedia
             resetText.alignment = TextAnchor.MiddleCenter;
         }
 
+        private void CreateDetailCloseButton(GameObject parent)
+        {
+            GameObject closeButtonGO = new GameObject("DetailCloseButton");
+            closeButtonGO.transform.SetParent(parent.transform, false);
+
+            RectTransform rect = closeButtonGO.AddComponent<RectTransform>();
+            rect.anchorMin = new Vector2(1, 1);
+            rect.anchorMax = new Vector2(1, 1);
+            rect.pivot = new Vector2(1, 1);
+            rect.anchoredPosition = new Vector2(-20, -20);
+            rect.sizeDelta = new Vector2(60, 60);
+
+            Image background = closeButtonGO.AddComponent<Image>();
+            background.color = new Color(0.8f, 0.2f, 0.2f, 0.8f);
+
+            Button button = closeButtonGO.AddComponent<Button>();
+
+            // 创建X文字
+            GameObject textGO = new GameObject("Text");
+            textGO.transform.SetParent(closeButtonGO.transform, false);
+
+            RectTransform textRect = textGO.AddComponent<RectTransform>();
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = Vector2.zero;
+            textRect.offsetMax = Vector2.zero;
+
+            Text text = textGO.AddComponent<Text>();
+            text.text = "×";
+            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.fontSize = 36;
+            text.color = Color.white;
+            text.alignment = TextAnchor.MiddleCenter;
+            text.fontStyle = FontStyle.Bold;
+
+            Debug.Log("详情页面关闭按钮已创建");
+        }
+
+        private void SetupCloseButtonEvent(GameObject detailPanel, EncyclopediaUI uiController)
+        {
+            var closeButton = detailPanel.transform.Find("DetailCloseButton");
+            if (closeButton != null)
+            {
+                var button = closeButton.GetComponent<Button>();
+                if (button != null)
+                {
+                    button.onClick.AddListener(() => {
+                        Debug.Log("详情页面关闭按钮被点击");
+                        uiController.CloseDetailPanel();
+                    });
+                    Debug.Log("关闭按钮事件设置完成");
+                }
+                else
+                {
+                    Debug.LogWarning("关闭按钮没有Button组件");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("未找到关闭按钮DetailCloseButton");
+            }
+        }
+
         private void SetupEncyclopediaUIComponent(GameObject encyclopediaPanel, GameObject leftPanel, GameObject rightPanel, GameObject detailPanel)
         {
             EncyclopediaUI uiController = encyclopediaPanel.GetComponent<EncyclopediaUI>();
@@ -780,13 +818,16 @@ namespace Encyclopedia
                 SetFieldValue(uiController, "closeButton", FindDeepChild(encyclopediaPanel.transform, "CloseButton")?.GetComponent<Button>());
                 
                 // 左侧导航
-                SetFieldValue(uiController, "layerTabContainer", FindDeepChild(leftPanel.transform, "LayerTabContainer"));
+                var layerTabContainer = FindDeepChild(leftPanel.transform, "LayerTabContainer");
+                SetFieldValue(uiController, "layerTabContainer", layerTabContainer);
                 SetFieldValue(uiController, "layerTabPrefab", FindDeepChild(leftPanel.transform, "LayerTabPrefab")?.GetComponent<Button>());
                 SetFieldValue(uiController, "statisticsText", FindDeepChild(leftPanel.transform, "StatisticsText")?.GetComponent<Text>());
                 
                 // 右侧内容区
-                SetFieldValue(uiController, "entryListContainer", FindDeepChild(rightPanel.transform, "Content"));
-                SetFieldValue(uiController, "entryItemPrefab", FindDeepChild(rightPanel.transform, "EntryItemPrefab"));
+                var entryListContainer = FindDeepChild(rightPanel.transform, "Content");
+                SetFieldValue(uiController, "entryListContainer", entryListContainer);
+                var entryItemPrefab = FindDeepChild(rightPanel.transform, "EntryItemPrefab");
+                SetFieldValue(uiController, "entryItemPrefab", entryItemPrefab?.gameObject);
                 SetFieldValue(uiController, "entryScrollRect", FindDeepChild(rightPanel.transform, "EntryListContainer")?.GetComponent<ScrollRect>());
                 
                 // 筛选控件
@@ -801,8 +842,11 @@ namespace Encyclopedia
                 SetFieldValue(uiController, "detailIcon", FindDeepChild(detailPanel.transform, "DetailIcon")?.GetComponent<Image>());
                 SetFieldValue(uiController, "detailDescription", FindDeepChild(detailPanel.transform, "DetailDescription")?.GetComponent<Text>());
                 SetFieldValue(uiController, "detailProperties", FindDeepChild(detailPanel.transform, "DetailProperties")?.GetComponent<Text>());
-                SetFieldValue(uiController, "model3DViewer", FindDeepChild(detailPanel.transform, "Model3DViewer")?.GetComponent<Model3DViewer>());
-                
+                SetFieldValue(uiController, "model3DViewer", FindDeepChild(detailPanel.transform, "Model3DViewer")?.GetComponent<Simple3DViewer>());
+
+                // 设置关闭按钮事件
+                SetupCloseButtonEvent(detailPanel, uiController);
+
                 Debug.Log("UI引用自动连接完成");
             }
             catch (System.Exception e)
@@ -816,8 +860,22 @@ namespace Encyclopedia
             var field = target.GetType().GetField(fieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             if (field != null && value != null)
             {
-                field.SetValue(target, value);
-                Debug.Log($"设置 {fieldName}: {value}");
+                try
+                {
+                    // 检查类型兼容性
+                    if (!field.FieldType.IsAssignableFrom(value.GetType()))
+                    {
+                        Debug.LogError($"类型不匹配 {fieldName}: 期望 {field.FieldType.Name}, 得到 {value.GetType().Name}");
+                        return;
+                    }
+
+                    field.SetValue(target, value);
+                    Debug.Log($"设置 {fieldName}: {value}");
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"设置字段 {fieldName} 时出错: {e.Message}");
+                }
             }
             else if (field == null)
             {
