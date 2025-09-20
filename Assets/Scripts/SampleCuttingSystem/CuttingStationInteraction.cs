@@ -1,6 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using System.Collections;
+using System.Linq;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace SampleCuttingSystem
 {
@@ -14,34 +19,78 @@ namespace SampleCuttingSystem
         [SerializeField] private float interactionRange = 3f;        // 交互范围
         [SerializeField] private LayerMask playerLayer = -1;        // 玩家层级
         [SerializeField] private KeyCode interactionKey = KeyCode.F; // 交互按键
-        
+
         [Header("UI提示")]
         [SerializeField] private GameObject interactionPrompt;      // 交互提示UI
         [SerializeField] private Text promptText;                   // 提示文字
         [SerializeField] private Canvas promptCanvas;               // 提示Canvas
-        
+
         [Header("切割界面")]
         [SerializeField] private GameObject cuttingInterfacePrefab; // 切割界面预制体
         [SerializeField] private Transform interfaceParent;         // 界面父对象
-        
+
         // 状态变量
         private bool playerInRange = false;
         private GameObject nearbyPlayer;
         private GameObject currentCuttingInterface;
+        private MobileInputManager mobileInputManager; // 移动端输入管理器
+        private bool wasFKeyPressedLastFrame = false; // 上一帧F键状态
         private SampleCuttingSystemManager cuttingSystemManager;
-        
+
         void Start()
         {
             SetupInteractionPrompt();
             SetupComponents();
+
+            // 获取移动端输入管理器
+            mobileInputManager = MobileInputManager.Instance;
+            if (mobileInputManager == null)
+            {
+                mobileInputManager = FindObjectOfType<MobileInputManager>();
+            }
         }
-        
+
         void Update()
         {
             CheckPlayerInteraction();
             HandleInput();
         }
-        
+
+        /// <summary>
+        /// 检测F键输入 - 支持键盘和移动端虚拟按钮
+        /// </summary>
+        bool IsFKeyPressed()
+        {
+            // 键盘F键检测 - 支持新旧输入系统
+            bool keyboardFPressed = false;
+
+            // 优先使用旧输入系统（更兼容）
+            keyboardFPressed = Input.GetKeyDown(interactionKey);
+
+            // 如果旧输入系统无效，尝试新输入系统
+            if (!keyboardFPressed && Keyboard.current != null)
+            {
+                keyboardFPressed = Keyboard.current.fKey.wasPressedThisFrame;
+            }
+
+            // 移动端F键检测
+            bool mobileFPressed = false;
+            if (mobileInputManager != null)
+            {
+                bool currentFKeyState = mobileInputManager.IsSecondaryInteracting;
+                mobileFPressed = currentFKeyState && !wasFKeyPressedLastFrame;
+                wasFKeyPressedLastFrame = currentFKeyState;
+            }
+
+            // 添加调试输出
+            if (keyboardFPressed || mobileFPressed)
+            {
+                Debug.Log($"F键被按下! 键盘: {keyboardFPressed}, 移动端: {mobileFPressed}");
+            }
+
+            return keyboardFPressed || mobileFPressed;
+        }
+
         /// <summary>
         /// 设置组件引用
         /// </summary>
@@ -52,7 +101,7 @@ namespace SampleCuttingSystem
             {
                 Debug.LogWarning("切割系统管理器未找到");
             }
-            
+
             Debug.Log("设置界面父对象...");
             // 设置界面父对象
             if (interfaceParent == null)
@@ -69,14 +118,39 @@ namespace SampleCuttingSystem
                     Debug.LogError("无法找到或创建UI Canvas！");
                 }
             }
-            else
-            {
-                Debug.Log($"界面父对象已存在: {interfaceParent.name}");
-            }
         }
-        
+
         /// <summary>
-        /// 设置交互提示UI
+        /// 查找或创建UI Canvas
+        /// </summary>
+        private Canvas FindUICanvas()
+        {
+            // 首先尝试找现有的Canvas
+            Canvas[] canvases = FindObjectsOfType<Canvas>();
+            foreach (Canvas canvas in canvases)
+            {
+                if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+                {
+                    Debug.Log($"找到现有Canvas: {canvas.name}");
+                    return canvas;
+                }
+            }
+
+            // 如果没有找到，创建新的
+            Debug.Log("未找到合适的Canvas，创建新的");
+            GameObject canvasObj = new GameObject("CuttingUICanvas");
+            Canvas newCanvas = canvasObj.AddComponent<Canvas>();
+            newCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            newCanvas.sortingOrder = 50; // 低于移动端UI的100
+
+            canvasObj.AddComponent<CanvasScaler>();
+            canvasObj.AddComponent<GraphicRaycaster>();
+
+            return newCanvas;
+        }
+
+        /// <summary>
+        /// 设置交互提示
         /// </summary>
         private void SetupInteractionPrompt()
         {
@@ -84,196 +158,150 @@ namespace SampleCuttingSystem
             {
                 CreateInteractionPrompt();
             }
-            
+
             if (interactionPrompt != null)
             {
                 interactionPrompt.SetActive(false);
             }
         }
-        
+
         /// <summary>
         /// 创建交互提示UI
         /// </summary>
         private void CreateInteractionPrompt()
         {
-            // 创建屏幕空间Canvas
-            GameObject canvasObj = new GameObject("CuttingStationPromptCanvas");
-            promptCanvas = canvasObj.AddComponent<Canvas>();
+            Debug.Log("创建交互提示UI...");
+
+            // 创建提示Canvas - 使用屏幕空间覆盖
+            GameObject promptCanvasObj = new GameObject("InteractionPromptCanvas");
+            promptCanvas = promptCanvasObj.AddComponent<Canvas>();
             promptCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            promptCanvas.sortingOrder = 100;
-            
-            canvasObj.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            canvasObj.AddComponent<GraphicRaycaster>();
-            
-            // 创建交互提示面板
-            GameObject promptObj = new GameObject("InteractionPrompt");
-            promptObj.transform.SetParent(canvasObj.transform);
-            
-            RectTransform rectTransform = promptObj.AddComponent<RectTransform>();
-            rectTransform.anchorMin = new Vector2(0.5f, 0.2f);
-            rectTransform.anchorMax = new Vector2(0.5f, 0.2f);
-            rectTransform.anchoredPosition = Vector2.zero;
-            rectTransform.sizeDelta = new Vector2(150, 40); // 宽高都变成原来的一半
-            
-            // 添加背景
-            Image background = promptObj.AddComponent<Image>();
-            background.color = new Color(0, 0, 0, 0.8f);
-            
-            // 创建文本
-            GameObject textObj = new GameObject("PromptText");
-            textObj.transform.SetParent(promptObj.transform);
-            
-            RectTransform textRect = textObj.AddComponent<RectTransform>();
+            promptCanvas.sortingOrder = 500; // 确保在其他UI之上
+
+            // 添加必要组件
+            promptCanvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
+            promptCanvasObj.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+
+            RectTransform canvasRect = promptCanvasObj.GetComponent<RectTransform>();
+
+            // 创建提示背景 - 显示在屏幕底部中央
+            GameObject promptBg = new GameObject("PromptBackground");
+            promptBg.transform.SetParent(promptCanvasObj.transform, false);
+
+            Image bgImage = promptBg.AddComponent<Image>();
+            bgImage.color = new Color(0, 0, 0, 0.8f);
+
+            RectTransform bgRect = promptBg.GetComponent<RectTransform>();
+            bgRect.anchorMin = new Vector2(0.5f, 0f); // 底部中央
+            bgRect.anchorMax = new Vector2(0.5f, 0f);
+            bgRect.anchoredPosition = new Vector2(0, 100); // 距离底部100像素
+            bgRect.sizeDelta = new Vector2(300, 80); // 固定大小
+
+            // 创建提示文字
+            GameObject promptTextObj = new GameObject("PromptText");
+            promptTextObj.transform.SetParent(promptBg.transform, false);
+
+            promptText = promptTextObj.AddComponent<Text>();
+            promptText.text = "[F] 使用切割台";
+            promptText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            promptText.fontSize = 20;
+            promptText.color = Color.white;
+            promptText.alignment = TextAnchor.MiddleCenter;
+            promptText.fontStyle = FontStyle.Bold;
+
+            RectTransform textRect = promptTextObj.GetComponent<RectTransform>();
             textRect.anchorMin = Vector2.zero;
             textRect.anchorMax = Vector2.one;
             textRect.offsetMin = Vector2.zero;
             textRect.offsetMax = Vector2.zero;
-            
-            promptText = textObj.AddComponent<Text>();
-            promptText.text = "[F] 使用样本切割台";
-            promptText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            promptText.fontSize = 14; // 调整字体大小适应更小的UI框
-            promptText.color = Color.white;
-            promptText.alignment = TextAnchor.MiddleCenter;
-            
-            // 添加本地化组件
-            if (FindFirstObjectByType<LocalizationManager>() != null)
-            {
-                LocalizedText localizedText = textObj.AddComponent<LocalizedText>();
-                localizedText.SetTextKey("cutting_station.interaction.prompt");
-            }
-            
-            interactionPrompt = promptObj;
+
+            interactionPrompt = promptCanvasObj;
+
+            Debug.Log("交互提示UI创建完成");
         }
-        
+
         /// <summary>
         /// 检查玩家交互
         /// </summary>
         private void CheckPlayerInteraction()
         {
+            // 检测范围内的玩家
+            Collider[] nearbyColliders = Physics.OverlapSphere(transform.position, interactionRange, playerLayer);
+
             bool foundPlayer = false;
-            
-            // 多种方式查找玩家
-            Collider[] colliders = Physics.OverlapSphere(transform.position, interactionRange, playerLayer);
-            foreach (var collider in colliders)
+            foreach (Collider col in nearbyColliders)
             {
-                if (IsPlayerObject(collider.gameObject))
+                if (col.CompareTag("Player") || col.GetComponent<FirstPersonController>() != null)
                 {
-                    nearbyPlayer = collider.gameObject;
+                    nearbyPlayer = col.gameObject;
                     foundPlayer = true;
                     break;
                 }
             }
-            
-            // 备用查找方式
-            if (!foundPlayer)
-            {
-                FirstPersonController player = FindFirstObjectByType<FirstPersonController>();
-                if (player != null)
-                {
-                    float distance = Vector3.Distance(transform.position, player.transform.position);
-                    if (distance <= interactionRange)
-                    {
-                        nearbyPlayer = player.gameObject;
-                        foundPlayer = true;
-                    }
-                }
-            }
-            
+
+            // 更新交互状态
             if (foundPlayer && !playerInRange)
             {
-                OnPlayerEnter();
+                // 玩家进入范围
+                playerInRange = true;
+                ShowInteractionPrompt(true);
+                Debug.Log($"玩家进入切割台交互范围 - 玩家: {nearbyPlayer.name}");
             }
             else if (!foundPlayer && playerInRange)
             {
-                OnPlayerExit();
+                // 玩家离开范围
+                playerInRange = false;
+                nearbyPlayer = null;
+                ShowInteractionPrompt(false);
+                Debug.Log("玩家离开切割台交互范围");
             }
+
+            // 调试输出已禁用
         }
-        
+
         /// <summary>
-        /// 判断是否为玩家对象
+        /// 显示/隐藏交互提示
         /// </summary>
-        private bool IsPlayerObject(GameObject obj)
-        {
-            if (obj.CompareTag("Player")) return true;
-            
-            string objName = obj.name.ToLower();
-            if (objName.Contains("lily") || objName.Contains("player") || objName.Contains("firstperson"))
-                return true;
-                
-            if (obj.GetComponent<FirstPersonController>() != null) return true;
-            
-            // 检查父对象
-            Transform parent = obj.transform.parent;
-            while (parent != null)
-            {
-                if (parent.GetComponent<FirstPersonController>() != null) return true;
-                parent = parent.parent;
-            }
-            
-            return false;
-        }
-        
-        /// <summary>
-        /// 玩家进入交互范围
-        /// </summary>
-        private void OnPlayerEnter()
-        {
-            playerInRange = true;
-            ShowInteractionPrompt();
-            Debug.Log("玩家进入切割台交互范围");
-        }
-        
-        /// <summary>
-        /// 玩家离开交互范围
-        /// </summary>
-        private void OnPlayerExit()
-        {
-            playerInRange = false;
-            HideInteractionPrompt();
-            Debug.Log("玩家离开切割台交互范围");
-        }
-        
-        /// <summary>
-        /// 显示交互提示
-        /// </summary>
-        private void ShowInteractionPrompt()
+        private void ShowInteractionPrompt(bool show)
         {
             if (interactionPrompt != null)
             {
-                interactionPrompt.SetActive(true);
+                interactionPrompt.SetActive(show);
+                if (show)
+                {
+                    Debug.Log("显示F键交互提示");
+                }
+                else
+                {
+                    Debug.Log("隐藏F键交互提示");
+                }
             }
         }
-        
-        /// <summary>
-        /// 隐藏交互提示
-        /// </summary>
-        private void HideInteractionPrompt()
-        {
-            if (interactionPrompt != null)
-            {
-                interactionPrompt.SetActive(false);
-            }
-        }
-        
+
         /// <summary>
         /// 处理输入
         /// </summary>
         private void HandleInput()
         {
-            if (playerInRange && Keyboard.current.fKey.wasPressedThisFrame)
+            if (playerInRange && IsFKeyPressed())
             {
+                Debug.Log("玩家在范围内并按下F键，打开切割界面");
                 OpenCuttingInterface();
             }
-            
-            // 添加ESC键快速关闭功能
-            if (currentCuttingInterface != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+
+            // 添加ESC键快速关闭功能 - 支持新旧输入系统
+            bool escPressed = Input.GetKeyDown(KeyCode.Escape);
+            if (!escPressed && Keyboard.current != null)
             {
-                Debug.Log("ESC键按下，关闭切割界面");
+                escPressed = Keyboard.current.escapeKey.wasPressedThisFrame;
+            }
+
+            if (currentCuttingInterface != null && escPressed)
+            {
                 CloseCuttingInterface();
             }
         }
-        
+
         /// <summary>
         /// 打开切割界面
         /// </summary>
@@ -283,7 +311,7 @@ namespace SampleCuttingSystem
             if (currentCuttingInterface != null)
             {
                 Debug.LogWarning("检测到遗留的切割界面引用，进行清理");
-                
+
                 // 检查对象是否真的存在
                 if (currentCuttingInterface == null) // Unity的null检查（对象已被销毁）
                 {
@@ -301,9 +329,9 @@ namespace SampleCuttingSystem
                     return;
                 }
             }
-            
+
             Debug.Log("=== 开始打开切割界面 ===");
-            
+
             // 重新验证Canvas状态（可能被其他系统删除）
             Debug.Log("重新检查Canvas状态...");
             if (interfaceParent == null)
@@ -324,7 +352,7 @@ namespace SampleCuttingSystem
             else
             {
                 Debug.Log($"当前界面父对象: {interfaceParent.name}");
-                
+
                 // 验证Canvas还存在且活跃
                 if (interfaceParent.gameObject == null || !interfaceParent.gameObject.activeInHierarchy)
                 {
@@ -333,7 +361,7 @@ namespace SampleCuttingSystem
                     interfaceParent = newCanvas.transform;
                 }
             }
-            
+
             // 调试信息
             var warehouseUI = FindFirstObjectByType<WarehouseUI>();
             Debug.Log($"找到WarehouseUI: {warehouseUI != null}");
@@ -345,17 +373,17 @@ namespace SampleCuttingSystem
                     Debug.Log($"WarehousePanel激活状态: {warehouseUI.warehousePanel.activeInHierarchy}");
                 }
             }
-            
+
             Debug.Log("开始创建切割界面...");
             // 创建切割界面
             CreateCuttingInterface();
-            
+
             // 检查界面是否创建成功
             if (currentCuttingInterface != null)
             {
                 Debug.Log($"✅ 切割界面创建成功: {currentCuttingInterface.name}");
                 Debug.Log($"界面激活状态: {currentCuttingInterface.activeInHierarchy}");
-                
+
                 // 详细验证UI状态
                 VerifyUICreation();
             }
@@ -363,98 +391,13 @@ namespace SampleCuttingSystem
             {
                 Debug.LogError("❌ 切割界面创建失败！");
             }
-            
+
             // 暂停游戏或禁用玩家控制
             SetPlayerControlEnabled(false);
-            
+
             Debug.Log("=== 切割界面打开流程完成 ===");
         }
-        
-        /// <summary>
-        /// 关闭切割界面
-        /// </summary>
-        public void CloseCuttingInterface()
-        {
-            // 恢复仓库UI状态
-            RestoreWarehouseUI();
-            
-            if (currentCuttingInterface != null)
-            {
-                // 如果是集成的仓库界面，只隐藏，不销毁
-                var warehouseUI = FindFirstObjectByType<WarehouseUI>();
-                if (warehouseUI != null && currentCuttingInterface == warehouseUI.warehousePanel)
-                {
-                    warehouseUI.warehousePanel.SetActive(false);
-                }
-                else
-                {
-                    Destroy(currentCuttingInterface);
-                }
-                currentCuttingInterface = null;
-            }
-            
-            // 恢复玩家控制
-            SetPlayerControlEnabled(true);
-            
-            Debug.Log("关闭切割界面");
-        }
-        
-        /// <summary>
-        /// 恢复仓库UI状态
-        /// </summary>
-        private void RestoreWarehouseUI()
-        {
-            var warehouseUI = FindFirstObjectByType<WarehouseUI>();
-            if (warehouseUI != null)
-            {
-                // 恢复原有的按钮状态
-                if (warehouseUI.multiSelectButton != null)
-                    warehouseUI.multiSelectButton.gameObject.SetActive(true);
-                if (warehouseUI.batchTransferButton != null)
-                    warehouseUI.batchTransferButton.gameObject.SetActive(true);
-                if (warehouseUI.batchDiscardButton != null)
-                    warehouseUI.batchDiscardButton.gameObject.SetActive(true);
-                if (warehouseUI.closeButton != null)
-                    warehouseUI.closeButton.gameObject.SetActive(true);
-                    
-                // 恢复仓库面板（右侧面板）到原始位置  
-                if (warehouseUI.rightPanel != null)
-                {
-                    RectTransform rightRect = warehouseUI.rightPanel.GetComponent<RectTransform>();
-                    if (rightRect != null)
-                    {
-                        // 恢复仓库面板到右侧
-                        rightRect.anchorMin = new Vector2(0.37f, 0.15f);
-                        rightRect.anchorMax = new Vector2(0.98f, 0.95f);
-                        rightRect.offsetMin = Vector2.zero;
-                        rightRect.offsetMax = Vector2.zero;
-                    }
-                }
-                
-                // 恢复背包面板（左侧面板）
-                if (warehouseUI.leftPanel != null)
-                {
-                    warehouseUI.leftPanel.gameObject.SetActive(true);
-                    RectTransform leftRect = warehouseUI.leftPanel.GetComponent<RectTransform>();
-                    if (leftRect != null)
-                    {
-                        // 恢复背包面板到左侧原始位置
-                        leftRect.anchorMin = new Vector2(0.02f, 0.15f);
-                        leftRect.anchorMax = new Vector2(0.35f, 0.95f);
-                        leftRect.offsetMin = Vector2.zero;
-                        leftRect.offsetMax = Vector2.zero;
-                    }
-                }
-                
-                // 移除添加的切割区域
-                Transform cuttingArea = warehouseUI.warehousePanel.transform.Find("CuttingArea");
-                if (cuttingArea != null)
-                {
-                    Destroy(cuttingArea.gameObject);
-                }
-            }
-        }
-        
+
         /// <summary>
         /// 创建切割界面
         /// </summary>
@@ -470,18 +413,19 @@ namespace SampleCuttingSystem
                 // 创建基础切割界面
                 currentCuttingInterface = CreateBasicCuttingInterface();
             }
-            
+
             // 设置界面组件
             SetupCuttingInterface();
         }
-        
+
+
         /// <summary>
         /// 创建基础切割界面
         /// </summary>
         private GameObject CreateBasicCuttingInterface()
         {
             Debug.Log("创建基础切割界面");
-            
+
             // 首先尝试集成现有的仓库UI
             var warehouseUI = FindFirstObjectByType<WarehouseUI>();
             if (warehouseUI != null)
@@ -496,85 +440,386 @@ namespace SampleCuttingSystem
                     Debug.LogError($"集成仓库UI失败: {e.Message}");
                 }
             }
-            
+
             Debug.Log("创建独立的切割界面");
             // 如果没找到仓库UI或集成失败，创建独立界面
             return CreateSimpleCuttingInterface();
         }
-        
+
         /// <summary>
-        /// 创建简单的切割界面
+        /// 设置界面组件
+        /// </summary>
+        private void SetupCuttingInterface()
+        {
+            if (currentCuttingInterface != null)
+            {
+                // 隐藏交互提示
+                ShowInteractionPrompt(false);
+
+                // 设置鼠标模式
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+
+                Debug.Log("切割界面设置完成");
+            }
+        }
+
+        /// <summary>
+        /// 验证UI创建状态
+        /// </summary>
+        private void VerifyUICreation()
+        {
+            if (currentCuttingInterface == null)
+            {
+                Debug.LogError("❌ 切割界面创建验证失败：界面对象为空");
+                return;
+            }
+
+            Debug.Log("🔍 开始验证UI创建状态...");
+
+            // 检查界面激活状态
+            bool isActive = currentCuttingInterface.activeInHierarchy;
+            Debug.Log($"界面激活状态: {isActive}");
+
+            // 检查RectTransform
+            RectTransform rectTransform = currentCuttingInterface.GetComponent<RectTransform>();
+            if (rectTransform != null)
+            {
+                Debug.Log($"RectTransform: 锚点=({rectTransform.anchorMin}, {rectTransform.anchorMax}), 尺寸={rectTransform.sizeDelta}");
+            }
+            else
+            {
+                Debug.LogWarning("⚠️ 界面缺少RectTransform组件");
+            }
+
+            // 检查Canvas组件
+            Canvas canvas = currentCuttingInterface.GetComponent<Canvas>();
+            if (canvas != null)
+            {
+                Debug.Log($"Canvas: 渲染模式={canvas.renderMode}, 排序顺序={canvas.sortingOrder}");
+            }
+            else
+            {
+                // 检查父级是否有Canvas
+                Canvas parentCanvas = currentCuttingInterface.GetComponentInParent<Canvas>();
+                if (parentCanvas != null)
+                {
+                    Debug.Log($"父级Canvas: {parentCanvas.name}, 渲染模式={parentCanvas.renderMode}");
+                }
+                else
+                {
+                    Debug.LogWarning("⚠️ 界面及其父级都缺少Canvas组件");
+                }
+            }
+
+            // 检查子组件
+            int childCount = currentCuttingInterface.transform.childCount;
+            Debug.Log($"子组件数量: {childCount}");
+
+            for (int i = 0; i < childCount && i < 5; i++) // 最多显示前5个
+            {
+                Transform child = currentCuttingInterface.transform.GetChild(i);
+                Debug.Log($"  子组件 {i}: {child.name}, 激活={child.gameObject.activeInHierarchy}");
+            }
+
+            Debug.Log("✅ UI创建状态验证完成");
+        }
+
+        /// <summary>
+        /// 设置玩家控制状态
+        /// </summary>
+        private void SetPlayerControlEnabled(bool enabled)
+        {
+            Debug.Log($"设置玩家控制状态: {enabled}");
+
+            // 检测是否为移动端环境
+            bool isMobileEnvironment = IsMobileEnvironment();
+            Debug.Log($"移动端环境检测: {isMobileEnvironment}");
+
+            // 查找第一人称控制器
+            FirstPersonController fpsController = FindFirstObjectByType<FirstPersonController>();
+            if (fpsController != null)
+            {
+                // 使用反射设置enableMouseLook字段
+                var enableMouseField = fpsController.GetType().GetField("enableMouseLook",
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                if (enableMouseField != null)
+                {
+                    enableMouseField.SetValue(fpsController, enabled);
+                    Debug.Log($"FirstPersonController鼠标控制: {enabled}");
+                }
+
+                // 在移动端，不要完全禁用FirstPersonController，以免影响移动端输入
+                if (isMobileEnvironment)
+                {
+                    Debug.Log("移动端环境，保持FirstPersonController启用状态");
+                }
+                else
+                {
+                    // 设置组件启用状态
+                    fpsController.enabled = enabled;
+                    Debug.Log($"FirstPersonController启用状态: {enabled}");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("未找到FirstPersonController组件");
+            }
+
+            // 设置鼠标状态 - 在移动端不修改鼠标状态
+            if (isMobileEnvironment)
+            {
+                Debug.Log("移动端环境，跳过鼠标状态设置");
+            }
+            else
+            {
+                if (enabled)
+                {
+                    // 恢复游戏控制
+                    Cursor.visible = false;
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Debug.Log("恢复鼠标锁定状态");
+                }
+                else
+                {
+                    // 界面控制模式
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
+                    Debug.Log("设置鼠标为UI模式");
+                }
+            }
+
+            // 不要暂停游戏时间，保持移动端UI正常工作
+            // Time.timeScale = enabled ? 1f : 0f;
+            Debug.Log("保持游戏时间正常运行，确保移动端UI可用");
+        }
+
+        /// <summary>
+        /// 检测是否为移动端环境
+        /// </summary>
+        private bool IsMobileEnvironment()
+        {
+            Debug.Log("=== 开始移动端环境检测 ===");
+
+            // 1. 直接检查移动端UI特征组件
+            bool hasMobileUI = false;
+
+            // 查找虚拟摇杆组件
+            var joysticks = FindObjectsOfType<Component>().Where(c =>
+                c.GetType().Name.ToLower().Contains("joystick") ||
+                c.name.ToLower().Contains("joystick") ||
+                c.name.ToLower().Contains("mobile")
+            ).ToArray();
+
+            if (joysticks.Length > 0)
+            {
+                hasMobileUI = true;
+                Debug.Log($"检测到 {joysticks.Length} 个移动端UI组件");
+                foreach (var joy in joysticks)
+                {
+                    Debug.Log($"  - {joy.name} ({joy.GetType().Name})");
+                }
+            }
+
+            // 查找Canvas中是否有移动端特征的UI
+            var canvases = FindObjectsOfType<Canvas>();
+            foreach (var canvas in canvases)
+            {
+                var mobileObjects = canvas.GetComponentsInChildren<Transform>()
+                    .Where(t => t.name.ToLower().Contains("mobile") ||
+                               t.name.ToLower().Contains("joystick") ||
+                               t.name.ToLower().Contains("touch"))
+                    .ToArray();
+
+                if (mobileObjects.Length > 0)
+                {
+                    hasMobileUI = true;
+                    Debug.Log($"在Canvas {canvas.name} 中发现移动端UI:");
+                    foreach (var obj in mobileObjects)
+                    {
+                        Debug.Log($"  - {obj.name}");
+                    }
+                }
+            }
+
+            // 2. 如果发现了移动端UI，直接返回true
+            if (hasMobileUI)
+            {
+                Debug.Log("=== 检测到移动端UI，判定为移动端环境 ===");
+                return true;
+            }
+
+            // 3. 检查运行时平台
+            if (Application.platform == RuntimePlatform.Android ||
+                Application.platform == RuntimePlatform.IPhonePlayer)
+            {
+                Debug.Log("通过RuntimePlatform检测到移动端");
+                return true;
+            }
+
+            // 4. 检查是否有触摸屏
+            if (UnityEngine.InputSystem.Touchscreen.current != null)
+            {
+                Debug.Log("检测到触摸屏设备");
+                return true;
+            }
+
+            // 5. 在编辑器中，如果没有找到移动端UI，默认判定为桌面环境
+            Debug.Log("=== 未检测到移动端特征，判定为桌面环境 ===");
+            return false;
+        }
+
+        /// <summary>
+        /// 尝试激活现有的切割系统
+        /// </summary>
+        private bool TryActivateExistingCuttingSystem()
+        {
+            Debug.Log("开始激活现有切割系统...");
+
+            // 查找切割系统管理器
+            SampleCuttingSystemManager manager = FindObjectOfType<SampleCuttingSystemManager>();
+            if (manager == null)
+            {
+                Debug.Log("未找到SampleCuttingSystemManager，尝试创建...");
+
+                // 创建切割系统管理器
+                GameObject managerObj = new GameObject("SampleCuttingSystemManager");
+                manager = managerObj.AddComponent<SampleCuttingSystemManager>();
+                Debug.Log($"✅ 创建了新的SampleCuttingSystemManager: {manager.name}");
+            }
+            else
+            {
+                Debug.Log($"✅ 找到现有的SampleCuttingSystemManager: {manager.name}");
+            }
+
+            // 查找切割UI
+            CuttingStationUI cuttingUI = FindObjectOfType<CuttingStationUI>();
+            if (cuttingUI == null)
+            {
+                Debug.Log("未找到CuttingStationUI，在管理器上添加组件...");
+                cuttingUI = manager.gameObject.AddComponent<CuttingStationUI>();
+                Debug.Log("✅ 添加了CuttingStationUI组件");
+            }
+            else
+            {
+                Debug.Log($"✅ 找到现有的CuttingStationUI: {cuttingUI.name}");
+            }
+
+            // 激活组件
+            Debug.Log($"激活前状态 - Manager: {manager.gameObject.activeInHierarchy}, UI: {cuttingUI.gameObject.activeInHierarchy}");
+
+            manager.gameObject.SetActive(true);
+            cuttingUI.gameObject.SetActive(true);
+
+            Debug.Log($"激活后状态 - Manager: {manager.gameObject.activeInHierarchy}, UI: {cuttingUI.gameObject.activeInHierarchy}");
+
+            // 设置当前界面引用（用于关闭）
+            currentCuttingInterface = manager.gameObject;
+            Debug.Log($"设置currentCuttingInterface = {currentCuttingInterface.name}");
+
+            // 隐藏交互提示
+            ShowInteractionPrompt(false);
+
+            // 设置鼠标模式
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            Debug.Log("✅ 鼠标状态已设置为可见和自由移动");
+
+            Debug.Log("🎉 切割系统激活完成！");
+            return true;
+        }
+
+        /// <summary>
+        /// 关闭切割界面
+        /// </summary>
+        public void CloseCuttingInterface()
+        {
+            Debug.Log("=== 开始关闭切割界面 ===");
+
+            // 恢复仓库UI状态
+            RestoreWarehouseUI();
+
+            if (currentCuttingInterface != null)
+            {
+                Debug.Log("关闭切割界面");
+
+                // 如果是集成的仓库界面，只隐藏，不销毁
+                var warehouseUI = FindFirstObjectByType<WarehouseUI>();
+                if (warehouseUI != null && currentCuttingInterface == warehouseUI.warehousePanel)
+                {
+                    Debug.Log("隐藏集成的仓库界面");
+                    warehouseUI.warehousePanel.SetActive(false);
+                }
+                else
+                {
+                    Debug.Log("销毁独立的切割界面");
+                    Destroy(currentCuttingInterface);
+                }
+                currentCuttingInterface = null;
+            }
+
+            // 恢复玩家控制
+            SetPlayerControlEnabled(true);
+
+            // 如果玩家还在范围内，重新显示提示
+            if (playerInRange)
+            {
+                ShowInteractionPrompt(true);
+            }
+
+            Debug.Log("=== 切割界面关闭完成 ===");
+        }
+
+        /// <summary>
+        /// 创建简单的切割界面（来自v1.11版本）
         /// </summary>
         private GameObject CreateSimpleCuttingInterface()
         {
             Debug.Log($"创建界面，父对象: {interfaceParent?.name ?? "null"}");
-            
+
             GameObject interfaceObj = new GameObject("CuttingInterface");
             interfaceObj.transform.SetParent(interfaceParent, false);
-            
+
             // 设置全屏背景
             RectTransform rectTransform = interfaceObj.AddComponent<RectTransform>();
             rectTransform.anchorMin = Vector2.zero;
             rectTransform.anchorMax = Vector2.one;
             rectTransform.offsetMin = Vector2.zero;
             rectTransform.offsetMax = Vector2.zero;
-            
+
             Debug.Log("设置背景");
             // 添加显眼的背景
             Image background = interfaceObj.AddComponent<Image>();
             background.color = new Color(0.0f, 0.5f, 0.8f, 0.95f); // 蓝色半透明背景，更显眼
             background.raycastTarget = true; // 确保能接收射线检测
-            
+
             // 立即激活界面
             interfaceObj.SetActive(true);
             Debug.Log($"界面已激活: {interfaceObj.activeInHierarchy}");
-            
+
             // 添加标题
             Debug.Log("创建标题");
             CreateSimpleTitle(interfaceObj);
-            
+
             // 创建提示信息
             Debug.Log("创建提示信息");
             CreateSimpleInstruction(interfaceObj);
-            
+
             // 创建关闭按钮
             Debug.Log("创建关闭按钮");
             CreateSimpleCloseButton(interfaceObj);
-            
+
             // 创建测试图像
             CreateTestVisual(interfaceObj);
-            
+
             Debug.Log($"简单界面创建完成: {interfaceObj.name}");
-            
+
             // 再次验证状态
             Debug.Log($"最终状态检查 - 激活: {interfaceObj.activeInHierarchy}, 启用: {interfaceObj.activeSelf}");
-            
+
             return interfaceObj;
         }
-        
-        /// <summary>
-        /// 创建测试可视化元素
-        /// </summary>
-        private void CreateTestVisual(GameObject parent)
-        {
-            // 创建一个明显的测试矩形
-            GameObject testVisual = new GameObject("TestVisual");
-            testVisual.transform.SetParent(parent.transform, false);
-            
-            RectTransform testRect = testVisual.AddComponent<RectTransform>();
-            testRect.anchorMin = new Vector2(0.3f, 0.3f);
-            testRect.anchorMax = new Vector2(0.7f, 0.7f);
-            testRect.offsetMin = Vector2.zero;
-            testRect.offsetMax = Vector2.zero;
-            
-            Image testImage = testVisual.AddComponent<Image>();
-            testImage.color = Color.red; // 红色，非常明显
-            testImage.raycastTarget = false;
-            
-            testVisual.SetActive(true);
-            Debug.Log("创建红色测试矩形");
-        }
-        
+
         /// <summary>
         /// 创建简单标题
         /// </summary>
@@ -582,30 +827,22 @@ namespace SampleCuttingSystem
         {
             GameObject titleObj = new GameObject("Title");
             titleObj.transform.SetParent(parent.transform, false);
-            
+
             RectTransform titleRect = titleObj.AddComponent<RectTransform>();
-            titleRect.anchorMin = new Vector2(0f, 0.8f);
-            titleRect.anchorMax = new Vector2(1f, 0.95f);
+            titleRect.anchorMin = new Vector2(0, 0.8f);
+            titleRect.anchorMax = new Vector2(1, 1f);
             titleRect.offsetMin = Vector2.zero;
             titleRect.offsetMax = Vector2.zero;
-            
-            // 添加背景使标题更明显
-            Image titleBg = titleObj.AddComponent<Image>();
-            titleBg.color = new Color(0f, 0f, 0f, 0.8f); // 黑色半透明背景
-            
+
             Text titleText = titleObj.AddComponent<Text>();
-            titleText.text = "样本切割系统测试界面";
+            titleText.text = "样本切割系统";
             titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            titleText.fontSize = 48; // 更大的字体
-            titleText.color = Color.yellow; // 黄色，更显眼
+            titleText.fontSize = 48;
+            titleText.color = Color.white;
             titleText.alignment = TextAnchor.MiddleCenter;
             titleText.fontStyle = FontStyle.Bold;
-            titleText.raycastTarget = false;
-            
-            titleObj.SetActive(true);
-            Debug.Log($"标题创建完成，文本: {titleText.text}");
         }
-        
+
         /// <summary>
         /// 创建简单说明
         /// </summary>
@@ -613,88 +850,34 @@ namespace SampleCuttingSystem
         {
             GameObject instructionObj = new GameObject("Instruction");
             instructionObj.transform.SetParent(parent.transform, false);
-            
+
             RectTransform instructionRect = instructionObj.AddComponent<RectTransform>();
-            instructionRect.anchorMin = new Vector2(0.1f, 0.2f);
+            instructionRect.anchorMin = new Vector2(0.1f, 0.3f);
             instructionRect.anchorMax = new Vector2(0.9f, 0.7f);
             instructionRect.offsetMin = Vector2.zero;
             instructionRect.offsetMax = Vector2.zero;
-            
-            // 添加背景使文本更清晰
-            Image instructionBg = instructionObj.AddComponent<Image>();
-            instructionBg.color = new Color(0.2f, 0.2f, 0.2f, 0.9f); // 深灰色背景
-            
+
             Text instructionText = instructionObj.AddComponent<Text>();
-            instructionText.text = "✅ 切割系统界面测试成功！\n\n如果您能看到这个蓝色界面和红色矩形，\n说明UI创建和显示系统正常工作。\n\n🔧 这是一个增强的测试界面，\n用于验证所有UI组件的功能。\n\n⬇️ 点击下方红色按钮关闭界面";
+            instructionText.text = "欢迎使用样本切割系统！\n\n此系统可以对多层地质样本进行精确切割，\n将复合样本分解为单独的地层样本。\n\n请将需要切割的样本拖拽到此界面中开始操作。";
             instructionText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            instructionText.fontSize = 28; // 更大字体
+            instructionText.fontSize = 24;
             instructionText.color = Color.white;
             instructionText.alignment = TextAnchor.MiddleCenter;
-            instructionText.raycastTarget = false;
-            
-            instructionObj.SetActive(true);
-            Debug.Log($"增强说明创建完成，内容长度: {instructionText.text.Length}");
         }
-        
+
         /// <summary>
-        /// 创建简单关闭按钮
-        /// </summary>
-        private void CreateSimpleCloseButton(GameObject parent)
-        {
-            GameObject closeBtn = new GameObject("CloseButton");
-            closeBtn.transform.SetParent(parent.transform, false);
-            
-            RectTransform btnRect = closeBtn.AddComponent<RectTransform>();
-            btnRect.anchorMin = new Vector2(0.35f, 0.05f);  // 稍微更大的按钮
-            btnRect.anchorMax = new Vector2(0.65f, 0.18f);
-            btnRect.offsetMin = Vector2.zero;
-            btnRect.offsetMax = Vector2.zero;
-            
-            Image btnBg = closeBtn.AddComponent<Image>();
-            btnBg.color = new Color(1f, 0.2f, 0.2f, 1f);  // 更鲜艳的红色，完全不透明
-            
-            Button button = closeBtn.AddComponent<Button>();
-            button.onClick.AddListener(CloseCuttingInterface);
-            
-            // 添加按钮文字
-            GameObject btnText = new GameObject("Text");
-            btnText.transform.SetParent(closeBtn.transform, false);
-            
-            RectTransform textRect = btnText.AddComponent<RectTransform>();
-            textRect.anchorMin = Vector2.zero;
-            textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = Vector2.zero;
-            textRect.offsetMax = Vector2.zero;
-            
-            Text text = btnText.AddComponent<Text>();
-            text.text = "🚪 关闭测试界面";
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            text.fontSize = 24;
-            text.color = Color.white;
-            text.alignment = TextAnchor.MiddleCenter;
-            text.fontStyle = FontStyle.Bold;
-            text.raycastTarget = false;  // 文本不拦截点击
-            
-            // 确保按钮和文本都激活
-            btnText.SetActive(true);
-            closeBtn.SetActive(true);
-            
-            Debug.Log("增强关闭按钮创建完成");
-        }
-        
-        /// <summary>
-        /// 创建集成仓库系统的界面
+        /// 创建集成仓库系统的界面（来自v1.11版本）
         /// </summary>
         private GameObject CreateIntegratedWarehouseInterface(WarehouseUI warehouseUI)
         {
             Debug.Log("创建集成仓库界面...");
-            
+
             // 激活现有的仓库UI
             if (warehouseUI.warehousePanel != null)
             {
                 Debug.Log("激活仓库面板");
                 warehouseUI.warehousePanel.SetActive(true);
-                
+
                 // 确保所有父级对象都激活
                 Transform parent = warehouseUI.warehousePanel.transform.parent;
                 while (parent != null)
@@ -706,37 +889,37 @@ namespace SampleCuttingSystem
                     }
                     parent = parent.parent;
                 }
-                
+
                 // 修改仓库UI布局为左侧显示
                 Debug.Log("修改仓库UI布局");
                 ModifyWarehouseUILayout(warehouseUI);
-                
+
                 // 在右侧添加切割区域
                 Debug.Log("添加切割区域到仓库");
                 AddCuttingAreaToWarehouse(warehouseUI);
-                
+
                 // 设置UI状态
                 Debug.Log("设置仓库UI为切割模式");
                 SetWarehouseUIForCutting(warehouseUI);
-                
+
                 // 强制刷新仓库内容显示
                 Debug.Log("刷新仓库内容显示");
                 RefreshWarehouseContent(warehouseUI);
-                
+
                 // 为仓库样本添加拖拽功能
                 Debug.Log("为仓库样本添加拖拽功能");
                 WarehouseSampleEnhancer.EnhanceWarehouseSamples(warehouseUI.rightPanel);
-                
+
                 Debug.Log($"集成仓库界面完成，返回面板: {warehouseUI.warehousePanel.name}");
                 return warehouseUI.warehousePanel;
             }
             else
             {
                 Debug.LogWarning("仓库面板为空，创建基础界面");
-                return CreateBasicCuttingInterface();
+                return CreateSimpleCuttingInterface();
             }
         }
-        
+
         /// <summary>
         /// 修改仓库UI布局
         /// </summary>
@@ -754,7 +937,7 @@ namespace SampleCuttingSystem
                     warehouseRect.offsetMin = Vector2.zero;
                     warehouseRect.offsetMax = Vector2.zero;
                 }
-                
+
                 // 调整面板布局：右侧面板（仓库）显示在左半边，左侧面板（背包）隐藏
                 if (warehouseUI.rightPanel != null)
                 {
@@ -769,7 +952,7 @@ namespace SampleCuttingSystem
                         rightRect.offsetMax = new Vector2(-5f, -10f);
                     }
                 }
-                
+
                 if (warehouseUI.leftPanel != null)
                 {
                     Debug.Log("隐藏背包面板");
@@ -778,7 +961,7 @@ namespace SampleCuttingSystem
                 }
             }
         }
-        
+
         /// <summary>
         /// 在仓库UI上添加切割区域
         /// </summary>
@@ -787,38 +970,27 @@ namespace SampleCuttingSystem
             // 创建右侧切割面板
             GameObject cuttingArea = new GameObject("CuttingArea");
             cuttingArea.transform.SetParent(warehouseUI.warehousePanel.transform, false);
-            
+
             RectTransform cuttingRect = cuttingArea.AddComponent<RectTransform>();
             cuttingRect.anchorMin = new Vector2(0.5f, 0f);
             cuttingRect.anchorMax = new Vector2(1f, 1f);
             cuttingRect.offsetMin = new Vector2(5f, 10f);
             cuttingRect.offsetMax = new Vector2(-10f, -10f);
-            
+
             // 添加背景
             Image cuttingBg = cuttingArea.AddComponent<Image>();
-            cuttingBg.color = new Color(0f, 0f, 0f, 0.8f); // 黑色背景
-            
-            // 添加切割游戏组件（作为主控制器）
-            SampleCuttingGame cuttingGame = cuttingArea.AddComponent<SampleCuttingGame>();
-            Debug.Log("添加SampleCuttingGame组件到切割区域");
-            
-            // 添加投放区域组件
-            SampleDropZone dropZone = cuttingArea.AddComponent<SampleDropZone>();
-            Debug.Log("添加SampleDropZone组件到切割区域");
-            
+            cuttingBg.color = new Color(0.2f, 0.3f, 0.4f, 0.9f); // 深蓝灰色背景
+
             // 添加标题
             CreateCuttingAreaTitle(cuttingArea);
-            
-            // 添加3D模型显示区域
-            Create3DModelViewArea(cuttingArea);
-            
+
             // 添加拖拽区域
             CreateCuttingDropZone(cuttingArea);
-            
+
             // 添加关闭按钮
             CreateCuttingCloseButton(cuttingArea);
         }
-        
+
         /// <summary>
         /// 创建切割区域标题
         /// </summary>
@@ -826,13 +998,13 @@ namespace SampleCuttingSystem
         {
             GameObject titleObj = new GameObject("CuttingTitle");
             titleObj.transform.SetParent(parent.transform, false);
-            
+
             RectTransform titleRect = titleObj.AddComponent<RectTransform>();
             titleRect.anchorMin = new Vector2(0f, 0.9f);
             titleRect.anchorMax = new Vector2(1f, 1f);
             titleRect.offsetMin = new Vector2(10f, 0f);
             titleRect.offsetMax = new Vector2(-10f, 0f);
-            
+
             Text titleText = titleObj.AddComponent<Text>();
             titleText.text = "样本切割台";
             titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
@@ -841,7 +1013,7 @@ namespace SampleCuttingSystem
             titleText.alignment = TextAnchor.MiddleCenter;
             titleText.fontStyle = FontStyle.Bold;
         }
-        
+
         /// <summary>
         /// 创建切割拖拽区域
         /// </summary>
@@ -849,99 +1021,164 @@ namespace SampleCuttingSystem
         {
             GameObject dropZone = new GameObject("CuttingDropZone");
             dropZone.transform.SetParent(parent.transform, false);
-            
+
             RectTransform dropRect = dropZone.AddComponent<RectTransform>();
             dropRect.anchorMin = new Vector2(0.1f, 0.2f);
             dropRect.anchorMax = new Vector2(0.9f, 0.8f);
             dropRect.offsetMin = Vector2.zero;
             dropRect.offsetMax = Vector2.zero;
-            
+
             // 添加拖拽区域背景
             Image dropBg = dropZone.AddComponent<Image>();
-            dropBg.color = new Color(0f, 0f, 0f, 0.4f); // 半透明黑色
-            
-            // 添加虚线边框效果
+            dropBg.color = new Color(0.1f, 0.2f, 0.3f, 0.8f); // 深色背景
+
+            // 添加边框效果
             Outline outline = dropZone.AddComponent<Outline>();
-            outline.effectColor = Color.white;
+            outline.effectColor = Color.cyan;
             outline.effectDistance = new Vector2(2f, 2f);
-            
-            // 添加提示文字
+
+            // ✅ 关键修复：添加SampleDropZone组件
+            SampleDropZone dropZoneComponent = dropZone.AddComponent<SampleDropZone>();
+            Debug.Log("✅ 添加了SampleDropZone组件");
+
+            // ✅ 关键修复：添加SampleCuttingGame组件
+            SampleCuttingGame cuttingGame = dropZone.AddComponent<SampleCuttingGame>();
+            Debug.Log("✅ 添加了SampleCuttingGame组件");
+
+            // 创建3D预览区域
+            Create3DPreviewArea(dropZone);
+
+            // 添加提示文字（overlay在3D预览区域上方）
             GameObject hintText = new GameObject("DropHint");
             hintText.transform.SetParent(dropZone.transform, false);
-            
+
             RectTransform hintRect = hintText.AddComponent<RectTransform>();
-            hintRect.anchorMin = Vector2.zero;
-            hintRect.anchorMax = Vector2.one;
-            hintRect.offsetMin = new Vector2(20f, 20f);
-            hintRect.offsetMax = new Vector2(-20f, -20f);
-            
-            Text hint = hintText.AddComponent<Text>();
-            hint.text = "将多层地质样本\n从左侧拖拽到此处\n\n开始样本切割操作\n\n支持的样本类型：\n• 多层钻探样本\n• 地质钻芯样本";
+            hintRect.anchorMin = new Vector2(0f, 0.9f);
+            hintRect.anchorMax = new Vector2(1f, 1f);
+            hintRect.offsetMin = new Vector2(10f, 0f);
+            hintRect.offsetMax = new Vector2(-10f, -5f);
+
+            // 添加半透明背景
+            Image hintBg = hintText.AddComponent<Image>();
+            hintBg.color = new Color(0f, 0f, 0f, 0.7f); // 半透明黑色背景
+
+            // 创建独立的文字对象
+            GameObject textObj = new GameObject("HintText");
+            textObj.transform.SetParent(hintText.transform, false);
+
+            RectTransform textRect = textObj.AddComponent<RectTransform>();
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = Vector2.zero;
+            textRect.offsetMax = Vector2.zero;
+
+            Text hint = textObj.AddComponent<Text>();
+            hint.text = "拖拽样本到此处开始切割 • 支持多层地质样本";
             hint.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            hint.fontSize = 18;
-            hint.color = Color.yellow;
+            hint.fontSize = 14;
+            hint.color = Color.cyan;
             hint.alignment = TextAnchor.MiddleCenter;
-            
-            // 添加拖拽检测组件
-            AddDropHandler(dropZone);
+
+            Debug.Log("🎯 完整的切割投放区域创建完成，包含所有必要组件");
         }
-        
+
         /// <summary>
-        /// 添加拖拽检测处理
+        /// 创建3D预览区域
         /// </summary>
-        private void AddDropHandler(GameObject dropZone)
+        private void Create3DPreviewArea(GameObject dropZone)
         {
-            // 添加仓库集成组件
-            var warehouseIntegration = GetComponent<WarehouseIntegration>();
-            if (warehouseIntegration == null)
+            Debug.Log("创建3D样本预览区域");
+
+            // 创建3D预览区域容器
+            GameObject previewArea = new GameObject("SamplePreviewArea");
+            previewArea.transform.SetParent(dropZone.transform, false);
+
+            RectTransform previewRect = previewArea.AddComponent<RectTransform>();
+            previewRect.anchorMin = Vector2.zero;
+            previewRect.anchorMax = Vector2.one;
+            previewRect.offsetMin = Vector2.zero;
+            previewRect.offsetMax = Vector2.zero;
+
+            // 添加RawImage组件用于显示3D渲染内容
+            RawImage rawImage = previewArea.AddComponent<RawImage>();
+            rawImage.color = Color.white;
+
+            // 添加边框效果
+            Outline previewOutline = previewArea.AddComponent<Outline>();
+            previewOutline.effectColor = Color.yellow;
+            previewOutline.effectDistance = new Vector2(1f, 1f);
+
+            // 暂时禁用GameObject，防止Awake执行
+            bool wasActive = dropZone.activeInHierarchy;
+            dropZone.SetActive(false);
+
+            // 添加Sample3DModelViewer组件
+            Sample3DModelViewer viewer = dropZone.AddComponent<Sample3DModelViewer>();
+
+            // 设置RawImage引用
+            var viewerType = viewer.GetType();
+            var rawImageField = viewerType.GetField("rawImage",
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            if (rawImageField != null)
             {
-                warehouseIntegration = gameObject.AddComponent<WarehouseIntegration>();
+                rawImageField.SetValue(viewer, rawImage);
+                Debug.Log("✅ 设置了Sample3DModelViewer的rawImage引用");
             }
-            
-            // 设置拖拽区域
-            var dropZoneRect = dropZone.GetComponent<RectTransform>();
-            if (dropZoneRect != null && warehouseIntegration != null)
+
+            // 重新激活GameObject，让Awake正常执行
+            dropZone.SetActive(wasActive);
+
+            // 设置渲染参数
+            var textureWidthField = viewerType.GetField("textureWidth",
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            if (textureWidthField != null)
             {
-                // 使用反射设置dropZone字段
-                var dropZoneField = typeof(WarehouseIntegration).GetField("dropZone", 
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (dropZoneField != null)
-                {
-                    dropZoneField.SetValue(warehouseIntegration, dropZoneRect);
-                }
+                textureWidthField.SetValue(viewer, 512);
             }
+
+            var textureHeightField = viewerType.GetField("textureHeight",
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            if (textureHeightField != null)
+            {
+                textureHeightField.SetValue(viewer, 512);
+            }
+
+            Debug.Log("✅ 3D样本预览区域创建完成，包含RawImage和Sample3DModelViewer组件");
         }
-        
+
         /// <summary>
-        /// 创建切割区域关闭按钮
+        /// 创建切割关闭按钮
         /// </summary>
         private void CreateCuttingCloseButton(GameObject parent)
         {
-            GameObject closeBtn = new GameObject("CloseButton");
+            GameObject closeBtn = new GameObject("CuttingCloseButton");
             closeBtn.transform.SetParent(parent.transform, false);
-            
+
             RectTransform btnRect = closeBtn.AddComponent<RectTransform>();
-            btnRect.anchorMin = new Vector2(0.85f, 0.85f);
-            btnRect.anchorMax = new Vector2(0.98f, 0.98f);
+            btnRect.anchorMin = new Vector2(0.8f, 0.05f);
+            btnRect.anchorMax = new Vector2(0.95f, 0.15f);
             btnRect.offsetMin = Vector2.zero;
             btnRect.offsetMax = Vector2.zero;
-            
+
             Image btnBg = closeBtn.AddComponent<Image>();
-            btnBg.color = new Color(0.8f, 0.2f, 0.2f, 0.9f);
-            
+            btnBg.color = Color.red;
+
             Button button = closeBtn.AddComponent<Button>();
-            button.onClick.AddListener(CloseCuttingInterface);
-            
+            button.onClick.AddListener(() => {
+                Debug.Log("点击切割界面关闭按钮");
+                CloseCuttingInterface();
+            });
+
             // 添加按钮文字
-            GameObject btnText = new GameObject("Text");
+            GameObject btnText = new GameObject("CloseText");
             btnText.transform.SetParent(closeBtn.transform, false);
-            
+
             RectTransform textRect = btnText.AddComponent<RectTransform>();
             textRect.anchorMin = Vector2.zero;
             textRect.anchorMax = Vector2.one;
             textRect.offsetMin = Vector2.zero;
             textRect.offsetMax = Vector2.zero;
-            
+
             Text text = btnText.AddComponent<Text>();
             text.text = "关闭";
             text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
@@ -950,7 +1187,50 @@ namespace SampleCuttingSystem
             text.alignment = TextAnchor.MiddleCenter;
             text.fontStyle = FontStyle.Bold;
         }
-        
+
+        /// <summary>
+        /// 创建简单关闭按钮
+        /// </summary>
+        private void CreateSimpleCloseButton(GameObject parent)
+        {
+            GameObject closeButtonObj = new GameObject("CloseButton");
+            closeButtonObj.transform.SetParent(parent.transform, false);
+
+            RectTransform closeRect = closeButtonObj.AddComponent<RectTransform>();
+            closeRect.anchorMin = new Vector2(0.9f, 0.9f);
+            closeRect.anchorMax = new Vector2(1f, 1f);
+            closeRect.anchoredPosition = new Vector2(-50, -50);
+            closeRect.sizeDelta = new Vector2(80, 80);
+
+            Image closeImage = closeButtonObj.AddComponent<Image>();
+            closeImage.color = Color.red;
+
+            Button closeButton = closeButtonObj.AddComponent<Button>();
+            closeButton.targetGraphic = closeImage;
+            closeButton.onClick.AddListener(() => {
+                Debug.Log("点击关闭按钮");
+                CloseCuttingInterface();
+            });
+
+            // 添加X文字
+            GameObject xTextObj = new GameObject("XText");
+            xTextObj.transform.SetParent(closeButtonObj.transform, false);
+
+            RectTransform xRect = xTextObj.AddComponent<RectTransform>();
+            xRect.anchorMin = Vector2.zero;
+            xRect.anchorMax = Vector2.one;
+            xRect.offsetMin = Vector2.zero;
+            xRect.offsetMax = Vector2.zero;
+
+            Text xText = xTextObj.AddComponent<Text>();
+            xText.text = "✕";
+            xText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            xText.fontSize = 36;
+            xText.color = Color.white;
+            xText.alignment = TextAnchor.MiddleCenter;
+            xText.fontStyle = FontStyle.Bold;
+        }
+
         /// <summary>
         /// 设置仓库UI为切割模式
         /// </summary>
@@ -963,358 +1243,12 @@ namespace SampleCuttingSystem
                 warehouseUI.batchTransferButton.gameObject.SetActive(false);
             if (warehouseUI.batchDiscardButton != null)
                 warehouseUI.batchDiscardButton.gameObject.SetActive(false);
-                
+
             // 禁用原有的关闭按钮
             if (warehouseUI.closeButton != null)
                 warehouseUI.closeButton.gameObject.SetActive(false);
         }
-        
-        /// <summary>
-        /// 创建主切割面板
-        /// </summary>
-        private void CreateMainCuttingPanel(GameObject parent)
-        {
-            GameObject mainPanel = new GameObject("MainPanel");
-            mainPanel.transform.SetParent(parent.transform, false);
-            
-            RectTransform mainRect = mainPanel.AddComponent<RectTransform>();
-            mainRect.anchorMin = new Vector2(0.1f, 0.1f);
-            mainRect.anchorMax = new Vector2(0.9f, 0.9f);
-            mainRect.offsetMin = Vector2.zero;
-            mainRect.offsetMax = Vector2.zero;
-            
-            Image panelBg = mainPanel.AddComponent<Image>();
-            panelBg.color = new Color(0.1f, 0.1f, 0.1f, 0.9f);
-            
-            // 创建左侧仓库区域
-            CreateWarehousePanel(mainPanel);
-            
-            // 创建右侧切割区域
-            CreateCuttingPanel(mainPanel);
-            
-            // 创建顶部标题
-            CreateTitleBar(mainPanel);
-            
-            // 创建关闭按钮
-            CreateCloseButton(mainPanel);
-        }
-        
-        /// <summary>
-        /// 创建仓库面板
-        /// </summary>
-        private void CreateWarehousePanel(GameObject parent)
-        {
-            GameObject warehousePanel = new GameObject("WarehousePanel");
-            warehousePanel.transform.SetParent(parent.transform, false);
-            
-            RectTransform warehouseRect = warehousePanel.AddComponent<RectTransform>();
-            warehouseRect.anchorMin = new Vector2(0f, 0f);
-            warehouseRect.anchorMax = new Vector2(0.45f, 0.85f);
-            warehouseRect.offsetMin = new Vector2(20f, 20f);
-            warehouseRect.offsetMax = new Vector2(-10f, -10f);
-            
-            Image warehouseBg = warehousePanel.AddComponent<Image>();
-            warehouseBg.color = new Color(0.2f, 0.2f, 0.2f, 0.8f);
-            
-            // 标题
-            GameObject warehouseTitle = new GameObject("Title");
-            warehouseTitle.transform.SetParent(warehousePanel.transform, false);
-            
-            RectTransform titleRect = warehouseTitle.AddComponent<RectTransform>();
-            titleRect.anchorMin = new Vector2(0f, 0.9f);
-            titleRect.anchorMax = new Vector2(1f, 1f);
-            titleRect.offsetMin = Vector2.zero;
-            titleRect.offsetMax = Vector2.zero;
-            
-            Text titleText = warehouseTitle.AddComponent<Text>();
-            titleText.text = "样本仓库";
-            titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            titleText.fontSize = 20;
-            titleText.color = Color.white;
-            titleText.alignment = TextAnchor.MiddleCenter;
-            
-            // 这里需要集成实际的仓库UI
-            // TODO: 集成WarehouseManager的UI组件
-        }
-        
-        /// <summary>
-        /// 创建切割面板
-        /// </summary>
-        private void CreateCuttingPanel(GameObject parent)
-        {
-            GameObject cuttingPanel = new GameObject("CuttingPanel");
-            cuttingPanel.transform.SetParent(parent.transform, false);
-            
-            RectTransform cuttingRect = cuttingPanel.AddComponent<RectTransform>();
-            cuttingRect.anchorMin = new Vector2(0.55f, 0f);
-            cuttingRect.anchorMax = new Vector2(1f, 0.85f);
-            cuttingRect.offsetMin = new Vector2(10f, 20f);
-            cuttingRect.offsetMax = new Vector2(-20f, -10f);
-            
-            Image cuttingBg = cuttingPanel.AddComponent<Image>();
-            cuttingBg.color = new Color(0.0f, 0.3f, 0.0f, 0.6f);
-            
-            // 标题
-            GameObject cuttingTitle = new GameObject("Title");
-            cuttingTitle.transform.SetParent(cuttingPanel.transform, false);
-            
-            RectTransform titleRect = cuttingTitle.AddComponent<RectTransform>();
-            titleRect.anchorMin = new Vector2(0f, 0.9f);
-            titleRect.anchorMax = new Vector2(1f, 1f);
-            titleRect.offsetMin = Vector2.zero;
-            titleRect.offsetMax = Vector2.zero;
-            
-            Text titleText = cuttingTitle.AddComponent<Text>();
-            titleText.text = "样本切割区";
-            titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            titleText.fontSize = 20;
-            titleText.color = Color.white;
-            titleText.alignment = TextAnchor.MiddleCenter;
-            
-            // 拖拽提示
-            GameObject dropHint = new GameObject("DropHint");
-            dropHint.transform.SetParent(cuttingPanel.transform, false);
-            
-            RectTransform hintRect = dropHint.AddComponent<RectTransform>();
-            hintRect.anchorMin = new Vector2(0.1f, 0.3f);
-            hintRect.anchorMax = new Vector2(0.9f, 0.7f);
-            hintRect.offsetMin = Vector2.zero;
-            hintRect.offsetMax = Vector2.zero;
-            
-            Text hintText = dropHint.AddComponent<Text>();
-            hintText.text = "将多层地质样本\n从左侧拖拽到此处\n开始切割操作";
-            hintText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            hintText.fontSize = 16;
-            hintText.color = Color.yellow;
-            hintText.alignment = TextAnchor.MiddleCenter;
-        }
-        
-        /// <summary>
-        /// 创建标题栏
-        /// </summary>
-        private void CreateTitleBar(GameObject parent)
-        {
-            GameObject titleBar = new GameObject("TitleBar");
-            titleBar.transform.SetParent(parent.transform, false);
-            
-            RectTransform titleRect = titleBar.AddComponent<RectTransform>();
-            titleRect.anchorMin = new Vector2(0f, 0.85f);
-            titleRect.anchorMax = new Vector2(1f, 1f);
-            titleRect.offsetMin = Vector2.zero;
-            titleRect.offsetMax = Vector2.zero;
-            
-            Image titleBg = titleBar.AddComponent<Image>();
-            titleBg.color = new Color(0f, 0.5f, 0.8f, 0.8f);
-            
-            GameObject titleText = new GameObject("TitleText");
-            titleText.transform.SetParent(titleBar.transform, false);
-            
-            RectTransform textRect = titleText.AddComponent<RectTransform>();
-            textRect.anchorMin = Vector2.zero;
-            textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = Vector2.zero;
-            textRect.offsetMax = Vector2.zero;
-            
-            Text text = titleText.AddComponent<Text>();
-            text.text = "样本切割台 - 选择要切割的地质样本";
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            text.fontSize = 24;
-            text.color = Color.white;
-            text.alignment = TextAnchor.MiddleCenter;
-            text.fontStyle = FontStyle.Bold;
-        }
-        
-        /// <summary>
-        /// 创建关闭按钮
-        /// </summary>
-        private void CreateCloseButton(GameObject parent)
-        {
-            GameObject closeButton = new GameObject("CloseButton");
-            closeButton.transform.SetParent(parent.transform, false);
-            
-            RectTransform buttonRect = closeButton.AddComponent<RectTransform>();
-            buttonRect.anchorMin = new Vector2(0.9f, 0.95f);
-            buttonRect.anchorMax = new Vector2(1f, 1f);
-            buttonRect.offsetMin = new Vector2(-50f, -15f);
-            buttonRect.offsetMax = new Vector2(-10f, -5f);
-            
-            Image buttonBg = closeButton.AddComponent<Image>();
-            buttonBg.color = new Color(0.8f, 0.2f, 0.2f, 0.8f);
-            
-            Button button = closeButton.AddComponent<Button>();
-            button.onClick.AddListener(CloseCuttingInterface);
-            
-            GameObject buttonText = new GameObject("Text");
-            buttonText.transform.SetParent(closeButton.transform, false);
-            
-            RectTransform textRect = buttonText.AddComponent<RectTransform>();
-            textRect.anchorMin = Vector2.zero;
-            textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = Vector2.zero;
-            textRect.offsetMax = Vector2.zero;
-            
-            Text text = buttonText.AddComponent<Text>();
-            text.text = "×";
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            text.fontSize = 24;
-            text.color = Color.white;
-            text.alignment = TextAnchor.MiddleCenter;
-            text.fontStyle = FontStyle.Bold;
-        }
-        
-        /// <summary>
-        /// 设置切割界面
-        /// </summary>
-        private void SetupCuttingInterface()
-        {
-            // 这里可以添加界面设置逻辑
-            // 例如绑定事件、设置数据等
-            
-            if (currentCuttingInterface != null)
-            {
-                // 获取WarehouseIntegration组件并设置
-                var warehouseIntegration = GetComponent<WarehouseIntegration>();
-                if (warehouseIntegration != null)
-                {
-                    // 连接仓库系统和切割界面
-                    // TODO: 实现具体的连接逻辑
-                }
-            }
-        }
-        
-        /// <summary>
-        /// 查找UI Canvas
-        /// </summary>
-        private Canvas FindUICanvas()
-        {
-            Debug.Log("开始查找UI Canvas...");
-            
-            // 查找主UI Canvas
-            Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
-            Debug.Log($"找到 {canvases.Length} 个Canvas");
-            
-            Canvas bestCanvas = null;
-            int highestSortingOrder = -1;
-            
-            foreach (var canvas in canvases)
-            {
-                Debug.Log($"Canvas: {canvas.name}, RenderMode: {canvas.renderMode}, SortingOrder: {canvas.sortingOrder}, Active: {canvas.gameObject.activeInHierarchy}");
-                
-                // 优先选择ScreenSpaceOverlay模式且活跃的Canvas
-                if (canvas.renderMode == RenderMode.ScreenSpaceOverlay && 
-                    canvas.gameObject.activeInHierarchy)
-                {
-                    if (canvas.sortingOrder > highestSortingOrder)
-                    {
-                        bestCanvas = canvas;
-                        highestSortingOrder = canvas.sortingOrder;
-                    }
-                }
-            }
-            
-            if (bestCanvas != null)
-            {
-                Debug.Log($"选择最佳Canvas: {bestCanvas.name}, SortingOrder: {bestCanvas.sortingOrder}");
-                
-                // 验证Canvas设置
-                VerifyCanvasSettings(bestCanvas);
-                return bestCanvas;
-            }
-            
-            // 如果没找到合适的，创建一个新的
-            Debug.Log("创建新的UI Canvas");
-            return CreateNewUICanvas();
-        }
-        
-        /// <summary>
-        /// 创建新的UI Canvas
-        /// </summary>
-        private Canvas CreateNewUICanvas()
-        {
-            GameObject canvasObj = new GameObject("CuttingStationMainUICanvas");
-            
-            // 确保Canvas在场景根部，不被任何其他对象遮挡
-            canvasObj.transform.SetParent(null);
-            
-            // 尝试添加标记防止被清理系统删除
-            try
-            {
-                canvasObj.tag = "UICanvas"; // 使用特殊标签
-            }
-            catch (System.Exception)
-            {
-                // 标签不存在时使用默认标签
-                canvasObj.tag = "Untagged";
-                Debug.Log("UICanvas标签不存在，使用默认标签");
-            }
-            
-            Canvas newCanvas = canvasObj.AddComponent<Canvas>();
-            newCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            newCanvas.sortingOrder = 9999; // 设置极高优先级
-            newCanvas.pixelPerfect = false;
-            
-            CanvasScaler scaler = canvasObj.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            scaler.matchWidthOrHeight = 0.5f;
-            
-            GraphicRaycaster raycaster = canvasObj.AddComponent<GraphicRaycaster>();
-            raycaster.ignoreReversedGraphics = true;
-            raycaster.blockingObjects = GraphicRaycaster.BlockingObjects.None;
-            
-            // 添加一个标识组件防止被清理
-            var protector = canvasObj.AddComponent<CanvasProtector>();
-            
-            // 确保Canvas立即激活
-            canvasObj.SetActive(true);
-            
-            // 标记为不销毁
-            DontDestroyOnLoad(canvasObj);
-            
-            Debug.Log($"创建受保护的Canvas: {newCanvas.name}, SortingOrder: {newCanvas.sortingOrder}");
-            
-            // 验证新创建的Canvas
-            VerifyCanvasSettings(newCanvas);
-            
-            return newCanvas;
-        }
-        
-        /// <summary>
-        /// 验证Canvas设置
-        /// </summary>
-        private void VerifyCanvasSettings(Canvas canvas)
-        {
-            Debug.Log("=== Canvas设置验证 ===");
-            Debug.Log($"Canvas名称: {canvas.name}");
-            Debug.Log($"活跃状态: {canvas.gameObject.activeInHierarchy}");
-            Debug.Log($"渲染模式: {canvas.renderMode}");
-            Debug.Log($"排序顺序: {canvas.sortingOrder}");
-            Debug.Log($"像素完美: {canvas.pixelPerfect}");
-            Debug.Log($"世界坐标: {canvas.transform.position}");
-            Debug.Log($"缩放: {canvas.transform.localScale}");
-            
-            // 检查组件
-            var scaler = canvas.GetComponent<CanvasScaler>();
-            if (scaler != null)
-            {
-                Debug.Log($"CanvasScaler模式: {scaler.uiScaleMode}");
-                Debug.Log($"参考分辨率: {scaler.referenceResolution}");
-            }
-            else
-            {
-                Debug.LogWarning("Canvas缺少CanvasScaler组件");
-            }
-            
-            var raycaster = canvas.GetComponent<GraphicRaycaster>();
-            if (raycaster == null)
-            {
-                Debug.LogWarning("Canvas缺少GraphicRaycaster组件");
-            }
-            
-            Debug.Log("=== 验证完成 ===");
-        }
-        
+
         /// <summary>
         /// 刷新仓库内容显示
         /// </summary>
@@ -1325,36 +1259,36 @@ namespace SampleCuttingSystem
                 Debug.LogError("WarehouseUI为空，无法刷新内容");
                 return;
             }
-            
+
             try
             {
                 Debug.Log("开始刷新仓库内容显示");
-                
+
                 // 方法1: 调用InitializeWarehouseUI重新初始化
-                var initMethod = warehouseUI.GetType().GetMethod("InitializeWarehouseUI", 
+                var initMethod = warehouseUI.GetType().GetMethod("InitializeWarehouseUI",
                     System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                    
+
                 if (initMethod != null)
                 {
                     Debug.Log("调用InitializeWarehouseUI重新初始化");
                     initMethod.Invoke(warehouseUI, null);
                 }
-                
+
                 // 方法2: 调用SetupUIComponents重新设置组件
-                var setupMethod = warehouseUI.GetType().GetMethod("SetupUIComponents", 
+                var setupMethod = warehouseUI.GetType().GetMethod("SetupUIComponents",
                     System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                    
+
                 if (setupMethod != null)
                 {
                     Debug.Log("调用SetupUIComponents重新设置组件");
                     setupMethod.Invoke(warehouseUI, null);
                 }
-                
+
                 // 方法3: 尝试重新打开仓库界面来刷新内容
                 Debug.Log("使用重新打开方式刷新仓库界面");
                 warehouseUI.CloseWarehouseInterface();
-                
-                // 等待一帧再重新打开  
+
+                // 等待一帧再重新打开
                 StartCoroutine(ReopenWarehouseAfterDelay(warehouseUI));
             }
             catch (System.Exception e)
@@ -1362,385 +1296,120 @@ namespace SampleCuttingSystem
                 Debug.LogError($"刷新仓库内容失败: {e.Message}");
             }
         }
-        
+
         /// <summary>
         /// 延迟重新打开仓库界面
         /// </summary>
         private System.Collections.IEnumerator ReopenWarehouseAfterDelay(WarehouseUI warehouseUI)
         {
             yield return new WaitForEndOfFrame();
-            
+
             if (warehouseUI != null)
             {
                 Debug.Log("延迟重新打开仓库界面");
                 warehouseUI.OpenWarehouseInterface();
-                
+
                 // 重新应用切割模式的布局调整
                 yield return new WaitForEndOfFrame();
                 ModifyWarehouseUILayout(warehouseUI);
-                
+
                 // 重新为样本添加拖拽功能
                 yield return new WaitForEndOfFrame();
                 WarehouseSampleEnhancer.EnhanceWarehouseSamples(warehouseUI.rightPanel);
             }
         }
-        
+
         /// <summary>
-        /// 验证UI创建状态
+        /// 创建测试可视化元素
         /// </summary>
-        private void VerifyUICreation()
+        private void CreateTestVisual(GameObject parent)
         {
-            if (currentCuttingInterface == null)
+            // 创建一个明显的测试矩形
+            GameObject testVisual = new GameObject("TestVisual");
+            testVisual.transform.SetParent(parent.transform, false);
+
+            RectTransform testRect = testVisual.AddComponent<RectTransform>();
+            testRect.anchorMin = new Vector2(0.3f, 0.3f);
+            testRect.anchorMax = new Vector2(0.7f, 0.7f);
+            testRect.offsetMin = Vector2.zero;
+            testRect.offsetMax = Vector2.zero;
+
+            Image testImage = testVisual.AddComponent<Image>();
+            testImage.color = Color.red; // 红色，非常明显
+            testImage.raycastTarget = false;
+
+            testVisual.SetActive(true);
+            Debug.Log("创建红色测试矩形");
+        }
+
+        /// <summary>
+        /// 恢复仓库UI状态
+        /// </summary>
+        private void RestoreWarehouseUI()
+        {
+            var warehouseUI = FindFirstObjectByType<WarehouseUI>();
+            if (warehouseUI != null)
             {
-                Debug.LogError("当前切割界面为空！");
-                return;
-            }
-            
-            Debug.Log("=== UI创建状态验证 ===");
-            Debug.Log($"界面名称: {currentCuttingInterface.name}");
-            Debug.Log($"界面位置: {currentCuttingInterface.transform.position}");
-            Debug.Log($"界面缩放: {currentCuttingInterface.transform.localScale}");
-            Debug.Log($"界面激活: {currentCuttingInterface.activeInHierarchy}");
-            Debug.Log($"界面启用: {currentCuttingInterface.activeSelf}");
-            
-            // 检查父对象
-            if (currentCuttingInterface.transform.parent != null)
-            {
-                Debug.Log($"父对象: {currentCuttingInterface.transform.parent.name}");
-                Debug.Log($"父对象激活: {currentCuttingInterface.transform.parent.gameObject.activeInHierarchy}");
-            }
-            else
-            {
-                Debug.Log("界面在根级别（无父对象）");
-            }
-            
-            // 检查RectTransform
-            var rectTransform = currentCuttingInterface.GetComponent<RectTransform>();
-            if (rectTransform != null)
-            {
-                Debug.Log($"RectTransform存在");
-                Debug.Log($"  AnchorMin: {rectTransform.anchorMin}");
-                Debug.Log($"  AnchorMax: {rectTransform.anchorMax}");
-                Debug.Log($"  OffsetMin: {rectTransform.offsetMin}");
-                Debug.Log($"  OffsetMax: {rectTransform.offsetMax}");
-                Debug.Log($"  SizeDelta: {rectTransform.sizeDelta}");
-                Debug.Log($"  AnchoredPosition: {rectTransform.anchoredPosition}");
-                
-                // 计算实际屏幕尺寸
-                Vector2 screenSize = new Vector2(Screen.width, Screen.height);
-                Debug.Log($"屏幕尺寸: {screenSize}");
-                
-                Vector3[] corners = new Vector3[4];
-                rectTransform.GetWorldCorners(corners);
-                Debug.Log($"世界角点: [{corners[0]}, {corners[1]}, {corners[2]}, {corners[3]}]");
-            }
-            else
-            {
-                Debug.LogWarning("界面缺少RectTransform组件");
-            }
-            
-            // 检查Image组件
-            var image = currentCuttingInterface.GetComponent<Image>();
-            if (image != null)
-            {
-                Debug.Log($"Image组件存在，颜色: {image.color}");
-                Debug.Log($"Image启用: {image.enabled}");
-                Debug.Log($"材质: {image.material?.name ?? "null"}");
-            }
-            else
-            {
-                Debug.LogWarning("界面缺少Image组件");
-            }
-            
-            // 检查子对象
-            int childCount = currentCuttingInterface.transform.childCount;
-            Debug.Log($"子对象数量: {childCount}");
-            for (int i = 0; i < childCount && i < 5; i++) // 最多显示5个
-            {
-                Transform child = currentCuttingInterface.transform.GetChild(i);
-                Debug.Log($"  子对象{i}: {child.name}, 激活: {child.gameObject.activeInHierarchy}");
-            }
-            
-            Debug.Log("=== UI验证完成 ===");
-            
-            // 强制激活界面及其所有父级
-            if (currentCuttingInterface != null)
-            {
-                Debug.Log("强制激活切割界面层级");
-                
-                // 激活界面本身
-                currentCuttingInterface.SetActive(true);
-                
-                // 向上激活所有父级
-                Transform parent = currentCuttingInterface.transform.parent;
-                while (parent != null)
+                Debug.Log("恢复仓库UI状态");
+
+                // 恢复原有的按钮状态
+                if (warehouseUI.multiSelectButton != null)
+                    warehouseUI.multiSelectButton.gameObject.SetActive(true);
+                if (warehouseUI.batchTransferButton != null)
+                    warehouseUI.batchTransferButton.gameObject.SetActive(true);
+                if (warehouseUI.batchDiscardButton != null)
+                    warehouseUI.batchDiscardButton.gameObject.SetActive(true);
+                if (warehouseUI.closeButton != null)
+                    warehouseUI.closeButton.gameObject.SetActive(true);
+
+                // 恢复仓库面板（右侧面板）到原始位置
+                if (warehouseUI.rightPanel != null)
                 {
-                    if (!parent.gameObject.activeInHierarchy)
+                    RectTransform rightRect = warehouseUI.rightPanel.GetComponent<RectTransform>();
+                    if (rightRect != null)
                     {
-                        Debug.Log($"强制激活父级: {parent.name}");
-                        parent.gameObject.SetActive(true);
+                        // 恢复仓库面板到右侧
+                        rightRect.anchorMin = new Vector2(0.37f, 0.15f);
+                        rightRect.anchorMax = new Vector2(0.98f, 0.95f);
+                        rightRect.offsetMin = Vector2.zero;
+                        rightRect.offsetMax = Vector2.zero;
+                        Debug.Log("恢复仓库面板到右侧位置");
                     }
-                    parent = parent.parent;
                 }
-                
-                Debug.Log($"最终激活检查 - 界面: {currentCuttingInterface.activeInHierarchy}");
-            }
-            
-            // 强制刷新Canvas
-            if (interfaceParent != null)
-            {
-                Canvas parentCanvas = interfaceParent.GetComponent<Canvas>();
-                if (parentCanvas != null)
+
+                // 恢复背包面板（左侧面板）
+                if (warehouseUI.leftPanel != null)
                 {
-                    Debug.Log("强制刷新Canvas");
-                    parentCanvas.enabled = false;
-                    parentCanvas.enabled = true;
+                    warehouseUI.leftPanel.gameObject.SetActive(true);
+                    RectTransform leftRect = warehouseUI.leftPanel.GetComponent<RectTransform>();
+                    if (leftRect != null)
+                    {
+                        // 恢复背包面板到左侧原始位置
+                        leftRect.anchorMin = new Vector2(0.02f, 0.15f);
+                        leftRect.anchorMax = new Vector2(0.35f, 0.95f);
+                        leftRect.offsetMin = Vector2.zero;
+                        leftRect.offsetMax = Vector2.zero;
+                        Debug.Log("恢复背包面板到左侧位置");
+                    }
+                }
+
+                // 移除添加的切割区域
+                Transform cuttingArea = warehouseUI.warehousePanel.transform.Find("CuttingArea");
+                if (cuttingArea != null)
+                {
+                    Destroy(cuttingArea.gameObject);
+                    Debug.Log("移除切割区域组件");
                 }
             }
         }
-        
+
         /// <summary>
-        /// 设置玩家控制状态
+        /// 在编辑器中绘制交互范围
         /// </summary>
-        private void SetPlayerControlEnabled(bool enabled)
+        private void OnDrawGizmosSelected()
         {
-            if (nearbyPlayer != null)
-            {
-                var playerController = nearbyPlayer.GetComponent<FirstPersonController>();
-                if (playerController != null)
-                {
-                    playerController.enableMouseLook = enabled;
-                    // 禁用/启用跳跃功能
-                    playerController.SetJumpEnabled(enabled);
-                    Debug.Log($"切割系统设置跳跃状态: {enabled}");
-                }
-            }
-            
-            // 设置鼠标光标
-            if (enabled)
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-            }
-        }
-        
-        /// <summary>
-        /// 在Scene视图中绘制交互范围
-        /// </summary>
-        void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.cyan;
+            Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, interactionRange);
-        }
-        
-        [ContextMenu("测试打开切割界面")]
-        private void TestOpenInterface()
-        {
-            OpenCuttingInterface();
-        }
-        
-        [ContextMenu("测试关闭切割界面")]
-        private void TestCloseInterface()
-        {
-            CloseCuttingInterface();
-        }
-        
-        [ContextMenu("强制重置界面状态")]
-        private void ForceResetInterfaceState()
-        {
-            Debug.Log("=== 强制重置界面状态 ===");
-            
-            if (currentCuttingInterface != null)
-            {
-                Debug.Log($"发现界面引用: {currentCuttingInterface.name}");
-                Debug.Log($"界面激活状态: {currentCuttingInterface.activeInHierarchy}");
-                
-                try
-                {
-                    Destroy(currentCuttingInterface);
-                    Debug.Log("已销毁界面对象");
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogError($"销毁界面时出错: {e.Message}");
-                }
-            }
-            
-            currentCuttingInterface = null;
-            Debug.Log("界面状态已重置，可以再次打开界面");
-        }
-        
-        [ContextMenu("检查界面状态")]
-        private void CheckInterfaceState()
-        {
-            Debug.Log("=== 界面状态检查 ===");
-            Debug.Log($"currentCuttingInterface: {(currentCuttingInterface != null ? currentCuttingInterface.name : "null")}");
-            Debug.Log($"playerInRange: {playerInRange}");
-            Debug.Log($"interactionPrompt: {(interactionPrompt != null ? interactionPrompt.name : "null")}");
-            
-            if (currentCuttingInterface != null)
-            {
-                Debug.Log($"界面激活状态: {currentCuttingInterface.activeInHierarchy}");
-                Debug.Log($"界面位置: {currentCuttingInterface.transform.position}");
-            }
-        }
-        
-        /// <summary>
-        /// 创建3D模型显示区域
-        /// </summary>
-        private void Create3DModelViewArea(GameObject parent)
-        {
-            GameObject modelArea = new GameObject("ModelViewArea");
-            modelArea.transform.SetParent(parent.transform, false);
-            
-            RectTransform modelRect = modelArea.AddComponent<RectTransform>();
-            // 覆盖整个右侧UI背景区域
-            modelRect.anchorMin = Vector2.zero;        // (0, 0) - 左下角
-            modelRect.anchorMax = Vector2.one;         // (1, 1) - 右上角
-            modelRect.offsetMin = Vector2.zero;
-            modelRect.offsetMax = Vector2.zero;
-            
-            Debug.Log("3D模型显示区域已扩展到全屏幕大小");
-            
-            // 移除背景和边框，让3D模型直接覆盖在原UI背景上
-            // 这样可以保持原UI的视觉效果，同时显示3D模型
-            
-            // 创建RenderTexture显示区域
-            GameObject renderDisplay = new GameObject("RenderDisplay");
-            renderDisplay.transform.SetParent(modelArea.transform, false);
-            
-            RectTransform renderRect = renderDisplay.AddComponent<RectTransform>();
-            renderRect.anchorMin = Vector2.zero;
-            renderRect.anchorMax = Vector2.one;
-            renderRect.offsetMin = Vector2.zero;    // 移除边距，完全填充
-            renderRect.offsetMax = Vector2.zero;    // 移除边距，完全填充
-            
-            // 添加RawImage来显示RenderTexture
-            RawImage rawImage = renderDisplay.AddComponent<RawImage>();
-            rawImage.color = Color.white; // 确保RawImage可见
-            rawImage.raycastTarget = false; // 重要：不阻挡鼠标事件，让底层UI可以交互
-            
-            // 添加3D模型显示控制器组件
-            Sample3DModelViewer modelViewer = modelArea.AddComponent<Sample3DModelViewer>();
-            modelViewer.rawImage = rawImage;
-            
-            // 添加交互控制器组件
-            Sample3DModelViewerController controller = modelArea.AddComponent<Sample3DModelViewerController>();
-            
-            // 设置UI层级：3D模型显示区域应该在背景之上，但在交互控件之下
-            EnsureProperUILayering(modelArea, parent);
-            
-            Debug.Log($"RawImage创建完成: RectTransform={renderRect.rect}, Parent={renderDisplay.transform.parent.name}");
-            Debug.Log("3D模型交互控制器已添加");
-            
-            // 添加提示文字
-            CreateModelViewPrompt(modelArea);
-            
-            Debug.Log("全屏3D模型显示区域创建完成");
-        }
-        
-        /// <summary>
-        /// 确保UI层级正确：3D模型在背景之上，交互控件之下
-        /// </summary>
-        private void EnsureProperUILayering(GameObject modelArea, GameObject parent)
-        {
-            // 将3D模型显示区域设置为较低的层级索引，让其他UI元素显示在上面
-            int totalChildren = parent.transform.childCount;
-            int modelLayerIndex = Mathf.Max(1, totalChildren / 3); // 设置在较低位置，但不是最底层
-            
-            modelArea.transform.SetSiblingIndex(modelLayerIndex);
-            
-            Debug.Log($"3D模型显示区域层级设置为: {modelLayerIndex}/{totalChildren}");
-            
-            // 确保重要的交互元素在更高层级
-            EnsureInteractiveElementsOnTop(parent);
-        }
-        
-        /// <summary>
-        /// 确保交互元素显示在顶层
-        /// </summary>
-        private void EnsureInteractiveElementsOnTop(GameObject parent)
-        {
-            Transform parentTransform = parent.transform;
-            
-            // 查找并提升重要交互元素的层级
-            for (int i = 0; i < parentTransform.childCount; i++)
-            {
-                Transform child = parentTransform.GetChild(i);
-                GameObject childObj = child.gameObject;
-                
-                // 检查是否包含重要的交互组件
-                if (ShouldBeOnTop(childObj))
-                {
-                    child.SetAsLastSibling(); // 移动到最顶层
-                    Debug.Log($"将交互元素移至顶层: {childObj.name}");
-                }
-            }
-        }
-        
-        /// <summary>
-        /// 判断UI元素是否应该显示在顶层
-        /// </summary>
-        private bool ShouldBeOnTop(GameObject obj)
-        {
-            // 检查是否包含交互组件
-            if (obj.GetComponent<Button>() != null) return true;
-            if (obj.GetComponent<Slider>() != null) return true;
-            if (obj.GetComponent<Toggle>() != null) return true;
-            if (obj.GetComponent<Dropdown>() != null) return true;
-            if (obj.GetComponent<InputField>() != null) return true;
-            
-            // 检查特定名称
-            string objName = obj.name.ToLower();
-            if (objName.Contains("button")) return true;
-            if (objName.Contains("close")) return true;
-            if (objName.Contains("progress")) return true;
-            if (objName.Contains("title")) return true;
-            if (objName.Contains("control")) return true;
-            if (objName.Contains("切割")) return true;
-            
-            // 检查子对象是否包含交互组件
-            return obj.GetComponentInChildren<Button>() != null ||
-                   obj.GetComponentInChildren<Slider>() != null ||
-                   obj.GetComponentInChildren<Toggle>() != null;
-        }
-        
-        /// <summary>
-        /// 创建模型显示提示文字
-        /// </summary>
-        private void CreateModelViewPrompt(GameObject parent)
-        {
-            GameObject promptObj = new GameObject("ModelPrompt");
-            promptObj.transform.SetParent(parent.transform, false);
-            
-            RectTransform promptRect = promptObj.AddComponent<RectTransform>();
-            promptRect.anchorMin = new Vector2(0f, 0f);
-            promptRect.anchorMax = new Vector2(1f, 1f);
-            promptRect.offsetMin = Vector2.zero;
-            promptRect.offsetMax = Vector2.zero;
-            
-            // 确保提示文字在RawImage后面
-            promptObj.transform.SetSiblingIndex(0);
-            
-            Text promptText = promptObj.AddComponent<Text>();
-            promptText.text = "拖入样本查看3D模型";
-            promptText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            promptText.fontSize = 16;
-            promptText.color = new Color(0.7f, 0.7f, 0.7f, 0.8f);
-            promptText.alignment = TextAnchor.MiddleCenter;
-            
-            // 关键：当有RenderTexture内容时，提示应该不可见
-            promptText.raycastTarget = false; // 不阻挡鼠标事件
-            
-            // 样本放入后会隐藏此提示
-            promptObj.name = "DefaultPrompt";
-            
-            Debug.Log("默认提示文字创建完成，层级设置为最底层");
         }
     }
 }

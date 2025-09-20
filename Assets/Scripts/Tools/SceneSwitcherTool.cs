@@ -24,6 +24,8 @@ public class SceneSwitcherTool : CollectionTool
     
     // 场景管理器引用
     private GameSceneManager sceneManager;
+    private MobileInputManager mobileInputManager; // 移动端输入管理器
+    private bool wasFKeyPressedLastFrame = false; // 上一帧F键状态
     
     protected override void Start()
     {
@@ -53,7 +55,14 @@ public class SceneSwitcherTool : CollectionTool
         
         // 获取场景管理器
         sceneManager = GameSceneManager.Instance;
-        
+
+        // 获取移动端输入管理器
+        mobileInputManager = MobileInputManager.Instance;
+        if (mobileInputManager == null)
+        {
+            mobileInputManager = FindObjectOfType<MobileInputManager>();
+        }
+
         Debug.Log("场景切换器工具初始化完成");
     }
     
@@ -109,12 +118,51 @@ public class SceneSwitcherTool : CollectionTool
     protected override void HandleInput()
     {
         if (!canUse) return;
-        
-        // 处理鼠标左键点击
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+
+        // 处理鼠标左键点击（桌面端）
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            UseSceneSwitcher();
+            return;
+        }
+
+        // 处理移动端触摸输入
+        if (UnityEngine.InputSystem.Touchscreen.current != null)
+        {
+            var touch = UnityEngine.InputSystem.Touchscreen.current.primaryTouch;
+            if (touch.press.wasPressedThisFrame)
+            {
+                UseSceneSwitcher();
+                return;
+            }
+        }
+
+        // 处理F键输入（移动端虚拟按钮）
+        if (IsFKeyPressed())
         {
             UseSceneSwitcher();
         }
+    }
+
+    /// <summary>
+    /// 检测F键输入 - 支持键盘和移动端虚拟按钮
+    /// </summary>
+    bool IsFKeyPressed()
+    {
+        // 键盘F键检测
+        bool keyboardFPressed = UnityEngine.InputSystem.Keyboard.current != null &&
+                                UnityEngine.InputSystem.Keyboard.current.fKey.wasPressedThisFrame;
+
+        // 移动端F键检测
+        bool mobileFPressed = false;
+        if (mobileInputManager != null)
+        {
+            bool currentFKeyState = mobileInputManager.IsSecondaryInteracting;
+            mobileFPressed = currentFKeyState && !wasFKeyPressedLastFrame;
+            wasFKeyPressedLastFrame = currentFKeyState;
+        }
+
+        return keyboardFPressed || mobileFPressed;
     }
     
     /// <summary>
@@ -122,31 +170,49 @@ public class SceneSwitcherTool : CollectionTool
     /// </summary>
     void UseSceneSwitcher()
     {
-        if (!canUse) return;
-        
+        if (!canUse)
+        {
+            Debug.Log("场景切换器在冷却中，无法使用");
+            return;
+        }
+
+        Debug.Log("场景切换器被激活！");
+
         // 播放激活音效
         if (switcherActivateSound != null && audioSource != null)
         {
             audioSource.PlayOneShot(switcherActivateSound);
         }
-        
+
         // 播放切换器动画
         PlaySwitcherAnimation();
-        
+
         // 显示场景选择UI
         if (sceneManager != null)
         {
+            Debug.Log("调用场景管理器显示UI");
             sceneManager.ShowSceneSelectionUI();
         }
         else
         {
             Debug.LogError("场景管理器未找到！");
+            // 尝试重新获取场景管理器
+            sceneManager = GameSceneManager.Instance;
+            if (sceneManager != null)
+            {
+                Debug.Log("重新获取场景管理器成功，显示UI");
+                sceneManager.ShowSceneSelectionUI();
+            }
+            else
+            {
+                Debug.LogError("仍然无法找到场景管理器！");
+            }
         }
-        
+
         // 设置冷却时间
         lastUseTime = Time.time;
         canUse = false;
-        
+
         Debug.Log("场景切换器已激活");
     }
     

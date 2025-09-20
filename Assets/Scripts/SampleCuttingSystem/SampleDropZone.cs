@@ -729,7 +729,7 @@ namespace SampleCuttingSystem
         {
             if (instructionText != null)
             {
-                instructionText.text = $"正在切割: {sampleData.name}\n\n观察移动的切割线\n在绿色区域按空格键进行切割\n\n⚠️ 切割失败会销毁样本";
+                instructionText.text = $"正在切割: {sampleData.name}\n\n观察移动的切割线\n在绿色区域按空格键/触摸屏幕进行切割\n\n⚠️ 切割失败会销毁样本";
                 instructionText.color = Color.yellow;
                 instructionText.fontSize = 20;
             }
@@ -1114,15 +1114,22 @@ namespace SampleCuttingSystem
                 }
             }
             
-            // 清理所有临时切割对象
-            var temporaryObjects = GameObject.FindGameObjectsWithTag("TemporaryCuttingObject");
-            foreach (var tempObj in temporaryObjects)
+            // 清理所有临时切割对象 - 使用安全的查找方式
+            try
             {
-                if (tempObj != null)
+                var temporaryObjects = GameObject.FindGameObjectsWithTag("TemporaryCuttingObject");
+                foreach (var tempObj in temporaryObjects)
                 {
-                    Debug.Log($"清理临时切割对象: {tempObj.name}");
-                    Destroy(tempObj);
+                    if (tempObj != null)
+                    {
+                        Debug.Log($"清理临时切割对象: {tempObj.name}");
+                        Destroy(tempObj);
+                    }
                 }
+            }
+            catch (UnityException)
+            {
+                Debug.Log("TemporaryCuttingObject标签未定义，跳过临时对象清理");
             }
         }
         

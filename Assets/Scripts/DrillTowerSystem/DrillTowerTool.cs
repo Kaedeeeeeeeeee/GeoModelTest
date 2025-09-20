@@ -48,19 +48,48 @@ public class DrillTowerTool : PlaceableTool
     public Material inactiveDrillMaterial; // 闲置状态材质
     
     private DrillTower placedTower; // 已放置的钻塔引用
+    private MobileInputManager mobileInputManager; // 移动端输入管理器
+    private bool wasFKeyPressedLastFrame = false; // 上一帧F键状态
     
     protected override void Start()
     {
         base.Start();
         toolName = "钻塔工具";
-        
+
         // 设置预制件
         if (drillTowerPrefab != null)
         {
             prefabToPlace = drillTowerPrefab;
         }
-        
+
+        // 获取移动端输入管理器
+        mobileInputManager = MobileInputManager.Instance;
+        if (mobileInputManager == null)
+        {
+            mobileInputManager = FindObjectOfType<MobileInputManager>();
+        }
+
         // 钻塔工具初始化完成
+    }
+
+    /// <summary>
+    /// 检测F键输入 - 支持键盘和移动端虚拟按钮
+    /// </summary>
+    bool IsFKeyPressed()
+    {
+        // 键盘F键检测
+        bool keyboardFPressed = Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame;
+
+        // 移动端F键检测
+        bool mobileFPressed = false;
+        if (mobileInputManager != null)
+        {
+            bool currentFKeyState = mobileInputManager.IsSecondaryInteracting;
+            mobileFPressed = currentFKeyState && !wasFKeyPressedLastFrame;
+            wasFKeyPressedLastFrame = currentFKeyState;
+        }
+
+        return keyboardFPressed || mobileFPressed;
     }
     
     protected override void Update()
@@ -87,7 +116,7 @@ public class DrillTowerTool : PlaceableTool
         if (distance <= interactionRange)
         {
             // 显示交互提示 - 使用F键交互
-            if (Keyboard.current.fKey.wasPressedThisFrame)
+            if (IsFKeyPressed())
             {
                 InteractWithTower();
             }

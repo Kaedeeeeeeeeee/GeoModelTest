@@ -77,24 +77,36 @@ public class GameSceneManager : MonoBehaviour
     /// </summary>
     public void ShowSceneSelectionUI()
     {
+        Debug.Log("[GameSceneManager] ShowSceneSelectionUI被调用");
+
         if (isSceneLoading)
         {
             Debug.LogWarning("正在加载场景，请稍后");
             return;
         }
-        
+
+        Debug.Log("[GameSceneManager] 开始创建场景选择UI");
         CreateSceneSelectionUI();
-        sceneSelectionUI.SetActive(true);
-        
-        // 暂停游戏时间，显示光标
-        Time.timeScale = 0f;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        
-        // 禁用玩家输入
-        SetPlayerInputEnabled(false);
-        
-        Debug.Log("显示场景选择UI");
+
+        if (sceneSelectionUI != null)
+        {
+            Debug.Log("[GameSceneManager] 激活场景选择UI");
+            sceneSelectionUI.SetActive(true);
+
+            // 暂停游戏时间，显示光标
+            Time.timeScale = 0f;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
+            // 禁用玩家输入
+            SetPlayerInputEnabled(false);
+
+            Debug.Log("[GameSceneManager] 场景选择UI显示完成");
+        }
+        else
+        {
+            Debug.LogError("[GameSceneManager] sceneSelectionUI为null！");
+        }
     }
     
     /// <summary>
@@ -123,17 +135,34 @@ public class GameSceneManager : MonoBehaviour
     /// </summary>
     void CreateSceneSelectionUI()
     {
-        if (sceneSelectionUI != null) return;
+        if (sceneSelectionUI != null)
+        {
+            Debug.Log("[GameSceneManager] 场景选择UI已存在，跳过创建");
+            return;
+        }
+
+        Debug.Log("[GameSceneManager] 开始创建新的场景选择UI");
         
         // 创建UI根对象
         GameObject uiRoot = new GameObject("SceneSelectionUI");
         Canvas canvas = uiRoot.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 1000;
-        
-        uiRoot.AddComponent<UnityEngine.UI.CanvasScaler>();
+        canvas.sortingOrder = 32767; // 最高排序优先级
+        canvas.overrideSorting = true;
+
+        var canvasScaler = uiRoot.AddComponent<UnityEngine.UI.CanvasScaler>();
+        canvasScaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        canvasScaler.referenceResolution = new Vector2(1920, 1080);
+        canvasScaler.screenMatchMode = UnityEngine.UI.CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        canvasScaler.matchWidthOrHeight = 0.5f;
+
         uiRoot.AddComponent<UnityEngine.UI.GraphicRaycaster>();
-        
+
+        Debug.Log($"[GameSceneManager] UI Canvas创建 - 排序层级: {canvas.sortingOrder}");
+
+        // 确保EventSystem存在
+        EnsureEventSystem();
+
         // 创建背景
         GameObject background = new GameObject("Background");
         background.transform.SetParent(uiRoot.transform);
@@ -145,7 +174,7 @@ public class GameSceneManager : MonoBehaviour
         bgRect.offsetMax = Vector2.zero;
         
         UnityEngine.UI.Image bgImage = background.AddComponent<UnityEngine.UI.Image>();
-        bgImage.color = new Color(0, 0, 0, 0.7f);
+        bgImage.color = new Color(0, 0, 0, 0.9f); // 更深的背景，更明显
         
         // 创建主面板
         GameObject panel = new GameObject("Panel");
@@ -158,7 +187,7 @@ public class GameSceneManager : MonoBehaviour
         panelRect.anchoredPosition = Vector2.zero;
         
         UnityEngine.UI.Image panelImage = panel.AddComponent<UnityEngine.UI.Image>();
-        panelImage.color = new Color(0.2f, 0.2f, 0.2f, 0.95f);
+        panelImage.color = new Color(0.15f, 0.15f, 0.15f, 1.0f); // 完全不透明的面板
         
         // 创建标题
         GameObject title = new GameObject("Title");
@@ -273,7 +302,10 @@ public class GameSceneManager : MonoBehaviour
         
         // 添加点击事件
         int sceneIndex = index;
-        buttonComponent.onClick.AddListener(() => SwitchToScene(availableScenes[sceneIndex].sceneName));
+        buttonComponent.onClick.AddListener(() => {
+            Debug.Log($"[GameSceneManager] 按钮被点击 - 场景: {availableScenes[sceneIndex].sceneName}");
+            SwitchToScene(availableScenes[sceneIndex].sceneName);
+        });
         
         return button;
     }
@@ -487,6 +519,25 @@ public class GameSceneManager : MonoBehaviour
     {
         string key = GetSceneLocalizationKey(sceneName);
         return LocalizationManager.Instance?.GetText(key) ?? sceneName;
+    }
+
+    /// <summary>
+    /// 确保EventSystem存在
+    /// </summary>
+    void EnsureEventSystem()
+    {
+        var existingEventSystem = FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>();
+        if (existingEventSystem == null)
+        {
+            GameObject eventSystemGO = new GameObject("EventSystem");
+            eventSystemGO.AddComponent<UnityEngine.EventSystems.EventSystem>();
+            eventSystemGO.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+            Debug.Log("[GameSceneManager] EventSystem已创建");
+        }
+        else
+        {
+            Debug.Log("[GameSceneManager] EventSystem已存在");
+        }
     }
 }
 
