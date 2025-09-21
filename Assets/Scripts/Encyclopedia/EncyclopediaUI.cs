@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using UnityEngine.InputSystem;
+using SampleCuttingSystem;
 
 namespace Encyclopedia
 {
@@ -39,7 +40,7 @@ namespace Encyclopedia
         [SerializeField] private Image detailIcon;
         [SerializeField] private Text detailDescription;
         [SerializeField] private Text detailProperties;
-        [SerializeField] private Simple3DViewer model3DViewer;
+        [SerializeField] private Sample3DModelViewer model3DViewer;
 
         [Header("设置")]
         [SerializeField] private Key toggleKey = Key.O;
@@ -63,6 +64,7 @@ namespace Encyclopedia
 
         private void Start()
         {
+
             // 修复Canvas层级问题
             FixCanvasLayer();
 
@@ -74,6 +76,12 @@ namespace Encyclopedia
             }
 
             InitializeUI();
+
+            // 监听语言变化事件
+            if (LocalizationManager.Instance != null)
+            {
+                LocalizationManager.Instance.OnLanguageChanged += OnLanguageChanged;
+            }
 
             // 强制关闭图鉴
             CloseEncyclopedia();
@@ -93,6 +101,13 @@ namespace Encyclopedia
         /// </summary>
         private void InitializeUI()
         {
+            // 调试：检查所有关键UI组件引用
+            Debug.Log($"[EncyclopediaUI] UI组件引用检查:");
+            Debug.Log($"[EncyclopediaUI] - encyclopediaPanel: {(encyclopediaPanel != null ? encyclopediaPanel.name : "null")}");
+            Debug.Log($"[EncyclopediaUI] - detailPanel: {(detailPanel != null ? detailPanel.name : "null")}");
+            Debug.Log($"[EncyclopediaUI] - layerTabContainer: {(layerTabContainer != null ? layerTabContainer.name : "null")}");
+            Debug.Log($"[EncyclopediaUI] - entryListContainer: {(entryListContainer != null ? entryListContainer.name : "null")}");
+
             // 设置关闭按钮
             if (closeButton != null)
             {
@@ -110,6 +125,9 @@ namespace Encyclopedia
             {
                 SetupLayerTabs();
                 UpdateStatistics();
+
+                // 立即更新地层标签的语言显示
+                UpdateLayerTabsLanguage();
             }
             else
             {
@@ -129,6 +147,9 @@ namespace Encyclopedia
             {
                 SetupLayerTabs();
                 UpdateStatistics();
+
+                // 立即更新地层标签的语言显示
+                UpdateLayerTabsLanguage();
             }
             else
             {
@@ -145,7 +166,12 @@ namespace Encyclopedia
             if (entryTypeFilter != null)
             {
                 entryTypeFilter.ClearOptions();
-                entryTypeFilter.AddOptions(new List<string> { "全部", "矿物", "化石" });
+                var typeOptions = new List<string> {
+                    LocalizationManager.Instance.GetText("encyclopedia.ui.filter.all"),
+                    LocalizationManager.Instance.GetText("encyclopedia.ui.filter.mineral"),
+                    LocalizationManager.Instance.GetText("encyclopedia.ui.filter.fossil")
+                };
+                entryTypeFilter.AddOptions(typeOptions);
                 entryTypeFilter.onValueChanged.AddListener(OnEntryTypeFilterChanged);
                 // 增大Dropdown字体
                 var entryTypeText = entryTypeFilter.GetComponentInChildren<Text>();
@@ -156,7 +182,13 @@ namespace Encyclopedia
             if (rarityFilter != null)
             {
                 rarityFilter.ClearOptions();
-                rarityFilter.AddOptions(new List<string> { "全部", "常见", "少见", "稀有" });
+                var rarityOptions = new List<string> {
+                    LocalizationManager.Instance.GetText("encyclopedia.ui.filter.all"),
+                    LocalizationManager.Instance.GetText("encyclopedia.ui.rarity.common"),
+                    LocalizationManager.Instance.GetText("encyclopedia.ui.rarity.uncommon"),
+                    LocalizationManager.Instance.GetText("encyclopedia.ui.rarity.rare")
+                };
+                rarityFilter.AddOptions(rarityOptions);
                 rarityFilter.onValueChanged.AddListener(OnRarityFilterChanged);
                 // 增大Dropdown字体
                 var rarityText = rarityFilter.GetComponentInChildren<Text>();
@@ -215,15 +247,38 @@ namespace Encyclopedia
                     var button = child.GetComponent<Button>();
                     var text = child.GetComponentInChildren<Text>();
 
+                    // 检查是否为标题（"地层名称"）
+                    if (button == null && text != null && text.text == "地层名称")
+                    {
+                        // 更新标题为本地化文本
+                        var localizedText = text.GetComponent<LocalizedText>();
+                        if (localizedText == null)
+                        {
+                            localizedText = text.gameObject.AddComponent<LocalizedText>();
+                            localizedText.TextKey = "encyclopedia.ui.layer_section_title";
+                            Debug.Log("[EncyclopediaUI] 为现有标题添加本地化组件");
+                        }
+                        continue;
+                    }
+
                     if (button != null && text != null && text.text != "地层名称")
                     {
                         layerTabs.Add(button);
                         Debug.Log($"[EncyclopediaUI] 收集到现有地层标签: {text.text}");
 
-                        // 重新绑定点击事件
-                        string layerName = text.text;
+                        // 当前显示的是中文名称，需要映射到EncyclopediaData中的对应名称
+                        string displayedName = text.text;
+                        string dataLayerName = FindDataLayerName(displayedName, i);
+
+                        // 更新为本地化显示文本
+                        string localizedLayerName = GetLocalizedLayerName(dataLayerName);
+                        text.text = localizedLayerName;
+
+                        Debug.Log($"[EncyclopediaUI] 更新地层标签: 显示[{displayedName}] -> 数据[{dataLayerName}] -> 本地化[{localizedLayerName}]");
+
+                        // 重新绑定点击事件，使用EncyclopediaData中的名称作为标识符
                         button.onClick.RemoveAllListeners();
-                        button.onClick.AddListener(() => OnLayerTabClicked(layerName));
+                        button.onClick.AddListener(() => OnLayerTabClicked(dataLayerName));
                     }
                 }
 
@@ -255,7 +310,9 @@ namespace Encyclopedia
             {
                 var tabButton = Instantiate(layerTabPrefab, layerTabContainer);
                 var buttonText = tabButton.GetComponentInChildren<Text>();
-                buttonText.text = layerName;
+                // 使用本地化的地层名称
+                string localizedLayerName = GetLocalizedLayerName(layerName);
+                buttonText.text = localizedLayerName;
                 buttonText.fontSize = 28; // 进一步增大地层按钮字体以适配移动端
 
                 // 增加按钮高度以适配更大的字体
@@ -390,6 +447,9 @@ namespace Encyclopedia
 
             Debug.Log($"[EncyclopediaUI] 完成创建 {entryItems.Count} 个条目UI");
 
+            // 检查Canvas和GraphicRaycaster设置
+            CheckCanvasRaycastSettings();
+
             // 重置滚动位置
             if (entryScrollRect != null)
             {
@@ -466,92 +526,563 @@ namespace Encyclopedia
         /// </summary>
         private void CreateEntryItem(EncyclopediaEntry entry)
         {
-            Debug.Log($"[EncyclopediaUI] 开始创建条目: {entry.GetFormattedDisplayName()}");
-
-            if (entryItemPrefab == null)
+            if (entryItemPrefab == null || entryListContainer == null)
             {
-                Debug.LogError("[EncyclopediaUI] entryItemPrefab为null!");
+                Debug.LogError("[EncyclopediaUI] 必要组件缺失，无法创建条目");
                 return;
             }
 
-            if (entryListContainer == null)
-            {
-                Debug.LogError("[EncyclopediaUI] entryListContainer为null!");
-                return;
-            }
-
+            // 实例化条目预制体
             var itemGO = Instantiate(entryItemPrefab, entryListContainer);
-            if (itemGO == null)
+            entryItems.Add(itemGO);
+
+            // 确保有Button组件
+            var button = itemGO.GetComponent<Button>();
+            if (button == null)
             {
-                Debug.LogError("[EncyclopediaUI] Instantiate失败!");
-                return;
+                button = itemGO.AddComponent<Button>();
+                Debug.Log($"[EncyclopediaUI] 为条目添加Button组件: {entry.GetFormattedDisplayName()}");
             }
 
-            entryItems.Add(itemGO);
-            Debug.Log($"[EncyclopediaUI] 成功实例化GameObject: {itemGO.name}，父级: {itemGO.transform.parent?.name}");
+            // 确保有可交互的背景
+            var image = itemGO.GetComponent<Image>();
+            if (image == null)
+            {
+                image = itemGO.AddComponent<Image>();
+                image.color = new Color(0.15f, 0.2f, 0.3f, 0.8f);
+            }
 
             // 设置条目信息
+            SetupEntryText(itemGO, entry);
+            SetupEntryVisuals(itemGO, entry);
+
+            // 绑定点击事件（最重要的部分）
+            SetupEntryClickEvent(button, entry);
+
+            Debug.Log($"[EncyclopediaUI] 成功创建条目: {entry.GetFormattedDisplayName()}");
+        }
+
+        /// <summary>
+        /// 设置条目文本信息
+        /// </summary>
+        private void SetupEntryText(GameObject itemGO, EncyclopediaEntry entry)
+        {
             var nameText = itemGO.transform.Find("NameText")?.GetComponent<Text>();
-            var rarityText = itemGO.transform.Find("RarityText")?.GetComponent<Text>();
-            var statusImage = itemGO.transform.Find("StatusImage")?.GetComponent<Image>();
-            var iconImage = itemGO.transform.Find("IconImage")?.GetComponent<Image>();
-            var button = itemGO.GetComponent<Button>();
-
-            Debug.Log($"[EncyclopediaUI] 组件查找结果: nameText={nameText != null}, button={button != null}, iconImage={iconImage != null}");
-
             if (nameText != null)
             {
-                nameText.text = entry.GetDisplayNameForUI();
+                string localizedName = GetLocalizedEntryName(entry);
+                nameText.text = localizedName;
                 nameText.color = entry.isDiscovered ? Color.white : Color.gray;
-                nameText.fontSize = 24; // 增大字体以适配移动端
-                Debug.Log($"[EncyclopediaUI] 设置名称文本: {nameText.text}");
-                Debug.Log($"[EncyclopediaUI] 条目发现状态: {entry.isDiscovered} ({entry.GetFormattedDisplayName()})");
-                Debug.Log($"[EncyclopediaUI] 条目地层验证: {entry.layerName} (应该是: {currentLayerName})");
-
-                // 验证条目地层是否正确
-                if (entry.layerName != currentLayerName)
-                {
-                    Debug.LogError($"[EncyclopediaUI] ❌ 条目地层不匹配! 期望: {currentLayerName}, 实际: {entry.layerName}");
-                }
-            }
-            else
-            {
-                Debug.LogWarning("[EncyclopediaUI] 未找到NameText组件");
+                nameText.fontSize = 24;
             }
 
+            var rarityText = itemGO.transform.Find("RarityText")?.GetComponent<Text>();
             if (rarityText != null)
             {
                 rarityText.text = entry.GetRarityText();
                 rarityText.color = entry.GetRarityColor();
-                rarityText.fontSize = 18; // 增大字体以适配移动端
+                rarityText.fontSize = 18;
             }
+        }
 
+        /// <summary>
+        /// 设置条目视觉效果
+        /// </summary>
+        private void SetupEntryVisuals(GameObject itemGO, EncyclopediaEntry entry)
+        {
+            var statusImage = itemGO.transform.Find("StatusImage")?.GetComponent<Image>();
             if (statusImage != null)
             {
                 statusImage.color = entry.isDiscovered ? Color.green : Color.red;
             }
 
-            // 隐藏白色图标方块
+            // 隐藏图标（如果存在）
+            var iconImage = itemGO.transform.Find("IconImage")?.GetComponent<Image>();
             if (iconImage != null)
             {
                 iconImage.gameObject.SetActive(false);
-                Debug.Log($"[EncyclopediaUI] 隐藏条目图标: {entry.GetFormattedDisplayName()}");
-            }
-
-            if (button != null)
-            {
-                button.onClick.AddListener(() => OnEntryItemClicked(entry));
             }
         }
 
         /// <summary>
-        /// 条目项点击事件
+        /// 设置条目点击事件（核心功能）
         /// </summary>
-        private void OnEntryItemClicked(EncyclopediaEntry entry)
+        private void SetupEntryClickEvent(Button button, EncyclopediaEntry entry)
         {
-            Debug.Log($"[EncyclopediaUI] 条目被点击: {entry?.GetFormattedDisplayName() ?? "null"}");
+            if (button == null) return;
+
+            // 清除所有现有监听器
+            button.onClick.RemoveAllListeners();
+
+            // 确保按钮可交互
+            button.interactable = true;
+
+            // 添加点击事件
+            button.onClick.AddListener(() => {
+                Debug.Log($"[EncyclopediaUI] 条目被点击: {entry.GetFormattedDisplayName()}");
+                OpenEntryDetails(entry);
+            });
+
+            Debug.Log($"[EncyclopediaUI] ✓ 已为条目绑定点击事件: {entry.GetFormattedDisplayName()}");
+        }
+
+        /// <summary>
+        /// 打开条目详情（新的核心方法）
+        /// </summary>
+        private void OpenEntryDetails(EncyclopediaEntry entry)
+        {
+            if (entry == null)
+            {
+                Debug.LogError("[EncyclopediaUI] 条目为null，无法显示详情");
+                return;
+            }
+
+            // 确保详情面板存在
+            if (!EnsureDetailPanelExists())
+            {
+                Debug.LogError("[EncyclopediaUI] 无法创建或找到详情面板");
+                return;
+            }
+
             selectedEntry = entry;
-            ShowEntryDetails(entry);
+            currentFilteredEntries = GetFilteredEntries();
+            currentEntryIndex = currentFilteredEntries.FindIndex(e => e.id == entry.id);
+
+            Debug.Log($"[EncyclopediaUI] 打开详情: {entry.GetFormattedDisplayName()}");
+
+            // 在显示前确保面板是全屏的（避免闪烁）
+            EnsureDetailPanelFullscreen();
+
+            // 显示详情面板
+            detailPanel.SetActive(true);
+
+            // 设置详情内容
+            SetDetailContent(entry);
+
+            Debug.Log("[EncyclopediaUI] 详情面板已打开");
+        }
+
+        /// <summary>
+        /// 确保详情面板存在并正确配置
+        /// </summary>
+        private bool EnsureDetailPanelExists()
+        {
+            if (detailPanel != null)
+            {
+                // 确保现有面板是全屏的
+                EnsureDetailPanelFullscreen();
+                return true;
+            }
+
+            // 尝试在场景中查找DetailPanel
+            var foundPanel = GameObject.Find("DetailPanel");
+            if (foundPanel != null)
+            {
+                detailPanel = foundPanel;
+                Debug.Log("[EncyclopediaUI] 在场景中找到DetailPanel，立即设置为全屏");
+
+                // 立即设置为全屏，避免闪烁
+                EnsureDetailPanelFullscreen();
+
+                // 确保有3D查看器
+                Ensure3DViewerExists();
+
+                return true;
+            }
+
+            // 如果没找到，创建一个简单的详情面板
+            return CreateSimpleDetailPanel();
+        }
+
+        /// <summary>
+        /// 确保详情面板为全屏显示
+        /// </summary>
+        private void EnsureDetailPanelFullscreen()
+        {
+            if (detailPanel == null) return;
+
+            var rectTransform = detailPanel.GetComponent<RectTransform>();
+            if (rectTransform != null)
+            {
+                Debug.Log($"[EncyclopediaUI] 修复详情面板尺寸: {rectTransform.anchorMin}-{rectTransform.anchorMax} → 全屏");
+
+                // 立即设置为全屏
+                rectTransform.anchorMin = Vector2.zero;
+                rectTransform.anchorMax = Vector2.one;
+                rectTransform.offsetMin = Vector2.zero;
+                rectTransform.offsetMax = Vector2.zero;
+            }
+
+            // 修复背景为不透明
+            var background = detailPanel.GetComponent<Image>();
+            if (background != null)
+            {
+                var oldColor = background.color;
+                background.color = new Color(oldColor.r, oldColor.g, oldColor.b, 1.0f);
+            }
+        }
+
+        /// <summary>
+        /// 创建简单的详情面板
+        /// </summary>
+        private bool CreateSimpleDetailPanel()
+        {
+            var canvas = GetComponentInParent<Canvas>();
+            if (canvas == null)
+            {
+                Debug.LogError("[EncyclopediaUI] 找不到Canvas，无法创建详情面板");
+                return false;
+            }
+
+            // 创建详情面板
+            detailPanel = new GameObject("DetailPanel");
+            detailPanel.transform.SetParent(canvas.transform, false);
+
+            var rect = detailPanel.AddComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+
+            var background = detailPanel.AddComponent<Image>();
+            background.color = new Color(0.05f, 0.1f, 0.15f, 1.0f);
+
+            // 创建标题
+            CreateDetailTitle();
+
+            // 创建描述
+            CreateDetailDescription();
+
+            // 创建属性
+            CreateDetailProperties();
+
+            // 创建3D模型查看器
+            Create3DModelViewer();
+
+            // 创建关闭按钮
+            CreateDetailCloseButton();
+
+            detailPanel.SetActive(false);
+
+            Debug.Log("[EncyclopediaUI] 创建了简单的详情面板");
+            return true;
+        }
+
+        /// <summary>
+        /// 创建详情面板标题
+        /// </summary>
+        private void CreateDetailTitle()
+        {
+            var titleGO = new GameObject("DetailTitle");
+            titleGO.transform.SetParent(detailPanel.transform, false);
+
+            var rect = titleGO.AddComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0, 0.9f);
+            rect.anchorMax = new Vector2(1, 1);
+            rect.offsetMin = new Vector2(20, 0);
+            rect.offsetMax = new Vector2(-20, -10);
+
+            detailTitle = titleGO.AddComponent<Text>();
+            detailTitle.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            detailTitle.fontSize = 72;  // 从36增加到72，放大一倍
+            detailTitle.color = Color.white;
+            detailTitle.alignment = TextAnchor.MiddleLeft;
+            detailTitle.fontStyle = FontStyle.Bold;
+        }
+
+        /// <summary>
+        /// 创建详情面板描述
+        /// </summary>
+        private void CreateDetailDescription()
+        {
+            var descGO = new GameObject("DetailDescription");
+            descGO.transform.SetParent(detailPanel.transform, false);
+
+            var rect = descGO.AddComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0, 0.6f);
+            rect.anchorMax = new Vector2(1, 0.85f);
+            rect.offsetMin = new Vector2(20, 0);
+            rect.offsetMax = new Vector2(-20, 0);
+
+            detailDescription = descGO.AddComponent<Text>();
+            detailDescription.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            detailDescription.fontSize = 48;  // 从24增加到48，放大一倍
+            detailDescription.color = Color.white;
+            detailDescription.alignment = TextAnchor.UpperLeft;
+        }
+
+        /// <summary>
+        /// 创建详情面板属性
+        /// </summary>
+        private void CreateDetailProperties()
+        {
+            var propsGO = new GameObject("DetailProperties");
+            propsGO.transform.SetParent(detailPanel.transform, false);
+
+            var rect = propsGO.AddComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0, 0.2f);
+            rect.anchorMax = new Vector2(1, 0.55f);
+            rect.offsetMin = new Vector2(20, 0);
+            rect.offsetMax = new Vector2(-20, 0);
+
+            detailProperties = propsGO.AddComponent<Text>();
+            detailProperties.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            detailProperties.fontSize = 44;  // 从22增加到44，放大一倍
+            detailProperties.color = Color.white;
+            detailProperties.alignment = TextAnchor.UpperLeft;
+        }
+
+        /// <summary>
+        /// 创建详情面板关闭按钮
+        /// </summary>
+        private void CreateDetailCloseButton()
+        {
+            var closeGO = new GameObject("DetailCloseButton");
+            closeGO.transform.SetParent(detailPanel.transform, false);
+
+            var rect = closeGO.AddComponent<RectTransform>();
+            rect.anchorMin = new Vector2(1, 1);
+            rect.anchorMax = new Vector2(1, 1);
+            rect.anchoredPosition = new Vector2(-75, -75);  // 更远离边角
+            rect.sizeDelta = new Vector2(120, 120);  // 更大的按钮
+
+            var background = closeGO.AddComponent<Image>();
+            background.color = new Color(0.8f, 0.2f, 0.2f, 0.8f);
+
+            var button = closeGO.AddComponent<Button>();
+            button.onClick.AddListener(() => {
+                Debug.Log("[EncyclopediaUI] 关闭按钮被点击");
+                CloseDetailPanel();
+            });
+
+            // 添加X文字
+            var textGO = new GameObject("Text");
+            textGO.transform.SetParent(closeGO.transform, false);
+
+            var textRect = textGO.AddComponent<RectTransform>();
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = Vector2.zero;
+            textRect.offsetMax = Vector2.zero;
+
+            var text = textGO.AddComponent<Text>();
+            text.text = "×";
+            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.fontSize = 72;  // 更大的字体
+            text.color = Color.white;
+            text.alignment = TextAnchor.MiddleCenter;
+            text.fontStyle = FontStyle.Bold;
+        }
+
+        /// <summary>
+        /// 确保3D查看器存在
+        /// </summary>
+        private void Ensure3DViewerExists()
+        {
+            Debug.Log($"[EncyclopediaUI] Ensure3DViewerExists开始 - detailPanel: {detailPanel != null}");
+
+            if (detailPanel == null)
+            {
+                Debug.LogError("[EncyclopediaUI] detailPanel为空，无法创建3D查看器");
+                return;
+            }
+
+            // 检查是否已经有model3DViewer引用
+            if (model3DViewer == null)
+            {
+                Debug.Log("[EncyclopediaUI] model3DViewer为空，尝试查找现有组件");
+                // 尝试在详情面板中查找现有的Sample3DModelViewer
+                model3DViewer = detailPanel.GetComponentInChildren<Sample3DModelViewer>();
+                Debug.Log($"[EncyclopediaUI] 查找结果: {model3DViewer != null}");
+            }
+
+            // 如果还是没有，创建一个新的
+            if (model3DViewer == null)
+            {
+                Debug.Log("[EncyclopediaUI] 详情面板没有3D查看器，创建新的Sample3DModelViewer");
+                Create3DModelViewer();
+                Debug.Log($"[EncyclopediaUI] 创建完成后 model3DViewer: {model3DViewer != null}");
+            }
+            else
+            {
+                Debug.Log("[EncyclopediaUI] 找到现有的Sample3DModelViewer");
+            }
+        }
+
+        /// <summary>
+        /// 创建3D模型查看器
+        /// </summary>
+        private void Create3DModelViewer()
+        {
+            Debug.Log("[EncyclopediaUI] 创建Sample3DModelViewer");
+
+            // 创建3D查看器容器
+            var viewerGO = new GameObject("Encyclopedia3DModelViewer");
+            viewerGO.transform.SetParent(detailPanel.transform, false);
+
+            var rect = viewerGO.AddComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.55f, 0.15f);  // 增大查看器区域
+            rect.anchorMax = new Vector2(0.95f, 0.9f);
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+
+            // 添加背景
+            var background = viewerGO.AddComponent<Image>();
+            background.color = new Color(0.1f, 0.1f, 0.15f, 0.9f);  // 深色背景
+
+            // 创建RawImage用于显示3D模型
+            var rawImageGO = new GameObject("ModelDisplayImage");
+            rawImageGO.transform.SetParent(viewerGO.transform, false);
+
+            var rawImageRect = rawImageGO.AddComponent<RectTransform>();
+            rawImageRect.anchorMin = Vector2.zero;
+            rawImageRect.anchorMax = Vector2.one;
+            rawImageRect.offsetMin = Vector2.zero;
+            rawImageRect.offsetMax = Vector2.zero;
+
+            var rawImage = rawImageGO.AddComponent<RawImage>();
+
+            // 添加经过验证的Sample3DModelViewer组件
+            model3DViewer = viewerGO.AddComponent<Sample3DModelViewer>();
+
+            // 直接设置RawImage引用（Sample3DModelViewer使用public字段）
+            model3DViewer.rawImage = rawImage;
+
+            // 调整相机距离，让模型显示得更远一些
+            float oldDistance = model3DViewer.cameraDistance;
+            model3DViewer.cameraDistance = 3.0f;  // 最终确定的相机距离
+            Debug.Log($"[3D模型距离] 相机距离调整: {oldDistance} -> {model3DViewer.cameraDistance}");
+
+            // 设置鼠标交互事件监听器
+            var eventTrigger = rawImageGO.AddComponent<UnityEngine.EventSystems.EventTrigger>();
+
+            // 鼠标进入事件
+            var entryEvent = new UnityEngine.EventSystems.EventTrigger.Entry();
+            entryEvent.eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter;
+            entryEvent.callback.AddListener((data) => { model3DViewer.SetMouseOverArea(true); });
+            eventTrigger.triggers.Add(entryEvent);
+
+            // 鼠标离开事件
+            var exitEvent = new UnityEngine.EventSystems.EventTrigger.Entry();
+            exitEvent.eventID = UnityEngine.EventSystems.EventTriggerType.PointerExit;
+            exitEvent.callback.AddListener((data) => { model3DViewer.SetMouseOverArea(false); });
+            eventTrigger.triggers.Add(exitEvent);
+
+            // 创建关闭按钮
+            CreateDetailPanelCloseButton(viewerGO);
+
+            Debug.Log("[EncyclopediaUI] Sample3DModelViewer创建完成，包含交互支持和关闭按钮");
+        }
+
+        /// <summary>
+        /// 创建详情面板关闭按钮
+        /// </summary>
+        private void CreateDetailPanelCloseButton(GameObject parent)
+        {
+            GameObject closeButtonGO = new GameObject("DetailCloseButton");
+            // 将按钮设置为detailPanel的子对象，而不是viewer的子对象
+            closeButtonGO.transform.SetParent(detailPanel.transform, false);
+
+            RectTransform buttonRect = closeButtonGO.AddComponent<RectTransform>();
+            buttonRect.anchorMin = new Vector2(1, 1);
+            buttonRect.anchorMax = new Vector2(1, 1);
+            buttonRect.pivot = new Vector2(1, 1);
+            buttonRect.anchoredPosition = new Vector2(-20, -20);  // 更靠近右上角
+            buttonRect.sizeDelta = new Vector2(50, 50);  // 稍微大一点，更容易点击
+
+            // 按钮背景
+            Image buttonBg = closeButtonGO.AddComponent<Image>();
+            buttonBg.color = new Color(0.8f, 0.2f, 0.2f, 0.9f);  // 红色背景
+
+            // 按钮组件
+            Button button = closeButtonGO.AddComponent<Button>();
+            button.targetGraphic = buttonBg;
+            button.onClick.AddListener(CloseDetailPanel);
+
+            // 添加悬停效果
+            var colors = button.colors;
+            colors.highlightedColor = new Color(1f, 0.3f, 0.3f, 1f);
+            colors.pressedColor = new Color(0.6f, 0.1f, 0.1f, 1f);
+            button.colors = colors;
+
+            // 创建X符号文字
+            GameObject textGO = new GameObject("CloseText");
+            textGO.transform.SetParent(closeButtonGO.transform, false);
+
+            RectTransform textRect = textGO.AddComponent<RectTransform>();
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = Vector2.zero;
+            textRect.offsetMax = Vector2.zero;
+
+            Text text = textGO.AddComponent<Text>();
+            text.text = "×";
+            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.fontSize = 24;
+            text.color = Color.white;
+            text.alignment = TextAnchor.MiddleCenter;
+            text.fontStyle = FontStyle.Bold;
+
+            // 确保关闭按钮显示在最顶层
+            closeButtonGO.transform.SetAsLastSibling();
+
+            Debug.Log("[EncyclopediaUI] 详情面板关闭按钮创建完成，位置更靠近右上角");
+        }
+
+        /// <summary>
+        /// 设置详情内容
+        /// </summary>
+        private void SetDetailContent(EncyclopediaEntry entry)
+        {
+            if (detailTitle != null)
+            {
+                detailTitle.text = GetLocalizedEntryName(entry);
+                detailTitle.fontSize = 36;  // 适中的标题字体大小
+            }
+
+            if (detailDescription != null)
+            {
+                // 尝试获取本地化描述
+                string localizedDescription = GetLocalizedDescription(entry);
+                detailDescription.text = !string.IsNullOrEmpty(localizedDescription) ?
+                    localizedDescription : LocalizationManager.Instance.GetText("encyclopedia.detail.no_description");
+                detailDescription.fontSize = 24;  // 适中的描述字体大小
+            }
+
+            if (detailProperties != null)
+            {
+                detailProperties.text = GeneratePropertiesText(entry);
+                detailProperties.fontSize = 22;  // 适中的属性字体大小
+            }
+
+            // 确保3D查看器存在
+            Ensure3DViewerExists();
+
+            // 显示3D模型
+            Debug.Log($"[EncyclopediaUI] 3D模型检查 - model3DViewer: {model3DViewer != null}, isDiscovered: {entry.isDiscovered}, model3D: {entry.model3D != null}");
+            if (model3DViewer != null && entry.isDiscovered && entry.model3D != null)
+            {
+                Debug.Log($"[EncyclopediaUI] 显示3D模型: {entry.model3D.name}");
+                Debug.Log($"[3D模型距离] 当前相机距离: {model3DViewer.cameraDistance}");
+                model3DViewer.ShowSampleModel(entry.model3D);
+                Debug.Log($"[3D模型距离] 模型显示后相机距离: {model3DViewer.cameraDistance}");
+
+                // 修复首次显示白屏问题：延迟强制渲染确保内容正确显示
+                StartCoroutine(ForceRenderAfterDelay(model3DViewer));
+            }
+            else if (model3DViewer != null)
+            {
+                Debug.Log("[EncyclopediaUI] 清除3D模型");
+                model3DViewer.ClearCurrentModel();
+            }
+
+            // 隐藏图标（我们没有为矿物和化石准备图标）
+            if (detailIcon != null)
+            {
+                detailIcon.gameObject.SetActive(false);
+            }
+
+            Debug.Log($"[EncyclopediaUI] 详情内容已设置: {entry.GetFormattedDisplayName()}");
         }
 
         /// <summary>
@@ -572,10 +1103,15 @@ namespace Encyclopedia
         private void ShowEntryDetails(EncyclopediaEntry entry)
         {
             Debug.Log($"[EncyclopediaUI] ShowEntryDetails被调用: {entry?.GetFormattedDisplayName() ?? "null"}");
+            Debug.Log($"[EncyclopediaUI] 所有详情面板组件状态检查:");
+            Debug.Log($"[EncyclopediaUI] - detailPanel: {(detailPanel != null ? detailPanel.name : "null")}");
+            Debug.Log($"[EncyclopediaUI] - detailTitle: {(detailTitle != null ? detailTitle.name : "null")}");
+            Debug.Log($"[EncyclopediaUI] - detailDescription: {(detailDescription != null ? detailDescription.name : "null")}");
+            Debug.Log($"[EncyclopediaUI] - detailProperties: {(detailProperties != null ? detailProperties.name : "null")}");
 
             if (detailPanel == null)
             {
-                Debug.LogError("[EncyclopediaUI] detailPanel为null!");
+                Debug.LogError("[EncyclopediaUI] detailPanel为null! 这表明Inspector中的引用丢失了!");
                 return;
             }
 
@@ -610,15 +1146,15 @@ namespace Encyclopedia
             // 修复字体大小
             if (detailTitle != null)
             {
-                detailTitle.fontSize = 36;
+                detailTitle.fontSize = 72;  // 从36增加到72，放大一倍
             }
             if (detailDescription != null)
             {
-                detailDescription.fontSize = 24;
+                detailDescription.fontSize = 48;  // 从24增加到48，放大一倍
             }
             if (detailProperties != null)
             {
-                detailProperties.fontSize = 22;
+                detailProperties.fontSize = 44;  // 从22增加到44，放大一倍
             }
             Debug.Log("[EncyclopediaUI] 字体大小已调整");
 
@@ -628,7 +1164,7 @@ namespace Encyclopedia
             // 设置标题
             if (detailTitle != null)
             {
-                detailTitle.text = entry.GetDisplayNameForUI();
+                detailTitle.text = GetLocalizedEntryName(entry);
             }
 
             // 隐藏图标（我们没有为矿物和化石准备图标）
@@ -650,13 +1186,21 @@ namespace Encyclopedia
             }
 
             // 显示3D模型
+            Debug.Log($"[EncyclopediaUI] 3D模型检查 - model3DViewer: {model3DViewer != null}, isDiscovered: {entry.isDiscovered}, model3D: {entry.model3D != null}");
             if (model3DViewer != null && entry.isDiscovered && entry.model3D != null)
             {
-                model3DViewer.ShowModel(entry.model3D);
+                Debug.Log($"[EncyclopediaUI] 显示3D模型: {entry.model3D.name}");
+                Debug.Log($"[3D模型距离] 当前相机距离: {model3DViewer.cameraDistance}");
+                model3DViewer.ShowSampleModel(entry.model3D);
+                Debug.Log($"[3D模型距离] 模型显示后相机距离: {model3DViewer.cameraDistance}");
+
+                // 修复首次显示白屏问题：延迟强制渲染确保内容正确显示
+                StartCoroutine(ForceRenderAfterDelay(model3DViewer));
             }
             else if (model3DViewer != null)
             {
-                model3DViewer.ClearModel();
+                Debug.Log("[EncyclopediaUI] 清除3D模型");
+                model3DViewer.ClearCurrentModel();
             }
 
             // 添加翻页按钮（如果不存在）
@@ -670,36 +1214,36 @@ namespace Encyclopedia
         {
             if (!entry.isDiscovered)
             {
-                return "发现后显示详细属性";
+                return LocalizationManager.Instance.GetText("encyclopedia.detail.undiscovered");
             }
 
             var properties = new List<string>();
-            
-            properties.Add($"类型: {entry.GetEntryTypeText()}");
-            properties.Add($"地层: {entry.layerName}");
-            
+
+            properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.type")}: {entry.GetEntryTypeText()}");
+            properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.layer")}: {GetLocalizedLayerName(entry.layerName)}");
+
             if (entry.entryType == EntryType.Mineral)
             {
-                properties.Add($"岩石: {entry.rockName}");
-                properties.Add($"含量: {entry.percentage:P1}");
-                
+                properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.rock")}: {GetLocalizedRockName(entry.rockName)}");
+                properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.content")}: {entry.percentage:P1}");
+
                 if (!string.IsNullOrEmpty(entry.mohsHardness))
-                    properties.Add($"莫氏硬度: {entry.mohsHardness}");
+                    properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.mohs_hardness")}: {entry.mohsHardness}");
                 if (!string.IsNullOrEmpty(entry.density))
-                    properties.Add($"密度: {entry.density}");
+                    properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.density")}: {entry.density}");
                 if (!string.IsNullOrEmpty(entry.magnetism))
-                    properties.Add($"磁性: {entry.magnetism}");
+                    properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.magnetism")}: {GetLocalizedPropertyValue(entry.magnetism)}");
             }
             else
             {
-                properties.Add($"稀有度: {entry.GetRarityText()}");
-                properties.Add($"发现概率: {entry.discoveryProbability:P1}");
+                properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.rarity")}: {entry.GetRarityText()}");
+                properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.discovery_probability")}: {entry.discoveryProbability:P1}");
             }
 
             if (entry.discoveryCount > 0)
             {
-                properties.Add($"发现次数: {entry.discoveryCount}");
-                properties.Add($"首次发现: {entry.firstDiscoveredTime:yyyy-MM-dd}");
+                properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.discovery_count")}: {entry.discoveryCount}");
+                properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.first_discovered")}: {entry.firstDiscoveredTime:yyyy-MM-dd}");
             }
 
             return string.Join("\n", properties);
@@ -760,9 +1304,15 @@ namespace Encyclopedia
 
             var stats = CollectionManager.Instance.CurrentStats;
 
-            statisticsText.text = $"收集进度: {stats.discoveredEntries}/{stats.totalEntries} ({stats.overallProgress:P1})\n" +
-                                 $"矿物: {stats.discoveredMinerals}/{stats.totalMinerals} ({stats.mineralProgress:P1})\n" +
-                                 $"化石: {stats.discoveredFossils}/{stats.totalFossils} ({stats.fossilProgress:P1})";
+            // 使用本地化文本
+            string progressText = LocalizationManager.Instance.GetText("encyclopedia.ui.collection_progress",
+                stats.discoveredEntries.ToString(), stats.totalEntries.ToString(), stats.overallProgress.ToString("P1"));
+            string mineralsText = LocalizationManager.Instance.GetText("encyclopedia.ui.minerals_progress",
+                stats.discoveredMinerals.ToString(), stats.totalMinerals.ToString(), stats.mineralProgress.ToString("P1"));
+            string fossilsText = LocalizationManager.Instance.GetText("encyclopedia.ui.fossils_progress",
+                stats.discoveredFossils.ToString(), stats.totalFossils.ToString(), stats.fossilProgress.ToString("P1"));
+
+            statisticsText.text = $"{progressText}\n{mineralsText}\n{fossilsText}";
             statisticsText.fontSize = 20; // 增大字体以适配移动端
         }
 
@@ -846,6 +1396,451 @@ namespace Encyclopedia
         public bool IsOpen()
         {
             return isOpen;
+        }
+
+        /// <summary>
+        /// 获取本地化的地层名称
+        /// </summary>
+        private string GetLocalizedLayerName(string layerName)
+        {
+            if (string.IsNullOrEmpty(layerName) || LocalizationManager.Instance == null)
+                return layerName;
+
+            // 日文地层名称到英文键值的映射
+            var layerMappings = new Dictionary<string, string>
+            {
+                {"青葉山層", "encyclopedia.layer.aoba_mountain"},
+                {"大年寺層", "encyclopedia.layer.dainenji"},
+                {"向山層", "encyclopedia.layer.mukoyama"},
+                {"広瀬川凝灰岩部層", "encyclopedia.layer.hirose_river_tuff"},
+                {"竜ノ口層", "encyclopedia.layer.ryunokuchi"},
+                {"亀岡層", "encyclopedia.layer.kameoka"}
+            };
+
+            // 尝试直接映射
+            if (layerMappings.TryGetValue(layerName, out string key))
+            {
+                string localizedName = LocalizationManager.Instance.GetText(key);
+                return localizedName == key ? layerName : localizedName;
+            }
+
+            // 如果没有映射，返回原始名称
+            return layerName;
+        }
+
+        /// <summary>
+        /// 获取本地化的岩石名称
+        /// </summary>
+        private string GetLocalizedRockName(string rockName)
+        {
+            if (string.IsNullOrEmpty(rockName) || LocalizationManager.Instance == null)
+                return rockName;
+
+            // 中文岩石名称到英文键值的映射
+            var rockMappings = new Dictionary<string, string>
+            {
+                {"砾岩", "rock.conglomerate"},
+                {"火山灰", "rock.volcanic_ash"},
+                {"粉砂岩/砂岩", "rock.siltstone_sandstone"},
+                {"砂岩/粉砂岩", "rock.sandstone_siltstone"},
+                {"英安岩质熔结凝灰岩", "rock.dacitic_welded_tuff"},
+                {"粉砂岩/细粒砂岩", "rock.siltstone_fine_sandstone"},
+                {"凝灰岩", "rock.tuff"},
+                {"凝灰质砂岩", "rock.tuffaceous_sandstone"},
+                {"粉砂岩", "rock.siltstone"}
+            };
+
+            // 首先尝试直接映射
+            if (rockMappings.TryGetValue(rockName, out string key))
+            {
+                string localizedName = LocalizationManager.Instance.GetText(key);
+                return localizedName == key ? rockName : localizedName;
+            }
+
+            // 如果没有直接映射，尝试构建键值
+            string generatedKey = $"rock.{rockName.ToLower().Replace(" ", "_").Replace("/", "_")}";
+            string generatedName = LocalizationManager.Instance.GetText(generatedKey);
+
+            // 如果找不到本地化，返回原始名称
+            return generatedName == generatedKey ? rockName : generatedName;
+        }
+
+        /// <summary>
+        /// 获取本地化的属性值
+        /// </summary>
+        private string GetLocalizedPropertyValue(string propertyValue)
+        {
+            if (string.IsNullOrEmpty(propertyValue) || LocalizationManager.Instance == null)
+                return propertyValue;
+
+            // 映射常见的属性值到本地化键值
+            var propertyMappings = new Dictionary<string, string>
+            {
+                {"无", "encyclopedia.property.none"},
+                {"无磁性", "encyclopedia.property.non_magnetic"},
+                {"弱磁性", "encyclopedia.property.weak_magnetic"},
+                {"强磁性", "encyclopedia.property.strong_magnetic"},
+                {"抗磁性", "encyclopedia.property.diamagnetic"},
+                {"顺磁性", "encyclopedia.property.weak_magnetic_paramagnetic"},
+                {"无（抗磁性）", "encyclopedia.property.diamagnetic"},
+                {"弱磁性（顺磁性）", "encyclopedia.property.weak_magnetic_paramagnetic"},
+                {"弱磁性（顺磁性）；部分晶种含铁磁性", "encyclopedia.property.weak_magnetic_paramagnetic"}
+            };
+
+            // 尝试直接匹配
+            if (propertyMappings.TryGetValue(propertyValue, out string key))
+            {
+                string localizedValue = LocalizationManager.Instance.GetText(key);
+                return localizedValue == key ? propertyValue : localizedValue;
+            }
+
+            // 处理复杂的磁性描述（包含分号的）
+            if (propertyValue.Contains("弱磁性") && propertyValue.Contains("顺磁性"))
+            {
+                string weakMagnetic = LocalizationManager.Instance.GetText("encyclopedia.property.weak_magnetic_paramagnetic");
+                return weakMagnetic == "encyclopedia.property.weak_magnetic_paramagnetic" ? propertyValue : weakMagnetic;
+            }
+
+            // 如果没有直接匹配，返回原始值
+            return propertyValue;
+        }
+
+        /// <summary>
+        /// 获取本地化的描述文本
+        /// </summary>
+        private string GetLocalizedDescription(EncyclopediaEntry entry)
+        {
+            if (LocalizationManager.Instance == null)
+            {
+                return entry.description; // 备用：使用原始描述
+            }
+
+            // 构建本地化键值
+            string localizationKey = GetDescriptionLocalizationKey(entry);
+
+            // 尝试获取本地化文本
+            string localizedText = LocalizationManager.Instance.GetText(localizationKey);
+
+            // 如果本地化文本就是键值本身或者是带方括号的键值（表示没找到），则尝试其他变体
+            if (localizedText == localizationKey || localizedText == $"[{localizationKey}]")
+            {
+                // 尝试带后缀的变体（如 magnetite_simple, magnetite_detailed）
+                string[] suffixes = { "_simple", "_detailed", "_short", "_long" };
+
+                foreach (string suffix in suffixes)
+                {
+                    string variantKey = localizationKey + suffix;
+                    string variantText = LocalizationManager.Instance.GetText(variantKey);
+
+                    if (variantText != variantKey && variantText != $"[{variantKey}]")
+                    {
+                        return variantText; // 找到了变体，返回
+                    }
+                }
+
+                // 如果所有变体都没找到，返回原始描述
+                return entry.description;
+            }
+
+            return localizedText;
+        }
+
+        /// <summary>
+        /// 获取描述的本地化键值
+        /// </summary>
+        private string GetDescriptionLocalizationKey(EncyclopediaEntry entry)
+        {
+            // 总是使用英文名称作为键值基础，因为本地化文件中的键值都是基于英文的
+            string baseName = !string.IsNullOrEmpty(entry.nameEN) ? entry.nameEN : entry.displayName;
+
+            // 特殊名称映射
+            var specialMappings = new Dictionary<string, string>
+            {
+                {"Illite (Alteration Product)", "illite_alteration_product"},
+                {"Clay Minerals", "clay_minerals"},
+                {"Heavy Minerals", "heavy_minerals"},
+                {"Volcanic Glass", "volcanic_glass"},
+                {"Volcanic Ash", "volcanic_ash"},
+                {"carbonaceous_matter", "carbonaceous_matter"}
+            };
+
+            // 检查特殊映射
+            string entryName;
+            if (specialMappings.TryGetValue(baseName, out string specialName))
+            {
+                entryName = specialName;
+            }
+            else
+            {
+                // 转换为键值格式
+                entryName = baseName.ToLower().Replace(" ", "_").Replace("(", "").Replace(")", "");
+            }
+
+            if (entry.entryType == EntryType.Mineral)
+            {
+                return $"mineral.description.{entryName}";
+            }
+            else if (entry.entryType == EntryType.Fossil)
+            {
+                return $"fossil.description.{entryName}";
+            }
+
+            return $"description.{entryName}";
+        }
+
+        /// <summary>
+        /// 根据当前语言设置获取本地化的条目名称（完整格式）
+        /// </summary>
+        private string GetLocalizedEntryName(EncyclopediaEntry entry)
+        {
+            if (LocalizationManager.Instance == null)
+            {
+                // 如果本地化管理器不可用，返回完整格式化名称
+                return entry.GetFormattedDisplayName();
+            }
+
+            var currentLanguage = LocalizationManager.Instance.CurrentLanguage;
+
+            // 获取本地化的地层名称
+            string localizedLayerName = GetLocalizedLayerName(entry.layerName);
+
+            // 获取本地化的岩石名称
+            string localizedRockName = entry.entryType == EntryType.Mineral ? GetLocalizedRockName(entry.rockName) : "";
+
+            // 获取本地化的矿物/化石名称
+            string localizedMineral = "";
+            switch (currentLanguage)
+            {
+                case LanguageSettings.Language.English:
+                    localizedMineral = !string.IsNullOrEmpty(entry.nameEN) ? entry.nameEN : entry.displayName;
+                    break;
+
+                case LanguageSettings.Language.Japanese:
+                    localizedMineral = !string.IsNullOrEmpty(entry.nameJA) ? entry.nameJA : entry.displayName;
+                    break;
+
+                case LanguageSettings.Language.ChineseSimplified:
+                default:
+                    localizedMineral = !string.IsNullOrEmpty(entry.nameCN) ? entry.nameCN : entry.displayName;
+                    break;
+            }
+
+            // 构建完整的本地化格式化名称
+            if (entry.entryType == EntryType.Mineral)
+            {
+                return $"{localizedLayerName}-{localizedRockName}-{localizedMineral}";
+            }
+            else
+            {
+                return $"{localizedLayerName}-{localizedMineral}";
+            }
+        }
+
+
+        /// <summary>
+        /// 根据显示名称和索引，找到EncyclopediaData中对应的地层名称
+        /// </summary>
+        private string FindDataLayerName(string displayedName, int containerIndex)
+        {
+            // 计算实际的地层索引（需要考虑标题占用的位置）
+            int layerIndex = containerIndex;
+
+            // 如果容器中第一个元素是标题（没有Button组件），则索引需要减1
+            if (layerTabContainer != null && layerTabContainer.childCount > 0)
+            {
+                var firstChild = layerTabContainer.GetChild(0);
+                if (firstChild.GetComponent<Button>() == null && firstChild.GetComponentInChildren<Text>() != null)
+                {
+                    // 第一个是标题，所以地层索引需要减1
+                    layerIndex = containerIndex - 1;
+                    Debug.Log($"[EncyclopediaUI] 检测到标题，调整索引: {containerIndex} -> {layerIndex}");
+                }
+            }
+
+            // 首先尝试直接用调整后的索引获取（最可靠的方法）
+            if (EncyclopediaData.Instance?.LayerNames != null &&
+                layerIndex >= 0 && layerIndex < EncyclopediaData.Instance.LayerNames.Count)
+            {
+                Debug.Log($"[EncyclopediaUI] 通过索引 {layerIndex} 找到地层名称: {EncyclopediaData.Instance.LayerNames[layerIndex]}");
+                return EncyclopediaData.Instance.LayerNames[layerIndex];
+            }
+
+            // 备用方法：尝试根据显示名称匹配
+            if (EncyclopediaData.Instance?.LayerNames != null)
+            {
+                foreach (string dataLayerName in EncyclopediaData.Instance.LayerNames)
+                {
+                    // 直接名称匹配
+                    if (dataLayerName == displayedName)
+                    {
+                        Debug.Log($"[EncyclopediaUI] 直接匹配找到地层名称: {dataLayerName}");
+                        return dataLayerName;
+                    }
+
+                    // 检查是否为已知的地层名称（通过关键字匹配）
+                    if (IsKnownLayerName(displayedName, dataLayerName))
+                    {
+                        Debug.Log($"[EncyclopediaUI] 关键字匹配找到地层名称: {displayedName} -> {dataLayerName}");
+                        return dataLayerName;
+                    }
+                }
+            }
+
+            // 最后的备用：返回显示名称本身
+            Debug.LogWarning($"[EncyclopediaUI] 无法找到显示名称 '{displayedName}' 对应的数据层名称，使用显示名称");
+            return displayedName;
+        }
+
+        /// <summary>
+        /// 检查是否为已知的地层名称
+        /// </summary>
+        private bool IsKnownLayerName(string displayedName, string dataLayerName)
+        {
+            // 检查显示名称是否包含已知地层的关键词
+            var pairs = new[]
+            {
+                (new[] {"青葉", "青葉山", "Aoba"}, dataLayerName),
+                (new[] {"大年寺", "Dainenji"}, dataLayerName),
+                (new[] {"向山", "Mukoyama"}, dataLayerName),
+                (new[] {"広瀬川", "Hirose"}, dataLayerName),
+                (new[] {"竜ノ口", "Ryunokuchi"}, dataLayerName),
+                (new[] {"亀岡", "Kameoka"}, dataLayerName)
+            };
+
+            foreach (var (keywords, layer) in pairs)
+            {
+                if (layer == dataLayerName)
+                {
+                    foreach (string keyword in keywords)
+                    {
+                        if (displayedName.Contains(keyword))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 将地层名称映射到本地化键
+        /// </summary>
+        private string GetLayerLocalizationKey(string layerName)
+        {
+            // 移除可能的额外字符和标准化名称
+            string cleanName = layerName.Trim();
+
+            // 根据地层名称返回对应的本地化键
+            if (cleanName.Contains("青葉") || cleanName.Contains("青葉山") || cleanName.Contains("Aoba"))
+                return "encyclopedia.layer.aoba_mountain";
+            else if (cleanName.Contains("大年寺") || cleanName.Contains("Dainenji"))
+                return "encyclopedia.layer.dainenji";
+            else if (cleanName.Contains("向山") || cleanName.Contains("Mukoyama"))
+                return "encyclopedia.layer.mukoyama";
+            else if (cleanName.Contains("広瀬川") || cleanName.Contains("Hirose"))
+                return "encyclopedia.layer.hirose_river_tuff";
+            else if (cleanName.Contains("竜ノ口") || cleanName.Contains("Ryunokuchi"))
+                return "encyclopedia.layer.ryunokuchi";
+            else if (cleanName.Contains("亀岡") || cleanName.Contains("Kameoka"))
+                return "encyclopedia.layer.kameoka";
+            else
+            {
+                // 对于未知地层，返回通用键或原始名称
+                Debug.LogWarning($"[EncyclopediaUI] 未知地层名称: {layerName}，使用原始名称");
+                return "encyclopedia.layer.unknown";
+            }
+        }
+
+        /// <summary>
+        /// 语言变化时的回调函数
+        /// </summary>
+        private void OnLanguageChanged()
+        {
+            // 如果图鉴当前是打开的，刷新条目列表以更新显示的语言
+            if (isOpen)
+            {
+                // 更新筛选器选项
+                SetupFilterControls();
+
+                // 更新地层标签显示
+                UpdateLayerTabsLanguage();
+
+                // 刷新条目列表
+                RefreshEntryList();
+            }
+        }
+
+        /// <summary>
+        /// 更新地层标签的语言显示
+        /// </summary>
+        private void UpdateLayerTabsLanguage()
+        {
+            if (layerTabs == null || layerTabs.Count == 0)
+                return;
+
+            // 确保我们有对应的地层名称
+            if (EncyclopediaData.Instance?.LayerNames == null ||
+                EncyclopediaData.Instance.LayerNames.Count != layerTabs.Count)
+                return;
+
+            for (int i = 0; i < layerTabs.Count && i < EncyclopediaData.Instance.LayerNames.Count; i++)
+            {
+                if (layerTabs[i] != null)
+                {
+                    var buttonText = layerTabs[i].GetComponentInChildren<Text>();
+                    if (buttonText != null)
+                    {
+                        string originalLayerName = EncyclopediaData.Instance.LayerNames[i];
+                        string localizedLayerName = GetLocalizedLayerName(originalLayerName);
+                        buttonText.text = localizedLayerName;
+                        Debug.Log($"[EncyclopediaUI] 更新地层标签语言: {originalLayerName} -> {localizedLayerName}");
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 检查Canvas和Raycaster设置
+        /// </summary>
+        private void CheckCanvasRaycastSettings()
+        {
+            var canvas = GetComponentInParent<Canvas>();
+            if (canvas != null)
+            {
+                var raycaster = canvas.GetComponent<GraphicRaycaster>();
+                Debug.Log($"[EncyclopediaUI] Canvas检查: {canvas.name}");
+                Debug.Log($"[EncyclopediaUI] - RenderMode: {canvas.renderMode}");
+                Debug.Log($"[EncyclopediaUI] - SortingOrder: {canvas.sortingOrder}");
+                Debug.Log($"[EncyclopediaUI] - GraphicRaycaster: {(raycaster != null ? "存在" : "缺失")}");
+                if (raycaster != null)
+                {
+                    Debug.Log($"[EncyclopediaUI] - Raycaster enabled: {raycaster.enabled}");
+                    Debug.Log($"[EncyclopediaUI] - IgnoreReversedGraphics: {raycaster.ignoreReversedGraphics}");
+                    Debug.Log($"[EncyclopediaUI] - BlockingObjects: {raycaster.blockingObjects}");
+                }
+                else
+                {
+                    Debug.LogError("[EncyclopediaUI] ❌ GraphicRaycaster缺失! 这会导致UI点击失效!");
+                }
+            }
+            else
+            {
+                Debug.LogError("[EncyclopediaUI] ❌ 未找到父级Canvas!");
+            }
+
+            // 检查EventSystem
+            var eventSystem = UnityEngine.EventSystems.EventSystem.current;
+            if (eventSystem != null)
+            {
+                Debug.Log($"[EncyclopediaUI] EventSystem: {eventSystem.name} (enabled: {eventSystem.enabled})");
+            }
+            else
+            {
+                Debug.LogError("[EncyclopediaUI] ❌ EventSystem缺失! UI点击事件无法工作!");
+            }
         }
 
         /// <summary>
@@ -1088,10 +2083,40 @@ namespace Encyclopedia
             }
         }
 
+        /// <summary>
+        /// 延迟强制渲染协程 - 修复首次显示白屏问题
+        /// </summary>
+        private System.Collections.IEnumerator ForceRenderAfterDelay(Sample3DModelViewer viewer)
+        {
+            // 等待几帧让3D模型完全加载
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+
+            if (viewer != null)
+            {
+                // 调用Sample3DModelViewer的强制渲染方法
+                viewer.ForceRender();
+                Debug.Log("[EncyclopediaUI] 执行延迟强制渲染以修复白屏问题");
+
+                // 再等一帧确保渲染完成
+                yield return new WaitForEndOfFrame();
+
+                // 如果还是有问题，再强制切换到RenderTexture显示
+                viewer.ForceRenderTextureDisplay();
+                Debug.Log("[EncyclopediaUI] 强制切换到RenderTexture显示");
+            }
+        }
+
         private void OnDestroy()
         {
             // 取消事件订阅
             CollectionManager.OnStatsUpdated -= OnStatsUpdated;
+
+            // 取消语言变化事件订阅
+            if (LocalizationManager.Instance != null)
+            {
+                LocalizationManager.Instance.OnLanguageChanged -= OnLanguageChanged;
+            }
         }
 
 #if UNITY_EDITOR
