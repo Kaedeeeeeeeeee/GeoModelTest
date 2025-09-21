@@ -1060,7 +1060,21 @@ namespace SampleCuttingSystem
             
             // 调整正交摄像机的显示范围以适应模型大小
             float maxSize = Mathf.Max(bounds.size.x, bounds.size.y, bounds.size.z);
-            cameraDistance = maxSize * 1.4f;  // 保持合理的摄像机距离用于光照
+
+            // 检查是否有外部手动设置的相机距离（大于默认值2.0f表示外部设置）
+            if (cameraDistance <= 2.0f)
+            {
+                cameraDistance = maxSize * 1.4f;  // 只在使用默认值时自动计算距离
+                Debug.Log($"[Sample3DModelViewer] 自动计算相机距离: {cameraDistance:F2}f (基于模型大小: {maxSize:F2}f)");
+            }
+            else
+            {
+                Debug.Log($"[Sample3DModelViewer] 保持外部设置的相机距离: {cameraDistance:F2}f (模型大小: {maxSize:F2}f)");
+                // 对于外部设置的较远距离，相应调整正交相机显示范围
+                renderCamera.orthographicSize = maxSize * 0.8f * (cameraDistance / 2.0f);  // 根据距离调整显示范围
+                Debug.Log($"[Sample3DModelViewer] 调整正交显示范围: {renderCamera.orthographicSize:F2}f (适应远距离: {cameraDistance:F2}f)");
+                return; // 提前返回，跳过下面的默认正交设置
+            }
             
             // 设置正交摄像机的显示大小（orthographicSize是半高）
             renderCamera.orthographicSize = maxSize * 0.51f;  // 让样本占据视野的大部分
@@ -1314,7 +1328,7 @@ namespace SampleCuttingSystem
         /// <summary>
         /// 强制渲染一帧
         /// </summary>
-        void ForceRender()
+        public void ForceRender()
         {
             if (renderCamera != null && renderTexture != null)
             {
