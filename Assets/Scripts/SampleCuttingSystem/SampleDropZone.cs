@@ -98,7 +98,7 @@ namespace SampleCuttingSystem
             if (!dragHandler.IsMultiLayerSample())
             {
                 Debug.LogWarning($"样本 {sampleData.name} 不是多层样本，无法切割");
-                ShowError("只能切割多层地质样本");
+                ShowError(LocalizationManager.Instance?.GetText("cutting_system.instruction.multi_layer_required") ?? "只能切割多层地质样本");
                 return false;
             }
             
@@ -299,7 +299,7 @@ namespace SampleCuttingSystem
             else
             {
                 Debug.LogError("无法创建切割游戏组件");
-                ShowError("切割系统初始化失败");
+                ShowError(LocalizationManager.Instance?.GetText("cutting_system.initialization_failed") ?? "切割系统初始化失败");
             }
         }
         
@@ -729,7 +729,13 @@ namespace SampleCuttingSystem
         {
             if (instructionText != null)
             {
-                instructionText.text = $"正在切割: {sampleData.name}\n\n观察移动的切割线\n在绿色区域按空格键/触摸屏幕进行切割\n\n⚠️ 切割失败会销毁样本";
+                // 使用本地化文本
+                var localizedText = instructionText.GetComponent<LocalizedText>();
+                if (localizedText == null)
+                {
+                    localizedText = instructionText.gameObject.AddComponent<LocalizedText>();
+                }
+                localizedText.SetTextKey("cutting_system.instruction.cutting_in_progress", sampleData.name);
                 instructionText.color = Color.yellow;
                 instructionText.fontSize = 20;
             }
@@ -765,7 +771,13 @@ namespace SampleCuttingSystem
             
             if (instructionText != null)
             {
-                instructionText.text = "将多层地质样本\n从左侧拖拽到此处\n\n开始样本切割操作\n\n支持的样本类型:\n• 多层钻孔样本\n• 地质探查样本";
+                // 使用本地化文本
+                var localizedText = instructionText.GetComponent<LocalizedText>();
+                if (localizedText == null)
+                {
+                    localizedText = instructionText.gameObject.AddComponent<LocalizedText>();
+                }
+                localizedText.TextKey = "cutting_system.instruction.drag_sample";
                 instructionText.color = Color.white;
                 instructionText.fontSize = 18;
             }
@@ -1018,12 +1030,12 @@ namespace SampleCuttingSystem
                 
                 if (success)
                 {
-                    instructionText.text = "✅ 切割成功！\n\n单层样本已添加到背包\n可以继续切割其他样本";
+                    instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.success_message") ?? "✅ 切割成功！\n\n单层样本已添加到背包\n可以继续切割其他样本";
                     instructionText.color = Color.green;
                 }
                 else
                 {
-                    instructionText.text = "❌ 切割失败\n\n样本已被销毁\n请重新选择样本进行切割";
+                    instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.failure_message") ?? "❌ 切割失败\n\n样本已被销毁\n请重新选择样本进行切割";
                     instructionText.color = Color.red;
                 }
             }

@@ -9,7 +9,7 @@ using Encyclopedia;
 public class EncyclopediaCanvasFixer : MonoBehaviour
 {
     [Header("自动修复设置")]
-    [SerializeField] private bool autoFixOnStart = true;
+    [SerializeField] private bool autoFixOnStart = false; // 禁用自动修复，避免与新的本地化系统冲突
     [SerializeField] private int targetSortingOrder = 10001; // 比InventoryCanvas(10000)高
     [SerializeField] private float delaySeconds = 2f; // 延迟修复，确保所有UI已初始化
     [SerializeField] private float iconFixDelaySeconds = 3f; // 图标修复额外延迟
@@ -22,6 +22,15 @@ public class EncyclopediaCanvasFixer : MonoBehaviour
     private void Start()
     {
         Debug.Log($"[EncyclopediaCanvasFixer] Start - autoFixOnStart: {autoFixOnStart}");
+
+        // 强制禁用自动修复，因为新的EncyclopediaUI系统已经处理了所有必要的修复
+        if (autoFixOnStart)
+        {
+            Debug.Log("[EncyclopediaCanvasFixer] 检测到autoFixOnStart为true，但新系统已不需要此修复，强制禁用");
+            autoFixOnStart = false;
+            return;
+        }
+
         if (autoFixOnStart)
         {
             Debug.Log($"[EncyclopediaCanvasFixer] 将在 {delaySeconds} 秒后开始修复");

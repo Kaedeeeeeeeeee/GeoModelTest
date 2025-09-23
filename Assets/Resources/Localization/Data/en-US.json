@@ -749,6 +749,26 @@
       "value": "Heavy minerals refer to aggregates of high-density minerals (such as zircon, titanomagnetite, garnet, etc.), commonly found in sands; usually dark colors, fine grain size, lustrous."
     },
     {
+      "key": "mineral.description.orthopyroxene",
+      "value": "Colors gray, brown or green; vitreous to pearly luster, grayish-white or greenish-gray streak, surface with coppery-red metallic luster."
+    },
+    {
+      "key": "mineral.description.illite_alteration_product",
+      "value": "Colors grayish-white, silvery-white or greenish-gray; aggregates occur as mica-like thin sheets, pearly to earthy luster; white streak; translucent."
+    },
+    {
+      "key": "mineral.description.pumice",
+      "value": "Pumice is a light-colored, porous volcanic rock containing numerous vesicles; light enough to float on water, usually white or light gray; an extrusive igneous rock."
+    },
+    {
+      "key": "mineral.description.volcanic_ash",
+      "value": "Volcanic ash consists of fine-grained volcanic pyroclastic material produced during volcanic eruptions; fine particles, usually gray to dark gray in color."
+    },
+    {
+      "key": "mineral.description.carbonaceous_matter",
+      "value": "Carbonaceous matter consists of carbon-bearing organic or inorganic compounds; usually black or dark brown in color with characteristic carbonaceous luster."
+    },
+    {
       "key": "encyclopedia.property.colorless_fade",
       "value": "Colorless/No fading"
     },
@@ -915,6 +935,226 @@
     {
       "key": "fossil.description.generic",
       "value": "Fossils discovered in this formation, providing important information about ancient life and environments."
+    },
+    {
+      "key": "cutting_system.warehouse.title",
+      "value": "Warehouse (100 Slots)"
+    },
+    {
+      "key": "cutting_system.cutting_area.title",
+      "value": "Sample Cutting Station"
+    },
+    {
+      "key": "cutting_system.instruction.drag_sample",
+      "value": "Drag multi-layer geological samples\nfrom the left to here\n\nStart sample cutting operation\n\nSupported sample types:\n• Multi-layer drill samples\n• Geological exploration samples"
+    },
+    {
+      "key": "cutting_system.instruction.cutting_in_progress",
+      "value": "Cutting: {0}\n\nWatch the moving cutting line\nPress Space/Touch screen to cut\n\n⚠️ Cutting failure will destroy the sample"
+    },
+    {
+      "key": "cutting_system.instruction.multi_layer_required",
+      "value": "Only multi-layer samples can be cut"
+    },
+    {
+      "key": "cutting_system.button.close",
+      "value": "Close"
+    },
+    {
+      "key": "cutting_system.cutting_line.instruction",
+      "value": "Press Space/Touch Screen\nto Cut"
+    },
+    {
+      "key": "cutting_system.cutting_complete",
+      "value": "Cutting Complete"
+    },
+    {
+      "key": "cutting_system.cutting_failed",
+      "value": "Cutting Failed"
+    },
+    {
+      "key": "cutting_system.cutting_progress",
+      "value": "Cutting Progress: {0}/{1}"
+    },
+    {
+      "key": "cutting_system.analyzing_sample",
+      "value": "Analyzing Sample..."
+    },
+    {
+      "key": "cutting_system.success_message",
+      "value": "✅ Cutting Successful!\n\nSingle-layer samples added to backpack\nYou can continue cutting other samples"
+    },
+    {
+      "key": "cutting_system.failure_message",
+      "value": "❌ Cutting Failed\n\nSample has been destroyed\nPlease select a new sample for cutting"
+    },
+    {
+      "key": "cutting_system.initialization_failed",
+      "value": "Cutting system initialization failed"
+    },
+    {
+      "key": "drill_tower.drilling",
+      "value": "Drilling..."
+    },
+    {
+      "key": "drill_tower.max_depth",
+      "value": "Maximum drilling depth reached"
+    },
+    {
+      "key": "drill_tower.recall_prompt",
+      "value": "Press G to recall drill tower"
+    },
+    {
+      "key": "drill_tower.drill_prompt",
+      "value": "Press F for drill #{0}\n({1:F0}m-{2:F0}m)"
+    },
+    {
+      "key": "cutting_system.all_cuts_complete",
+      "value": "All cuts completed!"
+    },
+    {
+      "key": "encyclopedia.ui.title",
+      "value": "Geological Encyclopedia"
+    },
+    {
+      "key": "encyclopedia.ui.collection_progress",
+      "value": "Collection Progress: {0}/{1} ({2})"
+    },
+    {
+      "key": "encyclopedia.ui.minerals_progress",
+      "value": "Minerals: {0}/{1} ({2})"
+    },
+    {
+      "key": "encyclopedia.ui.fossils_progress",
+      "value": "Fossils: {0}/{1} ({2})"
+    },
+    {
+      "key": "encyclopedia.ui.search_placeholder",
+      "value": "Search..."
+    },
+    {
+      "key": "encyclopedia.ui.clear_filters",
+      "value": "Clear"
+    },
+    {
+      "key": "encyclopedia.ui.filter_all",
+      "value": "All"
+    },
+    {
+      "key": "encyclopedia.ui.layer_name_template",
+      "value": "Layer Name"
+    },
+    {
+      "key": "encyclopedia.ui.entry_name_template",
+      "value": "Entry Name"
+    },
+    {
+      "key": "encyclopedia.ui.rarity_template",
+      "value": "Rarity"
+    },
+    {
+      "key": "encyclopedia.ui.statistics_template",
+      "value": "Collection Statistics:\nMinerals: 0/0\nFossils: 0/0"
+    },
+    {
+      "key": "encyclopedia.ui.detail_info",
+      "value": "Detailed Information"
+    },
+    {
+      "key": "encyclopedia.ui.detail_description",
+      "value": "Description"
+    },
+    {
+      "key": "encyclopedia.ui.detail_properties",
+      "value": "Properties"
+    },
+    {
+      "key": "encyclopedia.ui.viewer_reset",
+      "value": "Reset"
+    },
+    {
+      "key": "encyclopedia.ui.close_button",
+      "value": "×"
+    },
+    {
+      "key": "encyclopedia.ui.filter.all",
+      "value": "All"
+    },
+    {
+      "key": "encyclopedia.ui.filter.mineral",
+      "value": "Mineral"
+    },
+    {
+      "key": "encyclopedia.ui.filter.fossil",
+      "value": "Fossil"
+    },
+    {
+      "key": "encyclopedia.ui.rarity.common",
+      "value": "Common"
+    },
+    {
+      "key": "encyclopedia.ui.rarity.uncommon",
+      "value": "Uncommon"
+    },
+    {
+      "key": "encyclopedia.ui.rarity.rare",
+      "value": "Rare"
+    },
+    {
+      "key": "encyclopedia.detail.undiscovered",
+      "value": "Detailed properties shown after discovery"
+    },
+    {
+      "key": "encyclopedia.detail.type",
+      "value": "Type"
+    },
+    {
+      "key": "encyclopedia.detail.layer",
+      "value": "Layer"
+    },
+    {
+      "key": "encyclopedia.detail.rock",
+      "value": "Rock"
+    },
+    {
+      "key": "encyclopedia.detail.content",
+      "value": "Content"
+    },
+    {
+      "key": "encyclopedia.detail.mohs_hardness",
+      "value": "Mohs Hardness"
+    },
+    {
+      "key": "encyclopedia.detail.density",
+      "value": "Density"
+    },
+    {
+      "key": "encyclopedia.detail.magnetism",
+      "value": "Magnetism"
+    },
+    {
+      "key": "encyclopedia.detail.rarity",
+      "value": "Rarity"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_probability",
+      "value": "Discovery Probability"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_count",
+      "value": "Discovery Count"
+    },
+    {
+      "key": "encyclopedia.detail.first_discovered",
+      "value": "First Discovered"
+    },
+    {
+      "key": "encyclopedia.layer.unknown",
+      "value": "Unknown Layer"
+    },
+    {
+      "key": "encyclopedia.ui.layer_section_title",
+      "value": "Geological Layers"
     }
   ]
 }

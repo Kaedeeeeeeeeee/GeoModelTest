@@ -40,7 +40,7 @@ public static class LanguageSettings
     /// <summary>
     /// 默认语言
     /// </summary>
-    public const Language DefaultLanguage = Language.ChineseSimplified;
+    public const Language DefaultLanguage = Language.Japanese;
     
     /// <summary>
     /// PlayerPrefs键名
@@ -97,5 +97,15 @@ public static class LanguageSettings
     {
         string savedCode = PlayerPrefs.GetString(LanguagePrefsKey, GetLanguageCode(DefaultLanguage));
         return GetLanguageFromCode(savedCode);
+    }
+
+    /// <summary>
+    /// 重置语言设置到默认值
+    /// </summary>
+    public static void ResetLanguagePreference()
+    {
+        PlayerPrefs.DeleteKey(LanguagePrefsKey);
+        PlayerPrefs.Save();
+        UnityEngine.Debug.Log($"[LanguageSettings] 语言设置已重置为默认值: {DefaultLanguage}");
     }
 }

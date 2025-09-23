@@ -19,7 +19,7 @@ public class LocalizationTools : EditorWindow
     private Vector2 scrollPosition;
     private string newKey = "";
     private string newValue = "";
-    private LanguageSettings.Language selectedLanguage = LanguageSettings.Language.ChineseSimplified;
+    private LanguageSettings.Language selectedLanguage = LanguageSettings.Language.Japanese;
     
     void OnGUI()
     {
@@ -107,6 +107,22 @@ public class LocalizationTools : EditorWindow
         if (GUILayout.Button("切换到中文"))
         {
             SwitchLanguage(LanguageSettings.Language.ChineseSimplified);
+        }
+
+        if (GUILayout.Button("切换到日语"))
+        {
+            SwitchLanguage(LanguageSettings.Language.Japanese);
+        }
+
+        if (GUILayout.Button("重置语言设置"))
+        {
+            if (EditorUtility.DisplayDialog("确认重置",
+                $"确定要将语言设置重置为默认值({LanguageSettings.DefaultLanguage})吗？",
+                "确定", "取消"))
+            {
+                LanguageSettings.ResetLanguagePreference();
+                SwitchLanguage(LanguageSettings.DefaultLanguage);
+            }
         }
         
         if (GUILayout.Button("切换到英文"))

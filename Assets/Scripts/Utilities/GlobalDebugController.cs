@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System;
 using Encyclopedia;
+using SampleCuttingSystem;
 
 /// <summary>
 /// 全局调试控制器 - 一键管理整个项目的Debug.Log输出
@@ -59,7 +60,7 @@ public class GlobalDebugController : MonoBehaviour
         
         // Encyclopedia 系统
         CacheDebugFields<SimpleEncyclopediaManager>("showDebugInfo", encyclopediaSystemDebug);
-        CacheDebugFields<Model3DViewer>("showDebugInfo", encyclopediaSystemDebug);
+        CacheDebugFields<Sample3DModelViewer>("showDebugInfo", encyclopediaSystemDebug);
         
         // Localization 系统
         CacheDebugFields<LocalizedText>("enableDebugLog", localizationSystemDebug);
@@ -122,7 +123,7 @@ public class GlobalDebugController : MonoBehaviour
         
         // Encyclopedia 系统
         totalDisabled += SetSystemDebugState<SimpleEncyclopediaManager>("showDebugInfo", false);
-        totalDisabled += SetSystemDebugState<Model3DViewer>("showDebugInfo", false);
+        totalDisabled += SetSystemDebugState<Sample3DModelViewer>("showDebugInfo", false);
         totalDisabled += SetSystemDebugState<EncyclopediaDebugHelper>("showDebugInfo", false);
         
         // Localization 系统  
@@ -169,7 +170,7 @@ public class GlobalDebugController : MonoBehaviour
         
         // Encyclopedia 系统
         totalEnabled += SetSystemDebugState<SimpleEncyclopediaManager>("showDebugInfo", true);
-        totalEnabled += SetSystemDebugState<Model3DViewer>("showDebugInfo", true);
+        totalEnabled += SetSystemDebugState<Sample3DModelViewer>("showDebugInfo", true);
         
         // Localization 系统
         totalEnabled += SetSystemDebugState<LocalizedText>("enableDebugLog", true);
@@ -228,7 +229,7 @@ public class GlobalDebugController : MonoBehaviour
         
         // Encyclopedia 系统
         ReportSystemStatus<SimpleEncyclopediaManager>("Encyclopedia 系统", "showDebugInfo");
-        ReportSystemStatus<Model3DViewer>("3D模型查看器", "showDebugInfo");
+        ReportSystemStatus<Sample3DModelViewer>("3D模型查看器", "showDebugInfo");
         
         // Localization 系统
         ReportSystemStatus<LocalizedText>("多语言系统", "enableDebugLog");
@@ -292,7 +293,7 @@ public class GlobalDebugController : MonoBehaviour
         int totalDisabled = 0;
         
         // 最高频的系统 - Encyclopedia (139个)
-        totalDisabled += SetSystemDebugState<Model3DViewer>("showDebugInfo", false);
+        totalDisabled += SetSystemDebugState<Sample3DModelViewer>("showDebugInfo", false);
         totalDisabled += SetSystemDebugState<SimpleEncyclopediaManager>("showDebugInfo", false);
         
         // 高频系统 - Sample (92个)

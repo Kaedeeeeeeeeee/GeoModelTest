@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine.EventSystems;
+using SampleCuttingSystem;
 
 public class EncyclopediaDebugTool : EditorWindow
 {
@@ -3673,29 +3674,29 @@ public class EncyclopediaDebugTool : EditorWindow
 
         Debug.Log($"详情面板: {detailPanel.name}, 激活状态: {detailPanel.activeInHierarchy}");
 
-        // 查找Model3DViewer组件
-        var model3DViewer = detailPanel.GetComponentInChildren<Encyclopedia.Model3DViewer>();
+        // 查找Sample3DModelViewer组件
+        var model3DViewer = detailPanel.GetComponentInChildren<Sample3DModelViewer>();
         if (model3DViewer == null)
         {
-            Debug.LogWarning("未找到Model3DViewer组件！");
+            Debug.LogWarning("未找到Sample3DModelViewer组件！");
 
             // 尝试在整个detailPanel层级中搜索
-            var allViewers = Resources.FindObjectsOfTypeAll<Encyclopedia.Model3DViewer>();
-            Debug.Log($"全局找到 {allViewers.Length} 个Model3DViewer组件");
+            var allViewers = Resources.FindObjectsOfTypeAll<Sample3DModelViewer>();
+            Debug.Log($"全局找到 {allViewers.Length} 个Sample3DModelViewer组件");
 
             foreach (var viewer in allViewers)
             {
-                Debug.Log($"  - Model3DViewer: {viewer.name}, 激活: {viewer.gameObject.activeInHierarchy}, 父级: {viewer.transform.parent?.name}");
+                Debug.Log($"  - Sample3DModelViewer: {viewer.name}, 激活: {viewer.gameObject.activeInHierarchy}, 父级: {viewer.transform.parent?.name}");
             }
         }
         else
         {
-            Debug.Log($"找到Model3DViewer: {model3DViewer.name}");
+            Debug.Log($"找到Sample3DModelViewer: {model3DViewer.name}");
             Debug.Log($"  - 激活状态: {model3DViewer.gameObject.activeInHierarchy}");
             Debug.Log($"  - 位置: {model3DViewer.transform.position}");
 
             // 检查3D模型查看器的详细状态
-            var viewerFields = typeof(Encyclopedia.Model3DViewer).GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var viewerFields = typeof(Sample3DModelViewer).GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             foreach (var field in viewerFields)
             {
                 var value = field.GetValue(model3DViewer);

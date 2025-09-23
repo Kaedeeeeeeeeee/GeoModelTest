@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using SampleCuttingSystem;
 
 namespace Encyclopedia
 {
@@ -36,7 +37,7 @@ namespace Encyclopedia
         [SerializeField] private Text detailDescriptionText;
         [SerializeField] private RawImage detailImage;
         [SerializeField] private Button detailCloseButton;
-        [SerializeField] private Model3DViewer model3DViewer;
+        [SerializeField] private Sample3DModelViewer model3DViewer;
         
         [Header("设置")]
         [SerializeField] private Key toggleKey = Key.O;
@@ -681,28 +682,28 @@ namespace Encyclopedia
             modelRect.offsetMin = new Vector2(10, 10);
             modelRect.offsetMax = new Vector2(-10, -10);
             
-            // 集成Model3DViewer组件
+            // 集成Sample3DModelViewer组件
             if (model3DViewer == null)
             {
-                model3DViewer = modelGO.AddComponent<Model3DViewer>();
+                model3DViewer = modelGO.AddComponent<Sample3DModelViewer>();
                 
                 if (showDebugInfo)
                 {
-                    if (showDebugInfo) Debug.Log("✅ 自动创建Model3DViewer组件");
-                    if (showDebugInfo) Debug.Log($"  - Model3DViewer GameObject: {model3DViewer.gameObject.name}");
+                    if (showDebugInfo) Debug.Log("✅ 自动创建Sample3DModelViewer组件");
+                    if (showDebugInfo) Debug.Log($"  - Sample3DModelViewer GameObject: {model3DViewer.gameObject.name}");
                     if (showDebugInfo) Debug.Log($"  - 父对象: {model3DViewer.transform.parent?.name}");
                     Debug.Log($"  - RectTransform: {model3DViewer.GetComponent<RectTransform>() != null}");
                 }
             }
             
-            // 配置Model3DViewer的RectTransform（如果它还没有正确设置）
+            // 配置Sample3DModelViewer的RectTransform（如果它还没有正确设置）
             var viewerRect = model3DViewer.GetComponent<RectTransform>();
             if (viewerRect == null)
             {
                 viewerRect = model3DViewer.gameObject.AddComponent<RectTransform>();
             }
             
-            // 确保Model3DViewer占满整个模型显示区域
+            // 确保Sample3DModelViewer占满整个模型显示区域
             viewerRect.anchorMin = Vector2.zero;
             viewerRect.anchorMax = Vector2.one;
             viewerRect.offsetMin = Vector2.zero;
@@ -2277,7 +2278,7 @@ namespace Encyclopedia
                     ShowModelLoadingState(true);
                     
                     // 显示3D模型
-                    model3DViewer.ShowModel(entry.model3D);
+                    model3DViewer.ShowSampleModel(entry.model3D);
                     
                     // 隐藏加载提示，显示模型
                     ShowModelLoadingState(false);
@@ -2294,18 +2295,12 @@ namespace Encyclopedia
                         Debug.Log($"⚠️ 条目无3D模型，尝试测试模式加载");
                     }
                     
-                    // 测试模式：如果条目没有3D模型，尝试加载第一个可用的矿物模型
-                    model3DViewer.TestLoadFirstMineralModel();
-                    
-                    // 如果测试也失败了，显示"无模型可用"提示
-                    if (!model3DViewer.HasModel())
+                    // 显示"无模型可用"提示（Sample3DModelViewer不支持测试模式）
+                    ShowNoModelAvailableMessage(entry);
+
+                    if (showDebugInfo)
                     {
-                        ShowNoModelAvailableMessage(entry);
-                        
-                        if (showDebugInfo)
-                        {
-                            Debug.Log($"⚠️ 测试模式也未找到可用模型: {entry.id} ({entry.modelFile})");
-                        }
+                        Debug.Log($"⚠️ 无可用3D模型: {entry.id} ({entry.modelFile})");
                     }
                 }
             }
@@ -2313,7 +2308,7 @@ namespace Encyclopedia
             {
                 if (showDebugInfo)
                 {
-                    Debug.LogWarning("❌ Model3DViewer组件未分配！");
+                    Debug.LogWarning("❌ Sample3DModelViewer组件未分配！");
                 }
             }
             // 现在不需要detailImage了，因为我们改用3D模型显示
@@ -2327,7 +2322,7 @@ namespace Encyclopedia
             // 清理3D模型
             if (model3DViewer != null)
             {
-                model3DViewer.ClearModel();
+                model3DViewer.ClearCurrentModel();
                 
                 // 隐藏"无模型可用"提示
                 Transform noModelMessage = model3DViewer.transform.Find("NoModelMessage");
@@ -2637,7 +2632,7 @@ namespace Encyclopedia
         /// </summary>
         private void ShowNoModelAvailableMessage(EncyclopediaEntry entry)
         {
-            // 在Model3DViewer区域显示友好的提示信息
+            // 在Sample3DModelViewer区域显示友好的提示信息
             // 这里可以创建一个临时的Text组件来显示提示
             if (model3DViewer != null)
             {

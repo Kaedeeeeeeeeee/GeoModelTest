@@ -92,12 +92,24 @@ namespace Encyclopedia
         /// </summary>
         public string GetRarityText()
         {
+            if (LocalizationManager.Instance == null)
+            {
+                // 备用文本
+                return rarity switch
+                {
+                    Rarity.Common => "常见",
+                    Rarity.Uncommon => "少见",
+                    Rarity.Rare => "稀有",
+                    _ => "未知"
+                };
+            }
+
             return rarity switch
             {
-                Rarity.Common => "常见",
-                Rarity.Uncommon => "少见", 
-                Rarity.Rare => "稀有",
-                _ => "未知"
+                Rarity.Common => LocalizationManager.Instance.GetText("encyclopedia.rarity.common"),
+                Rarity.Uncommon => LocalizationManager.Instance.GetText("encyclopedia.rarity.uncommon"),
+                Rarity.Rare => LocalizationManager.Instance.GetText("encyclopedia.rarity.rare"),
+                _ => LocalizationManager.Instance.GetText("encyclopedia.rarity.unknown")
             };
         }
 
@@ -120,11 +132,22 @@ namespace Encyclopedia
         /// </summary>
         public string GetEntryTypeText()
         {
+            if (LocalizationManager.Instance == null)
+            {
+                // 备用文本
+                return entryType switch
+                {
+                    EntryType.Mineral => "矿物",
+                    EntryType.Fossil => "化石",
+                    _ => "未知"
+                };
+            }
+
             return entryType switch
             {
-                EntryType.Mineral => "矿物",
-                EntryType.Fossil => "化石",
-                _ => "未知"
+                EntryType.Mineral => LocalizationManager.Instance.GetText("encyclopedia.type.mineral"),
+                EntryType.Fossil => LocalizationManager.Instance.GetText("encyclopedia.type.fossil"),
+                _ => LocalizationManager.Instance.GetText("encyclopedia.rarity.unknown")
             };
         }
 

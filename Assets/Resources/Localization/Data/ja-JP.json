@@ -590,7 +590,7 @@
     },
     {
       "key": "rock.conglomerate",
-      "value": "礼岩"
+      "value": "礫岩"
     },
     {
       "key": "rock.volcanic_ash",
@@ -915,6 +915,226 @@
     {
       "key": "fossil.description.generic",
       "value": "この地層で発見された化石、古代生物と環境理解の重要な情報を提供。"
+    },
+    {
+      "key": "cutting_system.warehouse.title",
+      "value": "倉庫 (100スロット)"
+    },
+    {
+      "key": "cutting_system.cutting_area.title",
+      "value": "サンプル切断台"
+    },
+    {
+      "key": "cutting_system.instruction.drag_sample",
+      "value": "多層地質サンプルを\n左側からここにドラッグ\n\nサンプル切断操作を開始\n\n対応サンプルタイプ:\n• 多層掘削サンプル\n• 地質探査サンプル"
+    },
+    {
+      "key": "cutting_system.instruction.cutting_in_progress",
+      "value": "切断中: {0}\n\n移動する切断線を見て\nスペースキー/画面タッチで切断\n\n⚠️ 切断失敗でサンプルは破壊される"
+    },
+    {
+      "key": "cutting_system.instruction.multi_layer_required",
+      "value": "多層サンプルのみ切断可能"
+    },
+    {
+      "key": "cutting_system.button.close",
+      "value": "閉じる"
+    },
+    {
+      "key": "cutting_system.cutting_line.instruction",
+      "value": "スペースキー/画面タッチ\nで切断"
+    },
+    {
+      "key": "cutting_system.cutting_complete",
+      "value": "切断完了"
+    },
+    {
+      "key": "cutting_system.cutting_failed",
+      "value": "切断失敗"
+    },
+    {
+      "key": "cutting_system.cutting_progress",
+      "value": "切断進度: {0}/{1}"
+    },
+    {
+      "key": "cutting_system.analyzing_sample",
+      "value": "サンプル分析中..."
+    },
+    {
+      "key": "cutting_system.success_message",
+      "value": "✅ 切断成功！\n\n単層サンプルがバックパックに追加されました\n他のサンプルの切断を続けることができます"
+    },
+    {
+      "key": "cutting_system.failure_message",
+      "value": "❌ 切断失敗\n\nサンプルは破壊されました\n切断するサンプルを再選択してください"
+    },
+    {
+      "key": "cutting_system.initialization_failed",
+      "value": "切断システム初期化失敗"
+    },
+    {
+      "key": "drill_tower.drilling",
+      "value": "掘削中..."
+    },
+    {
+      "key": "drill_tower.max_depth",
+      "value": "最大掘削深度に到達"
+    },
+    {
+      "key": "drill_tower.recall_prompt",
+      "value": "Gキーでドリルタワー回収"
+    },
+    {
+      "key": "drill_tower.drill_prompt",
+      "value": "Fキーで第{0}回掘削\n({1:F0}m-{2:F0}m)"
+    },
+    {
+      "key": "cutting_system.all_cuts_complete",
+      "value": "全ての切断が完了！"
+    },
+    {
+      "key": "encyclopedia.ui.title",
+      "value": "地質図鑑"
+    },
+    {
+      "key": "encyclopedia.ui.collection_progress",
+      "value": "収集進度: {0}/{1} ({2})"
+    },
+    {
+      "key": "encyclopedia.ui.minerals_progress",
+      "value": "鉱物: {0}/{1} ({2})"
+    },
+    {
+      "key": "encyclopedia.ui.fossils_progress",
+      "value": "化石: {0}/{1} ({2})"
+    },
+    {
+      "key": "encyclopedia.ui.search_placeholder",
+      "value": "検索..."
+    },
+    {
+      "key": "encyclopedia.ui.clear_filters",
+      "value": "クリア"
+    },
+    {
+      "key": "encyclopedia.ui.filter_all",
+      "value": "全て"
+    },
+    {
+      "key": "encyclopedia.ui.layer_name_template",
+      "value": "地層名"
+    },
+    {
+      "key": "encyclopedia.ui.entry_name_template",
+      "value": "エントリー名"
+    },
+    {
+      "key": "encyclopedia.ui.rarity_template",
+      "value": "レア度"
+    },
+    {
+      "key": "encyclopedia.ui.statistics_template",
+      "value": "収集統計:\n鉱物: 0/0\n化石: 0/0"
+    },
+    {
+      "key": "encyclopedia.ui.detail_info",
+      "value": "詳細情報"
+    },
+    {
+      "key": "encyclopedia.ui.detail_description",
+      "value": "説明"
+    },
+    {
+      "key": "encyclopedia.ui.detail_properties",
+      "value": "プロパティ"
+    },
+    {
+      "key": "encyclopedia.ui.viewer_reset",
+      "value": "リセット"
+    },
+    {
+      "key": "encyclopedia.ui.close_button",
+      "value": "×"
+    },
+    {
+      "key": "encyclopedia.ui.filter.all",
+      "value": "全て"
+    },
+    {
+      "key": "encyclopedia.ui.filter.mineral",
+      "value": "鉱物"
+    },
+    {
+      "key": "encyclopedia.ui.filter.fossil",
+      "value": "化石"
+    },
+    {
+      "key": "encyclopedia.ui.rarity.common",
+      "value": "一般的"
+    },
+    {
+      "key": "encyclopedia.ui.rarity.uncommon",
+      "value": "レア"
+    },
+    {
+      "key": "encyclopedia.ui.rarity.rare",
+      "value": "超レア"
+    },
+    {
+      "key": "encyclopedia.detail.undiscovered",
+      "value": "発見後に詳細属性を表示"
+    },
+    {
+      "key": "encyclopedia.detail.type",
+      "value": "タイプ"
+    },
+    {
+      "key": "encyclopedia.detail.layer",
+      "value": "地層"
+    },
+    {
+      "key": "encyclopedia.detail.rock",
+      "value": "岩石"
+    },
+    {
+      "key": "encyclopedia.detail.content",
+      "value": "含有量"
+    },
+    {
+      "key": "encyclopedia.detail.mohs_hardness",
+      "value": "モース硬度"
+    },
+    {
+      "key": "encyclopedia.detail.density",
+      "value": "密度"
+    },
+    {
+      "key": "encyclopedia.detail.magnetism",
+      "value": "磁性"
+    },
+    {
+      "key": "encyclopedia.detail.rarity",
+      "value": "レア度"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_probability",
+      "value": "発見確率"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_count",
+      "value": "発見回数"
+    },
+    {
+      "key": "encyclopedia.detail.first_discovered",
+      "value": "初回発見"
+    },
+    {
+      "key": "encyclopedia.layer.unknown",
+      "value": "未知の地層"
+    },
+    {
+      "key": "encyclopedia.ui.layer_section_title",
+      "value": "地質地層"
     }
   ]
 }
