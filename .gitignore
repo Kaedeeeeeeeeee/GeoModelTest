@@ -4,6 +4,8 @@
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
+# Allow WebGL Build directory for Vercel deployment
+!/Build/
 [Ll]ogs/
 [Uu]ser[Ss]ettings/
 
