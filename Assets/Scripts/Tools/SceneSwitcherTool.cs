@@ -10,8 +10,6 @@ public class SceneSwitcherTool : CollectionTool
 {
     [Header("场景切换器设置")]
     public GameObject switcherPrefab; // 切换器预制体
-    public float useRange = 5f; // 使用范围
-    public float useCooldown = 1f; // 使用冷却时间
     
     [Header("音效")]
     public AudioClip switcherActivateSound; // 激活音效
