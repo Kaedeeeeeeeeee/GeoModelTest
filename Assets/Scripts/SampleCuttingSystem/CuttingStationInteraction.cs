@@ -48,6 +48,12 @@ namespace SampleCuttingSystem
             {
                 mobileInputManager = FindObjectOfType<MobileInputManager>();
             }
+
+            // 监听语言切换事件
+            if (LocalizationManager.Instance != null)
+            {
+                LocalizationManager.Instance.OnLanguageChanged += UpdatePromptText;
+            }
         }
 
         void Update()
@@ -202,7 +208,7 @@ namespace SampleCuttingSystem
             promptTextObj.transform.SetParent(promptBg.transform, false);
 
             promptText = promptTextObj.AddComponent<Text>();
-            promptText.text = "[F] 使用切割台";
+            promptText.text = LocalizationManager.Instance?.GetText("cutting_station.interaction.prompt") ?? "[F] 使用切割台";
             promptText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             promptText.fontSize = 20;
             promptText.color = Color.white;
@@ -1006,12 +1012,15 @@ namespace SampleCuttingSystem
             titleRect.offsetMax = new Vector2(-10f, 0f);
 
             Text titleText = titleObj.AddComponent<Text>();
-            titleText.text = "样本切割台";
             titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             titleText.fontSize = 24;
             titleText.color = Color.white;
             titleText.alignment = TextAnchor.MiddleCenter;
             titleText.fontStyle = FontStyle.Bold;
+
+            // 添加本地化组件
+            var localizedText = titleObj.AddComponent<LocalizedText>();
+            localizedText.TextKey = "cutting_system.cutting_area.title";
         }
 
         /// <summary>
@@ -1073,11 +1082,14 @@ namespace SampleCuttingSystem
             textRect.offsetMax = Vector2.zero;
 
             Text hint = textObj.AddComponent<Text>();
-            hint.text = "拖拽样本到此处开始切割 • 支持多层地质样本";
             hint.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             hint.fontSize = 14;
             hint.color = Color.cyan;
             hint.alignment = TextAnchor.MiddleCenter;
+
+            // 添加本地化组件
+            var localizedHint = textObj.AddComponent<LocalizedText>();
+            localizedHint.TextKey = "cutting_system.instruction.drag_sample";
 
             Debug.Log("🎯 完整的切割投放区域创建完成，包含所有必要组件");
         }
@@ -1180,7 +1192,7 @@ namespace SampleCuttingSystem
             textRect.offsetMax = Vector2.zero;
 
             Text text = btnText.AddComponent<Text>();
-            text.text = "关闭";
+            text.text = LocalizationManager.Instance?.GetText("cutting_system.button.close") ?? "关闭";
             text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             text.fontSize = 16;
             text.color = Color.white;
@@ -1400,6 +1412,26 @@ namespace SampleCuttingSystem
                     Destroy(cuttingArea.gameObject);
                     Debug.Log("移除切割区域组件");
                 }
+            }
+        }
+
+        /// <summary>
+        /// 更新提示文本（语言切换时调用）
+        /// </summary>
+        private void UpdatePromptText()
+        {
+            if (promptText != null)
+            {
+                promptText.text = LocalizationManager.Instance?.GetText("cutting_station.interaction.prompt") ?? "[F] 使用切割台";
+            }
+        }
+
+        void OnDestroy()
+        {
+            // 移除语言切换事件监听器
+            if (LocalizationManager.Instance != null)
+            {
+                LocalizationManager.Instance.OnLanguageChanged -= UpdatePromptText;
             }
         }
 

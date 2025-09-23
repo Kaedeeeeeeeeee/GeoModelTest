@@ -165,13 +165,24 @@ namespace Encyclopedia
             // 条目类型筛选
             if (entryTypeFilter != null)
             {
+                // 保存当前选中的值
+                int currentTypeValue = entryTypeFilter.value;
+
+                // 清除现有的监听器和选项
+                entryTypeFilter.onValueChanged.RemoveAllListeners();
                 entryTypeFilter.ClearOptions();
+
                 var typeOptions = new List<string> {
                     LocalizationManager.Instance.GetText("encyclopedia.ui.filter.all"),
                     LocalizationManager.Instance.GetText("encyclopedia.ui.filter.mineral"),
                     LocalizationManager.Instance.GetText("encyclopedia.ui.filter.fossil")
                 };
                 entryTypeFilter.AddOptions(typeOptions);
+
+                // 恢复选中的值
+                entryTypeFilter.value = currentTypeValue;
+
+                // 重新添加监听器
                 entryTypeFilter.onValueChanged.AddListener(OnEntryTypeFilterChanged);
                 // 增大Dropdown字体
                 var entryTypeText = entryTypeFilter.GetComponentInChildren<Text>();
@@ -181,7 +192,13 @@ namespace Encyclopedia
             // 稀有度筛选
             if (rarityFilter != null)
             {
+                // 保存当前选中的值
+                int currentRarityValue = rarityFilter.value;
+
+                // 清除现有的监听器和选项
+                rarityFilter.onValueChanged.RemoveAllListeners();
                 rarityFilter.ClearOptions();
+
                 var rarityOptions = new List<string> {
                     LocalizationManager.Instance.GetText("encyclopedia.ui.filter.all"),
                     LocalizationManager.Instance.GetText("encyclopedia.ui.rarity.common"),
@@ -189,6 +206,11 @@ namespace Encyclopedia
                     LocalizationManager.Instance.GetText("encyclopedia.ui.rarity.rare")
                 };
                 rarityFilter.AddOptions(rarityOptions);
+
+                // 恢复选中的值
+                rarityFilter.value = currentRarityValue;
+
+                // 重新添加监听器
                 rarityFilter.onValueChanged.AddListener(OnRarityFilterChanged);
                 // 增大Dropdown字体
                 var rarityText = rarityFilter.GetComponentInChildren<Text>();
@@ -198,6 +220,17 @@ namespace Encyclopedia
             // 搜索输入
             if (searchInput != null)
             {
+                // 清除现有监听器
+                searchInput.onValueChanged.RemoveAllListeners();
+
+                // 更新placeholder文本
+                var placeholder = searchInput.placeholder.GetComponent<Text>();
+                if (placeholder != null)
+                {
+                    placeholder.text = LocalizationManager.Instance.GetText("encyclopedia.ui.search_placeholder");
+                }
+
+                // 重新添加监听器
                 searchInput.onValueChanged.AddListener(OnSearchInputChanged);
                 // 增大InputField字体
                 var inputText = searchInput.GetComponentInChildren<Text>();
@@ -207,10 +240,19 @@ namespace Encyclopedia
             // 清除筛选按钮
             if (clearFiltersButton != null)
             {
-                clearFiltersButton.onClick.AddListener(ClearAllFilters);
-                // 增大Button字体
+                // 清除现有监听器
+                clearFiltersButton.onClick.RemoveAllListeners();
+
+                // 更新按钮文本
                 var buttonText = clearFiltersButton.GetComponentInChildren<Text>();
-                if (buttonText != null) buttonText.fontSize = 20;
+                if (buttonText != null)
+                {
+                    buttonText.text = LocalizationManager.Instance.GetText("encyclopedia.ui.clear_filters");
+                    buttonText.fontSize = 20;
+                }
+
+                // 重新添加监听器
+                clearFiltersButton.onClick.AddListener(ClearAllFilters);
             }
         }
 
@@ -511,13 +553,20 @@ namespace Encyclopedia
                 Debug.Log($"[EncyclopediaUI] 搜索筛选后: {entries.Count}");
             }
 
-            // 按类型和稀有度排序
+            // 按日文假名顺序排序：先按中间词（岩石类型），再按最后词（矿物名称）
             var sortedEntries = entries.OrderBy(e => e.entryType)
-                         .ThenBy(e => e.rarity)
-                         .ThenBy(e => e.displayName)
+                         .ThenBy(e => GetRockTypeForSorting(e))
+                         .ThenBy(e => GetMineralNameForSorting(e))
                          .ToList();
 
             Debug.Log($"[EncyclopediaUI] 最终条目数: {sortedEntries.Count}");
+
+            // 调试输出前5个条目的排序信息
+            for (int i = 0; i < Math.Min(5, sortedEntries.Count); i++)
+            {
+                var entry = sortedEntries[i];
+                Debug.Log($"[EncyclopediaUI] 排序 {i+1}: {entry.displayName} | 岩石排序键: {GetRockTypeForSorting(entry)} | 矿物排序键: {GetMineralNameForSorting(entry)}");
+            }
             return sortedEntries;
         }
 
@@ -659,6 +708,9 @@ namespace Encyclopedia
             // 设置详情内容
             SetDetailContent(entry);
 
+            // 添加翻页按钮
+            AddNavigationButtonsIfNeeded();
+
             Debug.Log("[EncyclopediaUI] 详情面板已打开");
         }
 
@@ -784,7 +836,7 @@ namespace Encyclopedia
 
             detailTitle = titleGO.AddComponent<Text>();
             detailTitle.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            detailTitle.fontSize = 72;  // 从36增加到72，放大一倍
+            detailTitle.fontSize = 32;  // 更大的标题字体大小
             detailTitle.color = Color.white;
             detailTitle.alignment = TextAnchor.MiddleLeft;
             detailTitle.fontStyle = FontStyle.Bold;
@@ -1037,22 +1089,23 @@ namespace Encyclopedia
             if (detailTitle != null)
             {
                 detailTitle.text = GetLocalizedEntryName(entry);
-                detailTitle.fontSize = 36;  // 适中的标题字体大小
+                detailTitle.fontSize = 32;  // 更大的标题字体大小
             }
 
             if (detailDescription != null)
             {
                 // 尝试获取本地化描述
                 string localizedDescription = GetLocalizedDescription(entry);
+                Debug.Log($"[EncyclopediaUI] 矿物 {entry.displayName} 本地化描述: '{localizedDescription}'");
                 detailDescription.text = !string.IsNullOrEmpty(localizedDescription) ?
                     localizedDescription : LocalizationManager.Instance.GetText("encyclopedia.detail.no_description");
-                detailDescription.fontSize = 24;  // 适中的描述字体大小
+                detailDescription.fontSize = 22;  // 更大的描述字体大小
             }
 
             if (detailProperties != null)
             {
                 detailProperties.text = GeneratePropertiesText(entry);
-                detailProperties.fontSize = 22;  // 适中的属性字体大小
+                detailProperties.fontSize = 20;  // 更大的属性字体大小
             }
 
             // 确保3D查看器存在
@@ -1081,6 +1134,9 @@ namespace Encyclopedia
             {
                 detailIcon.gameObject.SetActive(false);
             }
+
+            // 更新翻页按钮状态
+            UpdateNavigationButtons();
 
             Debug.Log($"[EncyclopediaUI] 详情内容已设置: {entry.GetFormattedDisplayName()}");
         }
@@ -1143,18 +1199,18 @@ namespace Encyclopedia
                 Debug.Log("[EncyclopediaUI] 背景已设置为不透明");
             }
 
-            // 修复字体大小
+            // 设置合适的字体大小
             if (detailTitle != null)
             {
-                detailTitle.fontSize = 72;  // 从36增加到72，放大一倍
+                detailTitle.fontSize = 32;  // 更大的标题字体
             }
             if (detailDescription != null)
             {
-                detailDescription.fontSize = 48;  // 从24增加到48，放大一倍
+                detailDescription.fontSize = 22;  // 更大的描述字体
             }
             if (detailProperties != null)
             {
-                detailProperties.fontSize = 44;  // 从22增加到44，放大一倍
+                detailProperties.fontSize = 20;  // 更大的属性字体
             }
             Debug.Log("[EncyclopediaUI] 字体大小已调整");
 
@@ -1176,7 +1232,11 @@ namespace Encyclopedia
             // 设置描述
             if (detailDescription != null)
             {
-                detailDescription.text = entry.GetDescriptionForUI();
+                // 使用本地化描述，保持与SetDetailContent方法一致
+                string localizedDescription = GetLocalizedDescription(entry);
+                Debug.Log($"[EncyclopediaUI] ShowEntryDetails矿物 {entry.displayName} 本地化描述: '{localizedDescription}'");
+                detailDescription.text = !string.IsNullOrEmpty(localizedDescription) ?
+                    localizedDescription : LocalizationManager.Instance.GetText("encyclopedia.detail.no_description");
             }
 
             // 设置属性信息
@@ -1512,14 +1572,17 @@ namespace Encyclopedia
         {
             if (LocalizationManager.Instance == null)
             {
+                Debug.LogWarning("[EncyclopediaUI] LocalizationManager实例为空");
                 return entry.description; // 备用：使用原始描述
             }
 
             // 构建本地化键值
             string localizationKey = GetDescriptionLocalizationKey(entry);
+            Debug.Log($"[EncyclopediaUI] 获取本地化描述 - 矿物: {entry.displayName}, 键值: {localizationKey}, 当前语言: {LocalizationManager.Instance.CurrentLanguage}");
 
             // 尝试获取本地化文本
             string localizedText = LocalizationManager.Instance.GetText(localizationKey);
+            Debug.Log($"[EncyclopediaUI] 本地化文本获取结果: '{localizedText}'");
 
             // 如果本地化文本就是键值本身或者是带方括号的键值（表示没找到），则尝试其他变体
             if (localizedText == localizationKey || localizedText == $"[{localizationKey}]")
@@ -1595,11 +1658,13 @@ namespace Encyclopedia
         {
             if (LocalizationManager.Instance == null)
             {
+                Debug.LogWarning("[EncyclopediaUI] LocalizationManager实例为空，使用默认名称");
                 // 如果本地化管理器不可用，返回完整格式化名称
                 return entry.GetFormattedDisplayName();
             }
 
             var currentLanguage = LocalizationManager.Instance.CurrentLanguage;
+            Debug.Log($"[EncyclopediaUI] 获取本地化条目名称 - 矿物: {entry.displayName}, 当前语言: {currentLanguage}");
 
             // 获取本地化的地层名称
             string localizedLayerName = GetLocalizedLayerName(entry.layerName);
@@ -1766,6 +1831,15 @@ namespace Encyclopedia
 
                 // 更新地层标签显示
                 UpdateLayerTabsLanguage();
+
+                // 更新统计信息显示
+                UpdateStatistics();
+
+                // 如果详情面板开启，更新当前条目的详情显示
+                if (detailPanel != null && detailPanel.activeInHierarchy && selectedEntry != null)
+                {
+                    ShowEntryDetails(selectedEntry);
+                }
 
                 // 刷新条目列表
                 RefreshEntryList();
@@ -1964,10 +2038,10 @@ namespace Encyclopedia
             Debug.Log("[EncyclopediaUI] 为详情面板创建翻页按钮");
 
             // 创建左侧上一页按钮（三角形向左）- 底部中央偏左
-            CreateTriangleNavigationButton(detailPanel.transform, "PrevButton", true, new Vector2(-100, 80), GoToPreviousEntry);
+            CreateTriangleNavigationButton(detailPanel.transform, "PrevButton", true, new Vector2(-120, 120), GoToPreviousEntry);
 
             // 创建右侧下一页按钮（三角形向右）- 底部中央偏右
-            CreateTriangleNavigationButton(detailPanel.transform, "NextButton", false, new Vector2(100, 80), GoToNextEntry);
+            CreateTriangleNavigationButton(detailPanel.transform, "NextButton", false, new Vector2(120, 120), GoToNextEntry);
 
             // 更新按钮状态
             UpdateNavigationButtons();
@@ -1989,11 +2063,22 @@ namespace Encyclopedia
             buttonRect.anchorMax = new Vector2(0.5f, 0f);
             buttonRect.pivot = new Vector2(0.5f, 0f);
             buttonRect.anchoredPosition = position;
-            buttonRect.sizeDelta = new Vector2(180, 240); // 放大三倍：60*3=180, 80*3=240
+            buttonRect.sizeDelta = new Vector2(100, 100); // 更适中的按钮大小
 
-            // 添加Button组件（透明背景）
+            // 添加Button组件和半透明背景
+            Image buttonBg = buttonGO.AddComponent<Image>();
+            buttonBg.color = new Color(0.2f, 0.3f, 0.4f, 0.7f); // 深蓝色半透明背景
+
             Button button = buttonGO.AddComponent<Button>();
+            button.targetGraphic = buttonBg;
             button.onClick.AddListener(() => onClick());
+
+            // 添加悬停效果
+            var colors = button.colors;
+            colors.highlightedColor = new Color(0.3f, 0.4f, 0.6f, 0.9f);
+            colors.pressedColor = new Color(0.1f, 0.2f, 0.3f, 1.0f);
+            colors.disabledColor = new Color(0.1f, 0.1f, 0.1f, 0.3f);
+            button.colors = colors;
 
             // 创建三角形图像
             GameObject triangleGO = new GameObject("Triangle");
@@ -2008,10 +2093,11 @@ namespace Encyclopedia
             // 使用Text组件显示三角形箭头
             Text triangleText = triangleGO.AddComponent<Text>();
             triangleText.text = isLeftArrow ? "◀" : "▶";
-            triangleText.fontSize = 120; // 放大三倍：40*3=120
-            triangleText.color = new Color(0.9f, 0.9f, 0.9f, 0.9f); // 白色半透明
+            triangleText.fontSize = 48; // 适中的三角形大小
+            triangleText.color = Color.white; // 纯白色，更清晰
             triangleText.alignment = TextAnchor.MiddleCenter;
             triangleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            triangleText.fontStyle = FontStyle.Bold; // 加粗让箭头更明显
 
             Debug.Log($"[EncyclopediaUI] 创建三角形按钮: {name}, 位置: {position}, 左箭头: {isLeftArrow}");
         }
@@ -2030,11 +2116,16 @@ namespace Encyclopedia
             {
                 prevButton.interactable = currentEntryIndex > 0;
                 var prevText = prevButton.GetComponentInChildren<Text>();
+                var prevBg = prevButton.GetComponent<Image>();
                 if (prevText != null)
                 {
-                    prevText.color = prevButton.interactable ?
-                        new Color(0.9f, 0.9f, 0.9f, 0.9f) :
-                        new Color(0.4f, 0.4f, 0.4f, 0.5f);
+                    prevText.color = prevButton.interactable ? Color.white : new Color(0.5f, 0.5f, 0.5f, 0.6f);
+                }
+                if (prevBg != null)
+                {
+                    prevBg.color = prevButton.interactable ?
+                        new Color(0.2f, 0.3f, 0.4f, 0.7f) :
+                        new Color(0.1f, 0.1f, 0.1f, 0.3f);
                 }
             }
 
@@ -2042,11 +2133,16 @@ namespace Encyclopedia
             {
                 nextButton.interactable = currentEntryIndex < currentFilteredEntries.Count - 1;
                 var nextText = nextButton.GetComponentInChildren<Text>();
+                var nextBg = nextButton.GetComponent<Image>();
                 if (nextText != null)
                 {
-                    nextText.color = nextButton.interactable ?
-                        new Color(0.9f, 0.9f, 0.9f, 0.9f) :
-                        new Color(0.4f, 0.4f, 0.4f, 0.5f);
+                    nextText.color = nextButton.interactable ? Color.white : new Color(0.5f, 0.5f, 0.5f, 0.6f);
+                }
+                if (nextBg != null)
+                {
+                    nextBg.color = nextButton.interactable ?
+                        new Color(0.2f, 0.3f, 0.4f, 0.7f) :
+                        new Color(0.1f, 0.1f, 0.1f, 0.3f);
                 }
             }
 
@@ -2105,6 +2201,96 @@ namespace Encyclopedia
                 viewer.ForceRenderTextureDisplay();
                 Debug.Log("[EncyclopediaUI] 强制切换到RenderTexture显示");
             }
+        }
+
+        /// <summary>
+        /// 获取岩石类型用于排序（使用日文假名顺序）
+        /// </summary>
+        private string GetRockTypeForSorting(EncyclopediaEntry entry)
+        {
+            // 获取本地化的岩石名称
+            string rockName = GetLocalizedRockName(entry.rockName);
+
+            // 如果rockName为null或空，提供默认值
+            if (string.IsNullOrEmpty(rockName))
+            {
+                rockName = "未知岩石"; // 提供默认值
+            }
+
+            // 岩石类型的假名排序顺序映射
+            var rockSortOrder = new Dictionary<string, string>
+            {
+                // 按假名顺序排列
+                {"火山灰", "01かざんばい"},
+                {"火山ガラス", "02かざんがらす"},
+                {"礫岩", "03れきがん"},
+                {"砂岩", "04さがん"},
+                {"泥岩", "05でいがん"},
+                {"凝灰岩", "06ぎょうかいがん"},
+                {"石灰岩", "07せっかいがん"},
+                {"花崗岩", "08かこうがん"},
+                {"安山岩", "09あんざんがん"},
+                {"玄武岩", "10げんぶがん"},
+                {"未知岩石", "99みちがんせき"} // 默认值的排序键
+            };
+
+            // 如果找到映射，返回排序键，否则返回原始名称
+            return rockSortOrder.TryGetValue(rockName, out string sortKey) ? sortKey : ("99" + rockName);
+        }
+
+        /// <summary>
+        /// 获取矿物名称用于排序（使用日文假名顺序）
+        /// </summary>
+        private string GetMineralNameForSorting(EncyclopediaEntry entry)
+        {
+            // 获取本地化的矿物名称
+            string mineralName = "";
+            var currentLanguage = LocalizationManager.Instance?.CurrentLanguage ?? LanguageSettings.Language.Japanese;
+
+            switch (currentLanguage)
+            {
+                case LanguageSettings.Language.English:
+                    mineralName = !string.IsNullOrEmpty(entry.nameEN) ? entry.nameEN : entry.displayName;
+                    break;
+                case LanguageSettings.Language.Japanese:
+                    mineralName = !string.IsNullOrEmpty(entry.nameJA) ? entry.nameJA : entry.displayName;
+                    break;
+                case LanguageSettings.Language.ChineseSimplified:
+                default:
+                    mineralName = !string.IsNullOrEmpty(entry.nameCN) ? entry.nameCN : entry.displayName;
+                    break;
+            }
+
+            // 如果mineralName为null或空，提供默认值
+            if (string.IsNullOrEmpty(mineralName))
+            {
+                mineralName = "未知矿物"; // 提供默认值
+            }
+
+            // 矿物名称的假名排序顺序映射
+            var mineralSortOrder = new Dictionary<string, string>
+            {
+                // 按假名顺序排列（假名读音）
+                {"石英", "01せきえい"},
+                {"斜長石", "02しゃちょうせき"},
+                {"角閃石", "03かくせんせき"},
+                {"輝石", "04きせき"},
+                {"橄榄石", "05かんらんせき"},
+                {"磁鉄鉱", "06じてっこう"},
+                {"黄鉄鉱", "07おうてっこう"},
+                {"方解石", "08ほうかいせき"},
+                {"長石", "09ちょうせき"},
+                {"雲母", "10うんも"},
+                {"ザクロ石", "11ざくろいし"},
+                {"紫蘇輝石", "12しそきせき"},
+                {"火山ガラス", "13かざんがらす"},
+                {"重鉱物", "14じゅうこうぶつ"},
+                {"炭質物", "15たんしつぶつ"},
+                {"未知矿物", "99みちこうぶつ"} // 默认值的排序键
+            };
+
+            // 如果找到映射，返回排序键，否则返回原始名称
+            return mineralSortOrder.TryGetValue(mineralName, out string sortKey) ? sortKey : ("99" + mineralName);
         }
 
         private void OnDestroy()

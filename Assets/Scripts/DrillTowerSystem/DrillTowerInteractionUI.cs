@@ -28,8 +28,14 @@ public class DrillTowerInteractionUI : MonoBehaviour
         {
             playerCamera = FindFirstObjectByType<Camera>();
         }
-        
+
         CreateInteractionUI();
+
+        // 监听语言切换事件
+        if (LocalizationManager.Instance != null)
+        {
+            LocalizationManager.Instance.OnLanguageChanged += UpdateLocalizedTexts;
+        }
     }
     
     void Update()
@@ -187,15 +193,17 @@ public class DrillTowerInteractionUI : MonoBehaviour
     void UpdatePromptText(DrillTower tower)
     {
         if (promptText == null) return;
-        
+
         if (tower.isDrilling)
         {
-            promptText.text = drillingText;
+            promptText.text = LocalizationManager.Instance?.GetText("drill_tower.drilling") ?? "钻探中...";
             promptText.color = Color.yellow;
         }
         else if (tower.currentDrillCount >= 5) // 假设最大5次钻探
         {
-            promptText.text = $"{maxDepthText}\n按 G 键收回钻塔";
+            string maxDepthText = LocalizationManager.Instance?.GetText("drill_tower.max_depth") ?? "已达最大钻探深度";
+            string recallText = LocalizationManager.Instance?.GetText("drill_tower.recall_prompt") ?? "按 G 键收回钻塔";
+            promptText.text = $"{maxDepthText}\n{recallText}";
             promptText.color = Color.red;
         }
         else
@@ -203,9 +211,32 @@ public class DrillTowerInteractionUI : MonoBehaviour
             int nextDrillNumber = tower.currentDrillCount + 1;
             float startDepth = tower.currentDrillCount * 2f;
             float endDepth = startDepth + 2f;
-            
-            promptText.text = $"按 F 键进行第{nextDrillNumber}次钻探\n({startDepth:F0}m-{endDepth:F0}m)\n按 G 键收回钻塔";
+
+            string drillPrompt = LocalizationManager.Instance?.GetText("drill_tower.drill_prompt", nextDrillNumber, startDepth, endDepth) ?? $"按 F 键进行第{nextDrillNumber}次钻探\n({startDepth:F0}m-{endDepth:F0}m)";
+            string recallText = LocalizationManager.Instance?.GetText("drill_tower.recall_prompt") ?? "按 G 键收回钻塔";
+            promptText.text = $"{drillPrompt}\n{recallText}";
             promptText.color = Color.white;
+        }
+    }
+
+    /// <summary>
+    /// 更新本地化文本（语言切换时调用）
+    /// </summary>
+    void UpdateLocalizedTexts()
+    {
+        // 如果当前正在显示提示，则重新更新文本
+        if (currentTower != null && isShowingPrompt)
+        {
+            UpdatePromptText(currentTower);
+        }
+    }
+
+    void OnDestroy()
+    {
+        // 移除语言切换事件监听器
+        if (LocalizationManager.Instance != null)
+        {
+            LocalizationManager.Instance.OnLanguageChanged -= UpdateLocalizedTexts;
         }
     }
 }

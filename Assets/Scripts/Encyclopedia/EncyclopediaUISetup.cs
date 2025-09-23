@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using SampleCuttingSystem;
 
 namespace Encyclopedia
 {
@@ -170,9 +171,46 @@ namespace Encyclopedia
             
             ContentSizeFitter fitter = container.AddComponent<ContentSizeFitter>();
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            
+
+            // 创建地层标签标题
+            CreateLayerTabTitle(container);
+
             // 创建标签页预制体
             CreateLayerTabPrefab(container);
+        }
+
+        private void CreateLayerTabTitle(GameObject parent)
+        {
+            GameObject titleGO = new GameObject("LayerTabTitle");
+            titleGO.transform.SetParent(parent.transform, false);
+
+            RectTransform titleRect = titleGO.AddComponent<RectTransform>();
+            titleRect.sizeDelta = new Vector2(0, 30);
+
+            // 标题背景
+            Image titleBackground = titleGO.AddComponent<Image>();
+            titleBackground.color = new Color(0.3f, 0.4f, 0.6f, 0.9f);
+
+            // 标题文字
+            GameObject titleTextGO = new GameObject("TitleText");
+            titleTextGO.transform.SetParent(titleGO.transform, false);
+
+            RectTransform titleTextRect = titleTextGO.AddComponent<RectTransform>();
+            titleTextRect.anchorMin = Vector2.zero;
+            titleTextRect.anchorMax = Vector2.one;
+            titleTextRect.offsetMin = new Vector2(10, 0);
+            titleTextRect.offsetMax = new Vector2(-10, 0);
+
+            Text titleText = titleTextGO.AddComponent<Text>();
+            titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            titleText.fontSize = 18;
+            titleText.color = Color.white;
+            titleText.alignment = TextAnchor.MiddleCenter;
+            titleText.fontStyle = FontStyle.Bold;
+
+            // 添加本地化组件
+            var localizedText = titleTextGO.AddComponent<LocalizedText>();
+            localizedText.TextKey = "encyclopedia.ui.layer_section_title";
         }
 
         private void CreateLayerTabPrefab(GameObject parent)
@@ -200,11 +238,14 @@ namespace Encyclopedia
             textRect.offsetMax = new Vector2(-10, 0);
             
             Text text = textGO.AddComponent<Text>();
-            text.text = "地层名称";
             text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             text.fontSize = 16;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleLeft;
+
+            // 添加本地化组件
+            var localizedText = textGO.AddComponent<LocalizedText>();
+            localizedText.TextKey = "encyclopedia.ui.layer_name_template";
             
             // 禁用预制体（这只是模板）
             tabPrefab.SetActive(false);
@@ -236,11 +277,14 @@ namespace Encyclopedia
             textRect.offsetMax = new Vector2(-10, -10);
             
             Text text = textGO.AddComponent<Text>();
-            text.text = "收集统计:\n矿物: 0/0\n化石: 0/0";
             text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             text.fontSize = 14;
             text.color = new Color(0.7f, 0.9f, 1f);
             text.alignment = TextAnchor.UpperLeft;
+
+            // 添加本地化组件
+            var localizedText = textGO.AddComponent<LocalizedText>();
+            localizedText.TextKey = "encyclopedia.ui.statistics_template";
         }
 
         private GameObject CreateRightPanel(GameObject parent)
@@ -305,7 +349,7 @@ namespace Encyclopedia
             background.color = new Color(0.2f, 0.2f, 0.3f, 0.9f);
             
             Dropdown dropdown = dropdownGO.AddComponent<Dropdown>();
-            dropdown.options.Add(new Dropdown.OptionData("全部"));
+            dropdown.options.Add(new Dropdown.OptionData(LocalizationManager.Instance.GetText("encyclopedia.ui.filter_all")));
             
             // Label (Caption Text)
             GameObject labelGO = new GameObject("Label");
@@ -318,10 +362,13 @@ namespace Encyclopedia
             labelRect.offsetMax = new Vector2(-25, -2);
             
             Text labelText = labelGO.AddComponent<Text>();
-            labelText.text = "全部";
             labelText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             labelText.fontSize = 12;
             labelText.color = Color.white;
+
+            // 添加本地化组件
+            var localizedLabel = labelGO.AddComponent<LocalizedText>();
+            localizedLabel.TextKey = "encyclopedia.ui.filter_all";
             labelText.alignment = TextAnchor.MiddleLeft;
             
             dropdown.captionText = labelText;
@@ -382,11 +429,14 @@ namespace Encyclopedia
             placeholderRect.offsetMax = new Vector2(-10, 0);
             
             Text placeholder = placeholderGO.AddComponent<Text>();
-            placeholder.text = "搜索...";
             placeholder.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             placeholder.fontSize = 12;
             placeholder.color = new Color(0.7f, 0.7f, 0.7f, 0.5f);
             placeholder.alignment = TextAnchor.MiddleLeft;
+
+            // 添加本地化组件
+            var localizedPlaceholder = placeholderGO.AddComponent<LocalizedText>();
+            localizedPlaceholder.TextKey = "encyclopedia.ui.search_placeholder";
             
             // Text
             GameObject textGO = new GameObject("Text");
@@ -431,11 +481,14 @@ namespace Encyclopedia
             textRect.offsetMax = Vector2.zero;
             
             Text text = textGO.AddComponent<Text>();
-            text.text = "清除";
             text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             text.fontSize = 12;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleCenter;
+
+            // 添加本地化组件
+            var localizedText = textGO.AddComponent<LocalizedText>();
+            localizedText.TextKey = "encyclopedia.ui.clear_filters";
         }
 
         private void CreateEntryList(GameObject parent)
@@ -523,11 +576,14 @@ namespace Encyclopedia
             nameRect.offsetMax = new Vector2(-100, -5);
             
             Text nameText = nameGO.AddComponent<Text>();
-            nameText.text = "条目名称";
             nameText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             nameText.fontSize = 14;
             nameText.color = Color.white;
             nameText.alignment = TextAnchor.MiddleLeft;
+
+            // 添加本地化组件
+            var localizedName = nameGO.AddComponent<LocalizedText>();
+            localizedName.TextKey = "encyclopedia.ui.entry_name_template";
             
             // 稀有度文字
             GameObject rarityGO = new GameObject("RarityText");
@@ -540,11 +596,14 @@ namespace Encyclopedia
             rarityRect.offsetMax = new Vector2(-100, 0);
             
             Text rarityText = rarityGO.AddComponent<Text>();
-            rarityText.text = "稀有度";
             rarityText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             rarityText.fontSize = 12;
             rarityText.color = Color.yellow;
             rarityText.alignment = TextAnchor.MiddleLeft;
+
+            // 添加本地化组件
+            var localizedRarity = rarityGO.AddComponent<LocalizedText>();
+            localizedRarity.TextKey = "encyclopedia.ui.rarity_template";
             
             // 状态指示器
             GameObject statusGO = new GameObject("StatusImage");
@@ -603,12 +662,15 @@ namespace Encyclopedia
             titleRect.offsetMax = new Vector2(-20, -10);
             
             Text titleText = titleGO.AddComponent<Text>();
-            titleText.text = "详细信息";
             titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            titleText.fontSize = 28;
+            titleText.fontSize = 56;  // 从28增加到56，放大一倍
             titleText.color = Color.white;
             titleText.alignment = TextAnchor.MiddleLeft;
             titleText.fontStyle = FontStyle.Bold;
+
+            // 添加本地化组件
+            var localizedTitle = titleGO.AddComponent<LocalizedText>();
+            localizedTitle.TextKey = "encyclopedia.ui.detail_info";
 
             // 关闭按钮
             CreateDetailCloseButton(parent);
@@ -637,11 +699,14 @@ namespace Encyclopedia
             descRect.offsetMax = new Vector2(-10, 0);
             
             Text descText = descGO.AddComponent<Text>();
-            descText.text = "描述信息";
             descText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            descText.fontSize = 18;
+            descText.fontSize = 36;  // 从18增加到36，放大一倍
             descText.color = Color.white;
             descText.alignment = TextAnchor.UpperLeft;
+
+            // 添加本地化组件
+            var localizedDesc = descGO.AddComponent<LocalizedText>();
+            localizedDesc.TextKey = "encyclopedia.ui.detail_description";
             
             // 属性
             GameObject propsGO = new GameObject("DetailProperties");
@@ -654,11 +719,14 @@ namespace Encyclopedia
             propsRect.offsetMax = new Vector2(-10, 0);
             
             Text propsText = propsGO.AddComponent<Text>();
-            propsText.text = "属性信息";
             propsText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            propsText.fontSize = 18;
+            propsText.fontSize = 36;  // 从18增加到36，放大一倍
             propsText.color = new Color(0.8f, 0.9f, 1f);
             propsText.alignment = TextAnchor.UpperLeft;
+
+            // 添加本地化组件
+            var localizedProps = propsGO.AddComponent<LocalizedText>();
+            localizedProps.TextKey = "encyclopedia.ui.detail_properties";
         }
 
         private void Create3DViewer(GameObject parent)
@@ -675,8 +743,8 @@ namespace Encyclopedia
             Image background = viewerGO.AddComponent<Image>();
             background.color = new Color(0.02f, 0.05f, 0.08f, 0.9f);
             
-            // 添加Simple3DViewer脚本（使用简化版）
-            viewerGO.AddComponent<Simple3DViewer>();
+            // 添加经过验证的Sample3DModelViewer脚本
+            viewerGO.AddComponent<Sample3DModelViewer>();
             
             // 创建控制按钮
             CreateViewerControls(viewerGO);
@@ -723,11 +791,14 @@ namespace Encyclopedia
             resetTextRect.offsetMax = Vector2.zero;
             
             Text resetText = resetTextGO.AddComponent<Text>();
-            resetText.text = "重置";
             resetText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             resetText.fontSize = 12;
             resetText.color = Color.white;
             resetText.alignment = TextAnchor.MiddleCenter;
+
+            // 添加本地化组件
+            var localizedReset = resetTextGO.AddComponent<LocalizedText>();
+            localizedReset.TextKey = "encyclopedia.ui.viewer_reset";
         }
 
         private void CreateDetailCloseButton(GameObject parent)
@@ -842,7 +913,7 @@ namespace Encyclopedia
                 SetFieldValue(uiController, "detailIcon", FindDeepChild(detailPanel.transform, "DetailIcon")?.GetComponent<Image>());
                 SetFieldValue(uiController, "detailDescription", FindDeepChild(detailPanel.transform, "DetailDescription")?.GetComponent<Text>());
                 SetFieldValue(uiController, "detailProperties", FindDeepChild(detailPanel.transform, "DetailProperties")?.GetComponent<Text>());
-                SetFieldValue(uiController, "model3DViewer", FindDeepChild(detailPanel.transform, "Model3DViewer")?.GetComponent<Simple3DViewer>());
+                SetFieldValue(uiController, "model3DViewer", FindDeepChild(detailPanel.transform, "Model3DViewer")?.GetComponent<Sample3DModelViewer>());
 
                 // 设置关闭按钮事件
                 SetupCloseButtonEvent(detailPanel, uiController);

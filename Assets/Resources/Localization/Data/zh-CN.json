@@ -749,6 +749,26 @@
       "value": "重矿物指密度较大的矿物（如锆石、钛磁铁矿、石榴石等）的集合体，常出现在砂中，颜色通常较深，粒度细小，具光泽。"
     },
     {
+      "key": "mineral.description.orthopyroxene",
+      "value": "颜色灰色、褐色或绿色，光泽玻璃至珍珠，条痕灰白或绿灰，表面有铜红色金属光泽。"
+    },
+    {
+      "key": "mineral.description.illite_alteration_product",
+      "value": "颜色灰白、银白或绿灰色，集合体呈云母状薄片，光泽珍珠至土状；条痕白色；半透明。"
+    },
+    {
+      "key": "mineral.description.pumice",
+      "value": "浮石是一种浅色的多孔火山岩，含大量气孔，质地轻可浮于水面，通常为白色或淡灰色，是喷出岩。"
+    },
+    {
+      "key": "mineral.description.volcanic_ash",
+      "value": "火山灰是火山喷发时产生的细粒火山碎屑物质，颗粒细小，通常为灰色至深灰色。"
+    },
+    {
+      "key": "mineral.description.carbonaceous_matter",
+      "value": "碳质物质是含碳的有机或无机化合物，通常呈黑色或深褐色，具有特征的碳质光泽。"
+    },
+    {
       "key": "encyclopedia.property.colorless_fade",
       "value": "无色/无褪色"
     },
@@ -915,6 +935,226 @@
     {
       "key": "fossil.description.generic",
       "value": "在该地层中发现的化石，为了解古代生物和环境提供了重要信息。"
+    },
+    {
+      "key": "cutting_system.warehouse.title",
+      "value": "仓库 (100格)"
+    },
+    {
+      "key": "cutting_system.cutting_area.title",
+      "value": "样本切割台"
+    },
+    {
+      "key": "cutting_system.instruction.drag_sample",
+      "value": "将多层地质样本\n从左侧拖拽到此处\n\n开始样本切割操作\n\n支持的样本类型:\n• 多层钻孔样本\n• 地质探查样本"
+    },
+    {
+      "key": "cutting_system.instruction.cutting_in_progress",
+      "value": "正在切割: {0}\n\n观察移动的切割线\n按空格键/触摸屏幕进行切割\n\n⚠️ 切割失败会销毁样本"
+    },
+    {
+      "key": "cutting_system.instruction.multi_layer_required",
+      "value": "只能切割多层样本"
+    },
+    {
+      "key": "cutting_system.button.close",
+      "value": "关闭"
+    },
+    {
+      "key": "cutting_system.cutting_line.instruction",
+      "value": "按空格键/触摸屏幕\n进行切割"
+    },
+    {
+      "key": "cutting_system.cutting_complete",
+      "value": "切割完成"
+    },
+    {
+      "key": "cutting_system.cutting_failed",
+      "value": "切割失败"
+    },
+    {
+      "key": "cutting_system.cutting_progress",
+      "value": "切割进度: {0}/{1}"
+    },
+    {
+      "key": "cutting_system.analyzing_sample",
+      "value": "分析样本中..."
+    },
+    {
+      "key": "cutting_system.success_message",
+      "value": "✅ 切割成功！\n\n单层样本已添加到背包\n可以继续切割其他样本"
+    },
+    {
+      "key": "cutting_system.failure_message",
+      "value": "❌ 切割失败\n\n样本已被销毁\n请重新选择样本进行切割"
+    },
+    {
+      "key": "cutting_system.initialization_failed",
+      "value": "切割系统初始化失败"
+    },
+    {
+      "key": "drill_tower.drilling",
+      "value": "钻探中..."
+    },
+    {
+      "key": "drill_tower.max_depth",
+      "value": "已达最大钻探深度"
+    },
+    {
+      "key": "drill_tower.recall_prompt",
+      "value": "按G键收回钻塔"
+    },
+    {
+      "key": "drill_tower.drill_prompt",
+      "value": "按F键进行第{0}次钻探\n({1:F0}m-{2:F0}m)"
+    },
+    {
+      "key": "cutting_system.all_cuts_complete",
+      "value": "所有切割完成！"
+    },
+    {
+      "key": "encyclopedia.ui.title",
+      "value": "地质图鉴"
+    },
+    {
+      "key": "encyclopedia.ui.collection_progress",
+      "value": "收集进度: {0}/{1} ({2})"
+    },
+    {
+      "key": "encyclopedia.ui.minerals_progress",
+      "value": "矿物: {0}/{1} ({2})"
+    },
+    {
+      "key": "encyclopedia.ui.fossils_progress",
+      "value": "化石: {0}/{1} ({2})"
+    },
+    {
+      "key": "encyclopedia.ui.search_placeholder",
+      "value": "搜索..."
+    },
+    {
+      "key": "encyclopedia.ui.clear_filters",
+      "value": "清除"
+    },
+    {
+      "key": "encyclopedia.ui.filter_all",
+      "value": "全部"
+    },
+    {
+      "key": "encyclopedia.ui.layer_name_template",
+      "value": "地层名称"
+    },
+    {
+      "key": "encyclopedia.ui.entry_name_template",
+      "value": "条目名称"
+    },
+    {
+      "key": "encyclopedia.ui.rarity_template",
+      "value": "稀有度"
+    },
+    {
+      "key": "encyclopedia.ui.statistics_template",
+      "value": "收集统计:\n矿物: 0/0\n化石: 0/0"
+    },
+    {
+      "key": "encyclopedia.ui.detail_info",
+      "value": "详细信息"
+    },
+    {
+      "key": "encyclopedia.ui.detail_description",
+      "value": "描述信息"
+    },
+    {
+      "key": "encyclopedia.ui.detail_properties",
+      "value": "属性信息"
+    },
+    {
+      "key": "encyclopedia.ui.viewer_reset",
+      "value": "重置"
+    },
+    {
+      "key": "encyclopedia.ui.close_button",
+      "value": "×"
+    },
+    {
+      "key": "encyclopedia.ui.filter.all",
+      "value": "全部"
+    },
+    {
+      "key": "encyclopedia.ui.filter.mineral",
+      "value": "矿物"
+    },
+    {
+      "key": "encyclopedia.ui.filter.fossil",
+      "value": "化石"
+    },
+    {
+      "key": "encyclopedia.ui.rarity.common",
+      "value": "常见"
+    },
+    {
+      "key": "encyclopedia.ui.rarity.uncommon",
+      "value": "少见"
+    },
+    {
+      "key": "encyclopedia.ui.rarity.rare",
+      "value": "稀有"
+    },
+    {
+      "key": "encyclopedia.detail.undiscovered",
+      "value": "发现后显示详细属性"
+    },
+    {
+      "key": "encyclopedia.detail.type",
+      "value": "类型"
+    },
+    {
+      "key": "encyclopedia.detail.layer",
+      "value": "地层"
+    },
+    {
+      "key": "encyclopedia.detail.rock",
+      "value": "岩石"
+    },
+    {
+      "key": "encyclopedia.detail.content",
+      "value": "含量"
+    },
+    {
+      "key": "encyclopedia.detail.mohs_hardness",
+      "value": "莫氏硬度"
+    },
+    {
+      "key": "encyclopedia.detail.density",
+      "value": "密度"
+    },
+    {
+      "key": "encyclopedia.detail.magnetism",
+      "value": "磁性"
+    },
+    {
+      "key": "encyclopedia.detail.rarity",
+      "value": "稀有度"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_probability",
+      "value": "发现概率"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_count",
+      "value": "发现次数"
+    },
+    {
+      "key": "encyclopedia.detail.first_discovered",
+      "value": "首次发现"
+    },
+    {
+      "key": "encyclopedia.layer.unknown",
+      "value": "未知地层"
+    },
+    {
+      "key": "encyclopedia.ui.layer_section_title",
+      "value": "地质地层"
     }
   ]
 }

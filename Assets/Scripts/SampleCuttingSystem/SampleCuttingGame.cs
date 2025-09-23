@@ -551,7 +551,10 @@ namespace SampleCuttingSystem
             keyText.fontStyle = FontStyle.Bold;
             keyText.color = new Color(0.8f, 0.9f, 1f, 1f);
             keyText.alignment = TextAnchor.MiddleLeft;
-            keyText.text = "按空格键/触摸屏幕\n进行切割";
+
+            // 添加本地化组件
+            var localizedKeyText = textObj.AddComponent<LocalizedText>();
+            localizedKeyText.TextKey = "cutting_system.cutting_line.instruction";
             
             // 初始状态隐藏
             panelObj.SetActive(false);
@@ -630,7 +633,7 @@ namespace SampleCuttingSystem
             textRect.offsetMax = Vector2.zero;
             
             Text text = btnText.AddComponent<Text>();
-            text.text = "关闭";
+            text.text = LocalizationManager.Instance?.GetText("cutting_system.button.close") ?? "关闭";
             text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             text.fontSize = 14; // 稍小的字体适应更小的按钮
             text.color = Color.white;
@@ -790,22 +793,22 @@ namespace SampleCuttingSystem
                 switch (currentState)
                 {
                     case CuttingState.WaitingForSample:
-                        instructionText.text = "将多层样本拖拽到切割台";
+                        instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.instruction.drag_sample") ?? "将多层样本拖拽到切割台";
                         break;
                     case CuttingState.Preparing:
-                        instructionText.text = "分析样本中...";
+                        instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.analyzing_sample") ?? "分析样本中...";
                         break;
                     case CuttingState.Cutting:
-                        instructionText.text = $"切割进度: {currentCuttingIndex + 1}/{layerBoundaries.Length}";
+                        instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.cutting_progress", currentCuttingIndex + 1, layerBoundaries.Length) ?? $"切割进度: {currentCuttingIndex + 1}/{layerBoundaries.Length}";
                         break;
                     case CuttingState.Success:
-                        instructionText.text = "切割成功！";
+                        instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.cutting_complete") ?? "切割成功！";
                         break;
                     case CuttingState.Failed:
-                        instructionText.text = "切割失败，样本损坏";
+                        instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.cutting_failed") ?? "切割失败，样本损坏";
                         break;
                     case CuttingState.Completed:
-                        instructionText.text = "所有切割完成！";
+                        instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.all_cuts_complete") ?? "所有切割完成！";
                         break;
                 }
             }
