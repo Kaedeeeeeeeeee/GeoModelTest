@@ -1,0 +1,90 @@
+name: Deploy WebGL to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Create WebGL placeholder
+        run: |
+          mkdir -p webgl-build
+          echo '<!DOCTYPE html>
+          <html>
+          <head>
+              <meta charset="utf-8">
+              <title>地质钻探系统 - WebGL版本</title>
+              <style>
+                  body { margin: 0; padding: 20px; font-family: Arial, sans-serif; background: #2c3e50; color: white; }
+                  .container { max-width: 800px; margin: 0 auto; text-align: center; }
+                  .notice { background: #34495e; padding: 20px; border-radius: 10px; margin: 20px 0; }
+                  .download-link { display: inline-block; background: #3498db; color: white; padding: 15px 30px;
+                                   text-decoration: none; border-radius: 5px; margin: 10px; }
+                  .download-link:hover { background: #2980b9; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h1>🌍 地质钻探系统</h1>
+                  <div class="notice">
+                      <h2>WebGL版本说明</h2>
+                      <p>由于游戏文件较大（约1.5GB），我们提供以下访问方式：</p>
+
+                      <h3>🎮 在线游玩</h3>
+                      <a href="https://itch.io" class="download-link">itch.io 在线版本</a>
+
+                      <h3>💾 本地下载</h3>
+                      <a href="https://github.com/Kaedeeeeeeeeee/GeoModelTest/releases" class="download-link">
+                          下载完整版本
+                      </a>
+
+                      <h3>🛠️ 开发者</h3>
+                      <a href="https://github.com/Kaedeeeeeeeeee/GeoModelTest" class="download-link">
+                          查看源代码
+                      </a>
+                  </div>
+
+                  <div class="notice">
+                      <h3>功能特色</h3>
+                      <ul style="text-align: left; display: inline-block;">
+                          <li>🎌 完整多语言支持（中文/日语/英语）</li>
+                          <li>🗿 地质图鉴系统与3D查看器</li>
+                          <li>⚡ 样本切割台系统</li>
+                          <li>🚁 无人机与钻探车控制</li>
+                          <li>🏗️ 钻塔多深度采集</li>
+                          <li>🔬 研究室场景切换</li>
+                      </ul>
+                  </div>
+              </div>
+          </body>
+          </html>' > webgl-build/index.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: './webgl-build'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v3
