@@ -11,7 +11,7 @@ public abstract class PlaceableTool : CollectionTool
     
     protected GameObject previewObject;
     protected bool isPlacementMode = false;
-    protected bool hasPlacedObject = false; // 标记是否已经放置过对象
+    public bool hasPlacedObject = false; // 标记是否已经放置过对象
     
     protected override void Start()
     {

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using SampleCuttingSystem;
 
 /// <summary>
 /// 仓库系统交互触发器 - 可调节位置的F键交互触发器
@@ -446,7 +447,7 @@ public class WarehouseTrigger : MonoBehaviour
         if (!playerInRange) return;
 
         // 检查是否有切割界面正在显示
-        var cuttingStation = FindFirstObjectByType<SampleCuttingSystem.CuttingStationInteraction>();
+        var cuttingStation = FindFirstObjectByType<CuttingStationInteraction>();
         if (cuttingStation != null)
         {
             // 通过反射检查切割界面是否打开

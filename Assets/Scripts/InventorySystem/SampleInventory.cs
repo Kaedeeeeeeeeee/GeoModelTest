@@ -155,9 +155,17 @@ public class SampleInventory : MonoBehaviour
             sample.currentLocation = SampleLocation.InInventory;
             sample.isPlayerPlaced = false;
             
-            // 触发事件
-            OnSampleAdded?.Invoke(sample);
-            OnInventoryChanged?.Invoke();
+            // 触发事件（添加异常保护）
+            try
+            {
+                OnSampleAdded?.Invoke(sample);
+                OnInventoryChanged?.Invoke();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[SampleInventory] 触发事件时发生错误: {ex.Message}");
+                Debug.LogError($"[SampleInventory] 错误堆栈: {ex.StackTrace}");
+            }
             
             LogMessage($"已添加样本到背包: {sample.displayName} ({sample.sampleID})");
             LogMessage($"当前背包: {samples.Count}/{maxSampleCapacity}");

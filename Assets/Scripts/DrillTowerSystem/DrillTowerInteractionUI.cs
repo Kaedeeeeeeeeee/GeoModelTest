@@ -164,12 +164,20 @@ public class DrillTowerInteractionUI : MonoBehaviour
     /// </summary>
     void ShowInteractionPrompt(DrillTower tower)
     {
+        // 检查UI对象是否仍然有效
+        if (interactionPrompt == null)
+        {
+            Debug.LogWarning("[DrillTowerInteractionUI] interactionPrompt已被销毁，重新初始化UI");
+            CreateInteractionUI();
+            return;
+        }
+
         if (!isShowingPrompt)
         {
             interactionPrompt.SetActive(true);
             isShowingPrompt = true;
         }
-        
+
         // 更新提示文本
         UpdatePromptText(tower);
     }
@@ -181,7 +189,11 @@ public class DrillTowerInteractionUI : MonoBehaviour
     {
         if (isShowingPrompt)
         {
-            interactionPrompt.SetActive(false);
+            // 检查UI对象是否仍然有效
+            if (interactionPrompt != null)
+            {
+                interactionPrompt.SetActive(false);
+            }
             isShowingPrompt = false;
             currentTower = null;
         }

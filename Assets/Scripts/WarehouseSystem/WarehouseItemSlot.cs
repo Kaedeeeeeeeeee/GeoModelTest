@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using SampleCuttingSystem;
 
 /// <summary>
 /// 仓库物品槽位 - 用于显示背包和仓库中的物品
@@ -65,11 +66,29 @@ public class WarehouseItemSlot : MonoBehaviour
         
         // 创建选中标记
         CreateSelectionMark();
-        
+
+        // 初始化拖拽功能
+        InitializeDragHandler();
+
         // 初始化为空槽位
         ClearItem();
     }
-    
+
+    /// <summary>
+    /// 初始化拖拽处理器
+    /// </summary>
+    void InitializeDragHandler()
+    {
+        // 检查是否已有SampleDragHandler组件
+        var existingHandler = GetComponent<SampleDragHandler>();
+        if (existingHandler == null)
+        {
+            // 添加SampleDragHandler组件
+            var dragHandler = gameObject.AddComponent<SampleDragHandler>();
+            Debug.Log($"[WarehouseItemSlot] 为槽位添加了SampleDragHandler组件");
+        }
+    }
+
     /// <summary>
     /// 设置槽位类型
     /// </summary>
@@ -83,6 +102,9 @@ public class WarehouseItemSlot : MonoBehaviour
     /// </summary>
     public void SetItem(SampleItem item)
     {
+        // 检查对象是否仍然有效
+        if (this == null) return;
+
         currentItem = item;
         hasItem = item != null;
         
@@ -103,6 +125,9 @@ public class WarehouseItemSlot : MonoBehaviour
     /// </summary>
     void ShowSample(SampleItem sample)
     {
+        // 检查对象是否仍然有效
+        if (this == null || sample == null) return;
+
         // 显示样本图标
         if (itemIcon != null)
         {
@@ -157,6 +182,9 @@ public class WarehouseItemSlot : MonoBehaviour
         
         // 检查样本是否可以切割（层数>1）
         UpdateCuttingEligibility(sample);
+
+        // 更新拖拽处理器的样本数据
+        UpdateDragHandlerData(sample);
     }
     
     /// <summary>
@@ -635,10 +663,10 @@ public class WarehouseItemSlot : MonoBehaviour
     /// </summary>
     void UpdateCuttingEligibility(SampleItem sample)
     {
-        if (sample == null) return;
-        
+        if (sample == null || this == null) return;
+
         bool canBeCut = sample.layerCount > 1;
-        
+
         if (canBeCut)
         {
             // 可以切割，隐藏禁用标记
@@ -649,11 +677,35 @@ public class WarehouseItemSlot : MonoBehaviour
             // 不可切割，显示红叉标记
             ShowDisabledMark();
         }
-        
-        // 更新拖拽组件的可用性
-        UpdateDragComponent(canBeCut);
+
+        // 更新拖拽组件的可用性 - 所有样本都应该可以拖拽
+        // 即使是单层样本也可以拖拽到切割台进行分析
+        UpdateDragComponent(true);
     }
-    
+
+    /// <summary>
+    /// 更新拖拽处理器的样本数据
+    /// </summary>
+    void UpdateDragHandlerData(SampleItem sample)
+    {
+        if (this == null || sample == null) return;
+
+        var dragHandler = GetComponent<SampleDragHandler>();
+        if (dragHandler != null)
+        {
+            // 将SampleItem转换为SampleData
+            var sampleData = new SampleData(
+                sample.displayName,
+                $"来源工具: {sample.sourceToolID}, 收集时间: {sample.collectionTime}",
+                sample.layerCount
+            );
+
+            // 使用公开的SetSampleData方法
+            dragHandler.SetSampleData(sampleData);
+            Debug.Log($"[WarehouseItemSlot] 为拖拽处理器设置样本数据: {sample.displayName} (层数: {sample.layerCount})");
+        }
+    }
+
     /// <summary>
     /// 显示禁用标记（红叉）
     /// </summary>
@@ -757,8 +809,11 @@ public class WarehouseItemSlot : MonoBehaviour
     /// </summary>
     void UpdateDragComponent(bool canBeCut)
     {
+        // 检查对象是否仍然有效
+        if (this == null) return;
+
         // 检查SampleDragHandler组件
-        var dragHandler = GetComponent<SampleCuttingSystem.SampleDragHandler>();
+        var dragHandler = GetComponent<SampleDragHandler>();
         if (dragHandler != null)
         {
             dragHandler.SetDraggingEnabled(canBeCut);

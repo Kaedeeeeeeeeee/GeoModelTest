@@ -47,7 +47,7 @@ public class DrillTowerTool : PlaceableTool
     public Material activeDrillMaterial; // 钻探中的材质
     public Material inactiveDrillMaterial; // 闲置状态材质
     
-    private DrillTower placedTower; // 已放置的钻塔引用
+    public DrillTower placedTower; // 已放置的钻塔引用
     private MobileInputManager mobileInputManager; // 移动端输入管理器
     private bool wasFKeyPressedLastFrame = false; // 上一帧F键状态
     
@@ -69,7 +69,35 @@ public class DrillTowerTool : PlaceableTool
             mobileInputManager = FindObjectOfType<MobileInputManager>();
         }
 
+        // 场景切换后恢复钻塔引用
+        if (hasPlacedObject && placedTower == null)
+        {
+            RestorePlacedTowerReference();
+        }
+
         // 钻塔工具初始化完成
+    }
+
+    /// <summary>
+    /// 场景切换后恢复已放置钻塔的引用
+    /// </summary>
+    void RestorePlacedTowerReference()
+    {
+        DrillTower[] towers = FindObjectsByType<DrillTower>(FindObjectsSortMode.None);
+        if (towers.Length > 0)
+        {
+            // 找到属于此工具的钻塔
+            foreach (var tower in towers)
+            {
+                if (tower.toolReference == null || tower.toolReference == this)
+                {
+                    placedTower = tower;
+                    tower.Initialize(this);
+                    Debug.Log("[DrillTowerTool] 场景切换后恢复钻塔引用");
+                    break;
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -357,7 +385,7 @@ public class DrillTower : MonoBehaviour
     [Header("连续钻探记录")]
     public List<DrillDepthRecord> depthRecords = new List<DrillDepthRecord>(); // 记录每个深度点的信息
     
-    private DrillTowerTool toolReference;
+    public DrillTowerTool toolReference;
     public List<GameObject> collectedSamples = new List<GameObject>();
     private Renderer towerRenderer;
     private AudioSource audioSource;
@@ -383,10 +411,37 @@ public class DrillTower : MonoBehaviour
     {
         toolReference = tool;
     }
+
+    /// <summary>
+    /// 确保工具引用有效，场景切换后重新查找
+    /// </summary>
+    void EnsureToolReference()
+    {
+        if (toolReference == null)
+        {
+            // 场景切换后重新查找工具引用
+            DrillTowerTool[] tools = FindObjectsByType<DrillTowerTool>(FindObjectsSortMode.None);
+            foreach (var tool in tools)
+            {
+                if (tool.hasPlacedObject && tool.placedTower == this)
+                {
+                    toolReference = tool;
+                    Debug.Log("[DrillTower] 重新找到工具引用");
+                    break;
+                }
+            }
+
+            if (toolReference == null)
+            {
+                Debug.LogWarning("[DrillTower] 无法找到对应的DrillTowerTool引用");
+            }
+        }
+    }
     
     public bool CanDrill()
     {
-        return !isDrilling && currentDrillCount < toolReference.maxDrillDepths;
+        EnsureToolReference();
+        return !isDrilling && toolReference != null && currentDrillCount < toolReference.maxDrillDepths;
     }
     
     public void StartDrilling()
@@ -400,10 +455,13 @@ public class DrillTower : MonoBehaviour
     {
         isDrilling = true;
         UpdateTowerAppearance();
-        
+
         // 播放钻探效果
         PlayDrillingEffects();
-        
+
+        EnsureToolReference();
+        if (toolReference == null) yield break;
+
         float currentDepthStart = currentDrillCount * toolReference.depthPerDrill;
         float currentDepthEnd = currentDepthStart + toolReference.depthPerDrill;
         
@@ -425,6 +483,9 @@ public class DrillTower : MonoBehaviour
     
     void PerformDrilling(float depthStart, float depthEnd)
     {
+        EnsureToolReference();
+        if (toolReference == null) return;
+
         // 计算样本位置（环形排列）
         Vector3 samplePosition = toolReference.GetSamplePosition(drillingPosition, currentDrillCount);
         
@@ -629,6 +690,9 @@ public class DrillTower : MonoBehaviour
     
     void PlayDrillingEffects()
     {
+        EnsureToolReference();
+        if (toolReference == null) return;
+
         // 播放钻探音效
         if (audioSource != null && toolReference.drillingSound != null)
         {
@@ -636,7 +700,7 @@ public class DrillTower : MonoBehaviour
             audioSource.loop = true;
             audioSource.Play();
         }
-        
+
         // 播放粒子效果
         if (toolReference.drillingEffectPrefab != null)
         {
@@ -663,8 +727,11 @@ public class DrillTower : MonoBehaviour
     
     void UpdateTowerAppearance()
     {
-        if (towerRenderer == null || toolReference == null) return;
-        
+        if (towerRenderer == null) return;
+
+        EnsureToolReference();
+        if (toolReference == null) return;
+
         // 根据状态更新材质
         if (isDrilling && toolReference.activeDrillMaterial != null)
         {

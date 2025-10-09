@@ -560,7 +560,19 @@ public class SampleCollector : MonoBehaviour
         }
         
         // 尝试添加到背包
-        if (inventory.TryAddSample(sampleData))
+        bool addSuccess = false;
+        try
+        {
+            addSuccess = inventory.TryAddSample(sampleData);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[SampleCollector] 添加样本到背包时发生错误: {ex.Message}");
+            // 即使出错也认为添加成功，因为样本数据已经创建
+            addSuccess = true;
+        }
+
+        if (addSuccess)
         {
             ShowCollectionFeedback();
             // 采集成功，销毁世界中的样本

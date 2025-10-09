@@ -84,6 +84,9 @@ sysinfo.txt
 *.unitypackage
 *.app
 
+# Ignore local WebGL build output
+WebGL_Build/
+
 # Crashlytics generated file
 crashlytics-build.properties
 
@@ -93,3 +96,4 @@ crashlytics-build.properties
 # ETC
 .vscode/
 *.log
+.vercel

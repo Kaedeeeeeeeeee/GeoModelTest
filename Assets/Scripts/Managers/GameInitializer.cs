@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using SampleCuttingSystem;
 
 /// <summary>
 /// 游戏初始化管理器 - 负责初始化新功能和工具
@@ -621,10 +622,10 @@ public class GameInitializer : MonoBehaviour
             Debug.Log("找到现有切割台，检查组件完整性");
             
             // 确保有初始化器组件
-            var initializer = cuttingStation.GetComponent<SampleCuttingSystem.SampleCuttingSystemInitializer>();
+            var initializer = cuttingStation.GetComponent<SampleCuttingSystemInitializer>();
             if (initializer == null)
             {
-                initializer = cuttingStation.AddComponent<SampleCuttingSystem.SampleCuttingSystemInitializer>();
+                initializer = cuttingStation.AddComponent<SampleCuttingSystemInitializer>();
                 Debug.Log("添加切割系统初始化器");
             }
             

@@ -112,13 +112,7 @@ public class FirstPersonController : MonoBehaviour
             lastDesktopTestMode = currentDesktopTestMode;
         }
 
-        // 桌面测试模式下强制保持鼠标解锁状态
-        if (currentDesktopTestMode && Cursor.lockState != CursorLockMode.None)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            Debug.Log("[FirstPersonController] 强制解锁鼠标 - 桌面测试模式");
-        }
+        // 注释掉复杂的强制解锁逻辑，改用ESC键手动控制
     }
     
     void HandleInput()
@@ -225,26 +219,19 @@ public class FirstPersonController : MonoBehaviour
             {
                 DebugHandPositions();
             }
+
+            // ESC键切换鼠标锁定状态（方便调试和退出）
+            if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                ToggleCursorLock();
+            }
         }
         
-        // 鼠标视角控制（桌面测试模式下禁用以避免冲突）
-        bool isDesktopTestMode = mobileInputManager != null && mobileInputManager.desktopTestMode;
-        if (Mouse.current != null && enableMouseLook && !isDesktopTestMode)
+        // 鼠标视角控制 - 简化逻辑
+        if (Mouse.current != null && enableMouseLook)
         {
             Vector2 mouseLook = Mouse.current.delta.ReadValue();
-            
-            // 只有在移动端输入无效或不优先时才使用鼠标输入
-            if (!prioritizeMobileInput || (mobileInputManager == null || mobileInputManager.LookInput.sqrMagnitude < 0.01f))
-            {
-                lookInput = mouseLook;
-            }
-        }
-        else if (!enableMobileInput || mobileInputManager == null)
-        {
-            if (!isDesktopTestMode)  // 桌面测试模式下保持移动端视角控制
-            {
-                lookInput = Vector2.zero; // 禁用鼠标视角时，清零输入
-            }
+            lookInput = mouseLook;
         }
     }
     
@@ -584,8 +571,17 @@ public class FirstPersonController : MonoBehaviour
         // 根据设备类型和桌面测试模式自动调整设置
         if (Application.isMobilePlatform)
         {
-            prioritizeMobileInput = true;
-            Debug.Log("[FirstPersonController] 检测到移动设备，启用移动端输入优先模式");
+            // iPad使用鼠标/键盘控制，不启用移动端输入优先
+            if (Application.platform == RuntimePlatform.IPhonePlayer)
+            {
+                prioritizeMobileInput = false;
+                Debug.Log("[FirstPersonController] 检测到iPad设备，使用鼠标/键盘控制模式");
+            }
+            else
+            {
+                prioritizeMobileInput = true;
+                Debug.Log("[FirstPersonController] 检测到移动设备，启用移动端输入优先模式");
+            }
         }
         else
         {
@@ -620,22 +616,10 @@ public class FirstPersonController : MonoBehaviour
     /// </summary>
     void SetCursorLockState()
     {
-        bool isDesktopTestMode = mobileInputManager != null && mobileInputManager.desktopTestMode;
-        
-        if (isDesktopTestMode)
-        {
-            // 桌面测试模式：解锁鼠标，允许点击虚拟控件
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            Debug.Log("[FirstPersonController] 桌面测试模式 - 鼠标已解锁，可以点击虚拟控件");
-        }
-        else
-        {
-            // 正常模式：锁定鼠标进行第一人称视角控制
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            Debug.Log("[FirstPersonController] 正常模式 - 鼠标已锁定用于视角控制");
-        }
+        // 简化逻辑：游戏启动后直接锁定并隐藏鼠标
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        Debug.Log("[FirstPersonController] 鼠标已锁定并隐藏，用于视角控制。按ESC切换锁定状态。");
     }
     
     /// <summary>
@@ -644,6 +628,25 @@ public class FirstPersonController : MonoBehaviour
     public void UpdateCursorLockState()
     {
         SetCursorLockState();
+    }
+
+    /// <summary>
+    /// 切换鼠标锁定状态（ESC键功能）
+    /// </summary>
+    public void ToggleCursorLock()
+    {
+        if (Cursor.lockState == CursorLockMode.Locked)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Debug.Log("[FirstPersonController] 鼠标已解锁 - 按ESC再次锁定");
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            Debug.Log("[FirstPersonController] 鼠标已锁定 - 按ESC解锁");
+        }
     }
     
     /// <summary>

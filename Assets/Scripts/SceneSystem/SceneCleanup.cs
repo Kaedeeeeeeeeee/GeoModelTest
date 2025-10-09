@@ -238,8 +238,7 @@ public class SceneCleanup : MonoBehaviour
         // 查找所有可能冲突的Canvas
         string[] conflictingCanvasNames = {
             "SamplePromptCanvas",
-            "PlacedSamplePromptCanvas", 
-            "DrillTowerInteractionCanvas"
+            "PlacedSamplePromptCanvas"
         };
         
         Canvas[] allCanvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);

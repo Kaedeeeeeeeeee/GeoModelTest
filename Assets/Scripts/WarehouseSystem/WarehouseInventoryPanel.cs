@@ -232,6 +232,9 @@ public class WarehouseInventoryPanel : MonoBehaviour
     /// </summary>
     public void RefreshInventoryDisplay()
     {
+        // 检查组件是否已被销毁
+        if (this == null || gameObject == null) return;
+
         if (inventory == null)
         {
             inventory = SampleInventory.Instance;
@@ -264,17 +267,48 @@ public class WarehouseInventoryPanel : MonoBehaviour
         // 确保物品槽已创建
         if (itemSlots == null || itemSlots.Count == 0)
         {
-            if (gameObject.activeInHierarchy)
+            if (this != null && gameObject != null && gameObject.activeInHierarchy)
             {
                 StartCoroutine(DelayedRefresh());
             }
             return;
         }
+
+        // 清理已被销毁的槽位引用
+        CleanupDestroyedSlots();
         
         // 更新物品槽显示
         UpdateSlotDisplay();
     }
-    
+
+    /// <summary>
+    /// 清理已被销毁的槽位引用
+    /// </summary>
+    void CleanupDestroyedSlots()
+    {
+        if (itemSlots == null) return;
+
+        // 移除已被销毁的槽位
+        for (int i = itemSlots.Count - 1; i >= 0; i--)
+        {
+            if (itemSlots[i] == null)
+            {
+                Debug.Log($"[WarehouseInventoryPanel] 移除已销毁的槽位 {i}");
+                itemSlots.RemoveAt(i);
+            }
+        }
+
+        // 如果所有槽位都被销毁，重新创建
+        if (itemSlots.Count == 0)
+        {
+            Debug.Log("[WarehouseInventoryPanel] 所有槽位已被销毁，触发重新创建");
+            if (gameObject.activeInHierarchy)
+            {
+                StartCoroutine(DelayedRefresh());
+            }
+        }
+    }
+
     /// <summary>
     /// 更新槽位显示
     /// </summary>
@@ -283,7 +317,14 @@ public class WarehouseInventoryPanel : MonoBehaviour
         for (int i = 0; i < itemSlots.Count; i++)
         {
             WarehouseItemSlot slot = itemSlots[i];
-            
+
+            // 检查槽位是否仍然有效
+            if (slot == null)
+            {
+                Debug.LogWarning($"[WarehouseInventoryPanel] itemSlots[{i}] 已被销毁，跳过更新");
+                continue;
+            }
+
             if (i < currentItems.Count)
             {
                 // 有物品的槽位

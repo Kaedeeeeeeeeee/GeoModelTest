@@ -202,7 +202,7 @@ namespace SampleCuttingSystem
         /// <summary>
         /// 恢复原始状态
         /// </summary>
-        private void RestoreOriginalState()
+        public void RestoreOriginalState()
         {
             Debug.Log("恢复样本到原始位置");
             
@@ -247,31 +247,28 @@ namespace SampleCuttingSystem
         {
             if (sampleData == null)
                 return false;
-                
-            // 检查样本是否有多个层级
-            return sampleData.name.Contains("多层") || 
-                   sampleData.name.Contains("钻孔") ||
-                   sampleData.name.Contains("样本") &&
-                   !sampleData.name.Contains("单层");
+
+            // 使用层数来判断是否为多层样本
+            return sampleData.layerCount > 1;
         }
     }
-    
-    /// <summary>
-    /// 样本数据结构（简化版）
-    /// </summary>
-    [System.Serializable]
-    public class SampleData
+}
+
+/// <summary>
+/// 样本数据结构（简化版）
+/// </summary>
+[System.Serializable]
+public class SampleData
+{
+    public string name;
+    public string description;
+    public int layerCount;
+    public UnityEngine.GameObject samplePrefab;
+
+    public SampleData(string sampleName, string desc = "", int layers = 1)
     {
-        public string name;
-        public string description;
-        public int layerCount;
-        public GameObject samplePrefab;
-        
-        public SampleData(string sampleName, string desc = "", int layers = 1)
-        {
-            name = sampleName;
-            description = desc;
-            layerCount = layers;
-        }
+        name = sampleName;
+        description = desc;
+        layerCount = layers;
     }
 }

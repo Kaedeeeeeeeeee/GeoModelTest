@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 public class InventoryUISystem : MonoBehaviour
 {
@@ -140,6 +142,115 @@ public class InventoryUISystem : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 处理图鉴输入
+    /// </summary>
+    void HandleEncyclopediaInput()
+    {
+        Debug.Log("[InventoryUISystem] 收到图鉴输入事件");
+
+        // 查找图鉴UI并切换状态
+        Debug.Log("[InventoryUISystem] 开始查找图鉴组件...");
+
+        // 先尝试直接查找EncyclopediaUI
+        Encyclopedia.EncyclopediaUI encyclopediaUI = FindFirstObjectByType<Encyclopedia.EncyclopediaUI>();
+
+        if (encyclopediaUI != null)
+        {
+            Debug.Log("[InventoryUISystem] 找到EncyclopediaUI，准备调用ToggleEncyclopedia()");
+            encyclopediaUI.ToggleEncyclopedia();
+
+            // 根据图鉴状态控制鼠标
+            HandleEncyclopediaCursor(encyclopediaUI);
+            Debug.Log("[InventoryUISystem] 图鉴界面已切换");
+            return;
+        }
+
+        // 如果没找到EncyclopediaUI，尝试通过EncyclopediaInitializer获取
+        Encyclopedia.EncyclopediaInitializer initializer = FindFirstObjectByType<Encyclopedia.EncyclopediaInitializer>();
+        if (initializer != null)
+        {
+            Debug.Log("[InventoryUISystem] 找到EncyclopediaInitializer，尝试通过反射获取EncyclopediaUI");
+
+            // 使用反射获取private字段encyclopediaUI
+            var field = initializer.GetType().GetField("encyclopediaUI",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            if (field != null)
+            {
+                var ui = field.GetValue(initializer) as Encyclopedia.EncyclopediaUI;
+                if (ui != null)
+                {
+                    Debug.Log("[InventoryUISystem] 通过反射找到EncyclopediaUI，准备调用ToggleEncyclopedia()");
+                    ui.ToggleEncyclopedia();
+
+                    // 根据图鉴状态控制鼠标
+                    HandleEncyclopediaCursor(ui);
+                    Debug.Log("[InventoryUISystem] 图鉴界面已切换");
+                    return;
+                }
+            }
+        }
+
+        Debug.LogWarning("[InventoryUISystem] 无法找到可用的图鉴组件");
+
+        // 显示场景中的所有图鉴组件用于调试
+        var allManagers = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
+        var encyclopediaComponents = allManagers.Where(m => m.GetType().Name.Contains("Encyclopedia")).ToArray();
+        Debug.Log($"[InventoryUISystem] 场景中包含Encyclopedia的组件数量: {encyclopediaComponents.Length}");
+
+        foreach (var comp in encyclopediaComponents)
+        {
+            Debug.Log($"[InventoryUISystem] 找到组件: {comp.GetType().FullName}");
+        }
+    }
+
+    /// <summary>
+    /// 根据图鉴状态控制鼠标显示/隐藏
+    /// </summary>
+    void HandleEncyclopediaCursor(Encyclopedia.EncyclopediaUI encyclopediaUI)
+    {
+        // 使用反射获取图鉴的isOpen状态
+        var isOpenField = encyclopediaUI.GetType().GetField("isOpen",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        if (isOpenField != null)
+        {
+            bool isOpen = (bool)isOpenField.GetValue(encyclopediaUI);
+
+            if (isOpen)
+            {
+                // 图鉴打开时显示鼠标
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+
+                // 禁用第一人称视角控制
+                if (fpController != null)
+                {
+                    fpController.enableMouseLook = false;
+                }
+
+                Debug.Log("[InventoryUISystem] 图鉴打开 - 鼠标已显示，视角控制已禁用");
+            }
+            else
+            {
+                // 图鉴关闭时隐藏鼠标
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+
+                // 重新启用第一人称视角控制
+                if (fpController != null)
+                {
+                    fpController.enableMouseLook = true;
+                }
+
+                Debug.Log("[InventoryUISystem] 图鉴关闭 - 鼠标已隐藏，视角控制已启用");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[InventoryUISystem] 无法获取图鉴isOpen状态，使用默认鼠标设置");
+        }
+    }
 
     void CreateWheelUI()
     {
@@ -231,7 +342,7 @@ public class InventoryUISystem : MonoBehaviour
                 text.font = Resources.FindObjectsOfTypeAll<Font>()[0];
             }
             
-            text.fontSize = 12;
+            text.fontSize = 10;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleCenter;
             
@@ -512,7 +623,7 @@ public class InventoryUISystem : MonoBehaviour
         // 只有屏幕大小变化时才更新
         if (Mathf.Abs(screenSize - lastScreenSize) < 1f) return;
         
-        float wheelSize = screenSize * 0.75f; // 改为75%屏幕大小，增大轮盘
+        float wheelSize = screenSize * 0.9f; // 改为90%屏幕大小，进一步增大轮盘
         
         RectTransform wheelRect = wheelUI.GetComponent<RectTransform>();
         if (wheelRect != null)
@@ -543,6 +654,16 @@ public class InventoryUISystem : MonoBehaviour
         if (wheelBackground != null)
         {
             wheelBackground.color = wheelBackgroundColor;
+
+            // 确保背景圆圈大小与轮盘一致
+            RectTransform bgRect = wheelBackground.GetComponent<RectTransform>();
+            RectTransform wheelRect = wheelUI.GetComponent<RectTransform>();
+            if (bgRect != null && wheelRect != null)
+            {
+                bgRect.sizeDelta = wheelRect.sizeDelta;
+                Debug.Log($"[InventoryUISystem] 背景圆圈大小已更新为: {bgRect.sizeDelta}");
+            }
+
             Debug.Log($"[InventoryUISystem] 设置wheelBackground颜色: {wheelBackgroundColor}");
         }
         else
@@ -612,7 +733,7 @@ public class InventoryUISystem : MonoBehaviour
     void UpdateSlotPositions(float wheelSize)
     {
         // 调整为合理的参数，确保slot图标在圆圈内部且布局美观
-        float slotSize = wheelSize * 0.08f;   // slot大小为轮盘的8%
+        float slotSize = wheelSize * 0.12f;   // slot大小为轮盘的12%，增大图标
         float slotRadius = (wheelSize * 0.28f); // slot距离圆心28%的轮盘半径
         
         for (int i = 0; i < wheelSlots.Length; i++)
@@ -630,7 +751,7 @@ public class InventoryUISystem : MonoBehaviour
                     RectTransform textRect = slotTexts[i].GetComponent<RectTransform>();
                     textRect.sizeDelta = new Vector2(slotSize * 1.8f, slotSize * 0.4f); // 文本大小随slot缩放
                     textRect.anchoredPosition = new Vector2(0, -slotSize * 0.8f); // 文本位置随slot缩放
-                    slotTexts[i].fontSize = Mathf.RoundToInt(slotSize * 0.25f); // 字体大小为slot的25%
+                    slotTexts[i].fontSize = Mathf.RoundToInt(slotSize * 0.25f); // 字体大小为slot的25%，减小文字
                     
                     Outline outline = slotTexts[i].GetComponent<Outline>();
                     if (outline == null)
@@ -708,6 +829,18 @@ public class InventoryUISystem : MonoBehaviour
             CloseWheel();
         }
 
+        // 添加I键打开背包功能
+        if (Keyboard.current.iKey.wasPressedThisFrame)
+        {
+            HandleInventoryInput();
+        }
+
+        // 添加O键打开图鉴功能
+        if (Keyboard.current.oKey.wasPressedThisFrame)
+        {
+            HandleEncyclopediaInput();
+        }
+
         // 添加触屏点击检测（移动端工具选择）
         if (isWheelOpen && Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
         {
@@ -783,23 +916,17 @@ public class InventoryUISystem : MonoBehaviour
         isWheelOpen = false;
         wheelUI.SetActive(false);
         
-        // 使用统一的鼠标状态管理
-        if (!MobileCursorManager.IsDesktopTestMode())
+        // 简化逻辑：直接恢复鼠标锁定状态
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        // 重新启用鼠标视角控制
+        if (fpController != null)
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            
-            // 重新启用鼠标视角控制
-            if (fpController != null)
-            {
-                fpController.enableMouseLook = true; // 恢复鼠标视角
-            }
+            fpController.enableMouseLook = true; // 恢复鼠标视角
         }
-        else
-        {
-            // 桌面测试模式下强制保持鼠标解锁
-            MobileCursorManager.ForceDesktopTestCursor();
-            Debug.Log("[InventoryUISystem] 桌面测试模式 - 保持鼠标解锁");
-        }
+
+        Debug.Log("[InventoryUISystem] TabUI关闭 - 鼠标已重新锁定并隐藏");
         
         selectedSlot = -1;
         wheelOpenedByMobileInput = false; // 重置标记
@@ -1412,7 +1539,7 @@ public class InventoryUISystem : MonoBehaviour
         Text buttonText = textObj.AddComponent<Text>();
         buttonText.text = tool.toolName;
         buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-        buttonText.fontSize = 16;
+        buttonText.fontSize = 12;
         buttonText.color = Color.white;
         buttonText.alignment = TextAnchor.MiddleCenter;
         
@@ -1471,24 +1598,15 @@ public class InventoryUISystem : MonoBehaviour
         }
         else
         {
-            // 使用统一的鼠标状态管理
-            if (!MobileCursorManager.IsDesktopTestMode())
+            // 简化逻辑：直接恢复鼠标锁定状态
+            if (fpController != null)
             {
-                // 隐藏后恢复玩家控制
-                if (fpController != null)
-                {
-                    fpController.enableMouseLook = true;
-                }
-                
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
+                fpController.enableMouseLook = true;
             }
-            else
-            {
-                // 桌面测试模式下强制保持鼠标解锁
-                MobileCursorManager.ForceDesktopTestCursor();
-                Debug.Log("[InventoryUISystem] 移动端工具栏关闭 - 桌面测试模式保持鼠标解锁");
-            }
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            Debug.Log("[InventoryUISystem] 移动端工具栏关闭 - 鼠标已重新锁定并隐藏");
         }
         
         Debug.Log($"[InventoryUISystem] 移动端工具栏: {(isActive ? "隐藏" : "显示")}");

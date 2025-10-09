@@ -40,16 +40,16 @@ public class MobileCursorManager : MonoBehaviour
         
         bool currentDesktopTestMode = inputManager.desktopTestMode;
         
-        // 强制保持桌面测试模式的鼠标状态
-        if (currentDesktopTestMode)
-        {
-            if (Cursor.lockState != CursorLockMode.None)
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                Debug.Log("[MobileCursorManager] 强制恢复桌面测试模式鼠标状态");
-            }
-        }
+        // 临时禁用强制恢复鼠标状态的逻辑，让FirstPersonController控制鼠标
+        // if (currentDesktopTestMode)
+        // {
+        //     if (Cursor.lockState != CursorLockMode.None)
+        //     {
+        //         Cursor.lockState = CursorLockMode.None;
+        //         Cursor.visible = true;
+        //         Debug.Log("[MobileCursorManager] 强制恢复桌面测试模式鼠标状态");
+        //     }
+        // }
         
         // 检测模式切换
         if (currentDesktopTestMode != lastDesktopTestMode)

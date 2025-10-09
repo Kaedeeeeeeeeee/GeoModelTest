@@ -97,18 +97,51 @@ namespace SampleCuttingSystem
             // 检查是否为多层样本
             if (!dragHandler.IsMultiLayerSample())
             {
-                Debug.LogWarning($"样本 {sampleData.name} 不是多层样本，无法切割");
-                ShowError(LocalizationManager.Instance?.GetText("cutting_system.instruction.multi_layer_required") ?? "只能切割多层地质样本");
-                return false;
+                Debug.LogWarning($"样本 {sampleData.name} 不是多层样本，显示分析结果");
+                ShowSingleLayerAnalysis(sampleData, dragHandler);
+                return true; // 接受单层样本，但进行分析而不是切割
             }
-            
+
             // 验证通过，开始切割流程
             Debug.Log($"开始切割样本: {sampleData.name}");
             StartCuttingProcess(sampleData, dragHandler);
             
             return true;
         }
-        
+
+        /// <summary>
+        /// 显示单层样本分析结果
+        /// </summary>
+        private void ShowSingleLayerAnalysis(SampleData sampleData, SampleDragHandler dragHandler)
+        {
+            Debug.Log($"分析单层样本: {sampleData.name}");
+
+            // 显示分析信息
+            string analysisInfo = $"样本名称: {sampleData.name}\n" +
+                                $"层数: {sampleData.layerCount} (单层)\n" +
+                                $"说明: {sampleData.description}\n\n" +
+                                "单层样本无需切割，可直接进行地质分析。";
+
+            ShowAnalysisInfo(analysisInfo);
+
+            // 将样本返回到原位
+            StartCoroutine(ReturnSampleAfterDelay(dragHandler, 2.0f));
+        }
+
+        /// <summary>
+        /// 延迟后返回样本到原位
+        /// </summary>
+        private System.Collections.IEnumerator ReturnSampleAfterDelay(SampleDragHandler dragHandler, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+            if (dragHandler != null)
+            {
+                dragHandler.RestoreOriginalState();
+                Debug.Log("单层样本已返回原位置");
+            }
+        }
+
         /// <summary>
         /// 开始切割流程
         /// </summary>
@@ -830,7 +863,26 @@ namespace SampleCuttingSystem
             // 2秒后恢复正常状态
             Invoke(nameof(SetNormalState), 2f);
         }
-        
+
+        /// <summary>
+        /// 显示分析信息
+        /// </summary>
+        private void ShowAnalysisInfo(string message)
+        {
+            if (instructionText != null)
+            {
+                instructionText.text = $"🔍 {message}";
+                instructionText.color = Color.cyan;
+            }
+
+            if (backgroundImage != null)
+            {
+                backgroundImage.color = new Color(0.2f, 0.8f, 1f, 0.3f); // 蓝色透明背景
+            }
+
+            Debug.Log($"[SampleDropZone] 显示分析信息: {message}");
+        }
+
         /// <summary>
         /// 重置投放区域到初始状态
         /// </summary>
