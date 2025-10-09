@@ -52,6 +52,9 @@ namespace SceneSystem
             }
 
             BuildUI();
+
+            // 预创建 SettingsManager，确保其 Start 在用户点击前已执行，从而生成设置UI
+            var _ = SettingsManager.Instance;
         }
 
         private void BuildUI()
@@ -106,11 +109,11 @@ namespace SceneSystem
             startBtn.onClick.AddListener(OnStartGame);
             y -= spacing;
 
-            // Settings（占位）
+            // Settings（复用 ESC 设置界面的语言切换UI）
             var settingBtn = CreateButton(container.transform, "Settings");
             var setRt = settingBtn.GetComponent<RectTransform>();
             setRt.anchoredPosition = new Vector2(0f, y);
-            settingBtn.onClick.AddListener(() => Debug.Log("[StartMenu] Settings 点击（未实现）"));
+            settingBtn.onClick.AddListener(OnOpenSettings);
             y -= spacing;
 
             // Quit Game（桌面平台有效）
@@ -118,6 +121,41 @@ namespace SceneSystem
             var qRt = quitBtn.GetComponent<RectTransform>();
             qRt.anchoredPosition = new Vector2(0f, y);
             quitBtn.onClick.AddListener(OnQuitGame);
+        }
+
+        private void Update()
+        {
+            // 在 StartScene 保持鼠标可见与解锁，避免 SettingsManager 关闭时把鼠标锁回去
+            var active = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            if (active.name == _startSceneName)
+            {
+                if (Cursor.lockState != CursorLockMode.None || !Cursor.visible)
+                {
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                }
+            }
+        }
+
+        private void OnOpenSettings()
+        {
+            var sm = SettingsManager.Instance;
+            // 在启动菜单里打开不需要暂停游戏、也不需要禁用玩家（StartScene 通常没有玩家）
+            sm.pauseGameWhenOpen = false;
+            sm.disablePlayerControlWhenOpen = false;
+            // 打开设置界面（复用 ESC 的语言切换UI）
+            sm.OpenSettings();
+
+            // 额外确保关闭按钮关闭后仍保留鼠标状态（添加一个跟随的监听）
+            if (sm.closeButton != null)
+            {
+                sm.closeButton.onClick.AddListener(() =>
+                {
+                    // 关闭后回到启动菜单，应保持鼠标可见
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                });
+            }
         }
 
         private Button CreateButton(Transform parent, string label)
