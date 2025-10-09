@@ -109,6 +109,19 @@ namespace StorySystem
             ));
 
             SetFlag("story.main.rescue");
+            // 演出结束后，自动切换到实验室，触发第二段剧情
+            yield return new WaitForSeconds(0.35f);
+            if (enableDebugLog) Debug.Log("[StoryDirector] 切换到 Laboratory Scene 以进入第二段剧情");
+            var gsm = GameSceneManager.Instance;
+            if (gsm != null)
+            {
+                gsm.SwitchToScene("Laboratory Scene");
+            }
+            else
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Laboratory Scene");
+            }
+
             _isRunningCinematic = false;
             if (enableDebugLog) Debug.Log("[StoryDirector] Run_MainScene_Rescue 结束");
         }
