@@ -12,6 +12,10 @@ public class GameInitializer : MonoBehaviour
     public bool initializeUISystem = true;
     public bool initializeSampleSystem = true;
     public bool enableDebugMode = false;
+    
+    // 当为 true 时，不在启动时将其他工具注册到 ToolManager.availableTools，改由任务系统逐步解锁
+    [SerializeField]
+    private bool unlockToolsViaQuests = true;
     public Sprite drillTowerIcon;
     public GameObject existingDrillTowerPrefab; // 可以拖入现有的钻塔预制件
     
@@ -330,8 +334,17 @@ public class GameInitializer : MonoBehaviour
                 Debug.Log("已添加地质锤工具");
             }
             
-            // 自动发现并注册所有工具
-            RefreshToolManager(toolManager);
+            // 按需注册工具：若采用任务解锁，则初始为空（仅保留场景切换器由ToolManager内部创建）
+            if (unlockToolsViaQuests)
+            {
+                toolManager.availableTools = new CollectionTool[0];
+                if (enableDebugMode) Debug.Log("工具注册延迟：由任务系统按需解锁");
+            }
+            else
+            {
+                // 自动发现并注册所有工具（旧行为）
+                RefreshToolManager(toolManager);
+            }
         }
         else
         {
