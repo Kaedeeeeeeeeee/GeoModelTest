@@ -240,37 +240,64 @@ public class SceneCleanup : MonoBehaviour
             "SamplePromptCanvas",
             "PlacedSamplePromptCanvas"
         };
-        
+
+        // 白名单：演出/设置相关Canvas不清理
+        string[] whitelistNames = {
+            "SubtitleCanvas",
+            "StartMenuCanvas",
+            "SettingsCanvas",
+            "SceneSelectionUI"
+        };
+
         Canvas[] allCanvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
         int cleanedCount = 0;
-        
+
         foreach (Canvas canvas in allCanvases)
         {
-            if (canvas != null)
+            if (canvas == null) continue;
+
+            string canvasName = canvas.gameObject.name;
+
+            // 跳过白名单
+            bool inWhitelist = false;
+            foreach (var w in whitelistNames)
             {
-                string canvasName = canvas.gameObject.name;
-                
-                foreach (string conflictingName in conflictingCanvasNames)
+                if (canvasName.Contains(w)) { inWhitelist = true; break; }
+            }
+            if (inWhitelist) continue;
+
+            // 名称匹配则清理并进入下一项，避免继续访问已销毁对象
+            bool destroyed = false;
+            foreach (string conflictingName in conflictingCanvasNames)
+            {
+                if (canvasName.Contains(conflictingName))
                 {
-                    if (canvasName.Contains(conflictingName))
-                    {
-                        Debug.Log($"清理冲突Canvas: {canvasName}");
-                        DestroyImmediate(canvas.gameObject);
-                        cleanedCount++;
-                        break;
-                    }
+                    Debug.Log($"清理冲突Canvas: {canvasName}");
+                    DestroyImmediate(canvas.gameObject);
+                    cleanedCount++;
+                    destroyed = true;
+                    break;
                 }
-                
-                // 检查是否有包含"Cycle"的子对象
-                if (canvas.transform.Find("Cycle") != null)
+            }
+            if (destroyed) continue;
+
+            // 检查是否有包含"Cycle"的子对象（保护空引用）
+            try
+            {
+                var t = canvas.transform; // 若对象已被销毁将抛异常
+                if (t != null && t.Find("Cycle") != null)
                 {
                     Debug.Log($"清理包含Cycle的Canvas: {canvasName}");
                     DestroyImmediate(canvas.gameObject);
                     cleanedCount++;
                 }
             }
+            catch (System.Exception)
+            {
+                // 忽略已销毁引用
+            }
         }
-        
+
         if (cleanedCount > 0)
         {
             Debug.Log($"清理了 {cleanedCount} 个可能冲突的Canvas");
