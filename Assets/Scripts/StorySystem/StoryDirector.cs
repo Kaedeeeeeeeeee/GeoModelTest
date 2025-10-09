@@ -40,7 +40,10 @@ namespace StorySystem
             DontDestroyOnLoad(gameObject);
 
             _flags = ProgressPersistence.LoadFlags();
+            if (enableDebugLog) Debug.Log($"[StoryDirector] 初始化，已载入标记: {_flags.Count}");
             GameEventBus.SceneLoaded += OnSceneLoaded;
+            // 兜底：若事件未触发，延迟检查当前场景一次
+            StartCoroutine(DelayedCheckCurrentScene());
         }
 
         private void OnDestroy()
@@ -53,19 +56,28 @@ namespace StorySystem
 
         private void OnSceneLoaded(string sceneName)
         {
+            if (enableDebugLog) Debug.Log($"[StoryDirector] OnSceneLoaded: {sceneName}");
             // 场景1：首次进入 MainScene → 地震演出 + 对白
             if (sceneName == "MainScene" && !HasFlag("story.main.rescue"))
             {
-                StartCoroutine(Run_MainScene_Rescue());
+                if (!_isRunningCinematic) StartCoroutine(Run_MainScene_Rescue());
                 return;
             }
 
             // 场景2/3：首次进入 Laboratory Scene → 实验室开场对白 + 解锁地质锤
             if (sceneName == "Laboratory Scene" && !HasFlag("story.lab.intro"))
             {
-                StartCoroutine(Run_Laboratory_Intro());
+                if (!_isRunningCinematic) StartCoroutine(Run_Laboratory_Intro());
                 return;
             }
+        }
+
+        private IEnumerator DelayedCheckCurrentScene()
+        {
+            yield return null; // 下一帧，等待场景稳定
+            var active = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            if (enableDebugLog) Debug.Log($"[StoryDirector] DelayedCheckCurrentScene: {active}");
+            OnSceneLoaded(active);
         }
 
         private bool HasFlag(string key) => _flags != null && _flags.Contains(key);
@@ -80,6 +92,8 @@ namespace StorySystem
 
         private IEnumerator Run_MainScene_Rescue()
         {
+            _isRunningCinematic = true;
+            if (enableDebugLog) Debug.Log("[StoryDirector] Run_MainScene_Rescue 开始");
             // 进入场景即切第三人称，正面朝向角色，并在期间保持震动与字幕推进
             yield return StartCoroutine(ThirdPersonCinematicAction.ExecuteWithShakeFacingFront(
                 new List<string>
@@ -93,10 +107,14 @@ namespace StorySystem
             ));
 
             SetFlag("story.main.rescue");
+            _isRunningCinematic = false;
+            if (enableDebugLog) Debug.Log("[StoryDirector] Run_MainScene_Rescue 结束");
         }
 
         private IEnumerator Run_Laboratory_Intro()
         {
+            _isRunningCinematic = true;
+            if (enableDebugLog) Debug.Log("[StoryDirector] Run_Laboratory_Intro 开始");
             // 简易对白（可复用字幕UI）
             yield return StartCoroutine(SubtitleUI.ShowSequence(new List<string>
             {
@@ -109,6 +127,8 @@ namespace StorySystem
             ToolUnlockService.UnlockToolById("1002");
 
             SetFlag("story.lab.intro");
+            _isRunningCinematic = false;
+            if (enableDebugLog) Debug.Log("[StoryDirector] Run_Laboratory_Intro 结束");
         }
     }
 
@@ -268,6 +288,8 @@ namespace StorySystem
     internal class StoryDirectorRunner : MonoBehaviour
     {
         private static StoryDirectorRunner _instance;
+        [SerializeField] private bool enableDebugLog = true;
+        private bool _isRunningCinematic = false;
         public static StoryDirectorRunner Instance
         {
             get

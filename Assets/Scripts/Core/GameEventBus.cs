@@ -11,9 +11,12 @@ namespace Core
 
         public static void RaiseSceneLoaded(string sceneName)
         {
-            try { SceneLoaded?.Invoke(sceneName); }
+            try
+            {
+                UnityEngine.Debug.Log($"[GameEventBus] SceneLoaded => {sceneName}");
+                SceneLoaded?.Invoke(sceneName);
+            }
             catch (Exception ex) { UnityEngine.Debug.LogError($"[GameEventBus] SceneLoaded 触发异常: {ex.Message}"); }
         }
     }
 }
-
