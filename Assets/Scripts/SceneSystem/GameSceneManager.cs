@@ -423,6 +423,9 @@ public class GameSceneManager : MonoBehaviour
         
         isSceneLoading = false;
         
+        // 广播场景加载完成事件（用于剧情/任务等系统）
+        Core.GameEventBus.RaiseSceneLoaded(sceneName);
+        
         Debug.Log($"场景加载完成: {sceneName}");
     }
     
