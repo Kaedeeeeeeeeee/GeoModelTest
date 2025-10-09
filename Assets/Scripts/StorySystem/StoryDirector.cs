@@ -26,6 +26,8 @@ namespace StorySystem
         }
 
         private HashSet<string> _flags;
+        [SerializeField] private bool enableDebugLog = true;
+        private bool _isRunningCinematic = false;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Bootstrap()
@@ -288,8 +290,6 @@ namespace StorySystem
     internal class StoryDirectorRunner : MonoBehaviour
     {
         private static StoryDirectorRunner _instance;
-        [SerializeField] private bool enableDebugLog = true;
-        private bool _isRunningCinematic = false;
         public static StoryDirectorRunner Instance
         {
             get
