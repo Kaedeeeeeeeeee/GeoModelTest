@@ -80,16 +80,16 @@ namespace StorySystem
 
         private IEnumerator Run_MainScene_Rescue()
         {
-            // 简易：屏幕震动 + 第三人称镜头 + 字幕推进
-            yield return StartCoroutine(CameraShakeAction.Execute(3.5f, 0.6f));
-            yield return StartCoroutine(ThirdPersonCinematicAction.Execute(
+            // 进入场景即切第三人称，正面朝向角色，并在期间保持震动与字幕推进
+            yield return StartCoroutine(ThirdPersonCinematicAction.ExecuteWithShakeFacingFront(
                 new List<string>
                 {
                     "这是哪里…？地面在震动！",
                     "糟了！滑坡？震源很近…",
                     "有人吗！……救命！"
                 },
-                5.5f
+                6.0f,
+                0.6f
             ));
 
             SetFlag("story.main.rescue");
@@ -142,14 +142,24 @@ namespace StorySystem
     /// </summary>
     public static class ThirdPersonCinematicAction
     {
-        public static IEnumerator Execute(List<string> lines, float totalDuration)
+        /// <summary>
+        /// 立即切至第三人称，镜头位于角色前方对脸，并在期间对镜头加入震动与字幕推进。
+        /// </summary>
+        public static IEnumerator ExecuteWithShakeFacingFront(List<string> lines, float totalDuration, float shakeAmplitude)
         {
             var player = GameObject.Find("Lily");
             var mainCam = Camera.main;
+
+            // 禁用玩家控制（有则禁用）
+            var fpc = Object.FindFirstObjectByType<FirstPersonController>();
+            bool fpcPrev = fpc != null && fpc.enabled;
+            if (fpc != null) fpc.enabled = false;
+
             if (player == null || mainCam == null)
             {
                 // 兜底：仅播放字幕
                 yield return SubtitleUI.ShowSequence(lines, totalDuration);
+                if (fpc != null) fpc.enabled = fpcPrev;
                 yield break;
             }
 
@@ -157,31 +167,45 @@ namespace StorySystem
             var mainCamGO = mainCam.gameObject;
             mainCamGO.SetActive(false);
 
-            // 临时镜头
+            // 创建临时镜头
             var cine = new GameObject("CinematicCamera");
             var cam = cine.AddComponent<Camera>();
             var target = player.transform;
 
+            // 同步字幕
+            var subtitleRoutine = SubtitleUI.ShowSequence(lines, totalDuration);
+            var subtitleRunner = StoryDirectorRunner.Instance; // 用于驱动并行协程
+            subtitleRunner.Run(subtitleRoutine);
+
+            // 抖动噪声种子
+            float seed = Random.value * 1000f;
             float t = 0f;
-            // 弹字幕协程
-            var sub = SubtitleUI.ShowSequence(lines, totalDuration);
+            Vector3 desiredPos = cam.transform.position;
+
             while (t < totalDuration)
             {
                 t += Time.unscaledDeltaTime;
-                // 跟随玩家后上方，缓慢偏移
-                var back = -target.forward;
-                var pos = target.position + back * 3.0f + Vector3.up * 1.8f;
-                cam.transform.position = Vector3.Lerp(cam.transform.position == Vector3.zero ? pos : cam.transform.position, pos, 0.2f);
-                cam.transform.LookAt(target.position + Vector3.up * 1.6f);
+                // 角色正面：在角色前方一定距离，看向头部
+                var head = target.position + Vector3.up * 1.6f;
+                var inFront = head + target.forward * 1.8f; // 正面朝向
+                desiredPos = inFront;
+
+                // 叠加震动（对当前镜头生效）
+                float x = (Mathf.PerlinNoise(seed, Time.time * 10f) - 0.5f) * 2f * shakeAmplitude * 0.6f;
+                float y = (Mathf.PerlinNoise(Time.time * 10f, seed) - 0.5f) * 2f * shakeAmplitude;
+                Vector3 shake = new Vector3(x, y, 0f);
+
+                cam.transform.position = Vector3.Lerp(cam.transform.position == Vector3.zero ? desiredPos : cam.transform.position, desiredPos, 0.35f) + shake;
+                cam.transform.LookAt(head);
                 yield return null;
             }
 
-            // 等待字幕结束
-            while (sub.MoveNext()) { }
-
-            // 还原
+            // 清理
             Object.Destroy(cine);
             mainCamGO.SetActive(true);
+
+            // 恢复玩家控制
+            if (fpc != null) fpc.enabled = fpcPrev;
         }
     }
 
@@ -237,5 +261,30 @@ namespace StorySystem
             Object.Destroy(canvasGO);
         }
     }
-}
 
+    /// <summary>
+    /// 辅助：用于从非 Mono 的静态方法里启动并行协程。
+    /// </summary>
+    internal class StoryDirectorRunner : MonoBehaviour
+    {
+        private static StoryDirectorRunner _instance;
+        public static StoryDirectorRunner Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    var go = new GameObject("StoryDirectorRunner");
+                    _instance = go.AddComponent<StoryDirectorRunner>();
+                    DontDestroyOnLoad(go);
+                }
+                return _instance;
+            }
+        }
+
+        public void Run(IEnumerator routine)
+        {
+            if (routine != null) StartCoroutine(routine);
+        }
+    }
+}
