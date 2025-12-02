@@ -37,7 +37,8 @@ public class GameInitializer : MonoBehaviour
             InitializeGeologySystem();
         }
         
-        if (initializeDrillTower)
+        // 若采用任务解锁，不在启动时创建/注册钻塔工具，避免抢先出现在轮盘
+        if (initializeDrillTower && !unlockToolsViaQuests)
         {
             InitializeDrillTowerTool();
             InitializeInteractionUI();

@@ -1,0 +1,31 @@
+{
+    "scene": "Quest 3.1 - Anomalous Sample",
+    "background": "laboratory",
+    "bgm": "lab_theme",
+    "dialogues": [
+        {
+            "speaker": "Dr.Kaede",
+            "text": "準備したか？じゃフェーズシフターを使ってみて。"
+          },
+          {
+            "speaker": "主人公",
+            "text": "本当に役に立てるかこれ…自分の人身安全を心配している。"
+          },
+          {
+          "speaker": "みなと",
+          "text": "やはりびびっているね。"
+            },
+            {
+            "speaker": "Dr.Kaede",
+            "text": "大丈夫だよ、俺とお母さんと約束でしょう、安全を確保って。"
+          },
+          {
+            "speaker": "主人公",
+            "text": "ああ、わかったよ……行くしかないな。"
+          },
+          {
+            "speaker": "narration",
+            "text": "フェーズシフターを使いなさい"
+          }
+    ]
+}

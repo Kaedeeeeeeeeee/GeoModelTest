@@ -6,6 +6,7 @@ public class ToolManager : MonoBehaviour
     [Header("Tool Management")]
     public Transform toolHolder;
     public CollectionTool[] availableTools;
+    [SerializeField] private bool autoCreateSceneSwitcher = false; // 默认关闭：由任务/剧情解锁
     
     private CollectionTool currentTool;
     private int currentToolIndex = -1;
@@ -30,7 +31,7 @@ public class ToolManager : MonoBehaviour
             }
         }
         
-        // 自动创建场景切换器工具
+        // 始终确保场景切换器组件存在（不自动加入可用工具）
         CreateSceneSwitcherTool();
     }
     
@@ -39,29 +40,19 @@ public class ToolManager : MonoBehaviour
     /// </summary>
     void CreateSceneSwitcherTool()
     {
-        // 检查是否已经存在场景切换器工具
-        SceneSwitcherTool existingTool = FindFirstObjectByType<SceneSwitcherTool>();
-        if (existingTool != null)
+        // 将场景切换器组件挂到玩家对象上，但不自动注册到可用工具（由解锁流程控制）
+        SceneSwitcherTool existingTool = GetComponent<SceneSwitcherTool>();
+        if (existingTool == null)
         {
-            Debug.Log("场景切换器工具已存在，确保添加到工具管理器");
-            AddTool(existingTool);
-            return;
+            existingTool = gameObject.AddComponent<SceneSwitcherTool>();
+            LoadSceneSwitcherPrefab(existingTool);
+            Debug.Log("场景切换器组件已创建（未解锁）");
         }
-        
-        // 创建场景切换器工具
-        GameObject toolObject = new GameObject("SceneSwitcherTool");
-        SceneSwitcherTool sceneSwitcher = toolObject.AddComponent<SceneSwitcherTool>();
-        
-        // 加载用户的SceneSwitcher预制体
-        LoadSceneSwitcherPrefab(sceneSwitcher);
-        
-        // 添加到工具管理器
-        AddTool(sceneSwitcher);
-        
-        // 确保GameSceneManager存在
-        var sceneManager = GameSceneManager.Instance;
-        
-        Debug.Log("场景切换器工具已自动创建并添加到Tab UI");
+        else
+        {
+            Debug.Log("场景切换器组件已存在（未解锁）");
+        }
+        // 解锁时通过 ToolUnlockService/Story 逻辑调用 AddTool()
     }
     
     /// <summary>

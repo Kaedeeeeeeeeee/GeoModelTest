@@ -1,0 +1,35 @@
+{
+    "scene": "Laboratory Intro",
+    "background": "laboratory",
+    "bgm": "lab_theme",
+    "dialogues": [
+          {
+            "speaker": "narration",
+            "text": "視界がねじれ、音が遠ざかる。次に目を開けたとき――そこは見知らぬ白い施設だった。"
+          },
+          {
+            "speaker": "主人公",
+            "text": "ここ……どこ？　みなと……！　大丈夫か？"
+          },
+          {
+            "speaker": "みなと",
+            "text": "……う、うん……。ここ……学校じゃないよね……？"
+          },
+          {
+            "speaker": "narration",
+            "text": "はっと顔を上げると、目の前に男が立っていた。"
+          },
+          {
+            "speaker": "Dr.Kaede",
+            "text": "......"
+          },
+          {
+            "speaker": "主人公",
+            "text": "ここって...?"
+          },
+          {
+            "speaker": "Dr.Kaede",
+            "text": "G-Labへようこそ"
+          }
+    ]
+}

@@ -1,0 +1,12 @@
+{
+    "scene": "Quest 4.3 - Field Sample Secured",
+    "background": "field",
+    "bgm": "field_theme",
+    "dialogues": [
+        { "speaker": "narration", "text": "採取装置の振動が止まり、地中から引き上げたコアが冷たい光を放つ。" },
+        { "speaker": "みなと", "text": "サンプル入った！推奨装置でのログも送ったよ。" },
+        { "speaker": "Dr.Kaede", "text": "よくやったわ。その場で封じて温度を維持して。圧力データも保存しておいて。" },
+        { "speaker": "主人公", "text": "了解。帰投の準備に入る。" },
+        { "speaker": "narration", "text": "冷却ファンの音だけが静かに響き、空は薄く色づいていた。" }
+    ]
+}

@@ -251,6 +251,26 @@
     {
       "key": "debug.empty_key",
       "value": "[空のキー]"
+    },
+    {
+      "key": "tool.scene_switcher.name",
+      "value": "シーンスイッチ"
+    },
+    {
+      "key": "quest.ui.completed",
+      "value": "完了"
+    },
+    {
+      "key": "quest.lab.intro.title",
+      "value": "ラボ案内"
+    },
+    {
+      "key": "quest.lab.intro.desc",
+      "value": "案内に従い、基本ツールを受け取る。"
+    },
+    {
+      "key": "quest.lab.intro.obj1",
+      "value": "基本ツールを受け取る"
     }
   ]
 }

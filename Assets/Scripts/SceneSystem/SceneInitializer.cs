@@ -128,16 +128,16 @@ public class SceneInitializer : MonoBehaviour
         switch (sceneName)
         {
             case "Laboratory Scene":
-                // 实验室场景的特殊配置
-                setup.laboratoryPlayerPosition = new Vector3(1, 0.200000003f, 5);
+                // 实验室场景的特殊配置（固定出生点）
+                setup.laboratoryPlayerPosition = new Vector3(0f, 0.167999998f, 4.52699995f);
                 setup.laboratoryPlayerRotation = Quaternion.identity;
                 setup.setupDelay = 0.3f; // 稍长的延迟，等待场景完全加载
                 break;
                 
             case "MainScene":
                 // 主场景的配置
-                setup.defaultPlayerPosition = new Vector3(0, 1, 0);
-                setup.defaultPlayerRotation = Quaternion.identity;
+                setup.defaultPlayerPosition = new Vector3(-29.9230003f, 14.3459997f, -20.9599991f);
+                setup.defaultPlayerRotation = new Quaternion(0f, 0.995849609f, 0f, 0.0910143629f);
                 setup.setupDelay = 0.2f;
                 break;
                 

@@ -629,6 +629,178 @@
       "value": "地質図鑑システム"
     },
     {
+      "key": "quest.lab.intro.title",
+      "value": "研究室イントロ"
+    },
+    {
+      "key": "quest.lab.intro.desc",
+      "value": "研究室に慣れるためのガイドに従い、基本ツールを受け取る"
+    },
+    {
+      "key": "quest.lab.intro.obj1",
+      "value": "案内に従って研究室のイントロを完了する"
+    },
+    {
+      "key": "quest.lab.drkaede.title",
+      "value": "クエスト2: Dr.Kaedeと会話する"
+    },
+    {
+      "key": "quest.lab.drkaede.desc",
+      "value": "研究室でDr.Kaedeと会話し、次の行動指針を得る"
+    },
+    {
+      "key": "quest.lab.drkaede.obj1",
+      "value": "Dr.Kaedeと話す"
+    },
+    {
+      "key": "quest.lab.drkaede.prompt",
+      "value": "[E] Dr.Kaedeと話す"
+    },
+    {
+      "key": "quest.lab.anomaly.title",
+      "value": "quest3:異常サンプル"
+    },
+    {
+      "key": "quest.lab.anomaly.desc",
+      "value": "Dr.Kaedeと協力し、異常なサンプルの手掛かりを調査する"
+    },
+    {
+      "key": "quest.lab.anomaly.obj1",
+      "value": "Dr.Kaedeと異常サンプルについて話す"
+    },
+    {
+      "key": "quest.lab.anomaly.prompt",
+      "value": "[E] 異常サンプルについて聞く"
+    },
+    {
+      "key": "quest.field.phase.title",
+      "value": "3.2 フェーズシフターを使ってみよう"
+    },
+    {
+      "key": "quest.field.phase.desc",
+      "value": "フェーズシフターで野外エリアへ移動し、次の調査を始める準備をする"
+    },
+    {
+      "key": "quest.field.phase.obj1",
+      "value": "フェーズシフターを使って野外シーンに移動する"
+    },
+    {
+      "key": "quest.field.phase.obj2",
+      "value": "3.3 地質ハンマーを使って採集しよう"
+    },
+    {
+      "key": "quest.lab.return.title",
+      "value": "3.3 G-Labに帰る"
+    },
+    {
+      "key": "quest.lab.return.desc",
+      "value": "フェーズシフターを使って研究室へ戻り、次の指示を受ける準備をする"
+    },
+    {
+      "key": "quest.lab.return.obj1",
+      "value": "研究室シーンに戻る"
+    },
+    {
+      "key": "quest.chapter4.kaede.title",
+      "value": "quest4.1 Dr.kaedeと話しましょう"
+    },
+    {
+      "key": "quest.chapter4.kaede.desc",
+      "value": "Dr.Kaedeに最新の状況を報告し、次の指示を受ける"
+    },
+    {
+      "key": "quest.chapter4.kaede.obj1",
+      "value": "Dr.Kaedeと話す"
+    },
+    {
+      "key": "quest.chapter4.kaede.prompt",
+      "value": "[E] Dr.Kaedeと話す"
+    },
+    {
+      "key": "quest.chapter4.sample.title",
+      "value": "quest4.3 サンプルを採集する"
+    },
+    {
+      "key": "quest.chapter4.sample.desc",
+      "value": "指示された地点で推奨採取装置またはドリルタワーを使ってボーリングサンプルを採取する"
+    },
+    {
+      "key": "quest.chapter4.sample.obj1",
+      "value": "指定地点で推奨装置またはドリルタワーを使いサンプルを採集する"
+    },
+    {
+      "key": "quest.chapter4.return.title",
+      "value": "quest4.4 G-Labに帰る"
+    },
+    {
+      "key": "quest.chapter4.return.desc",
+      "value": "採取結果を携えてG-Labへ戻り、分析の準備をする"
+    },
+    {
+      "key": "quest.chapter4.return.obj1",
+      "value": "G-Labへ戻る"
+    },
+    {
+      "key": "quest.chapter5.kaede.title",
+      "value": "quest5.1 ：kaedeと話す"
+    },
+    {
+      "key": "quest.chapter5.kaede.desc",
+      "value": "Dr.Kaedeに状況を報告し、次の指示を受ける"
+    },
+    {
+      "key": "quest.chapter5.kaede.obj1",
+      "value": "Dr.Kaedeと話す"
+    },
+    {
+      "key": "quest.chapter5.kaede.prompt",
+      "value": "[E] Dr.Kaedeと話す"
+    },
+    {
+      "key": "quest.chapter5.field.title",
+      "value": "quest5.2：野外に行こう"
+    },
+    {
+      "key": "quest.chapter5.field.desc",
+      "value": "フェーズシフターで野外エリアへ移動し、ドローンでの調査準備を整える"
+    },
+    {
+      "key": "quest.chapter5.field.obj1",
+      "value": "野外シーンに移動する"
+    },
+    {
+      "key": "quest.chapter5.return.title",
+      "value": "quest5.2：G-Labに帰ろ"
+    },
+    {
+      "key": "quest.chapter5.return.desc",
+      "value": "調査結果を携えてG-Labへ戻り、報告の準備をする"
+    },
+    {
+      "key": "quest.chapter5.return.obj1",
+      "value": "G-Labへ戻る"
+    },
+    {
+      "key": "quest.chapter6.kaede.title",
+      "value": "quest6：Dr.kaedeと話す"
+    },
+    {
+      "key": "quest.chapter6.kaede.desc",
+      "value": "Dr.Kaedeと最終報告を行い、今後の方針を確認する"
+    },
+    {
+      "key": "quest.chapter6.kaede.obj1",
+      "value": "Dr.Kaedeと話す"
+    },
+    {
+      "key": "quest.chapter6.kaede.prompt",
+      "value": "[E] Dr.Kaedeと話す"
+    },
+    {
+      "key": "quest.ui.completed",
+      "value": "クエスト完了"
+    },
+    {
       "key": "encyclopedia.layer.aoba_mountain",
       "value": "青葉山層"
     },

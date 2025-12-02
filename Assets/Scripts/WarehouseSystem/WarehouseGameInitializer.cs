@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 /// <summary>
@@ -98,6 +99,27 @@ public class WarehouseGameInitializer : MonoBehaviour
         
         try
         {
+            // 按场景控制是否启用仓库功能（MainScene 不启用触发器与UI）
+            string sceneName = SceneManager.GetActiveScene().name;
+            bool allowWarehouseInThisScene = !(sceneName == "MainScene");
+            if (!allowWarehouseInThisScene)
+            {
+                createWarehouseTrigger = false;
+                createWarehouseUI = false;
+                Debug.Log("[Warehouse] 当前为 MainScene，禁用仓库触发器与UI创建");
+
+                // 场景中如已有触发器（预放置或遗留），主动清理
+                var existingTriggers = FindObjectsByType<WarehouseTrigger>(FindObjectsSortMode.None);
+                foreach (var t in existingTriggers)
+                {
+                    if (t != null)
+                    {
+                        Destroy(t.gameObject);
+                    }
+                }
+                Debug.Log("[Warehouse] 已清理 MainScene 中的仓库触发器实例");
+            }
+
             // 1. 初始化仓库管理器
             InitializeWarehouseManager();
             

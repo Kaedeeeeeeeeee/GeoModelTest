@@ -12,6 +12,12 @@ public class SceneCleanup : MonoBehaviour
     
     void Start()
     {
+        if (ShouldSkipRuntimeCleanup())
+        {
+            Debug.Log($"{GetTimestamp()} [SceneCleanup] 检测到运行时场景管理器，跳过自动清理");
+            return;
+        }
+
         if (autoCleanOnStart)
         {
             StartCoroutine(CleanupScene());
@@ -54,7 +60,7 @@ public class SceneCleanup : MonoBehaviour
         
         if (players.Length > 1)
         {
-            Debug.Log($"发现 {players.Length} 个Player对象，清理重复项");
+            Debug.Log($"{GetTimestamp()} [SceneCleanup] 发现 {players.Length} 个Player对象，开始清理");
             
             // 保留第一个完整的Player，删除其他的
             FirstPersonController keepPlayer = null;
@@ -68,11 +74,11 @@ public class SceneCleanup : MonoBehaviour
                     if (playerCamera != null && keepPlayer == null)
                     {
                         keepPlayer = player;
-                        Debug.Log($"保留Lily: {player.name}");
+                        Debug.Log($"{GetTimestamp()} [SceneCleanup] 保留Lily: {player.name}，位置 {player.transform.position}");
                     }
                     else if (player != keepPlayer)
                     {
-                        Debug.Log($"删除重复Lily: {player.name}");
+                        Debug.Log($"{GetTimestamp()} [SceneCleanup] 删除重复Lily: {player.name}");
                         DestroyImmediate(player.gameObject);
                     }
                 }
@@ -89,7 +95,7 @@ public class SceneCleanup : MonoBehaviour
         
         if (cameras.Length > 1)
         {
-            Debug.Log($"发现 {cameras.Length} 个摄像机，清理重复项");
+            Debug.Log($"{GetTimestamp()} [SceneCleanup] 发现 {cameras.Length} 个摄像机，开始清理");
             
             Camera mainCamera = null;
             
@@ -101,21 +107,21 @@ public class SceneCleanup : MonoBehaviour
                     if (camera.CompareTag("MainCamera") && mainCamera == null)
                     {
                         mainCamera = camera;
-                        Debug.Log($"保留主摄像机: {camera.name}");
+                        Debug.Log($"{GetTimestamp()} [SceneCleanup] 保留主摄像机: {camera.name}");
                     }
                     else if (camera != mainCamera)
                     {
                         // 检查是否是Emergency Camera
                         if (camera.name.Contains("Emergency"))
                         {
-                            Debug.Log($"删除紧急摄像机: {camera.name}");
+                            Debug.Log($"{GetTimestamp()} [SceneCleanup] 删除紧急摄像机: {camera.name}");
                             DestroyImmediate(camera.gameObject);
                         }
                     }
                 }
             }
         }
-        
+
         // 清理重复的AudioListener
         CleanupDuplicateAudioListeners();
     }
@@ -129,7 +135,7 @@ public class SceneCleanup : MonoBehaviour
         
         if (listeners.Length > 1)
         {
-            Debug.Log($"发现 {listeners.Length} 个AudioListener，清理重复项");
+            Debug.Log($"{GetTimestamp()} [SceneCleanup] 发现 {listeners.Length} 个AudioListener，开始清理");
             
             AudioListener keepListener = null;
             
@@ -142,11 +148,11 @@ public class SceneCleanup : MonoBehaviour
                     if (camera != null && camera.CompareTag("MainCamera") && keepListener == null)
                     {
                         keepListener = listener;
-                        Debug.Log($"保留AudioListener: {listener.name}");
+                        Debug.Log($"{GetTimestamp()} [SceneCleanup] 保留AudioListener: {listener.name}");
                     }
                     else if (listener != keepListener)
                     {
-                        Debug.Log($"删除重复AudioListener: {listener.name}");
+                        Debug.Log($"{GetTimestamp()} [SceneCleanup] 删除重复AudioListener: {listener.name}");
                         DestroyImmediate(listener);
                     }
                 }
@@ -156,14 +162,14 @@ public class SceneCleanup : MonoBehaviour
             if (keepListener == null && listeners.Length > 0)
             {
                 keepListener = listeners[0];
-                Debug.Log($"保留第一个AudioListener: {keepListener.name}");
+                Debug.Log($"{GetTimestamp()} [SceneCleanup] 保留第一个AudioListener: {keepListener.name}");
                 
                 // 删除其他的
                 for (int i = 1; i < listeners.Length; i++)
                 {
                     if (listeners[i] != null)
                     {
-                        Debug.Log($"删除重复AudioListener: {listeners[i].name}");
+                        Debug.Log($"{GetTimestamp()} [SceneCleanup] 删除重复AudioListener: {listeners[i].name}");
                         DestroyImmediate(listeners[i]);
                     }
                 }
@@ -302,5 +308,21 @@ public class SceneCleanup : MonoBehaviour
         {
             Debug.Log($"清理了 {cleanedCount} 个可能冲突的Canvas");
         }
+    }
+
+    string GetTimestamp()
+    {
+        return $"[{Time.time:F3}s]";
+    }
+
+    bool ShouldSkipRuntimeCleanup()
+    {
+        if (!Application.isPlaying)
+        {
+            return false;
+        }
+
+        var sceneManager = GameSceneManager.Instance;
+        return sceneManager != null;
     }
 }

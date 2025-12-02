@@ -629,6 +629,178 @@
       "value": "地质图鉴系统"
     },
     {
+      "key": "quest.lab.intro.title",
+      "value": "实验室引导"
+    },
+    {
+      "key": "quest.lab.intro.desc",
+      "value": "跟随引导熟悉研究室并领取基础工具"
+    },
+    {
+      "key": "quest.lab.intro.obj1",
+      "value": "跟随提示，完成实验室开场引导"
+    },
+    {
+      "key": "quest.lab.drkaede.title",
+      "value": "任务2：与Dr.Kaede对话"
+    },
+    {
+      "key": "quest.lab.drkaede.desc",
+      "value": "在研究室与Dr.Kaede交谈，了解下一步计划"
+    },
+    {
+      "key": "quest.lab.drkaede.obj1",
+      "value": "quest2:和Dr.Kaede进行对话"
+    },
+    {
+      "key": "quest.lab.drkaede.prompt",
+      "value": "[E] 与Dr.Kaede对话"
+    },
+    {
+      "key": "quest.lab.anomaly.title",
+      "value": "任务3: 异常样本"
+    },
+    {
+      "key": "quest.lab.anomaly.desc",
+      "value": "与Dr.Kaede合作调查异常样本的线索"
+    },
+    {
+      "key": "quest.lab.anomaly.obj1",
+      "value": "向Dr.Kaede了解异常样本"
+    },
+    {
+      "key": "quest.lab.anomaly.prompt",
+      "value": "[E] 询问异常样本"
+    },
+    {
+      "key": "quest.field.phase.title",
+      "value": "3.2 试试场景切换器"
+    },
+    {
+      "key": "quest.field.phase.desc",
+      "value": "使用场景切换器前往野外区域，为下一段剧情做准备"
+    },
+    {
+      "key": "quest.field.phase.obj1",
+      "value": "使用场景切换器切换到野外场景"
+    },
+    {
+      "key": "quest.field.phase.obj2",
+      "value": "3.3 使用地质锤采集样品"
+    },
+    {
+      "key": "quest.lab.return.title",
+      "value": "3.3 返回G-Lab"
+    },
+    {
+      "key": "quest.lab.return.desc",
+      "value": "使用场景切换器返回研究室，准备下一阶段任务"
+    },
+    {
+      "key": "quest.lab.return.obj1",
+      "value": "切换回研究室场景"
+    },
+    {
+      "key": "quest.chapter4.kaede.title",
+      "value": "quest4.1 去和Dr.Kaede谈谈"
+    },
+    {
+      "key": "quest.chapter4.kaede.desc",
+      "value": "向Dr.Kaede汇报最新情况，获取下一步指示"
+    },
+    {
+      "key": "quest.chapter4.kaede.obj1",
+      "value": "与Dr.Kaede交谈"
+    },
+    {
+      "key": "quest.chapter4.kaede.prompt",
+      "value": "[E] 与Dr.Kaede交谈"
+    },
+    {
+      "key": "quest.chapter4.sample.title",
+      "value": "quest4.3 采集一次钻探样本"
+    },
+    {
+      "key": "quest.chapter4.sample.desc",
+      "value": "前往指引地点，使用推荐采集装置或钻塔完成钻探采样"
+    },
+    {
+      "key": "quest.chapter4.sample.obj1",
+      "value": "在目标地点用推荐采集装置或钻塔完成采样"
+    },
+    {
+      "key": "quest.chapter4.return.title",
+      "value": "quest4.4 返回G-Lab"
+    },
+    {
+      "key": "quest.chapter4.return.desc",
+      "value": "带着样本返回G-Lab，为后续分析做准备"
+    },
+    {
+      "key": "quest.chapter4.return.obj1",
+      "value": "返回G-Lab"
+    },
+    {
+      "key": "quest.chapter5.kaede.title",
+      "value": "quest5.1 ：去和Dr.Kaede谈谈"
+    },
+    {
+      "key": "quest.chapter5.kaede.desc",
+      "value": "向Dr.Kaede汇报最新情况，获取下一步指示"
+    },
+    {
+      "key": "quest.chapter5.kaede.obj1",
+      "value": "与Dr.Kaede交谈"
+    },
+    {
+      "key": "quest.chapter5.kaede.prompt",
+      "value": "[E] 与Dr.Kaede交谈"
+    },
+    {
+      "key": "quest.chapter5.field.title",
+      "value": "quest5.2：前往野外"
+    },
+    {
+      "key": "quest.chapter5.field.desc",
+      "value": "使用场景转换器前往野外，准备启用无人机进行侦察"
+    },
+    {
+      "key": "quest.chapter5.field.obj1",
+      "value": "切换到野外场景"
+    },
+    {
+      "key": "quest.chapter5.return.title",
+      "value": "quest5.2：返回G-Lab"
+    },
+    {
+      "key": "quest.chapter5.return.desc",
+      "value": "带着发现返回G-Lab，为汇报做准备"
+    },
+    {
+      "key": "quest.chapter5.return.obj1",
+      "value": "返回G-Lab"
+    },
+    {
+      "key": "quest.chapter6.kaede.title",
+      "value": "quest6：与Dr.Kaede对话"
+    },
+    {
+      "key": "quest.chapter6.kaede.desc",
+      "value": "向Dr.Kaede提交最终报告，确认后续安排"
+    },
+    {
+      "key": "quest.chapter6.kaede.obj1",
+      "value": "与Dr.Kaede交谈"
+    },
+    {
+      "key": "quest.chapter6.kaede.prompt",
+      "value": "[E] 与Dr.Kaede交谈"
+    },
+    {
+      "key": "quest.ui.completed",
+      "value": "任务已完成"
+    },
+    {
       "key": "encyclopedia.layer.aoba_mountain",
       "value": "青葉山層"
     },

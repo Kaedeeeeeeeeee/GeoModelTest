@@ -397,6 +397,178 @@
       "value": "System Status"
     },
     {
+      "key": "quest.lab.intro.title",
+      "value": "Lab Introduction"
+    },
+    {
+      "key": "quest.lab.intro.desc",
+      "value": "Follow the guide to get familiar with the lab and collect basic tools"
+    },
+    {
+      "key": "quest.lab.intro.obj1",
+      "value": "Follow the prompts to complete the lab intro"
+    },
+    {
+      "key": "quest.lab.drkaede.title",
+      "value": "Quest 2: Talk to Dr. Kaede"
+    },
+    {
+      "key": "quest.lab.drkaede.desc",
+      "value": "Speak with Dr. Kaede in the laboratory to learn the next steps."
+    },
+    {
+      "key": "quest.lab.drkaede.obj1",
+      "value": "Talk to Dr. Kaede"
+    },
+    {
+      "key": "quest.lab.drkaede.prompt",
+      "value": "[E] Talk to Dr. Kaede"
+    },
+    {
+      "key": "quest.lab.anomaly.title",
+      "value": "Quest 3: Anomalous Sample"
+    },
+    {
+      "key": "quest.lab.anomaly.desc",
+      "value": "Work with Dr. Kaede to investigate the anomalous sample clues."
+    },
+    {
+      "key": "quest.lab.anomaly.obj1",
+      "value": "Discuss the anomalous sample with Dr. Kaede"
+    },
+    {
+      "key": "quest.lab.anomaly.prompt",
+      "value": "[E] Ask about the anomalous sample"
+    },
+    {
+      "key": "quest.field.phase.title",
+      "value": "3.2 Try the Phase Shifter"
+    },
+    {
+      "key": "quest.field.phase.desc",
+      "value": "Use the Phase Shifter to travel to the field site and prepare for the next sequence."
+    },
+    {
+      "key": "quest.field.phase.obj1",
+      "value": "Use the Phase Shifter to travel to the field scene."
+    },
+    {
+      "key": "quest.field.phase.obj2",
+      "value": "3.3 Use the geologic hammer to collect samples."
+    },
+    {
+      "key": "quest.lab.return.title",
+      "value": "3.3 Return to G-Lab"
+    },
+    {
+      "key": "quest.lab.return.desc",
+      "value": "Use the Phase Shifter to head back to the laboratory and report in."
+    },
+    {
+      "key": "quest.lab.return.obj1",
+      "value": "Switch back to the laboratory scene."
+    },
+    {
+      "key": "quest.chapter4.kaede.title",
+      "value": "quest4.1 Talk with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter4.kaede.desc",
+      "value": "Report the latest findings to Dr. Kaede and receive the next orders."
+    },
+    {
+      "key": "quest.chapter4.kaede.obj1",
+      "value": "Speak with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter4.kaede.prompt",
+      "value": "[E] Speak with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter4.sample.title",
+      "value": "quest4.3 Collect a Boring Sample"
+    },
+    {
+      "key": "quest.chapter4.sample.desc",
+      "value": "Head to the marked site and collect the boring sample using the recommended collector or the drill tower."
+    },
+    {
+      "key": "quest.chapter4.sample.obj1",
+      "value": "Use the suggested collector or drill tower to gather the boring sample at the target."
+    },
+    {
+      "key": "quest.chapter4.return.title",
+      "value": "quest4.4 Return to G-Lab"
+    },
+    {
+      "key": "quest.chapter4.return.desc",
+      "value": "Bring the sample back to G-Lab and prepare it for analysis."
+    },
+    {
+      "key": "quest.chapter4.return.obj1",
+      "value": "Return to G-Lab."
+    },
+    {
+      "key": "quest.chapter5.kaede.title",
+      "value": "quest5.1: Talk with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter5.kaede.desc",
+      "value": "Report the latest status to Dr. Kaede and receive the next mission briefing."
+    },
+    {
+      "key": "quest.chapter5.kaede.obj1",
+      "value": "Speak with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter5.kaede.prompt",
+      "value": "[E] Speak with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter5.field.title",
+      "value": "quest5.2: Head to the Field"
+    },
+    {
+      "key": "quest.chapter5.field.desc",
+      "value": "Use the Phase Shifter to reach the field site and prepare the drone for deployment."
+    },
+    {
+      "key": "quest.chapter5.field.obj1",
+      "value": "Travel to the field scene."
+    },
+    {
+      "key": "quest.chapter5.return.title",
+      "value": "quest5.2: Return to G-Lab"
+    },
+    {
+      "key": "quest.chapter5.return.desc",
+      "value": "Bring your findings back to G-Lab and get ready to report in."
+    },
+    {
+      "key": "quest.chapter5.return.obj1",
+      "value": "Return to G-Lab."
+    },
+    {
+      "key": "quest.chapter6.kaede.title",
+      "value": "quest6: Talk with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter6.kaede.desc",
+      "value": "Deliver the final report to Dr. Kaede and discuss the next steps."
+    },
+    {
+      "key": "quest.chapter6.kaede.obj1",
+      "value": "Speak with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter6.kaede.prompt",
+      "value": "[E] Speak with Dr. Kaede"
+    },
+    {
+      "key": "quest.ui.completed",
+      "value": "Quest Completed"
+    },
+    {
       "key": "encyclopedia.data_system.label",
       "value": "Data System"
     },

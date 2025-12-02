@@ -9,21 +9,51 @@ public class SceneAutoSetup : MonoBehaviour
     [Header("自动设置配置")]
     public bool autoSetupOnSceneLoad = true;
     public float setupDelay = 0.2f;
+    [Tooltip("运行时（有GameSceneManager时）是否仍然执行自动设置。默认关闭以避免与场景系统冲突。")]
+    public bool enableRuntimeAutoSetup = false;
     
     [Header("Player设置")]
-    public Vector3 defaultPlayerPosition = new Vector3(0, 1, 0);
-    public Quaternion defaultPlayerRotation = Quaternion.identity;
+    public Vector3 defaultPlayerPosition = new Vector3(-29.9230003f, 14.3459997f, -20.9599991f);
+    public Quaternion defaultPlayerRotation = new Quaternion(0f, 0.995849609f, 0f, 0.0910143629f);
     
     [Header("Laboratory Scene特殊设置")]
-    public Vector3 laboratoryPlayerPosition = new Vector3(1, 0.200000003f, 5);
+    public Vector3 laboratoryPlayerPosition = new Vector3(0f, 0.167999998f, 4.52699995f);
     public Quaternion laboratoryPlayerRotation = Quaternion.identity;
     
     void Start()
     {
+        if (ShouldSkipRuntimeAutoSetup())
+        {
+            Debug.Log($"{GetTimestamp()} [SceneAutoSetup] 检测到运行时场景管理器，跳过自动设置");
+            return;
+        }
+
         if (autoSetupOnSceneLoad)
         {
             StartCoroutine(AutoSetupScene());
         }
+    }
+
+    bool ShouldSkipRuntimeAutoSetup()
+    {
+        if (!Application.isPlaying)
+        {
+            return false;
+        }
+
+        if (enableRuntimeAutoSetup)
+        {
+            return false;
+        }
+
+        var sceneManager = FindFirstObjectByType<GameSceneManager>();
+        if (sceneManager == null)
+        {
+            return false;
+        }
+
+        bool playerExists = FindFirstObjectByType<FirstPersonController>() != null;
+        return playerExists;
     }
     
     IEnumerator AutoSetupScene()
@@ -53,6 +83,7 @@ public class SceneAutoSetup : MonoBehaviour
         
         Debug.Log($"=== 场景自动设置完成: {sceneName} ===");
     }
+
     
     /// <summary>
     /// 设置Player系统
@@ -63,11 +94,11 @@ public class SceneAutoSetup : MonoBehaviour
         
         if (existingPlayer != null)
         {
-            Debug.Log("✅ Player系统已存在");
+            Debug.Log($"{GetTimestamp()} [SceneAutoSetup] Player系统已存在 -> {existingPlayer.name}，位置 {existingPlayer.transform.position} (场景: {sceneName})");
             return;
         }
         
-        Debug.Log("🔧 创建Player系统");
+        Debug.Log($"{GetTimestamp()} [SceneAutoSetup] 未检测到Player，准备创建（场景: {sceneName}）");
         
         // 尝试从MainScene复制Player设置
         bool playerCreated = TryCreatePlayerFromMainScene(sceneName);
@@ -122,12 +153,14 @@ public class SceneAutoSetup : MonoBehaviour
                 playerCamera.tag = "MainCamera";
             }
             
-            Debug.Log($"✅ 从Lily预制体创建Player系统完成，位置: {playerPos}");
+            Debug.Log($"{GetTimestamp()} [SceneAutoSetup] 从Lily预制体创建Player，位置 {playerPos}，场景 {sceneName}\n{new System.Diagnostics.StackTrace(true)}");
+            
+            NotifyPlayerPersistentData(sceneName);
             return true;
         }
         else
         {
-            Debug.LogWarning("❌ 无法加载Lily预制体，使用备用方案");
+            Debug.LogWarning($"{GetTimestamp()} [SceneAutoSetup] 无法加载Lily预制体，改用基础玩家方案（场景: {sceneName}）");
             return false;
         }
     }
@@ -138,7 +171,7 @@ public class SceneAutoSetup : MonoBehaviour
     /// </summary>
     void CreateBasicPlayerSystem(string sceneName)
     {
-        Debug.LogWarning("🔧 使用备用方案创建基础Player系统");
+        Debug.LogWarning($"{GetTimestamp()} [SceneAutoSetup] 使用备用方案创建基础Player（场景: {sceneName}）");
         
         // 创建Player对象
         GameObject playerObj = new GameObject("Lily");
@@ -180,7 +213,9 @@ public class SceneAutoSetup : MonoBehaviour
             Debug.Log($"⚠️ 场景中已存在 {existingListeners.Length} 个AudioListener，跳过添加");
         }
         
-        Debug.Log($"✅ 基础Player系统创建完成，位置: {playerPos}");
+        Debug.Log($"{GetTimestamp()} [SceneAutoSetup] 基础Player系统创建完成，位置 {playerPos} (场景: {sceneName})\n{new System.Diagnostics.StackTrace(true)}");
+
+        NotifyPlayerPersistentData(sceneName);
     }
     
     /// <summary>
@@ -493,6 +528,26 @@ public class SceneAutoSetup : MonoBehaviour
         else
         {
             Debug.Log($"⚠️ 场景中没有AudioListener");
+        }
+    }
+
+    string GetTimestamp()
+    {
+        return $"[{Time.time:F3}s]";
+    }
+
+    void NotifyPlayerPersistentData(string sceneName)
+    {
+        if (sceneName != "Laboratory Scene")
+        {
+            return;
+        }
+
+        var persistent = FindFirstObjectByType<PlayerPersistentData>();
+        if (persistent != null)
+        {
+            persistent.ForceSetPlayerToLaboratorySpawn();
+            Debug.Log($"{GetTimestamp()} [SceneAutoSetup] 已通知PlayerPersistentData在实验室强制定位");
         }
     }
 }

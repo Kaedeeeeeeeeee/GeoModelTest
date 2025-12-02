@@ -1,0 +1,71 @@
+{
+    "scene": "Quest 3.3 - Phase Shifter Field Arrival",
+    "background": "field",
+    "bgm": "field_theme",
+    "dialogues": [
+        
+    {
+        "speaker": "narration",
+        "text": "荒れ果てた地表に風が吹き抜ける。"
+      },
+      {
+        "speaker": "narration",
+        "text": "{name}は小さな機材ケースを背負い、山のふもとの露頭に立っていた。通信端末のライトが点滅し、研究室とつながる。"
+      },
+      {
+        "speaker": "Dr.Kaede",
+        "text": "こちらラボ。音声、映ってるか？風が強いみたいだね。"
+      },
+      {
+        "speaker": "主人公",
+        "text": "はい、聞こえてます。こっちはまだちょっと砂ぼこりが舞ってます。空も灰色で…地震のあとって感じです。"
+      },
+      {
+        "speaker": "みなと",
+        "text": "映像きたきた。うわ、泥だらけじゃん。長靴はいてきた？"
+      },
+      {
+        "speaker": "主人公",
+        "text": "……はいたけど、もう半分沈みました。あー、これ洗うの大変だなあ。"
+      },
+      {
+        "speaker": "Dr.Kaede",
+        "text": "ほらほら。そこが震源に一番近い露頭だからね。サンプルを頼むよ。"
+      },
+      {
+        "speaker": "narration",
+        "text": "{name}は地質ハンマーを取り出し、慎重に岩の表面を叩く。乾いた音が風の中に消える。"
+      },
+      
+      {
+        "speaker": "narration",
+        "text": "主人公はしゃがみ込み、岩の割れ目から慎重に破片を取り出した。小さなケースに入れながら、どこかでカラスの鳴き声が響く。"
+      },
+      {
+        "speaker": "みなと",
+        "text": "おっ、きれいな層だね。粉っぽくなってるところがある。なんかお菓子のクッキーみたい。"
+      },
+      {
+        "speaker": "主人公",
+        "text": "地面スイーツか…。でも、手で触るとちょっと柔らかい。石のはずなのに。"
+      }, 
+      {
+        "speaker": "Dr.Kaede",
+        "text": "それは興味深いね。地震で砕けた部分かもしれない。持ち帰って薄片にしてみよう。"
+      },
+      { "speaker": "narration", "text": "サンプルケースを閉じたその瞬間、地面が低く唸った。風が止み、空気が一気に重くなる。" },  
+          { "speaker": "みなと", "text": "……今、揺れた？","shake": true,
+            "shakeAmplitude": 0.45 },  
+          { "speaker": "主人公", "text": "いや……たぶん気のせい――" },  
+          { "speaker": "sfx", "text": "rumble_start" },  
+          { "speaker": "narration", "text": "言い終わる前に、大地が激しく震え出した。地鳴りが耳をつんざき、足元の岩が崩れる。" },  
+          { "speaker": "Dr.Kaede", "text": "こちらラボ！　{name}、すぐ退避しなさい！　断層が動いてる！" },  
+          { "speaker": "主人公", "text": "うわっ……！フェーズシフター……どこだっ……！" },  
+          { "speaker": "narration", "text": "主人公は揺れる地面に足を取られながら、腰の装置を必死に掴んだ。警報音が鳴り響き、空が割れるような轟音が響く。" },  
+          { "speaker": "みなと", "text": "{name}ちゃん！早く！崖が――！" },  
+          { "speaker": "sfx", "text": "collapse_far" },  
+          { "speaker": "主人公", "text": "くそっ、頼む……作動してくれ！" },  
+          { "speaker": "sfx", "text": "teleport_flash" },  
+          { "speaker": "narration", "text": "白い閃光が主人公を包み込む。次の瞬間、耳をつんざく地鳴りの音が消え、静寂と機械音が戻った。" }
+    ]
+}

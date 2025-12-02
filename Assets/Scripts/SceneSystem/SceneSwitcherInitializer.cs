@@ -23,9 +23,9 @@ public class SceneSwitcherInitializer : MonoBehaviour
     {
         // 等待其他系统初始化
         yield return new WaitForSeconds(0.5f);
-        
-        // 创建场景切换器工具
-        CreateSceneSwitcherTool();
+
+        // 仅确保玩家对象上存在场景切换器组件（不自动解锁）
+        EnsureSceneSwitcherComponent();
         
         // 确保场景管理器存在
         EnsureSceneManagerExists();
@@ -34,58 +34,35 @@ public class SceneSwitcherInitializer : MonoBehaviour
     }
     
     /// <summary>
-    /// 创建场景切换器工具
+    /// 确保玩家对象上存在场景切换器组件（未解锁状态）
     /// </summary>
-    void CreateSceneSwitcherTool()
+    void EnsureSceneSwitcherComponent()
     {
-        // 检查是否已存在场景切换器
-        SceneSwitcherTool existingTool = FindFirstObjectByType<SceneSwitcherTool>();
-        if (existingTool != null)
+        ToolManager toolManager = FindFirstObjectByType<ToolManager>();
+        if (toolManager == null)
         {
-            Debug.Log("场景切换器工具已存在，跳过创建");
+            Debug.LogWarning("未找到工具管理器，无法挂载场景切换器组件");
             return;
         }
-        
-        // 创建场景切换器工具对象
-        GameObject toolObject = new GameObject("SceneSwitcherTool");
-        SceneSwitcherTool tool = toolObject.AddComponent<SceneSwitcherTool>();
-        
-        // 配置工具属性
+
+        var tool = toolManager.GetComponent<SceneSwitcherTool>();
+        if (tool == null)
+        {
+            tool = toolManager.gameObject.AddComponent<SceneSwitcherTool>();
+            Debug.Log("已在玩家对象上创建SceneSwitcherTool组件（未解锁）");
+        }
+
+        // 配置但不注册
         tool.switcherPrefab = sceneSwitcherPrefab;
         tool.toolIcon = sceneSwitcherIcon;
         tool.switcherActivateSound = switcherActivateSound;
         tool.sceneChangeSound = sceneChangeSound;
-        
-        // 添加到工具管理器
-        AddToToolManager(tool);
-        
-        Debug.Log("场景切换器工具创建完成");
     }
     
     /// <summary>
     /// 添加到工具管理器
     /// </summary>
-    void AddToToolManager(SceneSwitcherTool tool)
-    {
-        ToolManager toolManager = FindFirstObjectByType<ToolManager>();
-        if (toolManager != null)
-        {
-            toolManager.AddTool(tool);
-            Debug.Log("场景切换器工具已添加到工具管理器");
-        }
-        else
-        {
-            Debug.LogWarning("未找到工具管理器，场景切换器工具未能添加");
-        }
-        
-        // 刷新库存UI
-        InventoryUISystem inventoryUI = FindFirstObjectByType<InventoryUISystem>();
-        if (inventoryUI != null)
-        {
-            inventoryUI.RefreshTools();
-            Debug.Log("库存UI已刷新");
-        }
-    }
+    // 取消自动添加到工具管理器，改由任务/剧情在解锁时添加
     
     /// <summary>
     /// 确保场景管理器存在

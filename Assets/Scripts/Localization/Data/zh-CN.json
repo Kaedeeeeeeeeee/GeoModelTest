@@ -251,6 +251,26 @@
     {
       "key": "debug.empty_key",
       "value": "[空键]"
+    },
+    {
+      "key": "tool.scene_switcher.name",
+      "value": "场景切换器"
+    },
+    {
+      "key": "quest.ui.completed",
+      "value": "已完成"
+    },
+    {
+      "key": "quest.lab.intro.title",
+      "value": "实验室引导"
+    },
+    {
+      "key": "quest.lab.intro.desc",
+      "value": "跟随引导，领取基础工具。"
+    },
+    {
+      "key": "quest.lab.intro.obj1",
+      "value": "领取基础工具"
     }
   ]
 }

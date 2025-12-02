@@ -251,6 +251,26 @@
     {
       "key": "debug.empty_key",
       "value": "[EMPTY KEY]"
+    },
+    {
+      "key": "tool.scene_switcher.name",
+      "value": "Scene Switcher"
+    },
+    {
+      "key": "quest.ui.completed",
+      "value": "Completed"
+    },
+    {
+      "key": "quest.lab.intro.title",
+      "value": "Laboratory Onboarding"
+    },
+    {
+      "key": "quest.lab.intro.desc",
+      "value": "Follow the guide and obtain basic tools."
+    },
+    {
+      "key": "quest.lab.intro.obj1",
+      "value": "Obtain basic tools"
     }
   ]
 }

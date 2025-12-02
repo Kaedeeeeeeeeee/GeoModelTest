@@ -1110,34 +1110,22 @@ public class InventoryUISystem : MonoBehaviour
     
     void InitializeTools()
     {
+        // 严格使用 ToolManager 的可用工具列表，避免未解锁工具出现在轮盘
         availableTools.Clear();
-        
-        CollectionTool[] tools = FindObjectsByType<CollectionTool>(FindObjectsSortMode.None);
-        
-        
-        foreach (var tool in tools)
-        {
-            if (tool != null)
-            {
-                availableTools.Add(tool);
-                
-            }
-        }
-        
+
         var toolManager = FindFirstObjectByType<ToolManager>();
         if (toolManager != null && toolManager.availableTools != null)
         {
-            
             foreach (var tool in toolManager.availableTools)
             {
-                if (tool != null && !availableTools.Contains(tool))
+                if (tool != null)
                 {
                     availableTools.Add(tool);
-                    
                 }
             }
         }
-        
+        // 不再从场景中扫描所有 CollectionTool，防止未解锁工具被显示
+
         // 按toolID排序工具列表（数字ID从小到大排序，按顺时针方向排列）
         availableTools.Sort((a, b) => {
             if (a == null && b == null) return 0;

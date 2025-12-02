@@ -23,6 +23,7 @@ public class GameSceneManager : MonoBehaviour
     private string currentSceneName;
     private PlayerPersistentData playerData;
     private bool isSceneLoading = false;
+    private const string ClassRoomHiddenKey = "MainScene.ClassRoom.Hidden";
     
     public static GameSceneManager Instance
     {
@@ -68,7 +69,12 @@ public class GameSceneManager : MonoBehaviour
         
         // 确保场景初始化器存在
         SceneInitializer.GetOrCreate();
-        
+
+        if (currentSceneName == "MainScene")
+        {
+            UpdateMainSceneClassRoomVisibility(currentSceneName);
+        }
+
         Debug.Log($"场景管理器初始化完成，当前场景: {currentSceneName}");
     }
     
@@ -384,6 +390,11 @@ public class GameSceneManager : MonoBehaviour
         
         // 保存当前场景数据
         playerData.SaveCurrentSceneData(currentSceneName);
+
+        if (currentSceneName == "MainScene" && sceneName != "MainScene")
+        {
+            HideMainSceneClassRoom();
+        }
         
         // 显示加载界面
         ShowLoadingUI();
@@ -439,7 +450,13 @@ public class GameSceneManager : MonoBehaviour
         if (playerData != null)
         {
             playerData.RestoreSceneData(sceneName);
+            if (sceneName == "Laboratory Scene")
+            {
+                playerData.ForceSetPlayerToLaboratorySpawn();
+            }
         }
+
+        UpdateMainSceneClassRoomVisibility(sceneName);
         
         Debug.Log($"场景数据恢复完成: {sceneName}");
     }
@@ -540,6 +557,31 @@ public class GameSceneManager : MonoBehaviour
         else
         {
             Debug.Log("[GameSceneManager] EventSystem已存在");
+        }
+    }
+
+    private void HideMainSceneClassRoom()
+    {
+        if (PlayerPrefs.GetInt(ClassRoomHiddenKey, 0) == 1) return;
+        var classRoom = GameObject.Find("ClassRoom");
+        if (classRoom != null)
+        {
+            classRoom.SetActive(false);
+            PlayerPrefs.SetInt(ClassRoomHiddenKey, 1);
+            PlayerPrefs.Save();
+            Debug.Log("[GameSceneManager] 已隐藏ClassRoom并记录状态");
+        }
+    }
+
+    private void UpdateMainSceneClassRoomVisibility(string sceneName)
+    {
+        if (sceneName != "MainScene") return;
+        bool hidden = PlayerPrefs.GetInt(ClassRoomHiddenKey, 0) == 1;
+        var classRoom = GameObject.Find("ClassRoom");
+        if (classRoom != null)
+        {
+            classRoom.SetActive(!hidden);
+            Debug.Log($"[GameSceneManager] ClassRoom 可见性更新: {!hidden}");
         }
     }
 }

@@ -1,3 +1,5 @@
+using GuidanceSystem;
+using StorySystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -76,14 +78,29 @@ public class FirstPersonController : MonoBehaviour
         
         // 桌面测试模式下不锁定鼠标，允许点击虚拟控件
         SetCursorLockState();
+
+        GuidanceManager.Instance?.RegisterPlayer(transform);
     }
     
     void Update()
     {
-        HandleInput();
+        bool blockInput = StoryDirector.SubtitleUI.IsPlayerInputBlocked;
+        if (blockInput)
+        {
+            SuppressPlayerInputs();
+        }
+        else
+        {
+            HandleInput();
+        }
+
         GroundCheck();
         HandleMovement();
-        HandleLook();
+
+        if (!blockInput)
+        {
+            HandleLook();
+        }
         
         // 检测桌面测试模式状态变化，动态更新鼠标锁定状态
         CheckDesktopTestModeChange();
@@ -233,6 +250,14 @@ public class FirstPersonController : MonoBehaviour
             Vector2 mouseLook = Mouse.current.delta.ReadValue();
             lookInput = mouseLook;
         }
+    }
+
+    void SuppressPlayerInputs()
+    {
+        moveInput = Vector2.zero;
+        lookInput = Vector2.zero;
+        runInput = false;
+        jumpInput = false;
     }
     
     void GroundCheck()
@@ -514,6 +539,14 @@ public class FirstPersonController : MonoBehaviour
         {
             leftHandAnchor.localPosition = leftHandOffset;
             leftHandAnchor.localRotation = Quaternion.Euler(leftHandRotation);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (GuidanceManager.Current != null)
+        {
+            GuidanceManager.Current.RegisterPlayer(null);
         }
     }
 
