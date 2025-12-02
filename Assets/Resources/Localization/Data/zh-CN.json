@@ -717,6 +717,18 @@
       "value": "[E] 与Dr.Kaede交谈"
     },
     {
+      "key": "quest.chapter4.field.title",
+      "value": "quest4.2 前往野外"
+    },
+    {
+      "key": "quest.chapter4.field.desc",
+      "value": "使用相位切换器前往野外场景"
+    },
+    {
+      "key": "quest.chapter4.field.obj1",
+      "value": "前往野外"
+    },
+    {
       "key": "quest.chapter4.sample.title",
       "value": "quest4.3 采集一次钻探样本"
     },

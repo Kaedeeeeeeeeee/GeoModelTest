@@ -41,6 +41,7 @@ namespace QuestSystem
         private bool _chapter4SampleIntroPlayed = false;
         private bool _chapter4SampleCutscenePending = false;
         private bool _chapter4SampleCutscenePlayed = false;
+        private bool _chapter4FieldIntroPending = false;
         private bool _fieldPhaseSampleCutscenePending = false;
         private int _fieldPhaseTargetIndex = 0;
         private GuidanceTarget _chapter4SampleGuidanceTarget;
@@ -59,7 +60,9 @@ namespace QuestSystem
         private static readonly FieldInfo GuidanceTargetRadiusField = typeof(GuidanceTarget)
             .GetField("detectionRadius", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        private const string Chapter4FieldStoryPath = "Story/quest4.2";
         private const string Chapter4SampleCompletionStoryPath = "Story/quest4.3";
+        private const string Chapter4ReturnStoryPath = "Story/quest4.4";
         private const string Chapter4SampleGuidanceTargetId = "chapter4.sample.site";
         private static readonly Vector3 Chapter4SampleTargetPosition = new Vector3(-10f, 14f, -28f);
         private const string FieldPhaseSampleStoryPath = "Story/quest3.3";
@@ -282,6 +285,25 @@ namespace QuestSystem
             RestoreQuestRuntimeState(q6);
             if (debugLog) Debug.Log("[QuestManager] 内置任务已注册：q.chapter4.kaede");
 
+            var qField4 = new Quest
+            {
+                id = "q.chapter4.field",
+                titleKey = "quest.chapter4.field.title",
+                descriptionKey = "quest.chapter4.field.desc",
+                status = QuestStatus.NotStarted,
+                objectives = new List<QuestObjective>
+                {
+                    new QuestObjective
+                    {
+                        id = "q.chapter4.field.enter_field",
+                        titleKey = "quest.chapter4.field.obj1"
+                    }
+                }
+            };
+            _quests[qField4.id] = qField4;
+            RestoreQuestRuntimeState(qField4);
+            if (debugLog) Debug.Log("[QuestManager] 内置任务已注册：q.chapter4.field");
+
             var q7 = new Quest
             {
                 id = "q.chapter4.sample",
@@ -304,7 +326,7 @@ namespace QuestSystem
             if (q7.IsAllObjectivesCompleted() || q7.status == QuestStatus.Completed)
             {
                 _chapter4SampleCutscenePlayed = true;
-                _chapter4SampleIntroPlayed = true;
+                // _chapter4SampleIntroPlayed = true; // Deprecated
             }
 
             var q8 = new Quest
@@ -332,9 +354,15 @@ namespace QuestSystem
                 StartQuest(q6.id);
             }
 
-            if (q6.status == QuestStatus.Completed && q7.status == QuestStatus.NotStarted)
+            if (q6.status == QuestStatus.Completed && qField4.status == QuestStatus.NotStarted)
             {
-                if (debugLog) Debug.Log("[QuestManager] 检测到q.chapter4.kaede已完成，自动启动q.chapter4.sample");
+                if (debugLog) Debug.Log("[QuestManager] 检测到q.chapter4.kaede已完成，自动启动q.chapter4.field");
+                StartQuest(qField4.id);
+            }
+
+            if (qField4.status == QuestStatus.Completed && q7.status == QuestStatus.NotStarted)
+            {
+                if (debugLog) Debug.Log("[QuestManager] 检测到q.chapter4.field已完成，自动启动q.chapter4.sample");
                 _chapter4SampleCutscenePlayed = false;
                 _chapter4SampleCutscenePending = false;
                 StartQuest(q7.id);
@@ -592,12 +620,85 @@ namespace QuestSystem
                 }
             }
 
-            if (sceneName == "MainScene" &&
-                _chapter4SampleIntroPlayed &&
-                GetQuestStatus("q.chapter4.sample") == QuestStatus.InProgress &&
-                !IsObjectiveCompleted("q.chapter4.sample.collect"))
+            if (sceneName == "MainScene")
             {
-                ActivateChapter4SampleGuidance();
+                // Quest 4.2 Logic: Enter Field -> Play Story -> Complete Quest -> Start 4.3
+                if (GetQuestStatus("q.chapter4.field") == QuestStatus.InProgress &&
+                    !IsObjectiveCompleted("q.chapter4.field.enter_field") &&
+                    !_chapter4FieldIntroPending)
+                {
+                    _chapter4FieldIntroPending = true;
+                    // Play quest4.2 story, then unlock 4.3 sampling
+                    System.Action afterFieldIntro = () =>
+                    {
+                        if (!IsObjectiveCompleted("q.chapter4.field.enter_field"))
+                        {
+                            CompleteObjective("q.chapter4.field.enter_field");
+                        }
+
+                        if (GetQuestStatus("q.chapter4.sample") == QuestStatus.NotStarted)
+                        {
+                            StartQuest("q.chapter4.sample");
+                        }
+
+                        StorySystem.StoryDirector.Instance?.MarkChapter4FieldIntroPlayed();
+                        MarkChapter4SampleIntroPlayed();
+                        _chapter4FieldIntroPending = false;
+                    };
+
+                    var director = StorySystem.StoryDirector.Instance;
+                    if (director != null)
+                    {
+                        director.PlaySequence(Chapter4FieldStoryPath, afterFieldIntro);
+                    }
+                    else
+                    {
+                        afterFieldIntro.Invoke();
+                    }
+                }
+                
+                // Quest 4.3 Guidance Logic
+                if (GetQuestStatus("q.chapter4.sample") == QuestStatus.InProgress &&
+                    !IsObjectiveCompleted("q.chapter4.sample.collect"))
+                {
+                    ActivateChapter4SampleGuidance();
+                }
+            }
+            else if (sceneName == "Laboratory Scene")
+            {
+                // Fix: Inject Quest 4.2 (q.chapter4.field) before Quest 4.3 (q.chapter4.sample)
+                // This ensures that completing 4.1 triggers 4.2 instead of 4.3
+                var interactions = Object.FindObjectsByType<QuestNpcInteraction>(FindObjectsSortMode.None);
+                foreach (var interaction in interactions)
+                {
+                    // We assume the interaction with 4.3 is Dr. Kaede
+                    // We try to inject 4.2 before 4.3
+                    interaction.InjectStageBefore(
+                        "q.chapter4.sample", 
+                        "q.chapter4.field", 
+                        null, // No objective completion needed here, handled by OnSceneLoaded
+                        null, // No story here, handled by OnSceneLoaded
+                        "q.chapter4.kaede" // Prerequisite for 4.2 is 4.1
+                    );
+                }
+
+                // Quest 4.4 Logic: Return to Lab -> Play Story -> Complete Quest
+                if (GetQuestStatus("q.chapter4.return") == QuestStatus.InProgress &&
+                    !IsObjectiveCompleted("q.chapter4.return.enter_lab"))
+                {
+                    var director = StorySystem.StoryDirector.Instance;
+                    if (director != null)
+                    {
+                        director.PlaySequence(Chapter4ReturnStoryPath, () =>
+                        {
+                            CompleteObjective("q.chapter4.return.enter_lab");
+                        });
+                    }
+                    else
+                    {
+                        CompleteObjective("q.chapter4.return.enter_lab");
+                    }
+                }
             }
         }
 
@@ -627,6 +728,9 @@ namespace QuestSystem
                     _chapter4SampleCutscenePlayed = true;
                     GuidanceManager.Instance?.ClearTarget();
                     CompleteObjective("q.chapter4.sample.collect");
+                    
+                    // Auto start next quest 4.4
+                    StartQuest("q.chapter4.return");
                 };
 
                 if (director != null)
@@ -648,8 +752,7 @@ namespace QuestSystem
 
         private void ActivateChapter4SampleGuidance()
         {
-            if (!_chapter4SampleIntroPlayed ||
-                GetQuestStatus("q.chapter4.sample") != QuestStatus.InProgress ||
+            if (GetQuestStatus("q.chapter4.sample") != QuestStatus.InProgress ||
                 IsObjectiveCompleted("q.chapter4.sample.collect"))
             {
                 return;
@@ -674,6 +777,7 @@ namespace QuestSystem
             _chapter4SampleGuidanceTarget = go.AddComponent<GuidanceTarget>();
 
             ConfigureGuidanceTargetFields(_chapter4SampleGuidanceTarget, Chapter4SampleGuidanceTargetId, 0.15f, 5f);
+            GuidanceManager.Instance?.RegisterTarget(_chapter4SampleGuidanceTarget);
         }
 
         private static void ConfigureGuidanceTargetFields(GuidanceTarget target, string targetId, float verticalOffset, float detectionRadius)
@@ -836,7 +940,7 @@ namespace QuestSystem
             }
             else if (questId == "q.chapter4.kaede")
             {
-                if (debugLog) Debug.Log("[QuestManager] Kaede阶段剧情完成，启动章节4采样任务");
+                if (debugLog) Debug.Log("[QuestManager] Kaede阶段剧情完成，启动章节4野外任务");
                 _chapter4SampleCutscenePlayed = false;
                 _chapter4SampleCutscenePending = false;
                 _chapter4SampleIntroPlayed = false;
@@ -845,7 +949,7 @@ namespace QuestSystem
                     Destroy(_chapter4SampleGuidanceTarget.gameObject);
                     _chapter4SampleGuidanceTarget = null;
                 }
-                StartQuest("q.chapter4.sample");
+                StartQuest("q.chapter4.field");
             }
             else if (questId == "q.chapter4.sample")
             {

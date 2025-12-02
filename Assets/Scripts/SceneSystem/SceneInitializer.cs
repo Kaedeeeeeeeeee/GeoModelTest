@@ -129,7 +129,7 @@ public class SceneInitializer : MonoBehaviour
         {
             case "Laboratory Scene":
                 // 实验室场景的特殊配置（固定出生点）
-                setup.laboratoryPlayerPosition = new Vector3(0f, 0.167999998f, 4.52699995f);
+                setup.laboratoryPlayerPosition = new Vector3(0f, 0.196999997f, 4.52699995f);
                 setup.laboratoryPlayerRotation = Quaternion.identity;
                 setup.setupDelay = 0.3f; // 稍长的延迟，等待场景完全加载
                 break;

@@ -16,7 +16,7 @@ public class PlayerPersistentData : MonoBehaviour
     private HashSet<string> unlockedToolIds = new HashSet<string>();
     private const string UnlockedToolsPrefsKey = "PlayerPersistentData.UnlockedToolIds";
     private const string InventoryPrefsKey = "PlayerPersistentData.Inventory";
-    private static readonly Vector3 LaboratorySpawnPosition = new Vector3(0f, 0.167999998f, 4.52699995f);
+    private static readonly Vector3 LaboratorySpawnPosition = new Vector3(0f, 0.196999997f, 4.52699995f);
     private static readonly Quaternion LaboratorySpawnRotation = Quaternion.identity;
 
     [System.Serializable]

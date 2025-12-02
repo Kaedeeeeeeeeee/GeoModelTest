@@ -368,6 +368,11 @@ namespace StorySystem
             if (enableDebugLog) Debug.Log("[StoryDirector] Run_Chapter4_FieldSequence 结束");
         }
 
+        public void MarkChapter4FieldIntroPlayed()
+        {
+            SetFlag("story.chapter4.sample_intro");
+        }
+
         private IEnumerator Run_Chapter5_FieldSequence()
         {
             _isRunningCinematic = true;

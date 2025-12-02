@@ -485,6 +485,18 @@
       "value": "[E] Speak with Dr. Kaede"
     },
     {
+      "key": "quest.chapter4.field.title",
+      "value": "quest4.2 Go to Field"
+    },
+    {
+      "key": "quest.chapter4.field.desc",
+      "value": "Use the Phase Shifter to travel to the field site."
+    },
+    {
+      "key": "quest.chapter4.field.obj1",
+      "value": "Go to Field"
+    },
+    {
       "key": "quest.chapter4.sample.title",
       "value": "quest4.3 Collect a Boring Sample"
     },

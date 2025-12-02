@@ -717,6 +717,18 @@
       "value": "[E] Dr.Kaedeと話す"
     },
     {
+      "key": "quest.chapter4.field.title",
+      "value": "quest4.2 野外に行く"
+    },
+    {
+      "key": "quest.chapter4.field.desc",
+      "value": "フェーズシフターを使って野外エリアへ移動する"
+    },
+    {
+      "key": "quest.chapter4.field.obj1",
+      "value": "野外に行く"
+    },
+    {
       "key": "quest.chapter4.sample.title",
       "value": "quest4.3 サンプルを採集する"
     },

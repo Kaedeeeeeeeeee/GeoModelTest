@@ -391,6 +391,51 @@ namespace QuestSystem
             return false;
         }
 
+        public void InjectStageBefore(string targetQuestId, string newQuestId, string newObjectiveId, string newStoryPath, string newPrereqId)
+        {
+            if (stages == null) return;
+
+            int targetIndex = -1;
+            for (int i = 0; i < stages.Length; i++)
+            {
+                if (stages[i].questId == targetQuestId)
+                {
+                    targetIndex = i;
+                    break;
+                }
+            }
+
+            if (targetIndex != -1)
+            {
+                // Create new stage
+                var newStage = new QuestInteractionStage
+                {
+                    questId = newQuestId,
+                    objectiveId = newObjectiveId,
+                    storyResourcePath = newStoryPath,
+                    promptLocalizationKey = stages[targetIndex].promptLocalizationKey, // Reuse prompt or use default
+                    autoStartWhenAvailable = true,
+                    disablePlayerControl = true,
+                    prerequisiteQuestId = newPrereqId,
+                    prerequisiteStatus = QuestStatus.Completed
+                };
+
+                // Update target stage prerequisite
+                stages[targetIndex].prerequisiteQuestId = newQuestId;
+
+                // Insert new stage
+                var newStages = new QuestInteractionStage[stages.Length + 1];
+                for (int i = 0; i < targetIndex; i++) newStages[i] = stages[i];
+                newStages[targetIndex] = newStage;
+                for (int i = targetIndex; i < stages.Length; i++) newStages[i + 1] = stages[i];
+                
+                stages = newStages;
+                
+                // Refresh to apply changes immediately if needed
+                RefreshCurrentStage();
+            }
+        }
+
         private void UpdatePromptLocalization()
         {
             if (promptLocalized == null) return;
