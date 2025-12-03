@@ -28,6 +28,7 @@ namespace QuestSystem
         private Text objectiveText;
         private LocalizedText titleLoc;
         private LocalizedText objectiveLoc;
+        private static bool forceHidden;
 
         private void Start()
         {
@@ -125,7 +126,7 @@ namespace QuestSystem
         {
             if (canvasGO == null) return;
             string current = SceneManager.GetActiveScene().name;
-            bool allowed = IsAllowedScene(current);
+            bool allowed = IsAllowedScene(current) && !forceHidden;
             canvasGO.SetActive(allowed);
         }
 
@@ -157,6 +158,13 @@ namespace QuestSystem
             var qm = QuestManager.Instance;
             if (qm == null) return;
 
+            if (forceHidden)
+            {
+                if (root != null) root.SetActive(false);
+                if (canvasGO != null) canvasGO.SetActive(false);
+                return;
+            }
+
             Quest current = FindQuestToDisplay(qm);
 
             if (current == null)
@@ -186,6 +194,21 @@ namespace QuestSystem
             else
             {
                 objectiveLoc.SetTextKey("quest.ui.completed");
+            }
+        }
+
+        /// <summary>
+        /// 外部强制隐藏或显示（用于全屏界面遮挡时关闭左上角提示）
+        /// </summary>
+        public static void SetForceHidden(bool hidden)
+        {
+            forceHidden = hidden;
+            // 尝试立即更新现有实例
+            var ui = FindObjectOfType<QuestUI>();
+            if (ui != null)
+            {
+                ui.UpdateVisibilityByScene();
+                ui.RefreshFromCurrentState();
             }
         }
 

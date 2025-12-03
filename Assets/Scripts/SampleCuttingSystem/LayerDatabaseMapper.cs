@@ -12,12 +12,13 @@ namespace SampleCuttingSystem
     public class LayerDatabaseMapper : MonoBehaviour
     {
         [Header("数据库设置")]
-        [SerializeField] private string databasePath = "MineralData/Data/SendaiMineralDatabase";
-        [SerializeField] private bool loadOnStart = true;
-        [SerializeField] private bool enableDebugLogs = false;
+        [SerializeField] public string databasePath = "MineralData/Data/SendaiMineralDatabase";
+        [SerializeField] public bool loadOnStart = true;
+        [SerializeField] public bool enableDebugLogs = false;
         
         // 缓存的数据库
         private MineralDatabase cachedDatabase;
+        public bool IsLoaded => cachedDatabase != null;
         
         // 地层名称映射表 (处理不同的命名方式)
         private Dictionary<string, string> layerNameMappings = new Dictionary<string, string>();
