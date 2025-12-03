@@ -461,7 +461,7 @@ namespace Encyclopedia
             {
                 if (item != null)
                 {
-                    DestroyImmediate(item);
+                    Destroy(item); // Use Destroy instead of DestroyImmediate to avoid Assertion errors
                 }
             }
             entryItems.Clear();
@@ -470,11 +470,11 @@ namespace Encyclopedia
             for (int i = entryListContainer.childCount - 1; i >= 0; i--)
             {
                 var child = entryListContainer.GetChild(i);
-                Debug.Log($"[EncyclopediaUI] 发现容器中的遗留子物体: {child.name}");
-                DestroyImmediate(child.gameObject);
+                // Debug.Log($"[EncyclopediaUI] 发现容器中的遗留子物体: {child.name}"); // Remove spam
+                Destroy(child.gameObject); // Use Destroy instead of DestroyImmediate
             }
 
-            Debug.Log($"[EncyclopediaUI] 清理后容器子物体数量: {entryListContainer.childCount}");
+            // Debug.Log($"[EncyclopediaUI] 清理后容器子物体数量: {entryListContainer.childCount}");
 
             // 获取筛选后的条目
             var entries = GetFilteredEntries();

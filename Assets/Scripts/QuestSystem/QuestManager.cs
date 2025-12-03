@@ -644,6 +644,9 @@ namespace QuestSystem
                         StorySystem.StoryDirector.Instance?.MarkChapter4FieldIntroPlayed();
                         MarkChapter4SampleIntroPlayed();
                         _chapter4FieldIntroPending = false;
+
+                        // Fix: Use coroutine to delay refresh, avoiding race conditions and assertion errors
+                        StartCoroutine(DelayedRefreshAfterCutscene());
                     };
 
                     var director = StorySystem.StoryDirector.Instance;
@@ -662,6 +665,8 @@ namespace QuestSystem
                     !IsObjectiveCompleted("q.chapter4.sample.collect"))
                 {
                     ActivateChapter4SampleGuidance();
+                    // Ensure tools are refreshed here too, just in case state is lost
+                    StartCoroutine(DelayedRefreshAfterCutscene());
                 }
             }
             else if (sceneName == "Laboratory Scene")
@@ -797,6 +802,39 @@ namespace QuestSystem
 
             var targetId = FieldPhaseTargetSequence[_fieldPhaseTargetIndex];
             GuidanceManager.Instance?.ActivateTarget(targetId);
+        }
+
+        private System.Collections.IEnumerator DelayedRefreshAfterCutscene()
+        {
+            Debug.Log("[QuestManager] DelayedRefreshAfterCutscene: Coroutine started. Waiting for end of frame...");
+            // Wait for end of frame to ensure all destruction and event processing is done
+            yield return new WaitForEndOfFrame();
+            yield return null; // Wait one more frame for safety
+
+            if (debugLog) Debug.Log("[QuestManager] Executing delayed refresh after cutscene...");
+
+            var invUI = Object.FindFirstObjectByType<InventoryUISystem>();
+            if (invUI != null) 
+            {
+                invUI.RefreshTools();
+                Debug.Log("[QuestManager] InventoryUISystem refreshed.");
+            }
+
+            var toolManager = Object.FindFirstObjectByType<ToolManager>();
+            if (toolManager != null)
+            {
+                // Ensure current tool is re-equipped if any
+                var current = toolManager.GetCurrentTool();
+                if (current != null)
+                {
+                    Debug.Log($"[QuestManager] Re-equipping tool: {current.toolName}");
+                    // Unequip first to ensure clean state
+                    toolManager.UnequipCurrentTool();
+                    // Re-equip
+                    toolManager.EquipTool(current);
+                }
+            }
+            Debug.Log("[QuestManager] DelayedRefreshAfterCutscene: Completed.");
         }
 
         private void HandleFieldPhaseSamplingProgress(SampleItem sample)

@@ -717,8 +717,20 @@ namespace StorySystem
 
             button.onClick.RemoveListener(RequestAdvance);
             MarkDialogClosed();
-            UnityEngine.Object.Destroy(canvasGO);
+            
+            // Delay destruction to next frame to avoid Assertion failed errors in ProcessEvent
+            StoryDirectorRunner.Instance.Run(DestroyCanvasNextFrame(canvasGO));
+            
             onComplete?.Invoke();
+        }
+
+        private static IEnumerator DestroyCanvasNextFrame(GameObject canvasGO)
+        {
+            yield return null;
+            if (canvasGO != null)
+            {
+                UnityEngine.Object.Destroy(canvasGO);
+            }
         }
 
         private static void EnsureEventSystem(Transform parent)

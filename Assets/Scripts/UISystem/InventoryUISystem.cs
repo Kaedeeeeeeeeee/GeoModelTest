@@ -862,6 +862,10 @@ public class InventoryUISystem : MonoBehaviour
             return;
         }
 
+        // 每次打开前强制应用解锁的工具并刷新列表，避免切场景后列表丢失
+        EnsureUnlockedToolsApplied();
+        InitializeTools();
+
         // 确保Canvas设置正确
         if (canvas != null)
         {
@@ -1060,9 +1064,11 @@ public class InventoryUISystem : MonoBehaviour
         
         if (slotIndex < availableTools.Count && availableTools[slotIndex] != null)
         {
-            var toolManager = FindFirstObjectByType<ToolManager>();
+            var toolManager = GetOrCreateToolManager();
             if (toolManager != null)
             {
+                EnsureUnlockedToolsApplied();
+                EnsureToolRegistered(toolManager, availableTools[slotIndex]);
                 toolManager.EquipTool(availableTools[slotIndex]);
                 
             }
@@ -1083,9 +1089,11 @@ public class InventoryUISystem : MonoBehaviour
         
         if (slotIndex < availableTools.Count && availableTools[slotIndex] != null)
         {
-            var toolManager = FindFirstObjectByType<ToolManager>();
+            var toolManager = GetOrCreateToolManager();
             if (toolManager != null)
             {
+                EnsureUnlockedToolsApplied();
+                EnsureToolRegistered(toolManager, availableTools[slotIndex]);
                 toolManager.EquipTool(availableTools[slotIndex]);
                 
                 
@@ -1106,6 +1114,49 @@ public class InventoryUISystem : MonoBehaviour
         {
             
         }
+    }
+
+    /// <summary>
+    /// 获取或创建 ToolManager（在必要时挂到玩家身上）
+    /// </summary>
+    ToolManager GetOrCreateToolManager()
+    {
+        var toolManager = FindFirstObjectByType<ToolManager>(FindObjectsInactive.Include);
+        if (toolManager != null) return toolManager;
+
+        var player = FindFirstObjectByType<FirstPersonController>(FindObjectsInactive.Include);
+        if (player != null)
+        {
+            toolManager = player.gameObject.AddComponent<ToolManager>();
+            toolManager.availableTools = toolManager.availableTools ?? new CollectionTool[0];
+            Debug.Log("[InventoryUISystem] 兜底创建ToolManager并挂到玩家上");
+            return toolManager;
+        }
+
+        Debug.LogWarning("[InventoryUISystem] 未找到玩家，无法创建ToolManager");
+        return null;
+    }
+
+    /// <summary>
+    /// 确保选中的工具已登记到 ToolManager
+    /// </summary>
+    void EnsureToolRegistered(ToolManager toolManager, CollectionTool tool)
+    {
+        if (toolManager == null || tool == null) return;
+        if (!toolManager.HasTool(tool))
+        {
+            toolManager.AddTool(tool);
+            Debug.Log($"[InventoryUISystem] 兜底将工具加入 ToolManager: {tool.toolName} ({tool.toolID})");
+        }
+    }
+
+    /// <summary>
+    /// 兜底应用已解锁的工具（防止场景切换后列表丢失）
+    /// </summary>
+    void EnsureUnlockedToolsApplied()
+    {
+        var playerData = FindFirstObjectByType<PlayerPersistentData>(FindObjectsInactive.Include);
+        playerData?.ApplyUnlockedToolsToScene();
     }
     
     void InitializeTools()

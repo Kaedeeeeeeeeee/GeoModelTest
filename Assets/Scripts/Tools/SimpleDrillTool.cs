@@ -34,6 +34,7 @@ public class SimpleDrillTool : CollectionTool
     public override void Equip()
     {
         base.Equip();
+        Debug.Log($"[SimpleDrillTool] Equip called. ToolID: {toolID}");
         isPreviewMode = true;
         CreatePreviewObject();
     }
@@ -41,6 +42,7 @@ public class SimpleDrillTool : CollectionTool
     public override void Unequip()
     {
         base.Unequip();
+        Debug.Log($"[SimpleDrillTool] Unequip called. ToolID: {toolID}");
         isPreviewMode = false;
         DestroyPreviewObject();
     }
@@ -54,7 +56,7 @@ public class SimpleDrillTool : CollectionTool
     {
         if (previewObject != null)
         {
-            DestroyImmediate(previewObject);
+            Destroy(previewObject); // Changed from DestroyImmediate
         }
         
         // 创建钻探预览圆柱体
@@ -68,7 +70,7 @@ public class SimpleDrillTool : CollectionTool
         Collider previewCollider = previewObject.GetComponent<Collider>();
         if (previewCollider != null)
         {
-            DestroyImmediate(previewCollider);
+            Destroy(previewCollider); // Changed from DestroyImmediate
         }
         
         // 设置半透明材质
@@ -91,6 +93,7 @@ public class SimpleDrillTool : CollectionTool
             }
             renderer.material = previewMaterial;
         }
+        Debug.Log("[SimpleDrillTool] Preview object created.");
     }
     
     void UpdatePreview()
@@ -98,7 +101,11 @@ public class SimpleDrillTool : CollectionTool
         if (previewObject == null) return;
         
         Camera playerCamera = Camera.main;
-        if (playerCamera == null) return;
+        if (playerCamera == null) 
+        {
+            // Debug.LogWarning("[SimpleDrillTool] Camera.main is null!"); // Throttled log would be better
+            return;
+        }
         
         // 从摄像机发射射线
         Ray ray = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0));
@@ -126,11 +133,11 @@ public class SimpleDrillTool : CollectionTool
                 }
             }
             
-            previewObject.SetActive(true);
+            if (!previewObject.activeSelf) previewObject.SetActive(true);
         }
         else
         {
-            previewObject.SetActive(false);
+            if (previewObject.activeSelf) previewObject.SetActive(false);
         }
     }
     
@@ -254,7 +261,7 @@ public class SimpleDrillTool : CollectionTool
     {
         if (previewObject != null)
         {
-            DestroyImmediate(previewObject);
+            Destroy(previewObject); // Changed from DestroyImmediate
             previewObject = null;
         }
     }
