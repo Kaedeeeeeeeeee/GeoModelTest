@@ -64,6 +64,9 @@ public class GameInitializer : MonoBehaviour
         // 初始化样本切割系统（只在实验室场景中）
         InitializeCuttingSystem();
         
+        // 初始化工作台系统（只在实验室场景中）
+        InitializeWorkbenchSystem();
+        
         if (enableDebugMode)
         {
             InitializeDebugger();
@@ -653,4 +656,133 @@ public class GameInitializer : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// 初始化工作台系统（只在实验室场景中）
+    /// </summary>
+    void InitializeWorkbenchSystem()
+    {
+        // 检查是否在实验室场景
+        string currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        if (!currentSceneName.Contains("Laboratory") && !currentSceneName.Contains("实验室"))
+        {
+            return;
+        }
+        
+        Debug.Log("开始初始化工作台系统...");
+        
+        // 1. 查找目标物体 "shelf (8)"
+        GameObject shelf = GameObject.Find("shelf (8)");
+        if (shelf == null)
+        {
+            Debug.LogWarning("未找到 'shelf (8)'，无法自动配置工作台。");
+            return;
+        }
+        
+        // 2. 确保有 WorkbenchController 组件
+        var controller = shelf.GetComponent<WorkbenchSystem.WorkbenchController>();
+        if (controller == null)
+        {
+            controller = shelf.AddComponent<WorkbenchSystem.WorkbenchController>();
+            Debug.Log("已为 'shelf (8)' 添加 WorkbenchController 组件");
+        }
+        
+        // 3. 查找或创建 WorkbenchCamera
+        if (controller.workbenchCamera == null)
+        {
+            GameObject camObj = GameObject.Find("WorkbenchCamera");
+            if (camObj == null)
+            {
+                camObj = new GameObject("WorkbenchCamera");
+                Camera cam = camObj.AddComponent<Camera>();
+                cam.enabled = true; // 启用组件，具体显示由激活状态控制
+                ConfigureDefaultWorkbenchCamera(cam, shelf);
+                
+                Debug.Log("创建了 'WorkbenchCamera' 并设置了默认俯视位置");
+            }
+            
+            controller.workbenchCamera = camObj.GetComponent<Camera>();
+        }
+        
+        // 4. 设置交互目标
+        if (controller.interactionTarget == null)
+        {
+            controller.interactionTarget = shelf.transform;
+        }
+        
+        Debug.Log("工作台系统初始化完成！");
+    }
+
+    void ConfigureDefaultWorkbenchCamera(Camera cam, GameObject shelf)
+    {
+        if (cam == null || shelf == null) return;
+
+        // 合并渲染器/碰撞体的包围盒，估算桌面大小
+        Bounds bounds = new Bounds(shelf.transform.position, Vector3.one);
+        bool hasBounds = false;
+
+        var renderers = shelf.GetComponentsInChildren<Renderer>();
+        foreach (var r in renderers)
+        {
+            if (!hasBounds)
+            {
+                bounds = r.bounds;
+                hasBounds = true;
+            }
+            else
+            {
+                bounds.Encapsulate(r.bounds);
+            }
+        }
+
+        if (!hasBounds)
+        {
+            var colliders = shelf.GetComponentsInChildren<Collider>();
+            foreach (var c in colliders)
+            {
+                if (!hasBounds)
+                {
+                    bounds = c.bounds;
+                    hasBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(c.bounds);
+                }
+            }
+        }
+
+        if (!hasBounds)
+        {
+            bounds = new Bounds(shelf.transform.position + Vector3.up * 0.8f, new Vector3(1.5f, 1f, 1.5f));
+        }
+
+        Vector3 center = bounds.center;
+        float horizontalExtent = Mathf.Max(bounds.extents.x, bounds.extents.z);
+        float margin = Mathf.Max(0.25f, horizontalExtent * 0.35f);
+        float lookDistance = Mathf.Max(1.5f, horizontalExtent + margin);
+        float height = Mathf.Max(bounds.size.y, 0.6f) + lookDistance * 0.75f;
+
+        // 透视相机，参数尽量贴合主角相机，方便自由调整
+        float defaultFov = 60f;
+        if (Camera.main != null)
+        {
+            defaultFov = Camera.main.fieldOfView;
+        }
+        cam.orthographic = false;
+        cam.fieldOfView = defaultFov;
+        cam.nearClipPlane = 0.01f;
+        cam.farClipPlane = Mathf.Max(50f, (height + lookDistance) * 4f);
+        cam.clearFlags = CameraClearFlags.SolidColor;
+        cam.backgroundColor = new Color(0.07f, 0.07f, 0.07f, 1f);
+        cam.cullingMask = ~0; // 默认渲染所有层
+
+        // 使用用户提供的视角（本地变换），方便自由微调
+        cam.transform.SetParent(shelf.transform, false);
+        cam.transform.localPosition = new Vector3(0f, 1.19799995f, -0.545000017f);
+        cam.transform.localRotation = new Quaternion(0.47813347f, 0f, 0f, 0.878287137f);
+        cam.transform.localScale = new Vector3(0.563881993f, 0.769636571f, 0.769241333f);
+
+        // 默认禁用，按需启用
+        cam.gameObject.SetActive(false);
+    }
 }
