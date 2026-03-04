@@ -443,14 +443,8 @@ public class HammerTool : CollectionTool
             // 直接使用GeometricSampleReconstructor提供的材质
             var firstLayer = geometricSample.layerSegments[0];
             
-            // 清理临时样本
-            if (geometricSample.sampleContainer != null)
-            {
-                DestroyImmediate(geometricSample.sampleContainer);
-            }
-            
             // 直接传递材质给SlabSampleGenerator
-            GenerateSlabSampleWithMaterial(preciseCollectionPosition, firstLayer.material, firstLayer.sourceLayer);
+            GenerateSlabSampleWithMaterial(preciseCollectionPosition, firstLayer.material, firstLayer.sourceLayer, geometricSample);
         }
         else
         {
@@ -522,7 +516,7 @@ public class HammerTool : CollectionTool
     /// <summary>
     /// 使用原始材质生成薄片样本
     /// </summary>
-    void GenerateSlabSampleWithMaterial(Vector3 position, Material originalMaterial, GeologyLayer sourceLayer)
+    void GenerateSlabSampleWithMaterial(Vector3 position, Material originalMaterial, GeologyLayer sourceLayer, GeometricSampleReconstructor.ReconstructedSample reconstructedSample)
     {
         // 创建或查找薄片生成器
         SlabSampleGenerator generator = FindFirstObjectByType<SlabSampleGenerator>();
@@ -537,6 +531,7 @@ public class HammerTool : CollectionTool
         
         if (slabSample != null)
         {
+            AttachGeometricSampleInfo(slabSample, reconstructedSample, position);
             // 集成到样本收集系统
             IntegrateSlabSample(slabSample);
             Debug.Log($"生成薄片样本: {slabSample.name}");
@@ -561,7 +556,31 @@ public class HammerTool : CollectionTool
         fallbackMaterial.name = "HammerFallbackMaterial";
         
         // 直接使用材质生成样本
-        GenerateSlabSampleWithMaterial(position, fallbackMaterial, null);
+        GenerateSlabSampleWithMaterial(position, fallbackMaterial, null, null);
+    }
+
+    void AttachGeometricSampleInfo(GameObject slabSample, GeometricSampleReconstructor.ReconstructedSample reconstructedSample, Vector3 collectionPosition)
+    {
+        if (slabSample == null || reconstructedSample == null)
+        {
+            return;
+        }
+
+        if (reconstructedSample.sampleContainer != null && reconstructedSample.sampleContainer != slabSample)
+        {
+            DestroyImmediate(reconstructedSample.sampleContainer);
+        }
+
+        reconstructedSample.sampleContainer = slabSample;
+
+        GeometricSampleInfo info = slabSample.GetComponent<GeometricSampleInfo>();
+        if (info == null)
+        {
+            info = slabSample.AddComponent<GeometricSampleInfo>();
+        }
+
+        info.collectionPosition = collectionPosition;
+        info.Initialize(reconstructedSample);
     }
     
     
@@ -588,6 +607,10 @@ public class HammerTool : CollectionTool
             collector.sampleData.depthStart = 0f; // 表面采集
             collector.sampleData.depthEnd = 0.06f; // 薄片厚度
             collector.sampleData.totalDepth = 0.06f; // 更新总深度为薄片厚度
+
+            int layerCount = collector.sampleData.geologicalLayers?.Count ?? 0;
+            string firstLayerName = layerCount > 0 ? collector.sampleData.geologicalLayers[0].layerName : "None";
+            Debug.Log($"[HammerTool] 薄片样本地层信息: 层数={layerCount}, 首层={firstLayerName}");
         }
         
         // 使用样本集成器进行处理

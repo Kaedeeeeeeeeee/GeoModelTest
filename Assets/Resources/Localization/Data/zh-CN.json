@@ -1339,6 +1339,958 @@
     {
       "key": "encyclopedia.ui.layer_section_title",
       "value": "地质地层"
+    },
+    {
+      "key": "story.quest1_1.line01",
+      "value": "午休的教室里，窗外湛蓝的天空与鸟鸣交织。"
+    },
+    {
+      "key": "story.quest1_1.line02",
+      "value": "喂，你有好好听今天的理科课吗？"
+    },
+    {
+      "key": "story.quest1_1.line03",
+      "value": "地震的内容，听起来有点可怕吧？"
+    },
+    {
+      "key": "story.quest1_1.line04",
+      "value": "嗯，可老师说的“地球的呼吸”这词儿，还挺浪漫的不是吗？"
+    },
+    {
+      "key": "story.quest1_1.line05",
+      "value": "浪漫什么啦（笑）。你果然还是那么怪。"
+    },
+    {
+      "key": "story.quest1_1.line06",
+      "value": "不过，地球好像活着，其实也挺有趣的。"
+    },
+    {
+      "key": "story.quest1_1.line07",
+      "value": "要是真的地球在“呼吸”，我们就像住在它身上的小生物吧。"
+    },
+    {
+      "key": "story.quest1_1.line08",
+      "value": "不管地球呼不呼吸，我们本来就是小不点啦。"
+    },
+    {
+      "key": "story.quest1_1.line09",
+      "value": "……咦？你感觉到晃了吗？"
+    },
+    {
+      "key": "story.quest1_1.line10",
+      "value": "是有点，不过等等就会停吧。"
+    },
+    {
+      "key": "story.quest1_1.line11",
+      "value": "咦……怎么还没停……"
+    },
+    {
+      "key": "story.quest1_1.line12",
+      "value": "哇！书柜倒了！"
+    },
+    {
+      "key": "story.quest1_1.line13",
+      "value": "不会吧！？这么大的我还是第一次——！"
+    },
+    {
+      "key": "story.quest1_1.line14",
+      "value": "钻到桌子下面！快！"
+    },
+    {
+      "key": "story.quest1_1.line15",
+      "value": "【震动渐止】"
+    },
+    {
+      "key": "story.quest1_1.line16",
+      "value": "摇晃越来越剧烈，黑板倒下，吊灯砸落，教室里充满尖叫。"
+    },
+    {
+      "key": "story.quest1_1.line17",
+      "value": "呀——！天花板！救命啊！"
+    },
+    {
+      "key": "story.quest1_1.line18",
+      "value": "这边的门打不开！谁来帮忙！"
+    },
+    {
+      "key": "story.quest1_1.line19",
+      "value": "巨大的冲击声炸开，玻璃碎裂，墙壁开始崩塌。"
+    },
+    {
+      "key": "story.quest1_1.line20",
+      "value": "不要啊……！"
+    },
+    {
+      "key": "story.quest1_1.line21",
+      "value": "就在那一刻，天花板的一块砸落，擦过美奈的肩膀，她闷哼一声便失去意识。"
+    },
+    {
+      "key": "story.quest1_1.line22",
+      "value": "美奈！？撑住！美奈！"
+    },
+    {
+      "key": "story.quest1_1.line23",
+      "value": "主角握紧颤抖的手。轰鸣之中，他只能清楚听见自己的心跳。"
+    },
+    {
+      "key": "story.quest1_1.line24",
+      "value": "（……想救她。谁来……！）"
+    },
+    {
+      "key": "story.quest1_1.line25",
+      "value": "就在那一瞬，主角的手心迸出耀眼白光，崩塌的教室被刺眼的闪光吞没。"
+    },
+    {
+      "key": "story.quest1_2.line01",
+      "value": "视野扭曲，声音远去。再次睁眼时，眼前是陌生的白色设施。"
+    },
+    {
+      "key": "story.quest1_2.line02",
+      "value": "这里……是哪？美奈……！你没事吧？"
+    },
+    {
+      "key": "story.quest1_2.line03",
+      "value": "……嗯，嗯……这里……不是学校吧……？"
+    },
+    {
+      "key": "story.quest1_2.line04",
+      "value": "抬头一看，眼前站着一名男子。"
+    },
+    {
+      "key": "story.quest1_2.line05",
+      "value": "......"
+    },
+    {
+      "key": "story.quest1_2.line06",
+      "value": "这里是……？"
+    },
+    {
+      "key": "story.quest1_2.line07",
+      "value": "欢迎来到G-Lab。"
+    },
+    {
+      "key": "story.quest2_1.line01",
+      "value": "G-Lab里灯光冰冷闪烁。"
+    },
+    {
+      "key": "story.quest2_1.line02",
+      "value": "这里是G-Lab，研究地质活动。"
+    },
+    {
+      "key": "story.quest2_1.line03",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line04",
+      "value": "先看个影像。"
+    },
+    {
+      "key": "story.quest2_1.line05",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line06",
+      "value": "新闻：仙台地震严重，余震仍在持续。"
+    },
+    {
+      "key": "story.quest2_1.line07",
+      "value": "那是我们的城市……"
+    },
+    {
+      "key": "story.quest2_1.line08",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line09",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line10",
+      "value": "妈妈来电。"
+    },
+    {
+      "key": "story.quest2_1.line11",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line12",
+      "value": "妈妈：你们没事吧？"
+    },
+    {
+      "key": "story.quest2_1.line13",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line14",
+      "value": "家里有些损伤，但人都安全。"
+    },
+    {
+      "key": "story.quest2_1.line15",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line16",
+      "value": "快回来，你现在在哪？"
+    },
+    {
+      "key": "story.quest2_1.line17",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line18",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line19",
+      "value": "楓：我是G-Lab的研究员。"
+    },
+    {
+      "key": "story.quest2_1.line20",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line21",
+      "value": "她解释我有特殊反应，想请我短期协助。"
+    },
+    {
+      "key": "story.quest2_1.line22",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line23",
+      "value": "她强调安全和防灾意义。"
+    },
+    {
+      "key": "story.quest2_1.line24",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line25",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line26",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line27",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line28",
+      "value": "好吧，但一定要让他休息。"
+    },
+    {
+      "key": "story.quest2_1.line29",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line30",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line31",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line32",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line33",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line34",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line35",
+      "value": "她开始说明任务。"
+    },
+    {
+      "key": "story.quest2_1.line36",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line37",
+      "value": "地质锤：用来采样。"
+    },
+    {
+      "key": "story.quest2_1.line38",
+      "value": "相位转换器：用来稳定能力。"
+    },
+    {
+      "key": "story.quest2_1.line39",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line40",
+      "value": "它能控制传送，往返更安全。"
+    },
+    {
+      "key": "story.quest2_1.line41",
+      "value": "也就是说，要开始地质调查了。"
+    },
+    {
+      "key": "story.quest2_1.line42",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line43",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line44",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line45",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line46",
+      "value": "第一项任务：用地质锤采薄片样本。"
+    },
+    {
+      "key": "story.quest3_1.line01",
+      "value": "先试试相位转换器。"
+    },
+    {
+      "key": "story.quest3_1.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_1.line03",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_1.line04",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_1.line05",
+      "value": "好吧，那就开始。"
+    },
+    {
+      "key": "story.quest3_1.line06",
+      "value": "转换器启动。"
+    },
+    {
+      "key": "story.quest3_2.line01",
+      "value": "{name}抵达野外。"
+    },
+    {
+      "key": "story.quest3_2.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_2.line03",
+      "value": "看指引，到目标点采样。"
+    },
+    {
+      "key": "story.quest3_3.line01",
+      "value": "地表一片荒芜。"
+    },
+    {
+      "key": "story.quest3_3.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line03",
+      "value": "实验室，画面和声音正常吗？"
+    },
+    {
+      "key": "story.quest3_3.line04",
+      "value": "收到，这里像地震后的现场。"
+    },
+    {
+      "key": "story.quest3_3.line05",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line06",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line07",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line08",
+      "value": "{name}用地质锤取样。"
+    },
+    {
+      "key": "story.quest3_3.line09",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line10",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line11",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line12",
+      "value": "像是震碎的部位，先带回去。"
+    },
+    {
+      "key": "story.quest3_3.line13",
+      "value": "地面传来低沉的轰鸣。"
+    },
+    {
+      "key": "story.quest3_3.line14",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line15",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line16",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line17",
+      "value": "地面突然剧烈震动。"
+    },
+    {
+      "key": "story.quest3_3.line18",
+      "value": "立刻撤退，断层在动！"
+    },
+    {
+      "key": "story.quest3_3.line19",
+      "value": "相位转换器在哪？快！"
+    },
+    {
+      "key": "story.quest3_3.line20",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line21",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line22",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line23",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line24",
+      "value": "【传送闪光】"
+    },
+    {
+      "key": "story.quest3_3.line25",
+      "value": "白光之后，一切安静下来。"
+    },
+    {
+      "key": "story.quest3_4.line01",
+      "value": "回到G-Lab，把样品放好。"
+    },
+    {
+      "key": "story.quest3_4.line02",
+      "value": "喘着气：薄片带回来了。"
+    },
+    {
+      "key": "story.quest3_4.line03",
+      "value": "{name}，你没事吧？"
+    },
+    {
+      "key": "story.quest3_4.line04",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line05",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line06",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line07",
+      "value": "我没事啦。"
+    },
+    {
+      "key": "story.quest3_4.line08",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line09",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line10",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line11",
+      "value": "干得漂亮。"
+    },
+    {
+      "key": "story.quest3_4.line12",
+      "value": "接下来研究样品。"
+    },
+    {
+      "key": "story.quest3_4.line13",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line14",
+      "value": "你看，颗粒都被压扁了。"
+    },
+    {
+      "key": "story.quest3_4.line15",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line16",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line17",
+      "value": "这种压痕看起来很新。"
+    },
+    {
+      "key": "story.quest3_4.line18",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line19",
+      "value": "也许地下还在动。"
+    },
+    {
+      "key": "story.quest3_4.line20",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line21",
+      "value": "那就准备钻孔更深看看。"
+    },
+    {
+      "key": "story.quest3_4.line22",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_1.line01",
+      "value": "钻机准备好了。"
+    },
+    {
+      "key": "story.quest4_1.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_1.line03",
+      "value": "紧张正常，我们有防护。"
+    },
+    {
+      "key": "story.quest4_1.line04",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_1.line05",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_1.line06",
+      "value": "这次钻到断层下约50米。"
+    },
+    {
+      "key": "story.quest4_1.line07",
+      "value": "传送启动。"
+    },
+    {
+      "key": "story.quest4_2.line01",
+      "value": "现场安静得有点可怕。"
+    },
+    {
+      "key": "story.quest4_2.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_2.line03",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_2.line04",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_2.line05",
+      "value": "就在错动中心的正上方。"
+    },
+    {
+      "key": "story.quest4_2.line06",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_2.line07",
+      "value": "固定装置开始采样。"
+    },
+    {
+      "key": "story.quest4_2.line08",
+      "value": "裂缝好像变长了？"
+    },
+    {
+      "key": "story.quest4_2.line09",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_2.line10",
+      "value": "可能是地下水在流动。"
+    },
+    {
+      "key": "story.quest4_2.line11",
+      "value": "挖土时传来低低的声响。"
+    },
+    {
+      "key": "story.quest4_2.line12",
+      "value": "你也听到了吗？"
+    },
+    {
+      "key": "story.quest4_2.line13",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_2.line14",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_2.line15",
+      "value": "收好装置，返回G-Lab。"
+    },
+    {
+      "key": "story.quest4_3.line01",
+      "value": "岩芯取出来了。"
+    },
+    {
+      "key": "story.quest4_3.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_3.line03",
+      "value": "封存样品，把数据记下来。"
+    },
+    {
+      "key": "story.quest4_3.line04",
+      "value": "明白，准备返航。"
+    },
+    {
+      "key": "story.quest4_3.line05",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line01",
+      "value": "欢迎回来，平安就好。"
+    },
+    {
+      "key": "story.quest4_4.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line03",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line04",
+      "value": "样品触感有点怪。"
+    },
+    {
+      "key": "story.quest4_4.line05",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line06",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line07",
+      "value": "下层颗粒都被压扁了。"
+    },
+    {
+      "key": "story.quest4_4.line08",
+      "value": "是横向挤压的痕迹。"
+    },
+    {
+      "key": "story.quest4_4.line09",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line10",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line11",
+      "value": "说明地下还在动？"
+    },
+    {
+      "key": "story.quest4_4.line12",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line13",
+      "value": "这像是断层在“呼吸”。"
+    },
+    {
+      "key": "story.quest4_4.line14",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line15",
+      "value": "活断层表面平静，地下却在活动。"
+    },
+    {
+      "key": "story.quest4_4.line16",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line17",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line18",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line19",
+      "value": "我们还需要更确切的情报。"
+    },
+    {
+      "key": "story.quest4_4.line20",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line21",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line22",
+      "value": "用无人机去探查。"
+    },
+    {
+      "key": "story.quest4_4.line23",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line24",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line25",
+      "value": "任务仍然很重要。"
+    },
+    {
+      "key": "story.quest4_4.line26",
+      "value": "视线落在地图上的断层红线。"
+    },
+    {
+      "key": "story.quest5_1.line01",
+      "value": "夜雨和闪电笼罩着G-Lab。"
+    },
+    {
+      "key": "story.quest5_1.line02",
+      "value": "地下雷达群无人机就绪。"
+    },
+    {
+      "key": "story.quest5_1.line03",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_1.line04",
+      "value": "无人机将进入裂隙描绘结构。"
+    },
+    {
+      "key": "story.quest5_1.line05",
+      "value": "就像给地球做CT。"
+    },
+    {
+      "key": "story.quest5_1.line06",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_1.line07",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_1.line08",
+      "value": "{name}，这次由你来操作。"
+    },
+    {
+      "key": "story.quest5_1.line09",
+      "value": "十几架都要我控？"
+    },
+    {
+      "key": "story.quest5_1.line10",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_1.line11",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_1.line12",
+      "value": "……又晃了一下？"
+    },
+    {
+      "key": "story.quest5_2.line01",
+      "value": "无人机启动升空。"
+    },
+    {
+      "key": "story.quest5_2.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line03",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line04",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line05",
+      "value": "雷达系统连线完成。"
+    },
+    {
+      "key": "story.quest5_2.line06",
+      "value": "无人机进入裂隙下潜。"
+    },
+    {
+      "key": "story.quest5_2.line07",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line08",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line09",
+      "value": "地下出现一条红线。"
+    },
+    {
+      "key": "story.quest5_2.line10",
+      "value": "那是断层面，比预想浅。"
+    },
+    {
+      "key": "story.quest5_2.line11",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line12",
+      "value": "地图显示断层贯穿城市。"
+    },
+    {
+      "key": "story.quest5_2.line13",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line14",
+      "value": "断层在多处分岔。"
+    },
+    {
+      "key": "story.quest5_2.line15",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line16",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line17",
+      "value": "断层正在实时活动。"
+    },
+    {
+      "key": "story.quest5_2.line18",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line19",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line20",
+      "value": "应力在快速累积。"
+    },
+    {
+      "key": "story.quest5_2.line21",
+      "value": "红线扩散，G-Lab在中心。"
+    },
+    {
+      "key": "story.quest5_2.line22",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line23",
+      "value": "主要城区都在断层上。"
+    },
+    {
+      "key": "story.quest5_2.line24",
+      "value": "本震要来了。"
+    },
+    {
+      "key": "story.quest5_2.line25",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line26",
+      "value": "必须告知政府和市民。"
+    },
+    {
+      "key": "story.quest5_2.line27",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line28",
+      "value": "下一任务：对外告知。"
+    },
+    {
+      "key": "story.quest5_2.line29",
+      "value": "红线仍在脉动。"
+    },
+    {
+      "key": "story.speaker.classmate",
+      "value": "同学"
+    },
+    {
+      "key": "story.speaker.drkaede",
+      "value": "Dr.Kaede"
+    },
+    {
+      "key": "story.speaker.minato",
+      "value": "美奈"
+    },
+    {
+      "key": "story.speaker.mother",
+      "value": "母亲"
+    },
+    {
+      "key": "story.speaker.narration",
+      "value": "旁白"
+    },
+    {
+      "key": "story.speaker.news",
+      "value": "新闻播报"
+    },
+    {
+      "key": "story.speaker.protagonist",
+      "value": "主人公"
+    },
+    {
+      "key": "story.speaker.sfx",
+      "value": "音效"
+    },
+    {
+      "key": "story.speaker.student_a",
+      "value": "学生A"
+    },
+    {
+      "key": "story.speaker.student_b",
+      "value": "学生B"
     }
   ]
 }

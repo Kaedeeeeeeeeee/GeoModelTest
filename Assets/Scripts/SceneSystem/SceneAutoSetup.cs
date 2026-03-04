@@ -17,7 +17,8 @@ public class SceneAutoSetup : MonoBehaviour
     public Quaternion defaultPlayerRotation = new Quaternion(0f, 0.995849609f, 0f, 0.0910143629f);
     
     [Header("Laboratory Scene特殊设置")]
-    public Vector3 laboratoryPlayerPosition = new Vector3(0f, 0.167999998f, 4.52699995f);
+    // 使用 PlayerPersistentData 的值作为默认值，确保一致性
+    public Vector3 laboratoryPlayerPosition = new Vector3(0f, 0.196999997f, 4.52699995f);
     public Quaternion laboratoryPlayerRotation = Quaternion.identity;
     
     void Start()
@@ -140,7 +141,15 @@ public class SceneAutoSetup : MonoBehaviour
             GameObject playerInstance = Instantiate(lilyPrefab);
             playerInstance.name = "Lily";
             
-            // 设置位置
+            // 立即禁用 CharacterController，防止重力干扰位置设置
+            CharacterController cc = playerInstance.GetComponent<CharacterController>();
+            if (cc != null)
+            {
+                cc.enabled = false;
+                Debug.Log($"{GetTimestamp()} [SceneAutoSetup] 临时禁用新建玩家的 CharacterController");
+            }
+            
+            // 设置位置（对于实验室场景，使用 PlayerPersistentData 的统一位置）
             Vector3 playerPos = GetPlayerPositionForScene(sceneName);
             Quaternion playerRot = GetPlayerRotationForScene(sceneName);
             playerInstance.transform.position = playerPos;
@@ -153,7 +162,13 @@ public class SceneAutoSetup : MonoBehaviour
                 playerCamera.tag = "MainCamera";
             }
             
-            Debug.Log($"{GetTimestamp()} [SceneAutoSetup] 从Lily预制体创建Player，位置 {playerPos}，场景 {sceneName}\n{new System.Diagnostics.StackTrace(true)}");
+            Debug.Log($"{GetTimestamp()} [SceneAutoSetup] 从Lily预制体创建Player，位置 {playerPos}，场景 {sceneName}");
+            
+            // 延迟启用 CharacterController
+            if (cc != null)
+            {
+                StartCoroutine(EnableCharacterControllerDelayed(cc, playerInstance.transform, playerPos, playerRot));
+            }
             
             NotifyPlayerPersistentData(sceneName);
             return true;
@@ -162,6 +177,30 @@ public class SceneAutoSetup : MonoBehaviour
         {
             Debug.LogWarning($"{GetTimestamp()} [SceneAutoSetup] 无法加载Lily预制体，改用基础玩家方案（场景: {sceneName}）");
             return false;
+        }
+    }
+    
+    /// <summary>
+    /// 延迟启用 CharacterController，确保位置正确设置
+    /// </summary>
+    IEnumerator EnableCharacterControllerDelayed(CharacterController cc, Transform playerTransform, Vector3 targetPos, Quaternion targetRot)
+    {
+        // 等待两帧确保位置完全生效
+        yield return null;
+        yield return null;
+        
+        // 再次确保位置正确
+        if (playerTransform != null)
+        {
+            playerTransform.position = targetPos;
+            playerTransform.rotation = targetRot;
+        }
+        
+        // 启用 CharacterController
+        if (cc != null)
+        {
+            cc.enabled = true;
+            Debug.Log($"{GetTimestamp()} [SceneAutoSetup] 重新启用 CharacterController，最终位置: {playerTransform?.position}");
         }
     }
     
@@ -177,17 +216,21 @@ public class SceneAutoSetup : MonoBehaviour
         GameObject playerObj = new GameObject("Lily");
         FirstPersonController fpController = playerObj.AddComponent<FirstPersonController>();
         
-        // 设置位置
+        // 获取位置
         Vector3 playerPos = GetPlayerPositionForScene(sceneName);
         Quaternion playerRot = GetPlayerRotationForScene(sceneName);
-        playerObj.transform.position = playerPos;
-        playerObj.transform.rotation = playerRot;
         
-        // 添加Character Controller
+        // 添加Character Controller（先禁用）
         CharacterController characterController = playerObj.AddComponent<CharacterController>();
         characterController.center = new Vector3(0, 1, 0);
         characterController.radius = 0.5f;
         characterController.height = 2f;
+        characterController.enabled = false; // 先禁用，防止重力干扰
+        Debug.Log($"{GetTimestamp()} [SceneAutoSetup] 临时禁用基础玩家的 CharacterController");
+        
+        // 设置位置
+        playerObj.transform.position = playerPos;
+        playerObj.transform.rotation = playerRot;
         
         // 创建摄像机
         GameObject cameraObj = new GameObject("Main Camera");
@@ -213,7 +256,10 @@ public class SceneAutoSetup : MonoBehaviour
             Debug.Log($"⚠️ 场景中已存在 {existingListeners.Length} 个AudioListener，跳过添加");
         }
         
-        Debug.Log($"{GetTimestamp()} [SceneAutoSetup] 基础Player系统创建完成，位置 {playerPos} (场景: {sceneName})\n{new System.Diagnostics.StackTrace(true)}");
+        Debug.Log($"{GetTimestamp()} [SceneAutoSetup] 基础Player系统创建完成，位置 {playerPos} (场景: {sceneName})");
+
+        // 延迟启用 CharacterController
+        StartCoroutine(EnableCharacterControllerDelayed(characterController, playerObj.transform, playerPos, playerRot));
 
         NotifyPlayerPersistentData(sceneName);
     }

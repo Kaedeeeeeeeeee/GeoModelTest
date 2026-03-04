@@ -1339,6 +1339,958 @@
     {
       "key": "encyclopedia.ui.layer_section_title",
       "value": "Geological Layers"
+    },
+    {
+      "key": "story.quest1_1.line01",
+      "value": "It's lunch break; blue sky and birdsong spill through the classroom windows."
+    },
+    {
+      "key": "story.quest1_1.line02",
+      "value": "Hey, were you even listening in science class today?"
+    },
+    {
+      "key": "story.quest1_1.line03",
+      "value": "That earthquake talk was kind of scary, right?"
+    },
+    {
+      "key": "story.quest1_1.line04",
+      "value": "Yeah, but when the teacher called it the \"Earth's breath,\" it sounded kind of romantic, didn't it?"
+    },
+    {
+      "key": "story.quest1_1.line05",
+      "value": "Romantic? Seriously? (laughs) You're such a weirdo."
+    },
+    {
+      "key": "story.quest1_1.line06",
+      "value": "Still, imagining Earth as a living thing is kind of interesting."
+    },
+    {
+      "key": "story.quest1_1.line07",
+      "value": "If it's really breathing, we're just tiny creatures living on top of it."
+    },
+    {
+      "key": "story.quest1_1.line08",
+      "value": "Breathe or not, we're already specks to begin with."
+    },
+    {
+      "key": "story.quest1_1.line09",
+      "value": "...Huh? Did it just shake?"
+    },
+    {
+      "key": "story.quest1_1.line10",
+      "value": "Yeah, but it'll stop if we wait a bit, right?"
+    },
+    {
+      "key": "story.quest1_1.line11",
+      "value": "Wait... why isn't it stopping...?"
+    },
+    {
+      "key": "story.quest1_1.line12",
+      "value": "Whoa! The bookshelf fell!"
+    },
+    {
+      "key": "story.quest1_1.line13",
+      "value": "No way!? I've never felt it this strong—!"
+    },
+    {
+      "key": "story.quest1_1.line14",
+      "value": "Get under the desks! Hurry!"
+    },
+    {
+      "key": "story.quest1_1.line15",
+      "value": "[The shaking subsides.]"
+    },
+    {
+      "key": "story.quest1_1.line16",
+      "value": "The tremor grows wilder—blackboards crash down, ceiling lights shatter, and screams fill the room."
+    },
+    {
+      "key": "story.quest1_1.line17",
+      "value": "Kyaa! The ceiling! Somebody help!"
+    },
+    {
+      "key": "story.quest1_1.line18",
+      "value": "This door won't open! Somebody!"
+    },
+    {
+      "key": "story.quest1_1.line19",
+      "value": "A violent crash erupts; windows shatter and the walls begin to crumble."
+    },
+    {
+      "key": "story.quest1_1.line20",
+      "value": "No...!"
+    },
+    {
+      "key": "story.quest1_1.line21",
+      "value": "In that instant, a slab from the ceiling grazes Minato's shoulder; she cries out and collapses unconscious."
+    },
+    {
+      "key": "story.quest1_1.line22",
+      "value": "Minato!? Hang on! Minato!"
+    },
+    {
+      "key": "story.quest1_1.line23",
+      "value": "His hands shaking, the protagonist grips hers. Amid the roar, only his heartbeat rings clear."
+    },
+    {
+      "key": "story.quest1_1.line24",
+      "value": "(I have to save her. Someone, please...!)"
+    },
+    {
+      "key": "story.quest1_1.line25",
+      "value": "Then, a blinding light erupts from his hand, swallowing the collapsing classroom."
+    },
+    {
+      "key": "story.quest1_2.line01",
+      "value": "Sight warps and sound fades. When {name} opens their eyes again, they're inside a stark white facility."
+    },
+    {
+      "key": "story.quest1_2.line02",
+      "value": "Where... are we? Minato...! Are you okay?"
+    },
+    {
+      "key": "story.quest1_2.line03",
+      "value": "...Y-yeah... This isn't school, is it...?"
+    },
+    {
+      "key": "story.quest1_2.line04",
+      "value": "He looks up to see a man standing before them."
+    },
+    {
+      "key": "story.quest1_2.line05",
+      "value": "......"
+    },
+    {
+      "key": "story.quest1_2.line06",
+      "value": "And this place is...?"
+    },
+    {
+      "key": "story.quest1_2.line07",
+      "value": "Welcome to G-Lab."
+    },
+    {
+      "key": "story.quest2_1.line01",
+      "value": "Inside the white room, countless monitors glow blue while machinery hums in the stillness."
+    },
+    {
+      "key": "story.quest2_1.line02",
+      "value": "Calm down. This is G-Lab—a facility dedicated to geology and crustal shifts."
+    },
+    {
+      "key": "story.quest2_1.line03",
+      "value": "You call it a lab... so can we go home now?"
+    },
+    {
+      "key": "story.quest2_1.line04",
+      "value": "You can, but first I need you to see a video."
+    },
+    {
+      "key": "story.quest2_1.line05",
+      "value": "Kaede presses a remote and news footage flares onto the wall."
+    },
+    {
+      "key": "story.quest2_1.line06",
+      "value": "\"Breaking news: a quake in downtown Sendai has toppled numerous buildings, and aftershocks continue—\""
+    },
+    {
+      "key": "story.quest2_1.line07",
+      "value": "No way... that's our city, isn't it...?"
+    },
+    {
+      "key": "story.quest2_1.line08",
+      "value": "...Is my house okay...? Mom...!"
+    },
+    {
+      "key": "story.quest2_1.line09",
+      "value": "He fumbles for his phone, which starts to vibrate."
+    },
+    {
+      "key": "story.quest2_1.line10",
+      "value": "Huh...!? It's Mom...!"
+    },
+    {
+      "key": "story.quest2_1.line11",
+      "value": "[Incoming call]"
+    },
+    {
+      "key": "story.quest2_1.line12",
+      "value": "Hello!? Are you okay!? I saw the news and nearly panicked to death...!"
+    },
+    {
+      "key": "story.quest2_1.line13",
+      "value": "Yeah! I'm safe! I'm taking shelter... Are you alright!?"
+    },
+    {
+      "key": "story.quest2_1.line14",
+      "value": "The house took some damage, but we're alright. I'm so relieved...!"
+    },
+    {
+      "key": "story.quest2_1.line15",
+      "value": "Relief softens her voice after a brief silence."
+    },
+    {
+      "key": "story.quest2_1.line16",
+      "value": "Come home soon, okay? Where are you?"
+    },
+    {
+      "key": "story.quest2_1.line17",
+      "value": "Just as he opens his mouth, Kaede steps in and gently takes the phone."
+    },
+    {
+      "key": "story.quest2_1.line18",
+      "value": "H-hey, Kaede!?"
+    },
+    {
+      "key": "story.quest2_1.line19",
+      "value": "—Hello, pardon the intrusion. I'm Kaede, a researcher at G-Lab."
+    },
+    {
+      "key": "story.quest2_1.line20",
+      "value": "Uh? I-I see...?"
+    },
+    {
+      "key": "story.quest2_1.line21",
+      "value": "During the quake your child exhibited an unusual response. We'd like to request short-term cooperation to investigate."
+    },
+    {
+      "key": "story.quest2_1.line22",
+      "value": "What? You want a middle-schooler involved in research...?"
+    },
+    {
+      "key": "story.quest2_1.line23",
+      "value": "It will be in a controlled environment. This could help prevent future quakes. If his \"sense\" ties to crustal changes, it might save lives."
+    },
+    {
+      "key": "story.quest2_1.line24",
+      "value": "Kaede's tone stays calm, yet earnest heat seeps through."
+    },
+    {
+      "key": "story.quest2_1.line25",
+      "value": "...If it's that important... but it won't be dangerous, right?"
+    },
+    {
+      "key": "story.quest2_1.line26",
+      "value": "Rest assured, we'll take full responsibility for his safety and accommodations."
+    },
+    {
+      "key": "story.quest2_1.line27",
+      "value": "After a pause, his mother's sigh comes through."
+    },
+    {
+      "key": "story.quest2_1.line28",
+      "value": "...Alright. But please let him rest properly."
+    },
+    {
+      "key": "story.quest2_1.line29",
+      "value": "Thank you. We'll take good care of him."
+    },
+    {
+      "key": "story.quest2_1.line30",
+      "value": "Kaede hands the phone back."
+    },
+    {
+      "key": "story.quest2_1.line31",
+      "value": ".........Uh. Wait, what just happened?"
+    },
+    {
+      "key": "story.quest2_1.line32",
+      "value": "Your mom's surprisingly quick on the uptake. (laughs)"
+    },
+    {
+      "key": "story.quest2_1.line33",
+      "value": "I didn't know my parents would agree that fast!?"
+    },
+    {
+      "key": "story.quest2_1.line34",
+      "value": "Heh, that helps. We'll be counting on you."
+    },
+    {
+      "key": "story.quest2_1.line35",
+      "value": "Now then, let me explain what comes next."
+    },
+    {
+      "key": "story.quest2_1.line36",
+      "value": "Kaede hands them a pair of devices."
+    },
+    {
+      "key": "story.quest2_1.line37",
+      "value": "This is a rock hammer for collecting samples."
+    },
+    {
+      "key": "story.quest2_1.line38",
+      "value": "And this is the Phase Shifter—it stabilizes your ability."
+    },
+    {
+      "key": "story.quest2_1.line39",
+      "value": "Phase Shifter...?"
+    },
+    {
+      "key": "story.quest2_1.line40",
+      "value": "In short, it keeps your spatial hops under control so you can travel safely between G-Lab and outside."
+    },
+    {
+      "key": "story.quest2_1.line41",
+      "value": "So we're really going to be doing geo research now..."
+    },
+    {
+      "key": "story.quest2_1.line42",
+      "value": "Of course; it's a job that saves lives... What's wrong, not up for it?"
+    },
+    {
+      "key": "story.quest2_1.line43",
+      "value": "Huh? Not happening!"
+    },
+    {
+      "key": "story.quest2_1.line44",
+      "value": "Wow, Kaede knows exactly how to rile you up."
+    },
+    {
+      "key": "story.quest2_1.line45",
+      "value": "Heh, as long as you're motivated."
+    },
+    {
+      "key": "story.quest2_1.line46",
+      "value": "Then let's kick off your first mission: use the rock hammer to collect thin-section samples."
+    },
+    {
+      "key": "story.quest3_1.line01",
+      "value": "Ready? Then try using the Phase Shifter."
+    },
+    {
+      "key": "story.quest3_1.line02",
+      "value": "Is this really going to help...? I'm more worried about staying alive."
+    },
+    {
+      "key": "story.quest3_1.line03",
+      "value": "Knew you'd chicken out."
+    },
+    {
+      "key": "story.quest3_1.line04",
+      "value": "Relax. I promised you and your mom we'd keep you safe."
+    },
+    {
+      "key": "story.quest3_1.line05",
+      "value": "Alright, alright... guess I'm doing this."
+    },
+    {
+      "key": "story.quest3_1.line06",
+      "value": "Activate the Phase Shifter."
+    },
+    {
+      "key": "story.quest3_2.line01",
+      "value": "When {name} opens their eyes again, they're already outdoors."
+    },
+    {
+      "key": "story.quest3_2.line02",
+      "value": "You arrived safely. Let's start the collection mission."
+    },
+    {
+      "key": "story.quest3_2.line03",
+      "value": "See the markers on the ground? Follow them and grab the samples."
+    },
+    {
+      "key": "story.quest3_3.line01",
+      "value": "Wind scours the desolate ground."
+    },
+    {
+      "key": "story.quest3_3.line02",
+      "value": "{name} stands at the outcrop near the mountain base, gear case on their back as the terminal light flickers to connect with the lab."
+    },
+    {
+      "key": "story.quest3_3.line03",
+      "value": "Lab here. Audio and video okay? Sounds windy over there."
+    },
+    {
+      "key": "story.quest3_3.line04",
+      "value": "Loud and clear. Still a bit dusty, and the sky's gray... definitely feels post-quake."
+    },
+    {
+      "key": "story.quest3_3.line05",
+      "value": "Feed's up. Whoa, you're covered in mud. Did you bring rubber boots?"
+    },
+    {
+      "key": "story.quest3_3.line06",
+      "value": "...I did, but I'm already ankle-deep. Ugh, washing these will be a pain."
+    },
+    {
+      "key": "story.quest3_3.line07",
+      "value": "Focus. That's the closest outcrop to the hypocenter, so get us a sample."
+    },
+    {
+      "key": "story.quest3_3.line08",
+      "value": "{name} pulls out the rock hammer, tapping carefully as the dry clinks vanish into the wind."
+    },
+    {
+      "key": "story.quest3_3.line09",
+      "value": "He crouches, prying fragments from the fissure into small cases while a crow caws somewhere in the distance."
+    },
+    {
+      "key": "story.quest3_3.line10",
+      "value": "Ooh, look at those bands. That powdery part totally looks like crushed cookies."
+    },
+    {
+      "key": "story.quest3_3.line11",
+      "value": "Earth desserts, huh... but it feels kinda soft for rock."
+    },
+    {
+      "key": "story.quest3_3.line12",
+      "value": "Interesting. Might be what shattered during the quake. Bring it back for thin sections."
+    },
+    {
+      "key": "story.quest3_3.line13",
+      "value": "As the case clicks shut, the ground lets out a low groan. The wind dies, and the air turns heavy."
+    },
+    {
+      "key": "story.quest3_3.line14",
+      "value": "...Did it just shake?"
+    },
+    {
+      "key": "story.quest3_3.line15",
+      "value": "No... probably just nerves—"
+    },
+    {
+      "key": "story.quest3_3.line16",
+      "value": "[Ground rumbling]"
+    },
+    {
+      "key": "story.quest3_3.line17",
+      "value": "He doesn't finish before the ground erupts, the roar splitting his ears as the rock crumbles beneath him."
+    },
+    {
+      "key": "story.quest3_3.line18",
+      "value": "Lab to field! {name}, evacuate now! The fault's moving!"
+    },
+    {
+      "key": "story.quest3_3.line19",
+      "value": "Whoa...! The Phase Shifter... where is it...!"
+    },
+    {
+      "key": "story.quest3_3.line20",
+      "value": "Staggering through the shaking, he claws for the device at his waist as alarms blare and the sky splits with thunder."
+    },
+    {
+      "key": "story.quest3_3.line21",
+      "value": "{name}! Hurry! The cliff—!"
+    },
+    {
+      "key": "story.quest3_3.line22",
+      "value": "[Distant collapse]"
+    },
+    {
+      "key": "story.quest3_3.line23",
+      "value": "Come on, please... work!"
+    },
+    {
+      "key": "story.quest3_3.line24",
+      "value": "[Teleport flash]"
+    },
+    {
+      "key": "story.quest3_3.line25",
+      "value": "White light engulfs him. A heartbeat later, the deafening rumble is gone, leaving only silence and the hum of machinery."
+    },
+    {
+      "key": "story.quest3_4.line01",
+      "value": "When he comes to, he's back in the G-Lab transfer room, panting as he sets the sample on the table."
+    },
+    {
+      "key": "story.quest3_4.line02",
+      "value": "Hah... hah... I'm back... This is... the thin section I grabbed."
+    },
+    {
+      "key": "story.quest3_4.line03",
+      "value": "{name}! Are you okay!?"
+    },
+    {
+      "key": "story.quest3_4.line04",
+      "value": "..."
+    },
+    {
+      "key": "story.quest3_4.line05",
+      "value": "……"
+    },
+    {
+      "key": "story.quest3_4.line06",
+      "value": "………"
+    },
+    {
+      "key": "story.quest3_4.line07",
+      "value": "...I'm not scared at all!!"
+    },
+    {
+      "key": "story.quest3_4.line08",
+      "value": "Who could've imagined two huge quakes in a single day!"
+    },
+    {
+      "key": "story.quest3_4.line09",
+      "value": "It was rough... but I'm glad it was you out there, {name}."
+    },
+    {
+      "key": "story.quest3_4.line10",
+      "value": "If we sent someone who couldn't use the Phase Shifter, I don't even want to imagine the outcome."
+    },
+    {
+      "key": "story.quest3_4.line11",
+      "value": "You wrapped up a dangerous mission. Nice work."
+    },
+    {
+      "key": "story.quest3_4.line12",
+      "value": "Now let's analyze the sample."
+    },
+    {
+      "key": "story.quest3_4.line13",
+      "value": "The feed shifts to the lit lab. Through the monitor, the microscopic world comes into view."
+    },
+    {
+      "key": "story.quest3_4.line14",
+      "value": "Wow, everything's crushed so fine... Is that stress marks?"
+    },
+    {
+      "key": "story.quest3_4.line15",
+      "value": "Right. The question is when that stress happened."
+    },
+    {
+      "key": "story.quest3_4.line16",
+      "value": "Wasn't it during the quake?"
+    },
+    {
+      "key": "story.quest3_4.line17",
+      "value": "Maybe. Yet the deformation looks a bit \"too fresh.\""
+    },
+    {
+      "key": "story.quest3_4.line18",
+      "value": "What do you mean by too fresh?"
+    },
+    {
+      "key": "story.quest3_4.line19",
+      "value": "We assume the quake ended, but what if something underground is still shifting...?"
+    },
+    {
+      "key": "story.quest3_4.line20",
+      "value": "...Then next we investigate below ground, right?"
+    },
+    {
+      "key": "story.quest3_4.line21",
+      "value": "Exactly. Let's prep a boring survey. The deeper we drill, the more current movement we can read."
+    },
+    {
+      "key": "story.quest3_4.line22",
+      "value": "The call drops, leaving only mountain winds. He exhales and looks over the distant city, sensing Earth is still quietly shifting beneath the calm."
+    },
+    {
+      "key": "story.quest4_1.line01",
+      "value": "Boring rig prepped! You're up next, {name}!"
+    },
+    {
+      "key": "story.quest4_1.line02",
+      "value": "...We have to head out again? Just thinking about that cliff makes my legs shake."
+    },
+    {
+      "key": "story.quest4_1.line03",
+      "value": "Being scared is good; it means you'll be careful. We've added triple safety this time."
+    },
+    {
+      "key": "story.quest4_1.line04",
+      "value": "And the Phase Shifter's been upgraded—99.8% transfer accuracy!"
+    },
+    {
+      "key": "story.quest4_1.line05",
+      "value": "That remaining 0.2% sounds scary... but fine, I trust you."
+    },
+    {
+      "key": "story.quest4_1.line06",
+      "value": "We'll drill directly beneath the offset layer from last time, about 50 meters down."
+    },
+    {
+      "key": "story.quest4_1.line07",
+      "value": "The transfer device fires up, white light wrapping him as the scenery shifts in a blink."
+    },
+    {
+      "key": "story.quest4_2.line01",
+      "value": "Unlike the previous outcrop, the ground is eerily still—no birds, not even a breeze."
+    },
+    {
+      "key": "story.quest4_2.line02",
+      "value": "He's standing just north of where the cliff collapsed; the cracked earth is dry with faint scorch marks."
+    },
+    {
+      "key": "story.quest4_2.line03",
+      "value": "...The air feels different. It's like the world is mute."
+    },
+    {
+      "key": "story.quest4_2.line04",
+      "value": "Feed's in. Yikes, it's so quiet it's creepy."
+    },
+    {
+      "key": "story.quest4_2.line05",
+      "value": "This spot sits right above that shifted layer, close to the heart of the tremor."
+    },
+    {
+      "key": "story.quest4_2.line06",
+      "value": "Copy. I'll grab the samples and head back."
+    },
+    {
+      "key": "story.quest4_2.line07",
+      "value": "He opens the kit, secures the device, and a sliver of light through the gray clouds highlights the fissures."
+    },
+    {
+      "key": "story.quest4_2.line08",
+      "value": "...Hey, that line looks longer now."
+    },
+    {
+      "key": "story.quest4_2.line09",
+      "value": "Might not be your imagination. The soil looks wetter too."
+    },
+    {
+      "key": "story.quest4_2.line10",
+      "value": "Maybe subsurface water is moving. Either way, safety first."
+    },
+    {
+      "key": "story.quest4_2.line11",
+      "value": "He carefully scoops the topsoil into the sample container when a low sound echoes, as if something underground sighed."
+    },
+    {
+      "key": "story.quest4_2.line12",
+      "value": "...Did you hear that?"
+    },
+    {
+      "key": "story.quest4_2.line13",
+      "value": "Yeah, the mic picked it up too. Definitely not wind."
+    },
+    {
+      "key": "story.quest4_2.line14",
+      "value": "Stay alert. Once it's secured, return immediately."
+    },
+    {
+      "key": "story.quest4_2.line15",
+      "value": "{name} nods, packs up the gear, and activates the Phase Shifter back to G-Lab."
+    },
+    {
+      "key": "story.quest4_3.line01",
+      "value": "The rig's vibration stops; the core pulled from underground glints coldly."
+    },
+    {
+      "key": "story.quest4_3.line02",
+      "value": "Sample acquired! Sent the log from the recommended unit too."
+    },
+    {
+      "key": "story.quest4_3.line03",
+      "value": "Nice work. Seal it on-site and keep it at temperature; log the pressure too."
+    },
+    {
+      "key": "story.quest4_3.line04",
+      "value": "Roger. Prepping to return."
+    },
+    {
+      "key": "story.quest4_3.line05",
+      "value": "Only the cooling fans whisper while the sky blushing faintly overhead."
+    },
+    {
+      "key": "story.quest4_4.line01",
+      "value": "Welcome back! You didn't fall off a cliff, right?"
+    },
+    {
+      "key": "story.quest4_4.line02",
+      "value": "Haha, barely. My boots are mud again though."
+    },
+    {
+      "key": "story.quest4_4.line03",
+      "value": "Glad you're safe. Phase Shifter logs look clean too."
+    },
+    {
+      "key": "story.quest4_4.line04",
+      "value": "Here's the sample. Felt kind of odd, though..."
+    },
+    {
+      "key": "story.quest4_4.line05",
+      "value": "I see. Let's take a look."
+    },
+    {
+      "key": "story.quest4_4.line06",
+      "value": "The sample rests on the analyzer as scanner light sweeps by."
+    },
+    {
+      "key": "story.quest4_4.line07",
+      "value": "...Look, Sensei, down here. Only the lower grains got crushed."
+    },
+    {
+      "key": "story.quest4_4.line08",
+      "value": "You're right... and the grains align. Classic lateral shearing."
+    },
+    {
+      "key": "story.quest4_4.line09",
+      "value": "So something beneath the surface slipped?"
+    },
+    {
+      "key": "story.quest4_4.line10",
+      "value": "Exactly—and we didn't see this right after the quake."
+    },
+    {
+      "key": "story.quest4_4.line11",
+      "value": "Then does that mean it's still moving?"
+    },
+    {
+      "key": "story.quest4_4.line12",
+      "value": "The data on the monitor trembles, the graph warps, and red zones widen."
+    },
+    {
+      "key": "story.quest4_4.line13",
+      "value": "...That's the fault \"breathing.\" The ground under Sendai might not be asleep."
+    },
+    {
+      "key": "story.quest4_4.line14",
+      "value": "...The fault is alive...?"
+    },
+    {
+      "key": "story.quest4_4.line15",
+      "value": "A \"breathing fault\" looks calm on the surface but still loads and releases stress underneath—it's active."
+    },
+    {
+      "key": "story.quest4_4.line16",
+      "value": "It might lie dormant for decades but it's still alive, so we can't let our guard down."
+    },
+    {
+      "key": "story.quest4_4.line17",
+      "value": "...The earth feeling alive is both terrifying and a little heartbreaking."
+    },
+    {
+      "key": "story.quest4_4.line18",
+      "value": "The room goes still as the sunset sinks between the buildings outside."
+    },
+    {
+      "key": "story.quest4_4.line19",
+      "value": "Still, we need clearer data to prove what's happening beneath these strata."
+    },
+    {
+      "key": "story.quest4_4.line20",
+      "value": "Surface observations alone won't cut it anymore. The \"breathing\" may be deeper down."
+    },
+    {
+      "key": "story.quest4_4.line21",
+      "value": "So next we literally look underground?"
+    },
+    {
+      "key": "story.quest4_4.line22",
+      "value": "Right. Places people can't reach need mechanical eyes—unmanned probe drones."
+    },
+    {
+      "key": "story.quest4_4.line23",
+      "value": "Using drones to chase faults sounds exciting... but is it safe?"
+    },
+    {
+      "key": "story.quest4_4.line24",
+      "value": "Can't say zero risk, but it's safer than field sampling—you won't have to go outside."
+    },
+    {
+      "key": "story.quest4_4.line25",
+      "value": "But this mission is just as important; it could save lives too."
+    },
+    {
+      "key": "story.quest4_4.line26",
+      "value": "All three gaze at the red line on the map, stretching beneath Sendai as if guarding untold truths."
+    },
+    {
+      "key": "story.quest5_1.line01",
+      "value": "Night settles over G-Lab as rain starts outside; distant lightning flashes while monitor glow bathes the lab."
+    },
+    {
+      "key": "story.quest5_1.line02",
+      "value": "The new drone unit is ready. It's not a normal drone—it's the Phase Radar Swarm prototype."
+    },
+    {
+      "key": "story.quest5_1.line03",
+      "value": "Phase radar swarm?"
+    },
+    {
+      "key": "story.quest5_1.line04",
+      "value": "Right. A dozen mini drones slip into cracks and waterways, mapping underground structures with EM waves."
+    },
+    {
+      "key": "story.quest5_1.line05",
+      "value": "So basically we can scan the inside of the earth! Like a planetary CT."
+    },
+    {
+      "key": "story.quest5_1.line06",
+      "value": "...That's amazing. So we'll actually see the fault's shape?"
+    },
+    {
+      "key": "story.quest5_1.line07",
+      "value": "In theory. But if the signal's too strong, groundwater reflects it and adds noise, so be careful."
+    },
+    {
+      "key": "story.quest5_1.line08",
+      "value": "{name}, we're counting on you to pilot them."
+    },
+    {
+      "key": "story.quest5_1.line09",
+      "value": "Got it... Wait, I have to control all dozen by myself?"
+    },
+    {
+      "key": "story.quest5_1.line10",
+      "value": "Of course. Let's give it a shot!"
+    },
+    {
+      "key": "story.quest5_1.line11",
+      "value": "(Inner voice) Kaede-sensei is so pushy..."
+    },
+    {
+      "key": "story.quest5_1.line12",
+      "value": "...Did the ground just shake?"
+    },
+    {
+      "key": "story.quest5_2.line01",
+      "value": "Drone activation sequence start. A dozen mini drones blink blue as they rise."
+    },
+    {
+      "key": "story.quest5_2.line02",
+      "value": "Wow... gorgeous. Like a flock of fireflies."
+    },
+    {
+      "key": "story.quest5_2.line03",
+      "value": "Totally. Can't believe we're flying all of them... I'm nervous now."
+    },
+    {
+      "key": "story.quest5_2.line04",
+      "value": "Hehe, commander debut. Don't crash them, okay?"
+    },
+    {
+      "key": "story.quest5_2.line05",
+      "value": "Jokes aside. Drone swarm, begin linking to the subsurface radar system."
+    },
+    {
+      "key": "story.quest5_2.line06",
+      "value": "Communication lines streak across the monitors as each drone slips into cracks, their blue lights disappearing underground."
+    },
+    {
+      "key": "story.quest5_2.line07",
+      "value": "Checking signals from drones 1 through 8 first."
+    },
+    {
+      "key": "story.quest5_2.line08",
+      "value": "Depth 10 meters... 15... Uh-oh, drone 9's throwing noise!"
+    },
+    {
+      "key": "story.quest5_2.line09",
+      "value": "Feed's up! ...What is that? A red line running under the ground?"
+    },
+    {
+      "key": "story.quest5_2.line10",
+      "value": "...That's the fault plane. But it's way shallower than expected."
+    },
+    {
+      "key": "story.quest5_2.line11",
+      "value": "If it's that shallow... doesn't that put it near the city's infrastructure?"
+    },
+    {
+      "key": "story.quest5_2.line12",
+      "value": "The display switches to a Sendai map, fault lines crawling beneath the city."
+    },
+    {
+      "key": "story.quest5_2.line13",
+      "value": "...It stretches all the way under Sendai Station."
+    },
+    {
+      "key": "story.quest5_2.line14",
+      "value": "And it branches! Two lines? No, three?"
+    },
+    {
+      "key": "story.quest5_2.line15",
+      "value": "...Branch faults. I didn't expect them to spread this far..."
+    },
+    {
+      "key": "story.quest5_2.line16",
+      "value": "The waveform suddenly spikes and red alerts flash."
+    },
+    {
+      "key": "story.quest5_2.line17",
+      "value": "What is that!? The waveform's moving—in real time!"
+    },
+    {
+      "key": "story.quest5_2.line18",
+      "value": "No way... is it still slipping!?"
+    },
+    {
+      "key": "story.quest5_2.line19",
+      "value": "Hold on... Sensei, it looks like a seismogram, and the period's short."
+    },
+    {
+      "key": "story.quest5_2.line20",
+      "value": "A short period means stress is building. This isn't a warning—it's the next quake beginning."
+    },
+    {
+      "key": "story.quest5_2.line21",
+      "value": "On the map, the red lines spread across Sendai with G-Lab blinking at the center."
+    },
+    {
+      "key": "story.quest5_2.line22",
+      "value": "No way... we're right on top of the fault!?"
+    },
+    {
+      "key": "story.quest5_2.line23",
+      "value": "...Not just G-Lab. All of central Sendai is sitting on this awakening fault."
+    },
+    {
+      "key": "story.quest5_2.line24",
+      "value": "Then... the next thing coming is the main shock..."
+    },
+    {
+      "key": "story.quest5_2.line25",
+      "value": "Thunder cracks and rain lashes harder outside as the lab lights flicker."
+    },
+    {
+      "key": "story.quest5_2.line26",
+      "value": "...Everyone, listen. We can't hide this anymore. We have to tell the government and the public."
+    },
+    {
+      "key": "story.quest5_2.line27",
+      "value": "Exactly. This research can save lives!"
+    },
+    {
+      "key": "story.quest5_2.line28",
+      "value": "...Understood. Our next mission is to warn them."
+    },
+    {
+      "key": "story.quest5_2.line29",
+      "value": "The three nod in silence. On the monitor, the pulsing red fault line glows as if the earth itself is breathing."
+    },
+    {
+      "key": "story.speaker.classmate",
+      "value": "Classmate"
+    },
+    {
+      "key": "story.speaker.drkaede",
+      "value": "Dr. Kaede"
+    },
+    {
+      "key": "story.speaker.minato",
+      "value": "Minato"
+    },
+    {
+      "key": "story.speaker.mother",
+      "value": "Mother"
+    },
+    {
+      "key": "story.speaker.narration",
+      "value": "Narration"
+    },
+    {
+      "key": "story.speaker.news",
+      "value": "News Broadcast"
+    },
+    {
+      "key": "story.speaker.protagonist",
+      "value": "Protagonist"
+    },
+    {
+      "key": "story.speaker.sfx",
+      "value": "SFX"
+    },
+    {
+      "key": "story.speaker.student_a",
+      "value": "Student A"
+    },
+    {
+      "key": "story.speaker.student_b",
+      "value": "Student B"
     }
   ]
 }

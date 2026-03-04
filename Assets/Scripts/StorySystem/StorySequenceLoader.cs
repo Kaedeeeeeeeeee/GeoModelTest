@@ -20,6 +20,8 @@ namespace StorySystem
         public string text;
         public bool shake;
         public float shakeAmplitude;
+        public string speakerKey;
+        public string textKey;
     }
 
     public static class StorySequenceLoader
@@ -59,11 +61,32 @@ namespace StorySystem
             var result = new List<StoryDirector.SubtitleUI.SubtitleLine>();
             if (sequence?.dialogues == null) return result;
 
+            var localizationManager = LocalizationManager.Instance;
+            bool canLocalize = localizationManager != null && localizationManager.IsInitialized;
+
             foreach (var entry in sequence.dialogues)
             {
-                if (entry == null || string.IsNullOrEmpty(entry.text)) continue;
+                if (entry == null) continue;
+
                 string speaker = entry.speaker ?? string.Empty;
-                string text = entry.text.Trim();
+                if (!string.IsNullOrEmpty(entry.speakerKey) && canLocalize && localizationManager.HasText(entry.speakerKey))
+                {
+                    speaker = localizationManager.GetText(entry.speakerKey);
+                }
+
+                string text = entry.text?.Trim() ?? string.Empty;
+                if (!string.IsNullOrEmpty(entry.textKey))
+                {
+                    if (canLocalize && localizationManager.HasText(entry.textKey))
+                    {
+                        text = localizationManager.GetText(entry.textKey)?.Trim();
+                    }
+                    else if (string.IsNullOrEmpty(text))
+                    {
+                        text = entry.textKey; // 至少显示键值，便于调试
+                    }
+                }
+
                 if (string.IsNullOrEmpty(text)) continue;
                 bool triggerShake = entry.shake;
                 float overrideAmplitude = entry.shakeAmplitude;

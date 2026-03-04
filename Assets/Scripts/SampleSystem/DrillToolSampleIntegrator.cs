@@ -200,7 +200,8 @@ public class DrillToolSampleIntegrator : MonoBehaviour
         {
             collector.sampleData = SampleItem.CreateFromGeologicalSample(sampleObject, sourceToolID);
         }
-        
+
+        LogLayerInfo("IntegrateSample", collector.sampleData);
         Instance?.LogMessage($"✅ 已为样本 {sampleObject.name} 添加收集组件 (类型: {sampleType}, 工具ID: {sourceToolID})");
     }
     
@@ -271,13 +272,27 @@ public class DrillToolSampleIntegrator : MonoBehaviour
             {
                 collector.sampleData = SampleItem.CreateFromGeologicalSample(sampleObject, sourceToolID);
             }
-            
+
+            LogLayerInfo("IntegrateSampleAfterDrilling", collector.sampleData);
             Instance.LogMessage($"✅ 钻探样本集成完成: {sampleObject.name} ({drillType})");
         }
         else
         {
             Instance.LogMessage($"ℹ️ 样本 {sampleObject.name} 已有收集组件，跳过");
         }
+    }
+
+    static void LogLayerInfo(string context, SampleItem sampleData)
+    {
+        if (sampleData == null)
+        {
+            Debug.Log($"[DrillToolSampleIntegrator] {context} layer info: sampleData=null");
+            return;
+        }
+
+        int layerCount = sampleData.geologicalLayers?.Count ?? 0;
+        string firstLayerName = layerCount > 0 ? sampleData.geologicalLayers[0].layerName : "None";
+        Debug.Log($"[DrillToolSampleIntegrator] {context} layer info: count={layerCount}, first={firstLayerName}");
     }
     
     /// <summary>

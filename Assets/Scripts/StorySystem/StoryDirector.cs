@@ -332,6 +332,8 @@ namespace StorySystem
                     if (!line.TriggerCameraShake) return;
                     float amplitude = line.ShakeAmplitudeOverride > 0f ? line.ShakeAmplitudeOverride : 0.6f;
                     StoryDirectorRunner.Instance.Run(CameraShakeAction.Execute(0.9f, amplitude));
+                    float volumeScale = Mathf.Clamp01(amplitude);
+                    PersistentEarthquakeController.Instance?.PlayEarthquakeSfxOneShot(volumeScale);
                 });
         }
 
@@ -504,6 +506,9 @@ namespace StorySystem
                 {
                     if (!shakeActive && line.TriggerCameraShake)
                     {
+                        float volumeScale = Mathf.Clamp01(
+                            line.ShakeAmplitudeOverride > 0f ? line.ShakeAmplitudeOverride : shakeAmplitude);
+                        PersistentEarthquakeController.Instance?.PlayEarthquakeSfxOneShot(volumeScale);
                         shakeActive = true;
                         if (line.ShakeAmplitudeOverride > 0f)
                         {

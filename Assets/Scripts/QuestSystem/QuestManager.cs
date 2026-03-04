@@ -909,11 +909,11 @@ namespace QuestSystem
             }
 
             _fieldPhaseSampleCutscenePending = true;
+            PersistentEarthquakeController.Instance?.StartEarthquake();
 
             System.Action finalize = () =>
             {
                 _fieldPhaseSampleCutscenePending = false;
-                PersistentEarthquakeController.Instance?.StartEarthquake();
                 CompleteObjective("q.field.phase.collect_samples");
             };
 
@@ -960,7 +960,6 @@ namespace QuestSystem
             {
                 if (debugLog) Debug.Log("[QuestManager] 野外剧情完成，引导玩家返回研究室");
                 GuidanceManager.Instance?.ClearTarget();
-                PersistentEarthquakeController.Instance?.StopEarthquake();
                 StartQuest("q.lab.return");
             }
             else if (questId == "q.lab.return")

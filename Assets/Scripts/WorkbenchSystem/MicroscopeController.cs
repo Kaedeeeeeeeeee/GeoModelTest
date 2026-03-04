@@ -29,11 +29,20 @@ namespace WorkbenchSystem
         [Header("Camera/Preview")]
         public Camera microscopeCamera;
         public RenderTexture renderTexture;
-        public int previewSize = 512;
+        public int previewSize = 2048;
         public float rotateSpeed = 80f;
         public float zoomSpeed = 1.5f;
-        public float minZoom = 0.4f;
-        public float maxZoom = 1.8f;
+        public float minZoom = 0.25f;
+        public float maxZoom = 10f;
+        public float baseModelScale = 0.6f;
+        public float scatterRadius = 0.65f;
+        public float spawnDepthOffset = 1.2f;
+        public int previewAntiAliasing = 8;
+
+        [Header("UI Controls")]
+        public float uiZoomStep = 0.22f;
+        public float uiPanStep = 0.08f;
+        public float uiPanLimit = 0.6f;
 
         [Header("Target")]
         [Tooltip("可选：显微镜机身的碰撞体，如果为空将自动添加 BoxCollider")]
@@ -43,8 +52,8 @@ namespace WorkbenchSystem
         public float highlightEmission = 1.5f;
         [Header("Composition/Preview")]
         public LayerDatabaseMapper layerDatabaseMapper;
-        public int maxPreviewInstances = 24;
-        public float previewScatterRadius = 0.35f;
+        public int maxPreviewInstances = 100;
+        public float previewScatterRadius = 0.35f; // legacy, replaced by scatterRadius but kept for backward compatibility
 
         private readonly List<Button> sampleButtons = new List<Button>();
         private SampleItem currentSample;
@@ -72,6 +81,7 @@ namespace WorkbenchSystem
 
         void Start()
         {
+            Debug.LogWarning("[Microscope] Start");
             EnsureCollider();
             EnsureCameraAndPreview();
             EnsureUI();
@@ -79,6 +89,24 @@ namespace WorkbenchSystem
             BuildSampleList();
             HideUI();
             CacheRenderers();
+        }
+
+        void OnEnable()
+        {
+            Debug.LogWarning("[Microscope] OnEnable");
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        static void LogMicroscopeInstances()
+        {
+            var instances = Object.FindObjectsByType<MicroscopeController>(FindObjectsSortMode.None);
+            Debug.LogWarning($"[Microscope] Instances on load: {instances.Length}");
+            foreach (var instance in instances)
+            {
+                if (instance == null) continue;
+                var go = instance.gameObject;
+                Debug.LogWarning($"[Microscope] Instance: {go.name}, active={go.activeInHierarchy}, enabled={instance.enabled}");
+            }
         }
 
         void Update()
@@ -172,25 +200,37 @@ namespace WorkbenchSystem
             if (microscopeCamera == null)
             {
                 var camObj = new GameObject("MicroscopeCamera");
-                camObj.transform.SetParent(transform, false);
+                camObj.transform.SetParent(null, false);
                 microscopeCamera = camObj.AddComponent<Camera>();
-                microscopeCamera.transform.localPosition = new Vector3(0f, 0.1f, 1.5f);
-                microscopeCamera.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
+                microscopeCamera.transform.position = Vector3.zero;
+                microscopeCamera.transform.rotation = Quaternion.identity;
                 microscopeCamera.nearClipPlane = 0.01f;
                 microscopeCamera.farClipPlane = 6f;
-                microscopeCamera.fieldOfView = 40f;
+                microscopeCamera.fieldOfView = 25f;
+            }
+            else
+            {
+                microscopeCamera.transform.position = Vector3.zero;
+                microscopeCamera.transform.rotation = Quaternion.identity;
             }
 
             microscopeCamera.clearFlags = CameraClearFlags.SolidColor;
-            microscopeCamera.backgroundColor = new Color(0.05f, 0.05f, 0.05f, 1f);
+            microscopeCamera.backgroundColor = new Color(0.97f, 0.97f, 0.97f, 1f);
             microscopeCamera.cullingMask = 1 << previewLayer;
 
             if (renderTexture == null)
             {
-                renderTexture = new RenderTexture(previewSize, previewSize, 16, RenderTextureFormat.ARGB32);
+                renderTexture = new RenderTexture(previewSize, previewSize, 24, RenderTextureFormat.ARGB32);
+                renderTexture.antiAliasing = Mathf.Max(1, previewAntiAliasing);
+                renderTexture.useMipMap = false;
+                renderTexture.filterMode = FilterMode.Point;
                 renderTexture.name = "MicroscopeRT";
             }
             microscopeCamera.targetTexture = renderTexture;
+            if (previewImage != null)
+            {
+                previewImage.texture = renderTexture;
+            }
 
             EnsurePreviewRig();
             EnableCamera(false);
@@ -202,7 +242,8 @@ namespace WorkbenchSystem
             {
                 var rootObj = new GameObject("MicroscopePreviewRoot");
                 rootObj.transform.SetParent(microscopeCamera.transform, false);
-                rootObj.transform.localPosition = new Vector3(0f, 0f, 0.6f);
+                rootObj.transform.localPosition = new Vector3(0f, 0f, Mathf.Max(0.8f, Mathf.Abs(spawnDepthOffset)));
+                rootObj.transform.localRotation = Quaternion.identity;
                 previewRoot = rootObj.transform;
             }
 
@@ -224,13 +265,24 @@ namespace WorkbenchSystem
                 var lightObj = new GameObject("MicroscopeLight");
                 previewLight = lightObj.AddComponent<Light>();
                 previewLight.type = LightType.Spot;
-                previewLight.spotAngle = 60f;
-                previewLight.intensity = 2.1f;
-                previewLight.range = 3f;
+                previewLight.spotAngle = 85f;
+                previewLight.intensity = 2.4f;
+                previewLight.range = 4f;
                 lightObj.transform.SetParent(previewRoot, false);
-                lightObj.transform.localPosition = new Vector3(0.15f, 0.35f, 0.6f);
-                lightObj.transform.localRotation = Quaternion.Euler(20f, -160f, 0f);
+                lightObj.transform.localPosition = new Vector3(0.2f, 0.6f, -0.4f);
+                // 朝向预览中心
+                lightObj.transform.localRotation = Quaternion.Euler(30f, 20f, 0f);
                 lightObj.gameObject.layer = previewLayer;
+
+                // 补充一个柔和的定向光，避免模型完全黑
+                var dirLightObj = new GameObject("MicroscopeFillLight");
+                var dirLight = dirLightObj.AddComponent<Light>();
+                dirLight.type = LightType.Directional;
+                dirLight.intensity = 0.9f;
+                dirLight.color = new Color(1f, 0.98f, 0.95f);
+                dirLight.transform.SetParent(previewRoot, false);
+                dirLight.transform.localRotation = Quaternion.Euler(55f, -20f, 0f);
+                dirLightObj.layer = previewLayer;
             }
 
             // 防止层级污染
@@ -373,7 +425,7 @@ namespace WorkbenchSystem
             GameObject compositionObj = new GameObject("CompositionText");
             compositionObj.transform.SetParent(viewObj.transform, false);
             var compRect = compositionObj.AddComponent<RectTransform>();
-            compRect.anchorMin = new Vector2(0f, 0f);
+            compRect.anchorMin = new Vector2(0f, 0.12f);
             compRect.anchorMax = new Vector2(1f, 0.26f);
             compRect.offsetMin = new Vector2(16f, 12f);
             compRect.offsetMax = new Vector2(-16f, -12f);
@@ -383,6 +435,72 @@ namespace WorkbenchSystem
             compositionText.fontSize = 20;
             compositionText.color = Color.white;
             compositionText.alignment = TextAnchor.UpperLeft;
+
+            // 控制按钮区域
+            GameObject controlObj = new GameObject("PreviewControls");
+            controlObj.transform.SetParent(viewObj.transform, false);
+            var controlRect = controlObj.AddComponent<RectTransform>();
+            controlRect.anchorMin = new Vector2(0f, 0f);
+            controlRect.anchorMax = new Vector2(1f, 0.12f);
+            controlRect.offsetMin = new Vector2(16f, 10f);
+            controlRect.offsetMax = new Vector2(-16f, -8f);
+            var controlBg = controlObj.AddComponent<Image>();
+            controlBg.color = new Color(0.1f, 0.1f, 0.1f, 0.7f);
+
+            var controlLayout = controlObj.AddComponent<HorizontalLayoutGroup>();
+            controlLayout.childAlignment = TextAnchor.MiddleLeft;
+            controlLayout.spacing = 16f;
+            controlLayout.padding = new RectOffset(8, 8, 0, 0);
+            controlLayout.childForceExpandWidth = false;
+            controlLayout.childForceExpandHeight = true;
+
+            GameObject panObj = new GameObject("PanControls");
+            panObj.transform.SetParent(controlObj.transform, false);
+            var panRect = panObj.AddComponent<RectTransform>();
+            panRect.anchorMin = new Vector2(0f, 0f);
+            panRect.anchorMax = new Vector2(1f, 1f);
+            panRect.offsetMin = Vector2.zero;
+            panRect.offsetMax = Vector2.zero;
+            var panLayoutElement = panObj.AddComponent<LayoutElement>();
+            panLayoutElement.preferredWidth = 240f;
+            panLayoutElement.flexibleWidth = 1f;
+
+            var panGrid = panObj.AddComponent<GridLayoutGroup>();
+            panGrid.cellSize = new Vector2(64f, 34f);
+            panGrid.spacing = new Vector2(8f, 6f);
+            panGrid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+            panGrid.constraintCount = 3;
+
+            CreateControlSpacer(panObj.transform);
+            CreateControlButton(panObj.transform, "↑", PanUp);
+            CreateControlSpacer(panObj.transform);
+            CreateControlButton(panObj.transform, "←", PanLeft);
+            CreateControlSpacer(panObj.transform);
+            CreateControlButton(panObj.transform, "→", PanRight);
+            CreateControlSpacer(panObj.transform);
+            CreateControlButton(panObj.transform, "↓", PanDown);
+            CreateControlSpacer(panObj.transform);
+
+            GameObject zoomObj = new GameObject("ZoomControls");
+            zoomObj.transform.SetParent(controlObj.transform, false);
+            var zoomRect = zoomObj.AddComponent<RectTransform>();
+            zoomRect.anchorMin = new Vector2(0f, 0f);
+            zoomRect.anchorMax = new Vector2(1f, 1f);
+            zoomRect.offsetMin = Vector2.zero;
+            zoomRect.offsetMax = Vector2.zero;
+            var zoomLayoutElement = zoomObj.AddComponent<LayoutElement>();
+            zoomLayoutElement.minWidth = 80f;
+            zoomLayoutElement.preferredWidth = 96f;
+            zoomLayoutElement.flexibleWidth = 0f;
+
+            var zoomLayout = zoomObj.AddComponent<VerticalLayoutGroup>();
+            zoomLayout.childAlignment = TextAnchor.MiddleCenter;
+            zoomLayout.spacing = 8f;
+            zoomLayout.childForceExpandWidth = false;
+            zoomLayout.childForceExpandHeight = false;
+
+            CreateControlButton(zoomObj.transform, "↑", ZoomIn);
+            CreateControlButton(zoomObj.transform, "↓", ZoomOut);
 
             GameObject detailObj = new GameObject("DetailText");
             detailObj.transform.SetParent(maskObj.transform, false);
@@ -427,6 +545,58 @@ namespace WorkbenchSystem
             closeTxtRect.offsetMax = Vector2.zero;
 
             uiRoot = maskObj;
+        }
+
+        Button CreateControlButton(Transform parent, string label, UnityEngine.Events.UnityAction action)
+        {
+            GameObject obj = new GameObject($"ControlButton_{label}");
+            obj.transform.SetParent(parent, false);
+            var rect = obj.AddComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(64f, 34f);
+            var layoutElement = obj.AddComponent<LayoutElement>();
+            layoutElement.minWidth = rect.sizeDelta.x;
+            layoutElement.minHeight = rect.sizeDelta.y;
+            layoutElement.preferredWidth = rect.sizeDelta.x;
+            layoutElement.preferredHeight = rect.sizeDelta.y;
+            var img = obj.AddComponent<Image>();
+            img.color = new Color(0.18f, 0.18f, 0.18f, 0.9f);
+            var btn = obj.AddComponent<Button>();
+            btn.targetGraphic = img;
+            btn.onClick.AddListener(action);
+            var pressHold = obj.AddComponent<PressHoldButton>();
+            pressHold.Initialize(action, 0.25f, 0.08f);
+            var colors = btn.colors;
+            colors.normalColor = img.color;
+            colors.highlightedColor = new Color(0.28f, 0.28f, 0.28f, 0.95f);
+            colors.pressedColor = new Color(0.12f, 0.12f, 0.12f, 0.95f);
+            colors.selectedColor = colors.highlightedColor;
+            colors.colorMultiplier = 1f;
+            btn.colors = colors;
+
+            GameObject textObj = new GameObject("Text");
+            textObj.transform.SetParent(obj.transform, false);
+            var text = textObj.AddComponent<Text>();
+            text.text = label;
+            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.fontSize = 18;
+            text.color = Color.white;
+            text.alignment = TextAnchor.MiddleCenter;
+            var textRect = text.GetComponent<RectTransform>();
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = Vector2.zero;
+            textRect.offsetMax = Vector2.zero;
+
+            return btn;
+        }
+
+        void CreateControlSpacer(Transform parent)
+        {
+            GameObject obj = new GameObject("ControlSpacer");
+            obj.transform.SetParent(parent, false);
+            var rect = obj.AddComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(64f, 34f);
+            obj.AddComponent<LayoutElement>();
         }
 
         void CacheRenderers()
@@ -582,6 +752,8 @@ namespace WorkbenchSystem
         void SelectSample(SampleItem sample, Button clickedBtn)
         {
             currentSample = sample;
+            Debug.LogWarning($"[Microscope] SelectSample: sample={(sample != null ? sample.displayName : "null")}, button={(clickedBtn != null ? clickedBtn.name : "null")}");
+            LogSampleDebugInfo(sample);
             UpdateDetail(sample);
             TintButtons(clickedBtn);
             UpdatePreviewAppearance(sample);
@@ -648,22 +820,19 @@ namespace WorkbenchSystem
             if (compositionText == null || sample == null) return;
 
             var entries = ResolveComposition(sample);
+            var dominantLayer = GetDominantLayer(sample);
+            string layerLine = dominantLayer != null
+                ? $"{Localize("地层:", "Layer:")} {dominantLayer.layerName}\n"
+                : string.Empty;
             if (entries.Count == 0)
             {
-                string layerInfo = Localize("无矿物数据，地层:", "No mineral data. Layers:") + "\n";
-                if (sample.geologicalLayers != null && sample.geologicalLayers.Count > 0)
-                {
-                    foreach (var layer in sample.geologicalLayers)
-                    {
-                        layerInfo += $"- {layer.layerName} (厚度 {layer.thickness:F2}m)\n";
-                    }
-                }
-                compositionText.text = layerInfo;
+                string layerInfo = Localize("无矿物数据。", "No mineral data.") + "\n";
+                compositionText.text = layerInfo + layerLine;
                 return;
             }
 
             entries = entries.OrderByDescending(e => e.Percentage).ToList();
-            string compositionInfo = Localize("矿物组成：", "Mineral composition:") + "\n";
+            string compositionInfo = layerLine + Localize("矿物组成：", "Mineral composition:") + "\n";
             foreach (var entry in entries)
             {
                 string name = entry.Name;
@@ -697,11 +866,75 @@ namespace WorkbenchSystem
                 float scale = Mathf.Clamp(previewRoot.localScale.x + scroll * 0.01f * zoomSpeed, minZoom, maxZoom);
                 previewRoot.localScale = Vector3.one * scale;
             }
+
+            // 中键按下时重置
+            if (mouse.middleButton.wasPressedThisFrame)
+            {
+                previewRoot.localPosition = new Vector3(0f, 0f, spawnDepthOffset);
+                previewRoot.localRotation = Quaternion.identity;
+                previewRoot.localScale = Vector3.one * Mathf.Clamp(baseModelScale, minZoom, maxZoom);
+            }
+        }
+
+        public void ZoomIn()
+        {
+            AdjustZoom(uiZoomStep);
+        }
+
+        public void ZoomOut()
+        {
+            AdjustZoom(-uiZoomStep);
+        }
+
+        public void PanUp()
+        {
+            AdjustPan(new Vector2(0f, -uiPanStep));
+        }
+
+        public void PanDown()
+        {
+            AdjustPan(new Vector2(0f, uiPanStep));
+        }
+
+        public void PanLeft()
+        {
+            AdjustPan(new Vector2(uiPanStep, 0f));
+        }
+
+        public void PanRight()
+        {
+            AdjustPan(new Vector2(-uiPanStep, 0f));
+        }
+
+        void AdjustZoom(float delta)
+        {
+            if (previewRoot == null) return;
+            float scale = Mathf.Clamp(previewRoot.localScale.x + delta, minZoom, maxZoom);
+            previewRoot.localScale = Vector3.one * scale;
+        }
+
+        void AdjustPan(Vector2 delta)
+        {
+            if (previewRoot == null) return;
+            float scale = previewRoot.localScale.x;
+            float scaleFactor = baseModelScale > 0f ? scale / baseModelScale : 1f;
+            float panLimit = uiPanLimit * Mathf.Max(1f, scaleFactor);
+            Vector3 pos = previewRoot.localPosition;
+            pos.x = Mathf.Clamp(pos.x + delta.x, -panLimit, panLimit);
+            pos.y = Mathf.Clamp(pos.y + delta.y, -panLimit, panLimit);
+            previewRoot.localPosition = pos;
         }
 
         void ShowUI()
         {
-            if (uiRoot != null) uiRoot.SetActive(true);
+            if (uiRoot != null)
+            {
+                uiRoot.SetActive(true);
+                if (previewImage != null && previewImage.texture == null && renderTexture != null)
+                {
+                    previewImage.texture = renderTexture;
+                }
+            }
         }
 
         void HideUI()
@@ -814,7 +1047,7 @@ namespace WorkbenchSystem
             var result = new List<MineralEntry>();
             if (sample == null) return result;
 
-            // 按地层厚度加权的矿物占比
+            // 使用厚度最大的地层作为代表层
             if (sample.geologicalLayers == null || sample.geologicalLayers.Count == 0)
             {
                 TryInferLayerFromMaterial(sample);
@@ -827,41 +1060,37 @@ namespace WorkbenchSystem
 
             EnsureLayerDatabase();
 
-            float totalThickness = Mathf.Max(0.0001f, sample.geologicalLayers.Sum(l => l.thickness));
+            var dominantLayer = GetDominantLayer(sample);
+            if (dominantLayer == null)
+            {
+                Debug.LogWarning($"[Microscope] 样本 {sample.sampleID} 未找到有效地层");
+                return result;
+            }
+
             var weightMap = new Dictionary<string, MineralEntry>();
 
-            foreach (var layer in sample.geologicalLayers)
+            MineralComposition[] minerals = layerDatabaseMapper != null
+                ? layerDatabaseMapper.GetMineralsForLayer(dominantLayer.layerName)
+                : new MineralComposition[0];
+            Debug.LogWarning($"[Microscope] Dominant layer: {dominantLayer.layerName}, minerals={minerals?.Length ?? 0}");
+
+            if (minerals == null || minerals.Length == 0)
             {
-                float layerWeight = layer.thickness / totalThickness;
-
-                MineralComposition[] minerals = layerDatabaseMapper != null
-                    ? layerDatabaseMapper.GetMineralsForLayer(layer.layerName)
-                    : new MineralComposition[0];
-
-                if (minerals == null || minerals.Length == 0)
+                string id = dominantLayer.layerName;
+                weightMap[id] = new MineralEntry
                 {
-                    // 用层名占位
-                    string id = layer.layerName;
-                    if (!weightMap.TryGetValue(id, out var entry))
-                    {
-                        entry = new MineralEntry
-                        {
-                            Id = id,
-                            Name = layer.layerName,
-                            Percentage = 0f,
-                            ModelFile = string.Empty,
-                            Color = SampleColorFromID(id)
-                        };
-                        weightMap[id] = entry;
-                    }
-                    entry.Percentage += layerWeight;
-                    continue;
-                }
-
+                    Id = id,
+                    Name = dominantLayer.layerName,
+                    Percentage = 1f,
+                    ModelFile = string.Empty,
+                    Color = SampleColorFromID(id)
+                };
+            }
+            else
+            {
                 foreach (var mineral in minerals)
                 {
                     if (mineral == null) continue;
-                    float weight = layerWeight * Mathf.Clamp01(mineral.percentage);
                     string key = !string.IsNullOrEmpty(mineral.mineralId) ? mineral.mineralId : mineral.mineralName;
                     if (string.IsNullOrEmpty(key)) key = mineral.GetDisplayName();
 
@@ -878,27 +1107,23 @@ namespace WorkbenchSystem
                         };
                         weightMap[key] = entry;
                     }
-                    entry.Percentage += weight;
+                    entry.Percentage += Mathf.Clamp01(mineral.percentage);
                 }
             }
 
             // 如果没找到任何矿物数据，用地层作为占位（避免空预览）
             if (weightMap.Count == 0)
             {
-                foreach (var layer in sample.geologicalLayers)
+                string key = dominantLayer.layerName;
+                weightMap[key] = new MineralEntry
                 {
-                    float layerWeight = layer.thickness / totalThickness;
-                    string key = layer.layerName;
-                    weightMap[key] = new MineralEntry
-                    {
-                        Id = key,
-                        Name = layer.layerName,
-                        Percentage = Mathf.Clamp01(layerWeight),
-                        ModelFile = string.Empty,
-                        Color = SampleColorFromID(key),
-                        Composition = null
-                    };
-                }
+                    Id = key,
+                    Name = dominantLayer.layerName,
+                    Percentage = 1f,
+                    ModelFile = string.Empty,
+                    Color = SampleColorFromID(key),
+                    Composition = null
+                };
             }
 
             result = weightMap.Values.ToList();
@@ -916,6 +1141,12 @@ namespace WorkbenchSystem
             return result;
         }
 
+        SampleItem.LayerInfo GetDominantLayer(SampleItem sample)
+        {
+            if (sample?.geologicalLayers == null || sample.geologicalLayers.Count == 0) return null;
+            return sample.geologicalLayers.OrderByDescending(l => l.thickness).FirstOrDefault();
+        }
+
         void ClearPreviewInstances()
         {
             foreach (var go in spawnedMineralVisuals)
@@ -927,12 +1158,18 @@ namespace WorkbenchSystem
 
         void BuildCompositionPreview(SampleItem sample)
         {
-            if (previewRoot == null) return;
+            if (previewRoot == null)
+            {
+                Debug.LogWarning("[Microscope] BuildCompositionPreview aborted: previewRoot is null");
+                return;
+            }
             ClearPreviewInstances();
 
             var entries = ResolveComposition(sample);
+            Debug.LogWarning($"[Microscope] BuildCompositionPreview: entries={entries.Count}, previewLayer={previewLayer}");
             if (entries.Count == 0)
             {
+                Debug.LogWarning($"[Microscope] 样本 {sample.sampleID} 未能解析到矿物数据，使用单球体占位");
                 // fallback: 单个球体
                 if (previewSample != null)
                 {
@@ -948,6 +1185,8 @@ namespace WorkbenchSystem
             }
 
             if (previewSample != null) previewSample.SetActive(false);
+
+            LogPreviewRigState("BeforeSpawn");
 
             // 稳定随机种子确保同一样本结果一致
             int seed = sample.sampleID != null ? sample.sampleID.GetHashCode() : 0;
@@ -965,6 +1204,11 @@ namespace WorkbenchSystem
                 }
                 if (remainingSlots <= 0) break;
             }
+
+            FramePreviewCluster();
+            LogPreviewRigState("AfterFrame");
+            LogSpawnedPreviewSamples();
+            Debug.LogWarning($"[Microscope] 生成预览实例: {spawnedMineralVisuals.Count} 个，种子={seed}");
         }
 
         void SpawnMineralVisual(MineralEntry entry, System.Random rng)
@@ -976,25 +1220,42 @@ namespace WorkbenchSystem
 
             if (go == null)
             {
+                Debug.LogWarning($"[Microscope] 使用球体占位，未加载到模型: {entry.Name} ({entry.Id})");
                 go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 var col = go.GetComponent<Collider>();
                 if (col != null) Destroy(col);
             }
 
-            go.layer = previewLayer;
+            SetLayerRecursively(go, previewLayer);
             go.transform.SetParent(previewRoot, false);
 
-            // 随机散布
-            Vector3 pos = new Vector3(
-                (float)(rng.NextDouble() * 2 - 1),
+            // 统一缩放：用模型包围盒归一到合理尺寸，避免超大模型遮挡视野
+            go.transform.localScale = Vector3.one;
+            float targetSize = Mathf.Lerp(0.12f, 0.22f, entry.Percentage) * baseModelScale;
+            if (TryGetBounds(go, out var bounds))
+            {
+                float maxSize = Mathf.Max(bounds.size.x, bounds.size.y, bounds.size.z);
+                if (maxSize > 0.0001f)
+                {
+                    float scale = Mathf.Clamp(targetSize / maxSize, 0.04f, 0.35f);
+                    go.transform.localScale = Vector3.one * scale;
+                }
+            }
+
+            // 随机散布（始终在相机前方）
+            Vector2 plane = new Vector2(
                 (float)(rng.NextDouble() * 2 - 1),
                 (float)(rng.NextDouble() * 2 - 1)
             );
-            pos = pos.normalized * (float)rng.NextDouble() * previewScatterRadius;
+            float radius = Mathf.Lerp(scatterRadius * 0.35f, scatterRadius, (float)rng.NextDouble());
+            Vector3 pos = new Vector3(plane.x, plane.y, 0f);
+            if (pos.sqrMagnitude > 0.0001f)
+            {
+                pos = pos.normalized * radius;
+            }
+            // 轻微的Z抖动，避免完全平面导致Z-fighting
+            pos.z = (float)(rng.NextDouble() * 0.04 - 0.02);
             go.transform.localPosition = pos;
-
-            float baseScale = Mathf.Lerp(0.12f, 0.25f, entry.Percentage);
-            go.transform.localScale = Vector3.one * baseScale;
 
             var renderer = go.GetComponentInChildren<Renderer>();
             if (renderer != null)
@@ -1018,6 +1279,7 @@ namespace WorkbenchSystem
             // 尝试使用缓存模型
             if (entry.Composition != null && entry.Composition.cachedModel != null)
             {
+                Debug.LogWarning($"[Microscope] 使用缓存模型: {entry.Name}");
                 return Instantiate(entry.Composition.cachedModel, previewRoot);
             }
 
@@ -1025,6 +1287,10 @@ namespace WorkbenchSystem
             if (!string.IsNullOrEmpty(file))
             {
                 file = System.IO.Path.GetFileNameWithoutExtension(file);
+            }
+            else
+            {
+                Debug.LogWarning($"[Microscope] modelFile 为空: {entry.Name} ({entry.Id})");
             }
 
             string[] roots =
@@ -1040,9 +1306,11 @@ namespace WorkbenchSystem
             foreach (var root in roots)
             {
                 if (string.IsNullOrEmpty(file)) continue;
-                var model = Resources.Load<GameObject>($"{root}/{file}");
+                string resourcePath = $"{root}/{file}";
+                var model = Resources.Load<GameObject>(resourcePath);
                 if (model != null)
                 {
+                    Debug.LogWarning($"[Microscope] 加载模型成功: {resourcePath} (entry={entry.Name})");
                     return Instantiate(model, previewRoot);
                 }
             }
@@ -1053,12 +1321,194 @@ namespace WorkbenchSystem
                 var model = entry.Composition.LoadMineralModel();
                 if (model != null)
                 {
+                    Debug.Log($"[Microscope] 通过 Composition 加载模型成功: {entry.Name}");
                     return Instantiate(model, previewRoot);
                 }
             }
 
             Debug.LogWarning($"[Microscope] 未找到矿物模型: id={entry.Id}, name={entry.Name}, modelFile={entry.ModelFile}");
             return null;
+        }
+
+        void SetLayerRecursively(GameObject obj, int layer)
+        {
+            if (obj == null) return;
+            obj.layer = layer;
+            foreach (Transform child in obj.transform)
+            {
+                if (child == null) continue;
+                SetLayerRecursively(child.gameObject, layer);
+            }
+        }
+
+        bool TryGetBounds(GameObject root, out Bounds bounds)
+        {
+            bounds = default;
+            if (root == null) return false;
+            var renderers = root.GetComponentsInChildren<Renderer>();
+            if (renderers == null || renderers.Length == 0) return false;
+            bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++)
+            {
+                bounds.Encapsulate(renderers[i].bounds);
+            }
+            return true;
+        }
+
+        void FramePreviewCluster()
+        {
+            if (previewRoot == null || microscopeCamera == null || spawnedMineralVisuals.Count == 0) return;
+
+            bool hasBounds = TryGetLocalBounds(previewRoot, out var localBounds);
+            if (!hasBounds) return;
+
+            Vector3 center = localBounds.center;
+            foreach (var go in spawnedMineralVisuals)
+            {
+                if (go == null) continue;
+                go.transform.localPosition -= center;
+            }
+
+            float radius = localBounds.extents.magnitude;
+            float fov = microscopeCamera.fieldOfView * Mathf.Deg2Rad;
+            float distance = Mathf.Max(0.35f, radius / Mathf.Tan(fov * 0.5f) * 0.9f);
+            previewRoot.localPosition = new Vector3(0f, 0f, distance);
+        }
+
+        bool TryGetLocalBounds(Transform root, out Bounds localBounds)
+        {
+            localBounds = default;
+            if (root == null) return false;
+            var renderers = root.GetComponentsInChildren<Renderer>();
+            if (renderers == null || renderers.Length == 0) return false;
+
+            bool hasBounds = false;
+            foreach (var r in renderers)
+            {
+                if (r == null) continue;
+                Bounds b = r.bounds;
+                Vector3 ext = b.extents;
+                Vector3 center = b.center;
+                Vector3[] corners =
+                {
+                    center + new Vector3( ext.x,  ext.y,  ext.z),
+                    center + new Vector3( ext.x,  ext.y, -ext.z),
+                    center + new Vector3( ext.x, -ext.y,  ext.z),
+                    center + new Vector3( ext.x, -ext.y, -ext.z),
+                    center + new Vector3(-ext.x,  ext.y,  ext.z),
+                    center + new Vector3(-ext.x,  ext.y, -ext.z),
+                    center + new Vector3(-ext.x, -ext.y,  ext.z),
+                    center + new Vector3(-ext.x, -ext.y, -ext.z)
+                };
+
+                foreach (var corner in corners)
+                {
+                    Vector3 local = root.InverseTransformPoint(corner);
+                    if (!hasBounds)
+                    {
+                        localBounds = new Bounds(local, Vector3.zero);
+                        hasBounds = true;
+                    }
+                    else
+                    {
+                        localBounds.Encapsulate(local);
+                    }
+                }
+            }
+
+            return hasBounds;
+        }
+
+        void LogPreviewRigState(string tag)
+        {
+            if (microscopeCamera != null)
+            {
+                Debug.LogWarning($"[Microscope] {tag} Camera pos={microscopeCamera.transform.position}, rot={microscopeCamera.transform.rotation.eulerAngles}, fwd={microscopeCamera.transform.forward}");
+            }
+            if (previewRoot != null)
+            {
+                Debug.LogWarning($"[Microscope] {tag} PreviewRoot pos={previewRoot.position}, localPos={previewRoot.localPosition}, rot={previewRoot.rotation.eulerAngles}");
+            }
+        }
+
+        void LogSpawnedPreviewSamples()
+        {
+            int maxLogs = Mathf.Min(6, spawnedMineralVisuals.Count);
+            for (int i = 0; i < maxLogs; i++)
+            {
+                var go = spawnedMineralVisuals[i];
+                if (go == null) continue;
+                Debug.LogWarning($"[Microscope] Sample[{i}] name={go.name}, localPos={go.transform.localPosition}, scale={go.transform.localScale}");
+            }
+            if (spawnedMineralVisuals.Count > maxLogs)
+            {
+                Debug.LogWarning($"[Microscope] Sample logs truncated: {maxLogs}/{spawnedMineralVisuals.Count}");
+            }
+        }
+
+        void LogSampleDebugInfo(SampleItem sample)
+        {
+            if (sample == null)
+            {
+                Debug.LogWarning("[Microscope] 选中的样本为空");
+                return;
+            }
+
+            string id = string.IsNullOrEmpty(sample.sampleID) ? "<no-id>" : sample.sampleID;
+            int layerCount = sample.geologicalLayers != null ? sample.geologicalLayers.Count : 0;
+            Debug.Log($"[Microscope] 点击样本: id={id}, display={sample.displayName}, layers={layerCount}, depth=({sample.depthStart:F2}-{sample.depthEnd:F2})");
+
+            if (sample.materialData != null && sample.materialData.Length > 0)
+            {
+                List<string> materialNames = new List<string>();
+                foreach (var m in sample.materialData)
+                {
+                    if (!string.IsNullOrEmpty(m.materialName))
+                    {
+                        materialNames.Add(m.materialName);
+                    }
+                }
+                string materialSummary = materialNames.Count > 0 ? string.Join(", ", materialNames) : "<no materialName>";
+                Debug.Log($"[Microscope] 样本材质: {materialSummary}");
+            }
+            else
+            {
+                Debug.Log("[Microscope] 样本没有材质数据");
+            }
+
+            if (layerCount > 0)
+            {
+                int logCount = Mathf.Min(5, layerCount);
+                for (int i = 0; i < logCount; i++)
+                {
+                    var layer = sample.geologicalLayers[i];
+                    Debug.Log($"[Microscope] 层{i + 1}: {layer.layerName}, thickness={layer.thickness:F2}, color={layer.layerColor}");
+                }
+                if (layerCount > logCount)
+                {
+                    Debug.Log($"[Microscope] ... 其余 {layerCount - logCount} 个层已省略");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"[Microscope] 样本 {id} 无地层信息，将尝试推断");
+            }
+
+            var entries = ResolveComposition(sample);
+            Debug.Log($"[Microscope] 解析矿物条目: {entries.Count} 个");
+            int mineralLogCount = Mathf.Min(8, entries.Count);
+            for (int i = 0; i < mineralLogCount; i++)
+            {
+                var entry = entries[i];
+                Debug.Log($"[Microscope] 矿物{i + 1}: name={entry.Name}, percent={entry.Percentage:P0}, modelFile={entry.ModelFile}");
+            }
+            if (entries.Count > mineralLogCount)
+            {
+                Debug.Log($"[Microscope] ... 其余 {entries.Count - mineralLogCount} 个矿物条目已省略");
+            }
+
+            bool hasRT = previewImage != null && previewImage.texture != null;
+            Debug.Log($"[Microscope] 相机/RT 状态: cam={(microscopeCamera != null)}, rt={(renderTexture != null)}, imageTex={hasRT}");
         }
 
         void TryInferLayerFromMaterial(SampleItem sample)
@@ -1125,6 +1575,27 @@ namespace WorkbenchSystem
             }
             else
             {
+                // 如果仍未匹配，尝试从数据库取一个默认地层，至少能显示矿物模型
+                EnsureLayerDatabase();
+                if (layerDatabaseMapper != null && layerDatabaseMapper.GetAvailableLayers().Length > 0)
+                {
+                    string fallbackLayer = layerDatabaseMapper.GetAvailableLayers()[0];
+                    var fallbackLayerInfo = new SampleItem.LayerInfo
+                    {
+                        layerName = fallbackLayer,
+                        thickness = sample.totalDepth > 0.01f ? sample.totalDepth : 1f,
+                        depthStart = 0f,
+                        depthEnd = sample.totalDepth > 0.01f ? sample.totalDepth : 1f,
+                        layerColor = SampleColorFromID(fallbackLayer),
+                        materialName = fallbackLayer,
+                        layerDescription = $"默认地层 (来自数据库): {fallbackLayer}"
+                    };
+                    sample.geologicalLayers = new List<SampleItem.LayerInfo> { fallbackLayerInfo };
+                    sample.layerCount = 1;
+                    Debug.LogWarning($"[Microscope] 无法从样本信息推断层，使用数据库默认地层: {fallbackLayer}");
+                    return;
+                }
+
                 // 若仍然没有，生成一个占位层，避免空预览
                 float thickness = sample.totalDepth > 0.01f ? sample.totalDepth : 1f;
                 string fallbackName = "未识别地层";

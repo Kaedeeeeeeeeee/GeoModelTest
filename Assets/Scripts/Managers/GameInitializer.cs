@@ -64,8 +64,8 @@ public class GameInitializer : MonoBehaviour
         // 初始化样本切割系统（只在实验室场景中）
         InitializeCuttingSystem();
         
-        // 初始化工作台系统（只在实验室场景中）
-        InitializeWorkbenchSystem();
+        // 初始化工作台系统（只在实验室场景中）- 延迟执行以确保玩家已创建
+        StartCoroutine(InitializeWorkbenchSystemDelayed());
         
         if (enableDebugMode)
         {
@@ -75,6 +75,25 @@ public class GameInitializer : MonoBehaviour
         }
         
         
+    }
+    
+    /// <summary>
+    /// 延迟初始化工作台系统，等待玩家对象创建完成
+    /// </summary>
+    System.Collections.IEnumerator InitializeWorkbenchSystemDelayed()
+    {
+        // 等待一段时间确保场景和玩家对象都已加载
+        yield return new WaitForSeconds(0.5f);
+        
+        // 再等待直到玩家对象存在（最多等待5秒）
+        float maxWaitTime = 5f;
+        float startTime = Time.time;
+        while (FindFirstObjectByType<FirstPersonController>() == null && Time.time - startTime < maxWaitTime)
+        {
+            yield return new WaitForSeconds(0.2f);
+        }
+        
+        InitializeWorkbenchSystem();
     }
     
     void InitializeDrillTowerTool()

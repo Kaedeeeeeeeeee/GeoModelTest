@@ -12,6 +12,8 @@ namespace WorkbenchSystem
         public Transform interactionTarget;
         [Tooltip("Distance required to interact")]
         public float interactionDistance = 4.5f;
+        [Tooltip("Extra buffer before the prompt hides again to avoid flicker")]
+        public float interactionExitBuffer = 0.6f;
         [Tooltip("Key to press for interaction")]
         public Key interactionKey = Key.E;
 
@@ -37,10 +39,18 @@ namespace WorkbenchSystem
         private bool isPlayerInRange = false;
         private float nextResolveTime;
         private const float referenceRefreshInterval = 0.5f;
+        private const float fastRefreshInterval = 0.1f; // 快速刷新间隔（未找到玩家时使用）
         private const string defaultCameraName = "WorkbenchCamera";
         private float nextMissingLogTime;
         private const float missingLogInterval = 3f;
         private MicroscopeController hoveredMicroscope;
+        private Collider[] interactionColliders;
+        private Transform lastCachedTarget;
+        private float nextColliderRefreshTime;
+        private const float colliderRefreshInterval = 1.5f;
+        private CharacterController playerCharacterController;
+        private int playerFindAttempts = 0;
+        private const int maxPlayerFindAttempts = 100; // 最大尝试次数后放弃频繁查找
 
         private void Start()
         {
@@ -62,11 +72,20 @@ namespace WorkbenchSystem
 
         void ResolveReferences(bool isInitial = false)
         {
-            nextResolveTime = Time.time + referenceRefreshInterval;
+            // 根据是否已找到玩家，使用不同的刷新间隔
+            float refreshInterval = (playerController == null && playerFindAttempts < maxPlayerFindAttempts) 
+                ? fastRefreshInterval 
+                : referenceRefreshInterval;
+            nextResolveTime = Time.time + refreshInterval;
 
             if (playerController == null)
             {
+                playerFindAttempts++;
+                
+                // 方法1: 直接查找 FirstPersonController
                 playerController = FindFirstObjectByType<FirstPersonController>(FindObjectsInactive.Include);
+                
+                // 方法2: 通过 Player 标签查找
                 if (playerController == null)
                 {
                     GameObject playerObj = GameObject.FindWithTag("Player");
@@ -81,6 +100,7 @@ namespace WorkbenchSystem
                     }
                 }
 
+                // 方法3: 遍历所有 FirstPersonController
                 if (playerController == null)
                 {
                     var allPlayers = FindObjectsByType<FirstPersonController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
@@ -90,19 +110,35 @@ namespace WorkbenchSystem
                     }
                 }
 
+                // 找到玩家后缓存相关引用
                 if (playerController != null)
                 {
                     mainCamera = playerController.GetComponentInChildren<Camera>(true);
+                    playerCharacterController = playerController.GetComponent<CharacterController>();
                     if (mainCamera == null)
                     {
                         mainCamera = Camera.main;
                     }
 
-                    if (!isInitial) Debug.Log("WorkbenchController: 重新获取到玩家引用");
+                    playerFindAttempts = 0; // 重置计数器
+                    if (!isInitial) Debug.Log("WorkbenchController: 成功获取到玩家引用");
                 }
                 else if (isInitial)
                 {
-                    Debug.LogError("WorkbenchController: Could not find FirstPersonController in the scene.");
+                    Debug.LogWarning("WorkbenchController: 初始化时未找到 FirstPersonController，将持续尝试...");
+                }
+            }
+            else
+            {
+                // 验证玩家引用仍然有效
+                if (playerController.gameObject == null || !playerController.gameObject.activeInHierarchy)
+                {
+                    Debug.Log("WorkbenchController: 玩家引用已失效，重新查找...");
+                    playerController = null;
+                    mainCamera = null;
+                    playerCharacterController = null;
+                    playerFindAttempts = 0;
+                    return; // 下一帧重新查找
                 }
             }
 
@@ -133,6 +169,11 @@ namespace WorkbenchSystem
                         }
                     }
                 }
+
+                if (interactionTarget != null)
+                {
+                    CacheInteractionColliders();
+                }
             }
 
             EnsureWorkbenchCamera(isInitial);
@@ -156,22 +197,49 @@ namespace WorkbenchSystem
                 }
                 return;
             }
+
+            if (interactionTarget != lastCachedTarget || Time.time >= nextColliderRefreshTime)
+            {
+                CacheInteractionColliders();
+            }
             EnsureWorkbenchCamera();
 
-            // Check distance
+            // 获取玩家位置 - 如果玩家未找到，继续尝试而不是直接返回
             Transform playerTransform = GetPlayerTransform();
             if (playerTransform == null)
             {
+                // 玩家未找到时，主动触发查找
+                if (playerController == null && playerFindAttempts < maxPlayerFindAttempts)
+                {
+                    ResolveReferences();
+                }
+                
                 if (Time.time >= nextMissingLogTime)
                 {
                     nextMissingLogTime = Time.time + missingLogInterval;
-                    Debug.LogWarning("WorkbenchController: 未找到玩家 Transform，尝试使用主摄像机或其他玩家对象");
+                    Debug.LogWarning("WorkbenchController: 等待玩家对象初始化...");
                 }
+                
+                // 隐藏提示UI（如果显示中）
+                if (interactionHintUI != null && interactionHintUI.activeSelf)
+                {
+                    interactionHintUI.SetActive(false);
+                }
+                isPlayerInRange = false;
                 return;
             }
 
-            float distance = Vector3.Distance(playerTransform.position, interactionTarget.position);
-            isPlayerInRange = distance <= interactionDistance;
+            Vector3 playerPosition = GetPlayerPosition(playerTransform);
+            float distance = GetDistanceToInteractionTarget(playerPosition);
+            float exitDistance = interactionDistance + Mathf.Max(0f, interactionExitBuffer);
+            if (!isPlayerInRange)
+            {
+                isPlayerInRange = distance <= interactionDistance;
+            }
+            else if (distance >= exitDistance)
+            {
+                isPlayerInRange = false;
+            }
 
             // Handle UI Hint
             if (interactionHintUI != null)
@@ -424,9 +492,96 @@ namespace WorkbenchSystem
 
         Transform GetPlayerTransform()
         {
-            if (playerController != null) return playerController.transform;
+            if (playerController != null)
+            {
+                if (playerCharacterController == null)
+                {
+                    playerCharacterController = playerController.GetComponent<CharacterController>();
+                }
+                return playerController.transform;
+            }
             if (mainCamera != null) return mainCamera.transform;
             return null;
+        }
+
+        Vector3 GetPlayerPosition(Transform playerTransform)
+        {
+            if (playerTransform == null) return Vector3.zero;
+
+            if (playerCharacterController != null)
+            {
+                // 使用角色控制器的中心点，避免因为脚底或头顶偏移导致距离计算误差
+                return playerTransform.TransformPoint(playerCharacterController.center);
+            }
+
+            return playerTransform.position;
+        }
+
+        float GetDistanceToInteractionTarget(Vector3 fromPosition)
+        {
+            if (interactionTarget == null) return float.MaxValue;
+
+            float closest = float.MaxValue;
+
+            if (interactionColliders != null && interactionColliders.Length > 0)
+            {
+                closest = GetClosestDistance(interactionColliders, fromPosition);
+            }
+
+            if (microscopeController != null && microscopeController.targetCollider != null)
+            {
+                float microDistance = GetClosestDistance(microscopeController.targetCollider, fromPosition);
+                if (microDistance < closest)
+                {
+                    closest = microDistance;
+                }
+            }
+
+            if (closest < float.MaxValue)
+            {
+                return closest;
+            }
+
+            return Vector3.Distance(fromPosition, interactionTarget.position);
+        }
+
+        float GetClosestDistance(Collider[] colliders, Vector3 fromPosition)
+        {
+            float closest = float.MaxValue;
+            foreach (var col in colliders)
+            {
+                if (col == null || !col.enabled) continue;
+                Vector3 closestPoint = col.ClosestPoint(fromPosition);
+                float d = Vector3.Distance(fromPosition, closestPoint);
+                if (d < closest)
+                {
+                    closest = d;
+                }
+            }
+
+            return closest;
+        }
+
+        float GetClosestDistance(Collider collider, Vector3 fromPosition)
+        {
+            if (collider == null || !collider.enabled) return float.MaxValue;
+            Vector3 closestPoint = collider.ClosestPoint(fromPosition);
+            return Vector3.Distance(fromPosition, closestPoint);
+        }
+
+        void CacheInteractionColliders()
+        {
+            if (interactionTarget == null)
+            {
+                interactionColliders = null;
+                lastCachedTarget = null;
+                nextColliderRefreshTime = Time.time + colliderRefreshInterval;
+                return;
+            }
+
+            interactionColliders = interactionTarget.GetComponentsInChildren<Collider>(true);
+            lastCachedTarget = interactionTarget;
+            nextColliderRefreshTime = Time.time + colliderRefreshInterval;
         }
 
         void EnsureMicroscopeReference()

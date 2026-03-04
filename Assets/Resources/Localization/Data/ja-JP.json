@@ -1319,6 +1319,958 @@
     {
       "key": "encyclopedia.ui.layer_section_title",
       "value": "地質地層"
+    },
+    {
+      "key": "story.quest1_1.line01",
+      "value": "昼休みの教室。窓の外は青空、鳥の声が響いている。"
+    },
+    {
+      "key": "story.quest1_1.line02",
+      "value": "ねぇ、今日の理科の授業、聞いてた？"
+    },
+    {
+      "key": "story.quest1_1.line03",
+      "value": "地震の話、ちょっと怖くない？"
+    },
+    {
+      "key": "story.quest1_1.line04",
+      "value": "うん、でも先生が言ってた『地球の呼吸』って言葉、なんかロマンチックじゃない？"
+    },
+    {
+      "key": "story.quest1_1.line05",
+      "value": "ロマンチックって...（笑）やっぱりあんた、変わってるよ。"
+    },
+    {
+      "key": "story.quest1_1.line06",
+      "value": "でも、地球が生きてるみたいで面白いかもね。"
+    },
+    {
+      "key": "story.quest1_1.line07",
+      "value": "ねぇ、もし本当に地球が“呼吸”してるなら、僕たちはその上で暮らしてる小さな生き物かも。"
+    },
+    {
+      "key": "story.quest1_1.line08",
+      "value": "まあ、地球が呼吸していようがしていまいが、私たちはそもそも小さな生き物なんだよね。"
+    },
+    {
+      "key": "story.quest1_1.line09",
+      "value": "……って、あれ？ちょっと揺れてない？"
+    },
+    {
+      "key": "story.quest1_1.line10",
+      "value": "そうだね、でももっと待ったら止まるでしょう。"
+    },
+    {
+      "key": "story.quest1_1.line11",
+      "value": "あれ……また止まってないか……"
+    },
+    {
+      "key": "story.quest1_1.line12",
+      "value": "うわ！本棚が倒れた！"
+    },
+    {
+      "key": "story.quest1_1.line13",
+      "value": "わっ、うそ！？　こんな強いの、初めて――！"
+    },
+    {
+      "key": "story.quest1_1.line14",
+      "value": "机の下に！　早く！"
+    },
+    {
+      "key": "story.quest1_1.line15",
+      "value": "rumble_stop"
+    },
+    {
+      "key": "story.quest1_1.line16",
+      "value": "揺れはどんどん強くなり、黒板が倒れ、天井のライトが落ちてくる。教室中が悲鳴で満ちる。"
+    },
+    {
+      "key": "story.quest1_1.line17",
+      "value": "キャー！　天井が！　助けてぇっ！"
+    },
+    {
+      "key": "story.quest1_1.line18",
+      "value": "こっちのドアが開かない！誰かっ！"
+    },
+    {
+      "key": "story.quest1_1.line19",
+      "value": "激しい衝撃音。窓ガラスが砕け散り、壁が崩れ始める。"
+    },
+    {
+      "key": "story.quest1_1.line20",
+      "value": "いやっ……！"
+    },
+    {
+      "key": "story.quest1_1.line21",
+      "value": "その瞬間、天井の一部が落下し、みなとの肩をかすめた。彼女は小さく呻いて、そのまま意識を失う。"
+    },
+    {
+      "key": "story.quest1_1.line22",
+      "value": "みなと！？　しっかりして！　みなと！"
+    },
+    {
+      "key": "story.quest1_1.line23",
+      "value": "主人公は震える手で彼女の手を強く握りしめた。轟音の中、心臓の鼓動だけがはっきりと聞こえる。"
+    },
+    {
+      "key": "story.quest1_1.line24",
+      "value": "（……助けたい。どうか、誰か……！）"
+    },
+    {
+      "key": "story.quest1_1.line25",
+      "value": "その瞬間、主人公の手から眩しい光が溢れ出した。崩壊する教室が白い閃光に包まれる。"
+    },
+    {
+      "key": "story.quest1_2.line01",
+      "value": "視界がねじれ、音が遠ざかる。次に目を開けたとき――そこは見知らぬ白い施設だった。"
+    },
+    {
+      "key": "story.quest1_2.line02",
+      "value": "ここ……どこ？　みなと……！　大丈夫か？"
+    },
+    {
+      "key": "story.quest1_2.line03",
+      "value": "……う、うん……。ここ……学校じゃないよね……？"
+    },
+    {
+      "key": "story.quest1_2.line04",
+      "value": "はっと顔を上げると、目の前に男が立っていた。"
+    },
+    {
+      "key": "story.quest1_2.line05",
+      "value": "......"
+    },
+    {
+      "key": "story.quest1_2.line06",
+      "value": "ここって...?"
+    },
+    {
+      "key": "story.quest1_2.line07",
+      "value": "G-Labへようこそ"
+    },
+    {
+      "key": "story.quest2_1.line01",
+      "value": "白い部屋の中、無数のモニターが青く光っている。機械の低い唸りが、静寂の中に響いていた。"
+    },
+    {
+      "key": "story.quest2_1.line02",
+      "value": "落ち着いた？　ここはG-Lab――地質学と地殻変動を研究する施設だ。"
+    },
+    {
+      "key": "story.quest2_1.line03",
+      "value": "研究所だって言ってたけど……もう帰っていいのかな。"
+    },
+    {
+      "key": "story.quest2_1.line04",
+      "value": "そうね。帰す前に、ひとつだけ見てほしい映像があるの。"
+    },
+    {
+      "key": "story.quest2_1.line05",
+      "value": "Kaedeがリモコンを押すと、壁面のモニターにニュース映像が映し出された。"
+    },
+    {
+      "key": "story.quest2_1.line06",
+      "value": "『速報です。仙台市中心部で観測された地震により、多数の建物が倒壊。現在も余震が続いています――』"
+    },
+    {
+      "key": "story.quest2_1.line07",
+      "value": "……そんな……これ、私たちの街……？"
+    },
+    {
+      "key": "story.quest2_1.line08",
+      "value": "……家、大丈夫かな……母さん……！"
+    },
+    {
+      "key": "story.quest2_1.line09",
+      "value": "主人公はポケットからスマホを取り出す。だが、その瞬間――スマホが震えた。"
+    },
+    {
+      "key": "story.quest2_1.line10",
+      "value": "え……！？　母さんから……！"
+    },
+    {
+      "key": "story.quest2_1.line11",
+      "value": "phone_call"
+    },
+    {
+      "key": "story.quest2_1.line12",
+      "value": "もしもし！？　あんた無事なの！？　ニュース見て心配で……！"
+    },
+    {
+      "key": "story.quest2_1.line13",
+      "value": "うん！　俺も無事！　今、避難してて……！　母さんの方こそ！？"
+    },
+    {
+      "key": "story.quest2_1.line14",
+      "value": "家は少し壊れたけど、なんとか大丈夫。ほんとによかった……！"
+    },
+    {
+      "key": "story.quest2_1.line15",
+      "value": "安堵の笑みが浮かぶ。しばしの沈黙のあと、母の声が柔らかくなった。"
+    },
+    {
+      "key": "story.quest2_1.line16",
+      "value": "すぐ帰っておいで。今どこにいるの？"
+    },
+    {
+      "key": "story.quest2_1.line17",
+      "value": "主人公が口を開こうとした瞬間、Kaedeが静かに歩み寄り、スマホを手に取った。"
+    },
+    {
+      "key": "story.quest2_1.line18",
+      "value": "えっ、ちょ、Kaedeさん！？"
+    },
+    {
+      "key": "story.quest2_1.line19",
+      "value": "――もしもし、失礼します。こちら、G-Labの研究員・Kaedeと申します。"
+    },
+    {
+      "key": "story.quest2_1.line20",
+      "value": "え？　あ、はい……？"
+    },
+    {
+      "key": "story.quest2_1.line21",
+      "value": "実は、お子さんが先ほどの地震の際に、特殊な反応を示しました。私たちはその原因を調べるため、短期間の協力をお願いしたいのです。"
+    },
+    {
+      "key": "story.quest2_1.line22",
+      "value": "えっ、そんな……中学生の子に研究を……？"
+    },
+    {
+      "key": "story.quest2_1.line23",
+      "value": "もちろん安全な環境で行います。今後の地震防止にもつながる可能性があります。もし彼の“感覚”が地殻変動と関係しているなら、命を救えるかもしれません。"
+    },
+    {
+      "key": "story.quest2_1.line24",
+      "value": "Kaedeの声は落ち着いていたが、その奥に切実な熱があった。"
+    },
+    {
+      "key": "story.quest2_1.line25",
+      "value": "……そんな大事なことなら……でも、本当に危険じゃないんですね？"
+    },
+    {
+      "key": "story.quest2_1.line26",
+      "value": "ええ、約束します。食事も宿泊もこちらで責任を持って管理します。"
+    },
+    {
+      "key": "story.quest2_1.line27",
+      "value": "短い沈黙のあと、母のため息が聞こえた。"
+    },
+    {
+      "key": "story.quest2_1.line28",
+      "value": "……わかりました。でも、ちゃんと休ませてあげてくださいね。"
+    },
+    {
+      "key": "story.quest2_1.line29",
+      "value": "ありがとうございます。責任をもってお預かりします。"
+    },
+    {
+      "key": "story.quest2_1.line30",
+      "value": "Kaedeがスマホを主人公に返す。"
+    },
+    {
+      "key": "story.quest2_1.line31",
+      "value": "…………えっ。ちょっと、何が起きたんですか。"
+    },
+    {
+      "key": "story.quest2_1.line32",
+      "value": "お母さん、話が早い……（笑）"
+    },
+    {
+      "key": "story.quest2_1.line33",
+      "value": "うちの親、意外とノリいいな！？"
+    },
+    {
+      "key": "story.quest2_1.line34",
+      "value": "ふふ、助かりました。ではこれから、よろしくね。"
+    },
+    {
+      "key": "story.quest2_1.line35",
+      "value": "そして、二人に今後のやることを説明するする。"
+    },
+    {
+      "key": "story.quest2_1.line36",
+      "value": "Kaedeは二人に装置を差し出した。"
+    },
+    {
+      "key": "story.quest2_1.line37",
+      "value": "これは“地質ハンマー”。サンプル採集用のツールよ。"
+    },
+    {
+      "key": "story.quest2_1.line38",
+      "value": "そして――これが“フェーズシフター”。君の能力を安定化させる。"
+    },
+    {
+      "key": "story.quest2_1.line39",
+      "value": "フェーズシフター……？"
+    },
+    {
+      "key": "story.quest2_1.line40",
+      "value": "要は、君の空間移動を制御する装置。これを使えば、G-Labと外界の行き来が安全にできるわ。"
+    },
+    {
+      "key": "story.quest2_1.line41",
+      "value": "って、つまり私たち今後本当に地質研究活動をやるか...。"
+    },
+    {
+      "key": "story.quest2_1.line42",
+      "value": "もちろん、みんなを助けられる仕事だよ……もしかしてできない？。"
+    },
+    {
+      "key": "story.quest2_1.line43",
+      "value": "は？そんなわけないだろ！。"
+    },
+    {
+      "key": "story.quest2_1.line44",
+      "value": "うわ、Kaedeさんの挑発に弱いね。"
+    },
+    {
+      "key": "story.quest2_1.line45",
+      "value": "ふふ、やる気が出たならそれでいいわ。"
+    },
+    {
+      "key": "story.quest2_1.line46",
+      "value": "じゃ初めての任務が始めるわ、地質ハンマーで薄片サンプルを採集しよう。"
+    },
+    {
+      "key": "story.quest3_1.line01",
+      "value": "準備したか？じゃフェーズシフターを使ってみて。"
+    },
+    {
+      "key": "story.quest3_1.line02",
+      "value": "本当に役に立てるかこれ…自分の人身安全を心配している。"
+    },
+    {
+      "key": "story.quest3_1.line03",
+      "value": "やはりびびっているね。"
+    },
+    {
+      "key": "story.quest3_1.line04",
+      "value": "大丈夫だよ、俺とお母さんと約束でしょう、安全を確保って。"
+    },
+    {
+      "key": "story.quest3_1.line05",
+      "value": "ああ、わかったよ……行くしかないな。"
+    },
+    {
+      "key": "story.quest3_1.line06",
+      "value": "フェーズシフターを使いなさい"
+    },
+    {
+      "key": "story.quest3_2.line01",
+      "value": "再び目を開ける時、{name}はもう野外にいた。"
+    },
+    {
+      "key": "story.quest3_2.line02",
+      "value": "無事に到着したね、じゃ採集任務を始めよ"
+    },
+    {
+      "key": "story.quest3_2.line03",
+      "value": "地面上の指示を見えるか、それを従って、目的地でサンプルを採集しよう"
+    },
+    {
+      "key": "story.quest3_3.line01",
+      "value": "荒れ果てた地表に風が吹き抜ける。"
+    },
+    {
+      "key": "story.quest3_3.line02",
+      "value": "{name}は小さな機材ケースを背負い、山のふもとの露頭に立っていた。通信端末のライトが点滅し、研究室とつながる。"
+    },
+    {
+      "key": "story.quest3_3.line03",
+      "value": "こちらラボ。音声、映ってるか？風が強いみたいだね。"
+    },
+    {
+      "key": "story.quest3_3.line04",
+      "value": "はい、聞こえてます。こっちはまだちょっと砂ぼこりが舞ってます。空も灰色で…地震のあとって感じです。"
+    },
+    {
+      "key": "story.quest3_3.line05",
+      "value": "映像きたきた。うわ、泥だらけじゃん。長靴はいてきた？"
+    },
+    {
+      "key": "story.quest3_3.line06",
+      "value": "……はいたけど、もう半分沈みました。あー、これ洗うの大変だなあ。"
+    },
+    {
+      "key": "story.quest3_3.line07",
+      "value": "ほらほら。そこが震源に一番近い露頭だからね。サンプルを頼むよ。"
+    },
+    {
+      "key": "story.quest3_3.line08",
+      "value": "{name}は地質ハンマーを取り出し、慎重に岩の表面を叩く。乾いた音が風の中に消える。"
+    },
+    {
+      "key": "story.quest3_3.line09",
+      "value": "主人公はしゃがみ込み、岩の割れ目から慎重に破片を取り出した。小さなケースに入れながら、どこかでカラスの鳴き声が響く。"
+    },
+    {
+      "key": "story.quest3_3.line10",
+      "value": "おっ、きれいな層だね。粉っぽくなってるところがある。なんかお菓子のクッキーみたい。"
+    },
+    {
+      "key": "story.quest3_3.line11",
+      "value": "地面スイーツか…。でも、手で触るとちょっと柔らかい。石のはずなのに。"
+    },
+    {
+      "key": "story.quest3_3.line12",
+      "value": "それは興味深いね。地震で砕けた部分かもしれない。持ち帰って薄片にしてみよう。"
+    },
+    {
+      "key": "story.quest3_3.line13",
+      "value": "サンプルケースを閉じたその瞬間、地面が低く唸った。風が止み、空気が一気に重くなる。"
+    },
+    {
+      "key": "story.quest3_3.line14",
+      "value": "……今、揺れた？"
+    },
+    {
+      "key": "story.quest3_3.line15",
+      "value": "いや……たぶん気のせい――"
+    },
+    {
+      "key": "story.quest3_3.line16",
+      "value": "rumble_start"
+    },
+    {
+      "key": "story.quest3_3.line17",
+      "value": "言い終わる前に、大地が激しく震え出した。地鳴りが耳をつんざき、足元の岩が崩れる。"
+    },
+    {
+      "key": "story.quest3_3.line18",
+      "value": "こちらラボ！　{name}、すぐ退避しなさい！　断層が動いてる！"
+    },
+    {
+      "key": "story.quest3_3.line19",
+      "value": "うわっ……！フェーズシフター……どこだっ……！"
+    },
+    {
+      "key": "story.quest3_3.line20",
+      "value": "主人公は揺れる地面に足を取られながら、腰の装置を必死に掴んだ。警報音が鳴り響き、空が割れるような轟音が響く。"
+    },
+    {
+      "key": "story.quest3_3.line21",
+      "value": "{name}ちゃん！早く！崖が――！"
+    },
+    {
+      "key": "story.quest3_3.line22",
+      "value": "collapse_far"
+    },
+    {
+      "key": "story.quest3_3.line23",
+      "value": "くそっ、頼む……作動してくれ！"
+    },
+    {
+      "key": "story.quest3_3.line24",
+      "value": "teleport_flash"
+    },
+    {
+      "key": "story.quest3_3.line25",
+      "value": "白い閃光が主人公を包み込む。次の瞬間、耳をつんざく地鳴りの音が消え、静寂と機械音が戻った。"
+    },
+    {
+      "key": "story.quest3_4.line01",
+      "value": "気づけばG-Labの転送室に帰った。息が荒いまま、主人公はサンプルを机に置いた。"
+    },
+    {
+      "key": "story.quest3_4.line02",
+      "value": "はぁ……はぁ……戻った……。これ……が、採ってきた薄片だよ。"
+    },
+    {
+      "key": "story.quest3_4.line03",
+      "value": "{name}ちゃん！大丈夫なの！"
+    },
+    {
+      "key": "story.quest3_4.line04",
+      "value": "…"
+    },
+    {
+      "key": "story.quest3_4.line05",
+      "value": "……"
+    },
+    {
+      "key": "story.quest3_4.line06",
+      "value": "…………"
+    },
+    {
+      "key": "story.quest3_4.line07",
+      "value": "……怖くない先の！！"
+    },
+    {
+      "key": "story.quest3_4.line08",
+      "value": "一日中2回こんなに大きい地震遭われたなんで想像したこともないよ！"
+    },
+    {
+      "key": "story.quest3_4.line09",
+      "value": "確かに大変だった……でもこの任務を実行したのが{name}てよかった。"
+    },
+    {
+      "key": "story.quest3_4.line10",
+      "value": "フェーズシフターを使えない人にさせたら、その結果想像したくないね。"
+    },
+    {
+      "key": "story.quest3_4.line11",
+      "value": "こんな危険な任務も無事に終えることができた、偉いぞ"
+    },
+    {
+      "key": "story.quest3_4.line12",
+      "value": "後はこのサンプルをちょっと研究しようか。"
+    },
+    {
+      "key": "story.quest3_4.line13",
+      "value": "研究室のライトが点灯する映像に切り替わる。モニター越しに、顕微鏡の中の世界が広がる。"
+    },
+    {
+      "key": "story.quest3_4.line14",
+      "value": "わ、すごい！粒が細かく潰れてる…これ、力がかかった跡？"
+    },
+    {
+      "key": "story.quest3_4.line15",
+      "value": "そうだね。ただ、気になるのは“いつ”その力がかかったか。"
+    },
+    {
+      "key": "story.quest3_4.line16",
+      "value": "地震のときじゃないんですか？"
+    },
+    {
+      "key": "story.quest3_4.line17",
+      "value": "かもしれない。でも、この潰れ方は少し“新しすぎる”気がする。"
+    },
+    {
+      "key": "story.quest3_4.line18",
+      "value": "え、新しすぎるって…どういう意味？"
+    },
+    {
+      "key": "story.quest3_4.line19",
+      "value": "地震は一度で終わったと思われているけど、もし地下のどこかがまだ動いているとしたら…。"
+    },
+    {
+      "key": "story.quest3_4.line20",
+      "value": "……じゃあ、次に調べるのは地下、ですね？"
+    },
+    {
+      "key": "story.quest3_4.line21",
+      "value": "その通り。ボーリング調査の準備をしよう。深く掘れば、“今”の地面の動きを知ることができるかもしれない。"
+    },
+    {
+      "key": "story.quest3_4.line22",
+      "value": "通信が切れ、山風の音だけが残った。主人公は小さく息を吐き、遠くの街を見下ろした。あの静けさの下で、地球はまだ何かを動かしているような気がした。"
+    },
+    {
+      "key": "story.quest4_1.line01",
+      "value": "ボーリングマシンの準備、完了っと！　次は{name}ちゃんのターンだね。"
+    },
+    {
+      "key": "story.quest4_1.line02",
+      "value": "……また現場行くんですか？正直、前回の崖の揺れを思い出すと足がすくむ。"
+    },
+    {
+      "key": "story.quest4_1.line03",
+      "value": "怖いのはいいことだよ。慎重に動ける証拠だ。でも今回は安全装置を三重にした。"
+    },
+    {
+      "key": "story.quest4_1.line04",
+      "value": "あとフェーズシフターもアップデート済み！転送精度99.8％！"
+    },
+    {
+      "key": "story.quest4_1.line05",
+      "value": "0.2％の誤差がちょっと怖いけど……まあ、信じます。"
+    },
+    {
+      "key": "story.quest4_1.line06",
+      "value": "今回掘る地点は、前回サンプルの“ずれた層”の真下。深度はおよそ50メートルだ。"
+    },
+    {
+      "key": "story.quest4_1.line07",
+      "value": "転送装置が起動する。白い光が主人公を包み、景色が切り替わる。"
+    },
+    {
+      "key": "story.quest4_2.line01",
+      "value": "前回の露頭とは違い、地面は静まり返っていた。鳥の声もなく、風すらも薄い。"
+    },
+    {
+      "key": "story.quest4_2.line02",
+      "value": "主人公が立つ場所は、かつて崩れた崖の少し北。そこには地震で割れた地面が乾き、まだうっすらと焦げたような色をしていた。"
+    },
+    {
+      "key": "story.quest4_2.line03",
+      "value": "……前回と空気が違うな。なんか“音”がない。"
+    },
+    {
+      "key": "story.quest4_2.line04",
+      "value": "映像入ったよ。うわー、なんか静かすぎて逆にこわいんだけど。"
+    },
+    {
+      "key": "story.quest4_2.line05",
+      "value": "今回の地点は、前回のサンプルで見つけた“ずれた層”の真上だ。あの揺れの中心に近い場所だよ。"
+    },
+    {
+      "key": "story.quest4_2.line06",
+      "value": "了解。サンプルを採って戻ります。"
+    },
+    {
+      "key": "story.quest4_2.line07",
+      "value": "主人公は機材ケースを開き、装置を地面に固定した。薄暗い雲の間から、一瞬だけ光が差し込む。地表の割れ目が白く浮かび上がった。"
+    },
+    {
+      "key": "story.quest4_2.line08",
+      "value": "……ねえ、あの線。前より長くなってない？"
+    },
+    {
+      "key": "story.quest4_2.line09",
+      "value": "気のせいじゃないかも。地面の色も違う。なんだろう、湿ってる？"
+    },
+    {
+      "key": "story.quest4_2.line10",
+      "value": "地中の水分が動いてるのかもしれない。とにかく、安全第一で。"
+    },
+    {
+      "key": "story.quest4_2.line11",
+      "value": "主人公は慎重に地表の土を取り、分析用の容器に収めた。そのとき、どこかで低い音が響いた。まるで地下の誰かが息を吐いたように。"
+    },
+    {
+      "key": "story.quest4_2.line12",
+      "value": "……今、聞こえました？"
+    },
+    {
+      "key": "story.quest4_2.line13",
+      "value": "うん。マイクにも入ってる。風じゃないね、これ。"
+    },
+    {
+      "key": "story.quest4_2.line14",
+      "value": "気をつけて。サンプルを確保したらすぐ戻ってきなさい。"
+    },
+    {
+      "key": "story.quest4_2.line15",
+      "value": "{name}は軽くうなずき、装置の収納を終えて、フェーズシフターを使って、GーLabに帰った。"
+    },
+    {
+      "key": "story.quest4_3.line01",
+      "value": "採取装置の振動が止まり、地中から引き上げたコアが冷たい光を放つ。"
+    },
+    {
+      "key": "story.quest4_3.line02",
+      "value": "サンプル入った！推奨装置でのログも送ったよ。"
+    },
+    {
+      "key": "story.quest4_3.line03",
+      "value": "よくやったわ。その場で封じて温度を維持して。圧力データも保存しておいて。"
+    },
+    {
+      "key": "story.quest4_3.line04",
+      "value": "了解。帰投の準備に入る。"
+    },
+    {
+      "key": "story.quest4_3.line05",
+      "value": "冷却ファンの音だけが静かに響き、空は薄く色づいていた。"
+    },
+    {
+      "key": "story.quest4_4.line01",
+      "value": "おかえり！今度は崖に落ちたりしてないよね？"
+    },
+    {
+      "key": "story.quest4_4.line02",
+      "value": "あはは、ギリギリセーフ。靴が泥だらけになったけどね。"
+    },
+    {
+      "key": "story.quest4_4.line03",
+      "value": "無事で何より。フェーズシフターの転送データも問題なさそうだ。"
+    },
+    {
+      "key": "story.quest4_4.line04",
+      "value": "これが、今日のサンプルです。ちょっと変な感触があったけど……"
+    },
+    {
+      "key": "story.quest4_4.line05",
+      "value": "そう、じゃあさっそく見てみようか。"
+    },
+    {
+      "key": "story.quest4_4.line06",
+      "value": "サンプルが分析台の上に置かれ、静かにスキャナーの光が走った。"
+    },
+    {
+      "key": "story.quest4_4.line07",
+      "value": "……見て先生、この層。下の方だけ粒が潰れてる。"
+    },
+    {
+      "key": "story.quest4_4.line08",
+      "value": "ほんとだ……しかも粒の向きがそろっている。地層が横に“動かされた”跡だ。"
+    },
+    {
+      "key": "story.quest4_4.line09",
+      "value": "つまり、地面の下で何かが滑った？"
+    },
+    {
+      "key": "story.quest4_4.line10",
+      "value": "そう。そしてそれは、地震直後のサンプルにはなかった変化だ。"
+    },
+    {
+      "key": "story.quest4_4.line11",
+      "value": "ってことは……ここ、今も動いてるの？"
+    },
+    {
+      "key": "story.quest4_4.line12",
+      "value": "モニターに映るデータが小さく震えた。画面のラインがゆっくりと歪み、赤いエリアが広がる。"
+    },
+    {
+      "key": "story.quest4_4.line13",
+      "value": "……これは断層の“呼吸”だ。仙台の地下、眠っていないかも。"
+    },
+    {
+      "key": "story.quest4_4.line14",
+      "value": "……断層が、動いてる……？"
+    },
+    {
+      "key": "story.quest4_4.line15",
+      "value": "“呼吸する断層”っていうのはね、地表では静かに見えても、地下でまだ力を溜めたり緩めたりしている“活断層”のことよ。"
+    },
+    {
+      "key": "story.quest4_4.line16",
+      "value": "何年、何十年も動かないこともあるけど、確かに“生きている”。だからこそ、次の一瞬を油断できないの。"
+    },
+    {
+      "key": "story.quest4_4.line17",
+      "value": "……地面が生きてるって、やっぱり怖いけど、どこか切ないね。"
+    },
+    {
+      "key": "story.quest4_4.line18",
+      "value": "部屋の空気が一瞬止まった。窓の外では、夕陽がビルの隙間に沈みかけていた。"
+    },
+    {
+      "key": "story.quest4_4.line19",
+      "value": "しかし、今、地層の下は一体どのようなのか……これを証明するため、もっとはっきりな情報が必要だ"
+    },
+    {
+      "key": "story.quest4_4.line20",
+      "value": "地表からの観測だけでは、もう限界ね。断層の“呼吸”はさらに深いところで起きているかもしれない。"
+    },
+    {
+      "key": "story.quest4_4.line21",
+      "value": "つまり、次は地下を“見る”ってことですか？"
+    },
+    {
+      "key": "story.quest4_4.line22",
+      "value": "そう。人が入れない場所を調べるには、機械の目が必要。――無人探査ドローンを使おう。"
+    },
+    {
+      "key": "story.quest4_4.line23",
+      "value": "ドローンで断層を探るって、ちょっとワクワクするね……でも、危なくない？"
+    },
+    {
+      "key": "story.quest4_4.line24",
+      "value": "リスクがないとは言えないけれど、実際今回の任務は採集任務より安全だよ、野外に行く必要は無いから。"
+    },
+    {
+      "key": "story.quest4_4.line25",
+      "value": "でも、今回の任務も大事だよ。いろんな人の命を救えるかもしれない。"
+    },
+    {
+      "key": "story.quest4_4.line26",
+      "value": "三人の視線がモニターの地図に集まる。赤いラインが、仙台の地下を静かに走っていた――その線の先に、まだ知られざる真実が眠っている。"
+    },
+    {
+      "key": "story.quest5_1.line01",
+      "value": "夜のG-Lab。窓の外では雨が降り出していた。雷が遠くで光り、モニターの青い光が室内を照らす。"
+    },
+    {
+      "key": "story.quest5_1.line02",
+      "value": "新しいドローンの準備できたよ。これは普通のドローンじゃないよ。“地中レーダー群システム”、試作一号。"
+    },
+    {
+      "key": "story.quest5_1.line03",
+      "value": "地中レーダー群？"
+    },
+    {
+      "key": "story.quest5_1.line04",
+      "value": "そう。小型ドローンを十数体、裂け目や水路に潜り込ませて、電磁波で地下構造を可視化する装置だ。"
+    },
+    {
+      "key": "story.quest5_1.line05",
+      "value": "つまり、地面の“中身”をスキャンできるってこと！まるで地球のCTスキャンだね。"
+    },
+    {
+      "key": "story.quest5_1.line06",
+      "value": "……すごい。じゃあ本当に、断層の形が見える？"
+    },
+    {
+      "key": "story.quest5_1.line07",
+      "value": "理論上はね。ただ、送る波が強すぎると地下の水分に反射されてノイズが出る。慎重に扱ってくれ。"
+    },
+    {
+      "key": "story.quest5_1.line08",
+      "value": "{name}くん、今回ドローンの操作をよろしく"
+    },
+    {
+      "key": "story.quest5_1.line09",
+      "value": "了解……ちょっと、この十数体のドローンが私一人で操作するの？"
+    },
+    {
+      "key": "story.quest5_1.line10",
+      "value": "もちろん、やってみよう！"
+    },
+    {
+      "key": "story.quest5_1.line11",
+      "value": "（心声）kaede先生、強引すぎだな……"
+    },
+    {
+      "key": "story.quest5_1.line12",
+      "value": "……今、揺れた？"
+    },
+    {
+      "key": "story.quest5_2.line01",
+      "value": "ドローン起動シークエンス、開始。十数体の小型ドローンが青い光を点滅させながら、ゆっくりと浮かび上がった。"
+    },
+    {
+      "key": "story.quest5_2.line02",
+      "value": "わぁ……すごい。まるで群れで飛ぶ蛍みたい……。"
+    },
+    {
+      "key": "story.quest5_2.line03",
+      "value": "ほんとだ。これ全部、俺たちが操縦するのか……ちょっと緊張してきたな。"
+    },
+    {
+      "key": "story.quest5_2.line04",
+      "value": "ふふ、指揮官デビューだね。落とさないようにね？"
+    },
+    {
+      "key": "story.quest5_2.line05",
+      "value": "冗談はそのくらいにして。ドローン群、地中レーダーシステムのリンクを開始する。"
+    },
+    {
+      "key": "story.quest5_2.line06",
+      "value": "モニターに十数本の通信ラインが走り、ドローンが次々と地面の裂け目へと滑り込んでいく。青い光がひとつ、またひとつ、地中に消えていった――。"
+    },
+    {
+      "key": "story.quest5_2.line07",
+      "value": "まずはドローン1から8、信号確認。"
+    },
+    {
+      "key": "story.quest5_2.line08",
+      "value": "深度10メートル……15……あれ、9番がノイズ出してる！"
+    },
+    {
+      "key": "story.quest5_2.line09",
+      "value": "映像、出てます！……これ、なに？　赤い線みたいなのが地面の下を走ってる。"
+    },
+    {
+      "key": "story.quest5_2.line10",
+      "value": "……それが断層面だ。だけど、想定よりずっと浅い。"
+    },
+    {
+      "key": "story.quest5_2.line11",
+      "value": "浅いってことは……都市の地下施設と近いってこと！？"
+    },
+    {
+      "key": "story.quest5_2.line12",
+      "value": "モニターの映像が切り替わる。仙台の地図が投影され、断層の線がゆっくりと街の下を横切っていく。"
+    },
+    {
+      "key": "story.quest5_2.line13",
+      "value": "……これ……仙台駅の真下まで伸びてる。"
+    },
+    {
+      "key": "story.quest5_2.line14",
+      "value": "しかも線が途中で枝分かれしてるよ！二本？いや、三本？"
+    },
+    {
+      "key": "story.quest5_2.line15",
+      "value": "……分岐断層か。これほど広範囲に広がっているとは……。"
+    },
+    {
+      "key": "story.quest5_2.line16",
+      "value": "モニターの波形が一瞬跳ね上がった。赤い警告が点灯する。"
+    },
+    {
+      "key": "story.quest5_2.line17",
+      "value": "なにこれ！？波が動いてる！……リアルタイムで！"
+    },
+    {
+      "key": "story.quest5_2.line18",
+      "value": "まさか……まだ滑っているのか！？"
+    },
+    {
+      "key": "story.quest5_2.line19",
+      "value": "待って……先生、これ、地震計の信号に似てます。しかも周期が短い。"
+    },
+    {
+      "key": "story.quest5_2.line20",
+      "value": "周期が短い……つまり、応力が“蓄積”している。これは……前兆じゃない。次の震動が“始まっている”。"
+    },
+    {
+      "key": "story.quest5_2.line21",
+      "value": "モニターの地図に、仙台全域を覆うように赤い線が広がった。その中心に、“G-Lab”の位置が点滅する。"
+    },
+    {
+      "key": "story.quest5_2.line22",
+      "value": "うそ……私たち、断層の真上にいるの！？"
+    },
+    {
+      "key": "story.quest5_2.line23",
+      "value": "……G-Labだけじゃない。仙台市の主要エリア全体が、いま動こうとしている断層の上にある。"
+    },
+    {
+      "key": "story.quest5_2.line24",
+      "value": "じゃあ……これから来るのは、本震……。"
+    },
+    {
+      "key": "story.quest5_2.line25",
+      "value": "雷鳴が鳴り響いた。窓の外の雨が急に強くなる。ラボの明かりが一瞬、落ちた。"
+    },
+    {
+      "key": "story.quest5_2.line26",
+      "value": "……みんな、聞いてくれ。これ以上は隠せない。政府にも、そして市民にも知らせる必要がある。"
+    },
+    {
+      "key": "story.quest5_2.line27",
+      "value": "そうですね、これは、みんなの命を救う研究だよ！"
+    },
+    {
+      "key": "story.quest5_2.line28",
+      "value": "……わかりました。次の任務は、“知らせること”。"
+    },
+    {
+      "key": "story.quest5_2.line29",
+      "value": "三人は無言で頷き合った。モニターには、まだ脈打つように光る赤い断層の線が残っていた。まるで地球が、ゆっくりと息をしているかのように。"
+    },
+    {
+      "key": "story.speaker.classmate",
+      "value": "ほかのクラスメート"
+    },
+    {
+      "key": "story.speaker.drkaede",
+      "value": "Dr.Kaede"
+    },
+    {
+      "key": "story.speaker.minato",
+      "value": "みなと"
+    },
+    {
+      "key": "story.speaker.mother",
+      "value": "母"
+    },
+    {
+      "key": "story.speaker.narration",
+      "value": "ナレーション"
+    },
+    {
+      "key": "story.speaker.news",
+      "value": "ニュース"
+    },
+    {
+      "key": "story.speaker.protagonist",
+      "value": "主人公"
+    },
+    {
+      "key": "story.speaker.sfx",
+      "value": "sfx"
+    },
+    {
+      "key": "story.speaker.student_a",
+      "value": "学生A"
+    },
+    {
+      "key": "story.speaker.student_b",
+      "value": "学生B"
     }
   ]
 }

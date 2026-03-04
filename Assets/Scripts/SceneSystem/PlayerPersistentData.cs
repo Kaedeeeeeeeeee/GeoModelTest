@@ -16,8 +16,9 @@ public class PlayerPersistentData : MonoBehaviour
     private HashSet<string> unlockedToolIds = new HashSet<string>();
     private const string UnlockedToolsPrefsKey = "PlayerPersistentData.UnlockedToolIds";
     private const string InventoryPrefsKey = "PlayerPersistentData.Inventory";
-    private static readonly Vector3 LaboratorySpawnPosition = new Vector3(0f, 0.196999997f, 4.52699995f);
-    private static readonly Quaternion LaboratorySpawnRotation = Quaternion.identity;
+    // 公开静态常量，供其他脚本统一使用
+    public static readonly Vector3 LaboratorySpawnPosition = new Vector3(0f, 0.196999997f, 4.52699995f);
+    public static readonly Quaternion LaboratorySpawnRotation = Quaternion.identity;
 
     [System.Serializable]
     private class InventorySaveData
@@ -39,7 +40,23 @@ public class PlayerPersistentData : MonoBehaviour
         public float depthStart;
         public float depthEnd;
         public int layerCount;
+        public List<SavedLayerDTO> layers;
         public string meshDataPath;   // 可选：3D模型路径
+    }
+
+    [System.Serializable]
+    private class SavedLayerDTO
+    {
+        public string layerName;
+        public float thickness;
+        public float depthStart;
+        public float depthEnd;
+        public float colorR;
+        public float colorG;
+        public float colorB;
+        public float colorA;
+        public string materialName;
+        public string layerDescription;
     }
     
     // 玩家数据
@@ -275,6 +292,26 @@ public class PlayerPersistentData : MonoBehaviour
                 layerCount = s.layerCount,
                 meshDataPath = s.meshDataPath
             };
+            if (s.geologicalLayers != null && s.geologicalLayers.Count > 0)
+            {
+                dto.layers = new List<SavedLayerDTO>(s.geologicalLayers.Count);
+                foreach (var layer in s.geologicalLayers)
+                {
+                    dto.layers.Add(new SavedLayerDTO
+                    {
+                        layerName = layer.layerName,
+                        thickness = layer.thickness,
+                        depthStart = layer.depthStart,
+                        depthEnd = layer.depthEnd,
+                        colorR = layer.layerColor.r,
+                        colorG = layer.layerColor.g,
+                        colorB = layer.layerColor.b,
+                        colorA = layer.layerColor.a,
+                        materialName = layer.materialName,
+                        layerDescription = layer.layerDescription
+                    });
+                }
+            }
             data.items.Add(dto);
         }
 
@@ -327,6 +364,43 @@ public class PlayerPersistentData : MonoBehaviour
                 if (!string.IsNullOrEmpty(dto.collectionTime))
                 {
                     s.collectionTime = System.DateTime.Parse(dto.collectionTime, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind);
+                }
+                if (dto.layers != null && dto.layers.Count > 0)
+                {
+                    s.geologicalLayers = new List<SampleItem.LayerInfo>(dto.layers.Count);
+                    foreach (var layer in dto.layers)
+                    {
+                        s.geologicalLayers.Add(new SampleItem.LayerInfo
+                        {
+                            layerName = layer.layerName,
+                            thickness = layer.thickness,
+                            depthStart = layer.depthStart,
+                            depthEnd = layer.depthEnd,
+                            layerColor = new Color(layer.colorR, layer.colorG, layer.colorB, layer.colorA),
+                            materialName = layer.materialName,
+                            layerDescription = layer.layerDescription
+                        });
+                    }
+                    s.layerCount = s.geologicalLayers.Count;
+                }
+                else if (s.layerCount > 0)
+                {
+                    float perLayerDepth = s.totalDepth > 0f ? s.totalDepth / s.layerCount : 0f;
+                    s.geologicalLayers = new List<SampleItem.LayerInfo>(s.layerCount);
+                    for (int i = 0; i < s.layerCount; i++)
+                    {
+                        float start = perLayerDepth * i;
+                        s.geologicalLayers.Add(new SampleItem.LayerInfo
+                        {
+                            layerName = "未知地层",
+                            thickness = perLayerDepth,
+                            depthStart = start,
+                            depthEnd = start + perLayerDepth,
+                            layerColor = new Color(0.6f, 0.4f, 0.2f, 1f),
+                            materialName = "Unknown",
+                            layerDescription = "存档中未记录地层信息"
+                        });
+                    }
                 }
                 inv.TryAddSample(s);
             }
@@ -385,11 +459,22 @@ public class PlayerPersistentData : MonoBehaviour
     IEnumerator RestorePlayerTransformCoroutine(SceneData sceneData)
     {
         // 等待玩家对象初始化
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.2f);
         
         FirstPersonController player = FindFirstObjectByType<FirstPersonController>();
         if (player != null)
         {
+            // 临时禁用 CharacterController
+            CharacterController cc = player.GetComponent<CharacterController>();
+            bool ccWasEnabled = false;
+            if (cc != null)
+            {
+                ccWasEnabled = cc.enabled;
+                cc.enabled = false;
+                Debug.Log($"{GetTimestamp()} [PlayerPersistentData] RestorePlayerTransform: 临时禁用 CharacterController");
+            }
+            
+            // 设置位置
             player.transform.position = sceneData.playerPosition;
             player.transform.rotation = sceneData.playerRotation;
             Debug.Log($"{GetTimestamp()} [PlayerPersistentData] 恢复玩家位置 -> {player.name} 目标 {sceneData.playerPosition} (场景: {SceneManager.GetActiveScene().name})");
@@ -407,6 +492,18 @@ public class PlayerPersistentData : MonoBehaviour
             else
             {
                 Debug.LogWarning($"{GetTimestamp()} [PlayerPersistentData] 未找到玩家摄像机");
+            }
+            
+            // 等待一帧后再次设置位置并重新启用 CharacterController
+            yield return null;
+            player.transform.position = sceneData.playerPosition;
+            player.transform.rotation = sceneData.playerRotation;
+            
+            if (cc != null && ccWasEnabled)
+            {
+                yield return null;
+                cc.enabled = true;
+                Debug.Log($"{GetTimestamp()} [PlayerPersistentData] RestorePlayerTransform: 重新启用 CharacterController，最终位置: {player.transform.position}");
             }
         }
         else
@@ -491,9 +588,13 @@ public class PlayerPersistentData : MonoBehaviour
 
     IEnumerator SetPlayerToFixedPosition(Vector3 position, Quaternion rotation)
     {
-        const int maxAttempts = 120;
+        const int maxAttempts = 200; // 增加最大尝试次数
+        const float initialDelay = 0.3f; // 初始延迟，等待场景完全加载
         int attempts = 0;
         FirstPersonController player = null;
+
+        // 先等待一段时间让场景完全加载
+        yield return new WaitForSeconds(initialDelay);
 
         while (attempts < maxAttempts)
         {
@@ -508,9 +609,38 @@ public class PlayerPersistentData : MonoBehaviour
 
         if (player != null)
         {
+            // 获取 CharacterController 并临时禁用
+            CharacterController cc = player.GetComponent<CharacterController>();
+            bool ccWasEnabled = false;
+            if (cc != null)
+            {
+                ccWasEnabled = cc.enabled;
+                cc.enabled = false;
+                Debug.Log($"{GetTimestamp()} [PlayerPersistentData] 临时禁用 CharacterController");
+            }
+
+            // 设置位置和旋转
             player.transform.position = position;
             player.transform.rotation = rotation;
             Debug.Log($"{GetTimestamp()} [PlayerPersistentData] SetPlayerToFixedPosition -> {player.name} 位置 {position} (尝试 {attempts})");
+
+            // 等待一帧确保位置生效
+            yield return null;
+
+            // 再次设置位置（双重保险）
+            player.transform.position = position;
+            player.transform.rotation = rotation;
+
+            // 重新启用 CharacterController
+            if (cc != null && ccWasEnabled)
+            {
+                yield return null; // 再等一帧
+                cc.enabled = true;
+                Debug.Log($"{GetTimestamp()} [PlayerPersistentData] 重新启用 CharacterController");
+            }
+
+            // 最终位置验证
+            Debug.Log($"{GetTimestamp()} [PlayerPersistentData] 最终位置验证: {player.transform.position}");
         }
         else
         {
@@ -520,11 +650,21 @@ public class PlayerPersistentData : MonoBehaviour
     
     IEnumerator SetDefaultPlayerPosition(Vector3 position, Quaternion rotation)
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.2f);
         
         FirstPersonController player = FindFirstObjectByType<FirstPersonController>();
         if (player != null)
         {
+            // 临时禁用 CharacterController
+            CharacterController cc = player.GetComponent<CharacterController>();
+            bool ccWasEnabled = false;
+            if (cc != null)
+            {
+                ccWasEnabled = cc.enabled;
+                cc.enabled = false;
+                Debug.Log($"{GetTimestamp()} [PlayerPersistentData] SetDefaultPlayerPosition: 临时禁用 CharacterController");
+            }
+            
             player.transform.position = position;
             player.transform.rotation = rotation;
             Debug.Log($"{GetTimestamp()} [PlayerPersistentData] 设置默认玩家位置 -> {player.name} 位置 {position}");
@@ -542,6 +682,18 @@ public class PlayerPersistentData : MonoBehaviour
             else
             {
                 Debug.LogWarning($"{GetTimestamp()} [PlayerPersistentData] 未找到玩家摄像机");
+            }
+            
+            // 等待一帧后再次设置位置并重新启用 CharacterController
+            yield return null;
+            player.transform.position = position;
+            player.transform.rotation = rotation;
+            
+            if (cc != null && ccWasEnabled)
+            {
+                yield return null;
+                cc.enabled = true;
+                Debug.Log($"{GetTimestamp()} [PlayerPersistentData] SetDefaultPlayerPosition: 重新启用 CharacterController，最终位置: {player.transform.position}");
             }
         }
         else
