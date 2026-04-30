@@ -174,7 +174,7 @@ public class CuttingInterfaceGenerator
 
         Text titleText = titleObj.AddComponent<Text>();
         titleText.text = "样本切割系统";
-        titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        titleText.font = UIFontResolver.GetUIFont();
         titleText.fontSize = 36;
         titleText.color = Color.white;
         titleText.alignment = TextAnchor.MiddleCenter;
@@ -213,7 +213,7 @@ public class CuttingInterfaceGenerator
 
         Text dropText = textObj.AddComponent<Text>();
         dropText.text = "将样本拖拽到此处\n\n📦\n\n点击开始切割";
-        dropText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        dropText.font = UIFontResolver.GetUIFont();
         dropText.fontSize = 24;
         dropText.color = Color.white;
         dropText.alignment = TextAnchor.MiddleCenter;
@@ -278,7 +278,7 @@ public class CuttingInterfaceGenerator
 
         Text buttonText = textObj.AddComponent<Text>();
         buttonText.text = text;
-        buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        buttonText.font = UIFontResolver.GetUIFont();
         buttonText.fontSize = 18;
         buttonText.color = Color.white;
         buttonText.alignment = TextAnchor.MiddleCenter;
@@ -318,7 +318,7 @@ public class CuttingInterfaceGenerator
 
         Text xText = xObj.AddComponent<Text>();
         xText.text = "✕";
-        xText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        xText.font = UIFontResolver.GetUIFont();
         xText.fontSize = 30;
         xText.color = Color.white;
         xText.alignment = TextAnchor.MiddleCenter;
@@ -347,7 +347,7 @@ public class CuttingInterfaceGenerator
 - ESC: 关闭界面
 - F: 重新打开界面（在切割台附近）";
 
-        instructionText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        instructionText.font = UIFontResolver.GetUIFont();
         instructionText.fontSize = 16;
         instructionText.color = new Color(0.9f, 0.9f, 0.9f);
         instructionText.alignment = TextAnchor.UpperLeft;

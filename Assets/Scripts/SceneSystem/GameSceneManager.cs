@@ -209,7 +209,7 @@ public class GameSceneManager : MonoBehaviour
         titleText.fontSize = 48;
         titleText.color = Color.white;
         titleText.alignment = TextAnchor.MiddleCenter;
-        titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        titleText.font = UIFontResolver.GetUIFont();
         
         // 添加本地化组件
         LocalizedText localizedTitle = title.AddComponent<LocalizedText>();
@@ -293,7 +293,7 @@ public class GameSceneManager : MonoBehaviour
         text.fontSize = 32;
         text.color = isCurrentScene ? Color.gray : Color.white;
         text.alignment = TextAnchor.MiddleCenter;
-        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        text.font = UIFontResolver.GetUIFont();
         
         // 添加本地化组件
         LocalizedText localizedText = buttonText.AddComponent<LocalizedText>();
@@ -350,7 +350,7 @@ public class GameSceneManager : MonoBehaviour
         closeTextComponent.fontSize = 28;
         closeTextComponent.color = Color.white;
         closeTextComponent.alignment = TextAnchor.MiddleCenter;
-        closeTextComponent.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        closeTextComponent.font = UIFontResolver.GetUIFont();
         
         // 添加本地化组件
         LocalizedText localizedClose = closeText.AddComponent<LocalizedText>();

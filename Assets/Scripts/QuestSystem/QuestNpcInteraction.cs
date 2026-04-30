@@ -255,7 +255,7 @@ namespace QuestSystem
             textRect.offsetMax = new Vector2(-16f, -12f);
 
             var text = textObj.AddComponent<Text>();
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = promptFontSize;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleCenter;

@@ -289,7 +289,7 @@ public class EncyclopediaDebugTool : EditorWindow
             // 添加Text组件显示测试文本
             var text = testGO.AddComponent<Text>();
             text.text = "测试条目 - 青葉山層-砂岩-石英";
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.color = Color.white;
             text.fontSize = 14;
 
@@ -367,7 +367,7 @@ public class EncyclopediaDebugTool : EditorWindow
         nameTextGO.transform.SetParent(entryItemGO.transform);
         var nameText = nameTextGO.AddComponent<Text>();
         nameText.text = "Sample Entry Name";
-        nameText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        nameText.font = UIFontResolver.GetUIFont();
         nameText.fontSize = 16;
         nameText.color = Color.white;
         nameText.alignment = TextAnchor.MiddleLeft;
@@ -395,7 +395,7 @@ public class EncyclopediaDebugTool : EditorWindow
         rarityTextGO.transform.SetParent(entryItemGO.transform);
         var rarityText = rarityTextGO.AddComponent<Text>();
         rarityText.text = "常见";
-        rarityText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        rarityText.font = UIFontResolver.GetUIFont();
         rarityText.fontSize = 12;
         rarityText.color = Color.white;
         rarityText.alignment = TextAnchor.MiddleRight;
@@ -741,7 +741,7 @@ public class EncyclopediaDebugTool : EditorWindow
         // 添加大号文字
         var text = textObject.AddComponent<Text>();
         text.text = "✅ 图鉴面板工作正常！\n测试条目显示成功\n\n现在需要修复滚动视图\n让真实条目显示出来";
-        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        text.font = UIFontResolver.GetUIFont();
         text.fontSize = 20;
         text.color = Color.white;
         text.fontStyle = FontStyle.Bold;
@@ -1671,7 +1671,7 @@ public class EncyclopediaDebugTool : EditorWindow
 
         var text = textGO.AddComponent<Text>();
         text.text = "地层名称";
-        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        text.font = UIFontResolver.GetUIFont();
         text.fontSize = 14;
         text.color = Color.white;
         text.alignment = TextAnchor.MiddleCenter;
@@ -1859,7 +1859,7 @@ public class EncyclopediaDebugTool : EditorWindow
 
         var text = textGO.AddComponent<Text>();
         text.text = "地层名称";
-        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        text.font = UIFontResolver.GetUIFont();
         text.fontSize = 16;
         text.color = Color.white;
         text.alignment = TextAnchor.MiddleCenter;
@@ -3375,7 +3375,7 @@ public class EncyclopediaDebugTool : EditorWindow
         closeText.fontSize = 24;
         closeText.color = Color.white;
         closeText.alignment = TextAnchor.MiddleCenter;
-        closeText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        closeText.font = UIFontResolver.GetUIFont();
 
         Debug.Log("关闭按钮创建完成！");
         Debug.Log("现在打开详情面板应该能看到右上角的红色关闭按钮了");
@@ -3468,7 +3468,7 @@ public class EncyclopediaDebugTool : EditorWindow
         closeText.fontSize = 18; // 比主界面的小一点
         closeText.color = Color.white;
         closeText.alignment = TextAnchor.MiddleCenter;
-        closeText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        closeText.font = UIFontResolver.GetUIFont();
 
         Debug.Log("详情小窗口关闭按钮创建完成！");
         Debug.Log("现在点击条目打开详情面板时，应该能看到详情面板右上角有红色关闭按钮");

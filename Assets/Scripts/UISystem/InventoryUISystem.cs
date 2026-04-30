@@ -335,7 +335,7 @@ public class InventoryUISystem : MonoBehaviour
             // 安全获取字体
             try
             {
-                text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+                text.font = UIFontResolver.GetUIFont();
             }
             catch
             {
@@ -1577,7 +1577,7 @@ public class InventoryUISystem : MonoBehaviour
         
         Text buttonText = textObj.AddComponent<Text>();
         buttonText.text = tool.toolName;
-        buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        buttonText.font = UIFontResolver.GetUIFont();
         buttonText.fontSize = 12;
         buttonText.color = Color.white;
         buttonText.alignment = TextAnchor.MiddleCenter;

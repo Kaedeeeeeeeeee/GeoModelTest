@@ -296,7 +296,7 @@ namespace Encyclopedia
             
             headerText = headerGO.AddComponent<Text>();
             headerText.text = GetLocalizedText("encyclopedia.system.title");
-            headerText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") ?? Resources.GetBuiltinResource<Font>("Arial.ttf");
+            headerText.font = UIFontResolver.GetUIFont();
             headerText.fontSize = 24;
             headerText.color = new Color(0.8f, 0.9f, 1f);
             headerText.alignment = TextAnchor.MiddleLeft;
@@ -331,7 +331,7 @@ namespace Encyclopedia
             
             var buttonText = buttonTextGO.AddComponent<Text>();
             buttonText.text = "×";
-            buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") ?? Resources.GetBuiltinResource<Font>("Arial.ttf");
+            buttonText.font = UIFontResolver.GetUIFont();
             buttonText.fontSize = 24; // 从20增加到24，主关闭按钮更明显
             buttonText.color = Color.white;
             buttonText.alignment = TextAnchor.MiddleCenter;
@@ -419,7 +419,7 @@ namespace Encyclopedia
             statusRect.offsetMax = new Vector2(-10, -10);
             
             systemStatusText = statusGO.AddComponent<Text>();
-            systemStatusText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") ?? Resources.GetBuiltinResource<Font>("Arial.ttf");
+            systemStatusText.font = UIFontResolver.GetUIFont();
             systemStatusText.fontSize = 14; // 从10增加到14，更易阅读
             systemStatusText.color = new Color(0.8f, 0.9f, 1f);
             systemStatusText.alignment = TextAnchor.UpperLeft;
@@ -471,7 +471,7 @@ namespace Encyclopedia
             titleRect.offsetMax = new Vector2(-10, -5);
             
             var titleText = titleGO.AddComponent<Text>();
-            titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") ?? Resources.GetBuiltinResource<Font>("Arial.ttf");
+            titleText.font = UIFontResolver.GetUIFont();
             titleText.fontSize = 18; // 从16增加到18，标题更突出
             titleText.color = new Color(0.9f, 0.95f, 1f);
             // 添加LocalizedText组件
@@ -602,7 +602,7 @@ namespace Encyclopedia
             titleTextRect.offsetMax = new Vector2(-15, 0);
             
             detailTitleText = titleTextGO.AddComponent<Text>();
-            detailTitleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") ?? Resources.GetBuiltinResource<Font>("Arial.ttf");
+            detailTitleText.font = UIFontResolver.GetUIFont();
             detailTitleText.fontSize = 20; // 从16增加到20，标题更突出
             detailTitleText.color = new Color(0.9f, 0.95f, 1f);
             detailTitleText.alignment = TextAnchor.MiddleLeft;
@@ -641,7 +641,7 @@ namespace Encyclopedia
             
             var closeText = closeTextGO.AddComponent<Text>();
             closeText.text = "×";
-            closeText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") ?? Resources.GetBuiltinResource<Font>("Arial.ttf");
+            closeText.font = UIFontResolver.GetUIFont();
             closeText.fontSize = 20; // 从16增加到20，关闭按钮更明显
             closeText.color = Color.white;
             closeText.alignment = TextAnchor.MiddleCenter;
@@ -740,7 +740,7 @@ namespace Encyclopedia
             
             // 描述文本
             detailDescriptionText = descTextGO.AddComponent<Text>();
-            detailDescriptionText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") ?? Resources.GetBuiltinResource<Font>("Arial.ttf");
+            detailDescriptionText.font = UIFontResolver.GetUIFont();
             detailDescriptionText.fontSize = 16; // 从13增加到16，更易阅读
             detailDescriptionText.color = Color.white; // 使用纯白色，确保可见
             detailDescriptionText.alignment = TextAnchor.UpperLeft;
@@ -798,7 +798,7 @@ namespace Encyclopedia
                         Debug.Log($"LocalizationManager初始化: {LocalizationManager.Instance.IsInitialized}");
                     }
                 }
-                text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") ?? Resources.GetBuiltinResource<Font>("Arial.ttf");
+                text.font = UIFontResolver.GetUIFont();
                 text.fontSize = 14; // 从16调整到14，适应压缩的按钮高度
                 text.color = Color.white;
                 text.alignment = TextAnchor.MiddleLeft;
@@ -1363,7 +1363,7 @@ namespace Encyclopedia
             titleRect.offsetMax = new Vector2(-10, 0);
             
             var titleText = titleGO.AddComponent<Text>();
-            titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            titleText.font = UIFontResolver.GetUIFont();
             titleText.fontSize = 16;
             titleText.color = new Color(0.8f, 0.9f, 1f);
             titleText.alignment = TextAnchor.MiddleCenter;
@@ -1419,7 +1419,7 @@ namespace Encyclopedia
             labelRect.offsetMax = Vector2.zero;
             
             var labelText = labelGO.AddComponent<Text>();
-            labelText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            labelText.font = UIFontResolver.GetUIFont();
             labelText.fontSize = 12;
             labelText.color = Color.white;
             labelText.alignment = TextAnchor.MiddleLeft;
@@ -1440,7 +1440,7 @@ namespace Encyclopedia
             statusRect.offsetMax = Vector2.zero;
             
             var statusText = statusGO.AddComponent<Text>();
-            statusText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            statusText.font = UIFontResolver.GetUIFont();
             statusText.fontSize = 12;
             statusText.color = statusColor;
             statusText.alignment = TextAnchor.MiddleRight;
@@ -1479,7 +1479,7 @@ namespace Encyclopedia
                 
                 var statText = statGO.AddComponent<Text>();
                 statText.text = stats[i];
-                statText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+                statText.font = UIFontResolver.GetUIFont();
                 statText.fontSize = 11;
                 statText.color = new Color(0.8f, 0.8f, 0.8f);
                 statText.alignment = TextAnchor.MiddleLeft;
@@ -1552,7 +1552,7 @@ namespace Encyclopedia
             labelRect.offsetMax = new Vector2(0, 0);
             
             var labelText = labelGO.AddComponent<Text>();
-            labelText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            labelText.font = UIFontResolver.GetUIFont();
             labelText.fontSize = 10;
             labelText.color = Color.white;
             labelText.alignment = TextAnchor.MiddleLeft;
@@ -1574,7 +1574,7 @@ namespace Encyclopedia
             
             var percentText = percentGO.AddComponent<Text>();
             percentText.text = $"{progress:P1}";
-            percentText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            percentText.font = UIFontResolver.GetUIFont();
             percentText.fontSize = 10;
             percentText.color = color;
             percentText.alignment = TextAnchor.MiddleRight;
@@ -1606,7 +1606,7 @@ namespace Encyclopedia
             labelRect.offsetMax = Vector2.zero;
             
             var labelText = labelGO.AddComponent<Text>();
-            labelText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            labelText.font = UIFontResolver.GetUIFont();
             labelText.fontSize = 12;
             labelText.color = Color.white;
             labelText.alignment = TextAnchor.MiddleLeft;
@@ -1628,7 +1628,7 @@ namespace Encyclopedia
             
             var countText = countGO.AddComponent<Text>();
             countText.text = count.ToString();
-            countText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            countText.font = UIFontResolver.GetUIFont();
             countText.fontSize = 12;
             countText.color = textColor;
             countText.alignment = TextAnchor.MiddleRight;
@@ -1807,7 +1807,7 @@ namespace Encyclopedia
             
             var testText = testTextGO.AddComponent<Text>();
             testText.text = "🔴 测试可见性元素 - 如果你看到这个说明UI正常";
-            testText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            testText.font = UIFontResolver.GetUIFont();
             testText.fontSize = 16;
             testText.color = Color.white;
             testText.alignment = TextAnchor.MiddleCenter;
@@ -1969,7 +1969,7 @@ namespace Encyclopedia
             textRect.offsetMax = new Vector2(-30, 0);
 
             var text = textGO.AddComponent<Text>();
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") ?? Resources.GetBuiltinResource<Font>("Arial.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 16; // 从14增加到16，更易阅读
             text.alignment = TextAnchor.MiddleLeft;
             text.fontStyle = FontStyle.Bold; // 加粗字体
@@ -2013,7 +2013,7 @@ namespace Encyclopedia
             iconRect.sizeDelta = new Vector2(20, 20);
 
             var iconText = iconGO.AddComponent<Text>();
-            iconText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") ?? Resources.GetBuiltinResource<Font>("Arial.ttf");
+            iconText.font = UIFontResolver.GetUIFont();
             iconText.fontSize = 14; // 从10增加到14，图标文字更清楚
             iconText.alignment = TextAnchor.MiddleCenter;
             iconText.text = entry.entryType == EntryType.Mineral ? GetLocalizedText("encyclopedia.type.mineral")[0].ToString() : GetLocalizedText("encyclopedia.type.fossil")[0].ToString();
@@ -2392,7 +2392,7 @@ namespace Encyclopedia
             textRect.offsetMax = new Vector2(-10, -5);
 
             var text = textGO.AddComponent<Text>();
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") ?? Resources.GetBuiltinResource<Font>("Arial.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 11;
             text.alignment = TextAnchor.MiddleCenter;
             text.text = $"{title}\n{message}";
@@ -2650,7 +2650,7 @@ namespace Encyclopedia
                     messageRect.offsetMax = Vector2.zero;
                     
                     var messageText = messageGO.AddComponent<Text>();
-                    messageText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+                    messageText.font = UIFontResolver.GetUIFont();
                     messageText.fontSize = 14;
                     messageText.color = new Color(0.8f, 0.8f, 0.8f, 0.8f);
                     messageText.alignment = TextAnchor.MiddleCenter;

@@ -92,7 +92,7 @@ namespace QuestSystem
             titleRect.anchoredPosition = new Vector2(10 * panelScaleMultiplier, -8 * panelScaleMultiplier);
             titleRect.sizeDelta = new Vector2(-20 * panelScaleMultiplier, 26 * panelScaleMultiplier);
             titleText = titleGO.AddComponent<Text>();
-            titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            titleText.font = UIFontResolver.GetUIFont();
             titleText.fontSize = Mathf.RoundToInt(titleFontSize * fontScaleMultiplier);
             titleText.color = titleColor;
             titleText.alignment = TextAnchor.UpperLeft;
@@ -109,7 +109,7 @@ namespace QuestSystem
             objRect.anchoredPosition = new Vector2(10 * panelScaleMultiplier, -36 * panelScaleMultiplier);
             objRect.sizeDelta = new Vector2(-20 * panelScaleMultiplier, -12 * panelScaleMultiplier);
             objectiveText = objGO.AddComponent<Text>();
-            objectiveText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            objectiveText.font = UIFontResolver.GetUIFont();
             objectiveText.fontSize = Mathf.RoundToInt(objectiveFontSize * fontScaleMultiplier);
             objectiveText.color = objectiveColor;
             objectiveText.alignment = TextAnchor.UpperLeft;

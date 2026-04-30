@@ -137,7 +137,7 @@ namespace SampleCuttingSystem
             
             Text text = textObj.AddComponent<Text>();
             text.text = "重置";
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 12;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleCenter;
@@ -180,7 +180,7 @@ namespace SampleCuttingSystem
             textRect.offsetMax = Vector2.zero;
             
             rotationButtonText = textObj.AddComponent<Text>();
-            rotationButtonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            rotationButtonText.font = UIFontResolver.GetUIFont();
             rotationButtonText.fontSize = 10;
             rotationButtonText.color = Color.white;
             rotationButtonText.alignment = TextAnchor.MiddleCenter;

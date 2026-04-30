@@ -194,7 +194,7 @@ namespace SceneSystem
             text.fontSize = fontSize;
             text.alignment = TextAnchor.MiddleCenter;
             text.color = Color.white;
-            text.font = _font != null ? _font : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = _font != null ? _font : UIFontResolver.GetUIFont();
             return go;
         }
 

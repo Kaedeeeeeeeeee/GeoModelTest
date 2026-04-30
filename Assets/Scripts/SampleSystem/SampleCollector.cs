@@ -198,7 +198,7 @@ public class SampleCollector : MonoBehaviour
         
         promptText = textObj.AddComponent<Text>();
         promptText.text = GetLocalizedCollectionText(); // 使用本地化文本
-        promptText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        promptText.font = UIFontResolver.GetUIFont();
         promptText.fontSize = 20; // 和钻塔UI类似的字体大小
         promptText.color = Color.white;
         promptText.alignment = TextAnchor.MiddleCenter;

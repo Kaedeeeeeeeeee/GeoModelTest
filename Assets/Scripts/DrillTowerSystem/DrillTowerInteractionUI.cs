@@ -91,7 +91,7 @@ public class DrillTowerInteractionUI : MonoBehaviour
             
             promptText = textObj.AddComponent<Text>();
             promptText.text = basePromptText;
-            promptText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            promptText.font = UIFontResolver.GetUIFont();
             promptText.fontSize = 24;
             promptText.color = Color.white;
             promptText.alignment = TextAnchor.MiddleCenter;

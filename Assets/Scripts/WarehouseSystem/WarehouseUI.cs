@@ -252,7 +252,7 @@ public class WarehouseUI : MonoBehaviour
         
         Text titleText = titleObj.AddComponent<Text>();
         titleText.text = titleKey; // 临时文本，会被本地化组件替换
-        titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        titleText.font = UIFontResolver.GetUIFont();
         titleText.fontSize = 24;
         titleText.color = Color.white;
         titleText.alignment = TextAnchor.MiddleCenter;
@@ -329,7 +329,7 @@ public class WarehouseUI : MonoBehaviour
         
         Text buttonText = textObj.AddComponent<Text>();
         buttonText.text = textKey; // 临时文本，会被本地化组件替换
-        buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        buttonText.font = UIFontResolver.GetUIFont();
         buttonText.fontSize = 18;
         buttonText.color = Color.black;
         buttonText.alignment = TextAnchor.MiddleCenter;
@@ -393,7 +393,7 @@ public class WarehouseUI : MonoBehaviour
         
         Text titleText = titleObj.AddComponent<Text>();
         titleText.text = "确认丢弃";
-        titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        titleText.font = UIFontResolver.GetUIFont();
         titleText.fontSize = 24;
         titleText.color = Color.white;
         titleText.alignment = TextAnchor.MiddleCenter;
@@ -411,7 +411,7 @@ public class WarehouseUI : MonoBehaviour
         
         confirmDialogText = textObj.AddComponent<Text>();
         confirmDialogText.text = "确定要丢弃所有选中的样本吗？\n此操作不可撤销！";
-        confirmDialogText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        confirmDialogText.font = UIFontResolver.GetUIFont();
         confirmDialogText.fontSize = 18;
         confirmDialogText.color = Color.white;
         confirmDialogText.alignment = TextAnchor.MiddleCenter;
@@ -460,7 +460,7 @@ public class WarehouseUI : MonoBehaviour
         
         Text buttonText = textObj.AddComponent<Text>();
         buttonText.text = text;
-        buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        buttonText.font = UIFontResolver.GetUIFont();
         buttonText.fontSize = 16;
         buttonText.color = Color.white;
         buttonText.alignment = TextAnchor.MiddleCenter;

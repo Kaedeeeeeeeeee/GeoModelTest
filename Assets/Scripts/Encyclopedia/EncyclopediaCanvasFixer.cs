@@ -300,7 +300,7 @@ public class EncyclopediaCanvasFixer : MonoBehaviour
         closeText.fontSize = 18;
         closeText.color = Color.white;
         closeText.alignment = TextAnchor.MiddleCenter;
-        closeText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        closeText.font = UIFontResolver.GetUIFont();
 
         Debug.Log("[EncyclopediaCanvasFixer] 详情面板关闭按钮创建完成");
     }

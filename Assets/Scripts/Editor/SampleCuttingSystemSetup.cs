@@ -404,7 +404,7 @@ public class SampleCuttingSystemSetup : EditorWindow
         titleComponent.fontSize = 32;
         titleComponent.color = Color.cyan; // 醒目的青色
         titleComponent.alignment = TextAnchor.MiddleCenter;
-        titleComponent.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        titleComponent.font = UIFontResolver.GetUIFont();
         titleComponent.fontStyle = FontStyle.Bold;
         
         // 拖拽区域 - 更醒目的边框
@@ -431,7 +431,7 @@ public class SampleCuttingSystemSetup : EditorWindow
         textComponent.fontSize = 18;
         textComponent.color = Color.white;
         textComponent.alignment = TextAnchor.MiddleCenter;
-        textComponent.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        textComponent.font = UIFontResolver.GetUIFont();
         
         // 交互提示
         GameObject interactionHint = new GameObject("InteractionHint");
@@ -446,7 +446,7 @@ public class SampleCuttingSystemSetup : EditorWindow
         hintComponent.fontSize = 16;
         hintComponent.color = Color.yellow;
         hintComponent.alignment = TextAnchor.MiddleCenter;
-        hintComponent.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        hintComponent.font = UIFontResolver.GetUIFont();
         hintComponent.fontStyle = FontStyle.Italic;
         
         Debug.Log("创建改进的UI结构");

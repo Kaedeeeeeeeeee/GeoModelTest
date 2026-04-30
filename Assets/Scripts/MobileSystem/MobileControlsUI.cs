@@ -384,7 +384,7 @@ public class MobileControlsUI : MonoBehaviour
         
         Text buttonText = textObj.AddComponent<Text>();
         buttonText.text = text;
-        buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        buttonText.font = UIFontResolver.GetUIFont();
         buttonText.fontSize = (int)(buttonSize * 0.4f);
         buttonText.color = Color.white;
         buttonText.alignment = TextAnchor.MiddleCenter;
@@ -507,7 +507,7 @@ public class MobileControlsUI : MonoBehaviour
 
         Text buttonText = textObj.AddComponent<Text>();
         buttonText.text = text;
-        buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        buttonText.font = UIFontResolver.GetUIFont();
         buttonText.fontSize = 24;
         buttonText.alignment = TextAnchor.MiddleCenter;
         buttonText.color = Color.white;

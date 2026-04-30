@@ -303,7 +303,7 @@ public class SettingsManager : MonoBehaviour
         
         titleText = titleObj.AddComponent<Text>();
         titleText.text = "设置";
-        titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        titleText.font = UIFontResolver.GetUIFont();
         titleText.fontSize = 36;
         titleText.color = Color.white;
         titleText.alignment = TextAnchor.MiddleCenter;
@@ -330,7 +330,7 @@ public class SettingsManager : MonoBehaviour
         
         languageLabel = labelObj.AddComponent<Text>();
         languageLabel.text = "语言 / Language / 言語";
-        languageLabel.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        languageLabel.font = UIFontResolver.GetUIFont();
         languageLabel.fontSize = 24;
         languageLabel.color = Color.white;
         languageLabel.alignment = TextAnchor.MiddleCenter;
@@ -402,7 +402,7 @@ public class SettingsManager : MonoBehaviour
         
         Text buttonText = textObj.AddComponent<Text>();
         buttonText.text = text;
-        buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        buttonText.font = UIFontResolver.GetUIFont();
         buttonText.fontSize = 20;
         buttonText.color = Color.white;
         buttonText.alignment = TextAnchor.MiddleCenter;
@@ -449,7 +449,7 @@ public class SettingsManager : MonoBehaviour
         
         closeText = textObj.AddComponent<Text>();
         closeText.text = "关闭";
-        closeText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        closeText.font = UIFontResolver.GetUIFont();
         closeText.fontSize = 24;
         closeText.color = Color.white;
         closeText.alignment = TextAnchor.MiddleCenter;

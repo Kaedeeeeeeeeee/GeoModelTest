@@ -295,7 +295,7 @@ public class InventoryUI : MonoBehaviour
         
         titleText = titleObj.AddComponent<Text>();
         titleText.text = "sample.inventory.title"; // 临时文本，会被本地化组件替换
-        titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        titleText.font = UIFontResolver.GetUIFont();
         titleText.fontSize = 40;
         titleText.color = Color.white;
         titleText.alignment = TextAnchor.MiddleCenter;
@@ -322,7 +322,7 @@ public class InventoryUI : MonoBehaviour
         
         capacityText = capacityObj.AddComponent<Text>();
         capacityText.text = "0/20";
-        capacityText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        capacityText.font = UIFontResolver.GetUIFont();
         capacityText.fontSize = 32;
         capacityText.color = Color.yellow;
         capacityText.alignment = TextAnchor.MiddleLeft;
@@ -361,7 +361,7 @@ public class InventoryUI : MonoBehaviour
         
         Text buttonText = textObj.AddComponent<Text>();
         buttonText.text = "ui.button.close"; // 临时文本，会被本地化组件替换
-        buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        buttonText.font = UIFontResolver.GetUIFont();
         buttonText.fontSize = 28;
         buttonText.color = Color.white;
         buttonText.alignment = TextAnchor.MiddleCenter;
@@ -510,7 +510,7 @@ public class InventoryUI : MonoBehaviour
         
         detailTitleText = titleObj.AddComponent<Text>();
         detailTitleText.text = "sample.detail.title"; // 临时文本，会被本地化组件替换
-        detailTitleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        detailTitleText.font = UIFontResolver.GetUIFont();
         detailTitleText.fontSize = 36;
         detailTitleText.color = Color.white;
         detailTitleText.alignment = TextAnchor.MiddleCenter;
@@ -532,7 +532,7 @@ public class InventoryUI : MonoBehaviour
         
         detailInfoText = infoObj.AddComponent<Text>();
         detailInfoText.text = "sample.detail.placeholder"; // 临时文本，会被本地化组件替换
-        detailInfoText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        detailInfoText.font = UIFontResolver.GetUIFont();
         detailInfoText.fontSize = 24;
         detailInfoText.color = Color.white;
         detailInfoText.alignment = TextAnchor.UpperLeft;
@@ -597,7 +597,7 @@ public class InventoryUI : MonoBehaviour
         
         Text buttonText = textObj.AddComponent<Text>();
         buttonText.text = textKey; // 临时文本，会被本地化组件替换
-        buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        buttonText.font = UIFontResolver.GetUIFont();
         buttonText.fontSize = 28;
         buttonText.color = Color.white;
         buttonText.alignment = TextAnchor.MiddleCenter;

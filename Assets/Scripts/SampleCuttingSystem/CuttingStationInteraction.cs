@@ -209,7 +209,7 @@ namespace SampleCuttingSystem
 
             promptText = promptTextObj.AddComponent<Text>();
             promptText.text = LocalizationManager.Instance?.GetText("cutting_station.interaction.prompt") ?? "[F] 使用切割台";
-            promptText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            promptText.font = UIFontResolver.GetUIFont();
             promptText.fontSize = 20;
             promptText.color = Color.white;
             promptText.alignment = TextAnchor.MiddleCenter;
@@ -842,7 +842,7 @@ namespace SampleCuttingSystem
 
             Text titleText = titleObj.AddComponent<Text>();
             titleText.text = "样本切割系统";
-            titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            titleText.font = UIFontResolver.GetUIFont();
             titleText.fontSize = 48;
             titleText.color = Color.white;
             titleText.alignment = TextAnchor.MiddleCenter;
@@ -865,7 +865,7 @@ namespace SampleCuttingSystem
 
             Text instructionText = instructionObj.AddComponent<Text>();
             instructionText.text = "欢迎使用样本切割系统！\n\n此系统可以对多层地质样本进行精确切割，\n将复合样本分解为单独的地层样本。\n\n请将需要切割的样本拖拽到此界面中开始操作。";
-            instructionText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            instructionText.font = UIFontResolver.GetUIFont();
             instructionText.fontSize = 24;
             instructionText.color = Color.white;
             instructionText.alignment = TextAnchor.MiddleCenter;
@@ -1012,7 +1012,7 @@ namespace SampleCuttingSystem
             titleRect.offsetMax = new Vector2(-10f, 0f);
 
             Text titleText = titleObj.AddComponent<Text>();
-            titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            titleText.font = UIFontResolver.GetUIFont();
             titleText.fontSize = 24;
             titleText.color = Color.white;
             titleText.alignment = TextAnchor.MiddleCenter;
@@ -1082,7 +1082,7 @@ namespace SampleCuttingSystem
             textRect.offsetMax = Vector2.zero;
 
             Text hint = textObj.AddComponent<Text>();
-            hint.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            hint.font = UIFontResolver.GetUIFont();
             hint.fontSize = 14;
             hint.color = Color.cyan;
             hint.alignment = TextAnchor.MiddleCenter;
@@ -1193,7 +1193,7 @@ namespace SampleCuttingSystem
 
             Text text = btnText.AddComponent<Text>();
             text.text = LocalizationManager.Instance?.GetText("cutting_system.button.close") ?? "关闭";
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 16;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleCenter;
@@ -1236,7 +1236,7 @@ namespace SampleCuttingSystem
 
             Text xText = xTextObj.AddComponent<Text>();
             xText.text = "✕";
-            xText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            xText.font = UIFontResolver.GetUIFont();
             xText.fontSize = 36;
             xText.color = Color.white;
             xText.alignment = TextAnchor.MiddleCenter;

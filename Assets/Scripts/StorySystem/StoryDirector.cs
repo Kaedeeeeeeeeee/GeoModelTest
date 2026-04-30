@@ -654,7 +654,7 @@ namespace StorySystem
             tr.anchorMin = Vector2.zero;
             tr.anchorMax = Vector2.one;
             var txt = textGO.AddComponent<Text>();
-            txt.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            txt.font = UIFontResolver.GetUIFont();
             txt.fontSize = 28;
             txt.color = Color.white;
             txt.alignment = TextAnchor.UpperLeft;

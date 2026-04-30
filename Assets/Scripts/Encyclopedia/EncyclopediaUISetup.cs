@@ -120,7 +120,7 @@ namespace Encyclopedia
             
             Text text = textGO.AddComponent<Text>();
             text.text = "×";
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 36;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleCenter;
@@ -202,7 +202,7 @@ namespace Encyclopedia
             titleTextRect.offsetMax = new Vector2(-10, 0);
 
             Text titleText = titleTextGO.AddComponent<Text>();
-            titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            titleText.font = UIFontResolver.GetUIFont();
             titleText.fontSize = 18;
             titleText.color = Color.white;
             titleText.alignment = TextAnchor.MiddleCenter;
@@ -238,7 +238,7 @@ namespace Encyclopedia
             textRect.offsetMax = new Vector2(-10, 0);
             
             Text text = textGO.AddComponent<Text>();
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 16;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleLeft;
@@ -277,7 +277,7 @@ namespace Encyclopedia
             textRect.offsetMax = new Vector2(-10, -10);
             
             Text text = textGO.AddComponent<Text>();
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 14;
             text.color = new Color(0.7f, 0.9f, 1f);
             text.alignment = TextAnchor.UpperLeft;
@@ -362,7 +362,7 @@ namespace Encyclopedia
             labelRect.offsetMax = new Vector2(-25, -2);
             
             Text labelText = labelGO.AddComponent<Text>();
-            labelText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            labelText.font = UIFontResolver.GetUIFont();
             labelText.fontSize = 12;
             labelText.color = Color.white;
 
@@ -429,7 +429,7 @@ namespace Encyclopedia
             placeholderRect.offsetMax = new Vector2(-10, 0);
             
             Text placeholder = placeholderGO.AddComponent<Text>();
-            placeholder.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            placeholder.font = UIFontResolver.GetUIFont();
             placeholder.fontSize = 12;
             placeholder.color = new Color(0.7f, 0.7f, 0.7f, 0.5f);
             placeholder.alignment = TextAnchor.MiddleLeft;
@@ -449,7 +449,7 @@ namespace Encyclopedia
             textRect.offsetMax = new Vector2(-10, 0);
             
             Text text = textGO.AddComponent<Text>();
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 12;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleLeft;
@@ -481,7 +481,7 @@ namespace Encyclopedia
             textRect.offsetMax = Vector2.zero;
             
             Text text = textGO.AddComponent<Text>();
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 12;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleCenter;
@@ -576,7 +576,7 @@ namespace Encyclopedia
             nameRect.offsetMax = new Vector2(-100, -5);
             
             Text nameText = nameGO.AddComponent<Text>();
-            nameText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            nameText.font = UIFontResolver.GetUIFont();
             nameText.fontSize = 14;
             nameText.color = Color.white;
             nameText.alignment = TextAnchor.MiddleLeft;
@@ -596,7 +596,7 @@ namespace Encyclopedia
             rarityRect.offsetMax = new Vector2(-100, 0);
             
             Text rarityText = rarityGO.AddComponent<Text>();
-            rarityText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            rarityText.font = UIFontResolver.GetUIFont();
             rarityText.fontSize = 12;
             rarityText.color = Color.yellow;
             rarityText.alignment = TextAnchor.MiddleLeft;
@@ -662,7 +662,7 @@ namespace Encyclopedia
             titleRect.offsetMax = new Vector2(-20, -10);
             
             Text titleText = titleGO.AddComponent<Text>();
-            titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            titleText.font = UIFontResolver.GetUIFont();
             titleText.fontSize = 56;  // 从28增加到56，放大一倍
             titleText.color = Color.white;
             titleText.alignment = TextAnchor.MiddleLeft;
@@ -699,7 +699,7 @@ namespace Encyclopedia
             descRect.offsetMax = new Vector2(-10, 0);
             
             Text descText = descGO.AddComponent<Text>();
-            descText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            descText.font = UIFontResolver.GetUIFont();
             descText.fontSize = 36;  // 从18增加到36，放大一倍
             descText.color = Color.white;
             descText.alignment = TextAnchor.UpperLeft;
@@ -719,7 +719,7 @@ namespace Encyclopedia
             propsRect.offsetMax = new Vector2(-10, 0);
             
             Text propsText = propsGO.AddComponent<Text>();
-            propsText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            propsText.font = UIFontResolver.GetUIFont();
             propsText.fontSize = 36;  // 从18增加到36，放大一倍
             propsText.color = new Color(0.8f, 0.9f, 1f);
             propsText.alignment = TextAnchor.UpperLeft;
@@ -791,7 +791,7 @@ namespace Encyclopedia
             resetTextRect.offsetMax = Vector2.zero;
             
             Text resetText = resetTextGO.AddComponent<Text>();
-            resetText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            resetText.font = UIFontResolver.GetUIFont();
             resetText.fontSize = 12;
             resetText.color = Color.white;
             resetText.alignment = TextAnchor.MiddleCenter;
@@ -830,7 +830,7 @@ namespace Encyclopedia
 
             Text text = textGO.AddComponent<Text>();
             text.text = "×";
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 36;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleCenter;

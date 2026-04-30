@@ -835,7 +835,7 @@ namespace Encyclopedia
             rect.offsetMax = new Vector2(-20, -10);
 
             detailTitle = titleGO.AddComponent<Text>();
-            detailTitle.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            detailTitle.font = UIFontResolver.GetUIFont();
             detailTitle.fontSize = 32;  // 更大的标题字体大小
             detailTitle.color = Color.white;
             detailTitle.alignment = TextAnchor.MiddleLeft;
@@ -857,7 +857,7 @@ namespace Encyclopedia
             rect.offsetMax = new Vector2(-20, 0);
 
             detailDescription = descGO.AddComponent<Text>();
-            detailDescription.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            detailDescription.font = UIFontResolver.GetUIFont();
             detailDescription.fontSize = 48;  // 从24增加到48，放大一倍
             detailDescription.color = Color.white;
             detailDescription.alignment = TextAnchor.UpperLeft;
@@ -878,7 +878,7 @@ namespace Encyclopedia
             rect.offsetMax = new Vector2(-20, 0);
 
             detailProperties = propsGO.AddComponent<Text>();
-            detailProperties.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            detailProperties.font = UIFontResolver.GetUIFont();
             detailProperties.fontSize = 44;  // 从22增加到44，放大一倍
             detailProperties.color = Color.white;
             detailProperties.alignment = TextAnchor.UpperLeft;
@@ -919,7 +919,7 @@ namespace Encyclopedia
 
             var text = textGO.AddComponent<Text>();
             text.text = "×";
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 72;  // 更大的字体
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleCenter;
@@ -1069,7 +1069,7 @@ namespace Encyclopedia
 
             Text text = textGO.AddComponent<Text>();
             text.text = "×";
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 24;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleCenter;
@@ -2006,7 +2006,7 @@ namespace Encyclopedia
             closeText.fontSize = 18;
             closeText.color = Color.white;
             closeText.alignment = TextAnchor.MiddleCenter;
-            closeText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            closeText.font = UIFontResolver.GetUIFont();
 
             Debug.Log("[EncyclopediaUI] 详情面板关闭按钮创建完成");
         }
@@ -2096,7 +2096,7 @@ namespace Encyclopedia
             triangleText.fontSize = 48; // 适中的三角形大小
             triangleText.color = Color.white; // 纯白色，更清晰
             triangleText.alignment = TextAnchor.MiddleCenter;
-            triangleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            triangleText.font = UIFontResolver.GetUIFont();
             triangleText.fontStyle = FontStyle.Bold; // 加粗让箭头更明显
 
             Debug.Log($"[EncyclopediaUI] 创建三角形按钮: {name}, 位置: {position}, 左箭头: {isLeftArrow}");

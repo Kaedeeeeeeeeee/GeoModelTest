@@ -13,5 +13,8 @@
     <type fullname="LaboratoryMobileUIInitializer" preserve="all"/>
     <type fullname="SimpleLaboratoryMobileUIManager" preserve="all"/>
     <type fullname="LaboratoryMobileUIHelper" preserve="all"/>
+    <!-- 本地化数据类：JsonUtility 通过反射读字段，IL2CPP 裁剪会让字典加载失败 -->
+    <type fullname="LocalizationData" preserve="all"/>
+    <type fullname="LocalizationTextEntry" preserve="all"/>
   </assembly>
 </linker>

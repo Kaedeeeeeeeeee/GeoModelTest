@@ -323,7 +323,7 @@ namespace SampleCuttingSystem
             titleRect.offsetMax = Vector2.zero;
             
             Text titleText = titleObj.AddComponent<Text>();
-            titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            titleText.font = UIFontResolver.GetUIFont();
             titleText.fontSize = 20;
             titleText.fontStyle = FontStyle.Bold;
             titleText.color = new Color(0.8f, 0.9f, 1f, 1f);
@@ -488,7 +488,7 @@ namespace SampleCuttingSystem
             
             // 添加文本组件
             instructionText = textObj.AddComponent<Text>();
-            instructionText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            instructionText.font = UIFontResolver.GetUIFont();
             instructionText.fontSize = 16;  // 从22减小到16，让文字更小
             instructionText.fontStyle = FontStyle.Bold;
             instructionText.color = new Color(0.9f, 0.9f, 1f, 1f);
@@ -546,7 +546,7 @@ namespace SampleCuttingSystem
             textRect.offsetMax = Vector2.zero;
             
             Text keyText = textObj.AddComponent<Text>();
-            keyText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            keyText.font = UIFontResolver.GetUIFont();
             keyText.fontSize = 16;
             keyText.fontStyle = FontStyle.Bold;
             keyText.color = new Color(0.8f, 0.9f, 1f, 1f);
@@ -634,7 +634,7 @@ namespace SampleCuttingSystem
             
             Text text = btnText.AddComponent<Text>();
             text.text = LocalizationManager.Instance?.GetText("cutting_system.button.close") ?? "关闭";
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 14; // 稍小的字体适应更小的按钮
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleCenter;

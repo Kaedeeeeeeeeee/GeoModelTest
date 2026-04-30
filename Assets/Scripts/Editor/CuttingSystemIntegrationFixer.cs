@@ -214,7 +214,7 @@ public class CuttingSystemIntegrationFixer
 
         UnityEngine.UI.Text titleText = titleObj.AddComponent<UnityEngine.UI.Text>();
         titleText.text = "样本切割系统";
-        titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        titleText.font = UIFontResolver.GetUIFont();
         titleText.fontSize = 32;
         titleText.color = Color.white;
         titleText.alignment = TextAnchor.MiddleCenter;
@@ -256,7 +256,7 @@ public class CuttingSystemIntegrationFixer
 
         UnityEngine.UI.Text instructionText = textObj.AddComponent<UnityEngine.UI.Text>();
         instructionText.text = "将多层样本拖拽到切割台进行切割";
-        instructionText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        instructionText.font = UIFontResolver.GetUIFont();
         instructionText.fontSize = 18;
         instructionText.color = Color.white;
         instructionText.alignment = TextAnchor.MiddleCenter;
@@ -323,7 +323,7 @@ public class CuttingSystemIntegrationFixer
 
         UnityEngine.UI.Text xText = xObj.AddComponent<UnityEngine.UI.Text>();
         xText.text = "✕";
-        xText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        xText.font = UIFontResolver.GetUIFont();
         xText.fontSize = 30;
         xText.color = Color.white;
         xText.alignment = TextAnchor.MiddleCenter;

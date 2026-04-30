@@ -216,7 +216,7 @@ public class WarehouseTrigger : MonoBehaviour
         
         promptText = textObj.AddComponent<Text>();
         promptText.text = "[F] 打开仓库";
-        promptText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        promptText.font = UIFontResolver.GetUIFont();
         promptText.fontSize = 22;
         promptText.color = Color.white;
         promptText.alignment = TextAnchor.MiddleCenter;

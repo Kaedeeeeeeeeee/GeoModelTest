@@ -136,7 +136,7 @@ public class LocalizationDemo : MonoBehaviour
         
         Text titleText = titleObj.AddComponent<Text>();
         titleText.text = "多语言系统演示";
-        titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        titleText.font = UIFontResolver.GetUIFont();
         titleText.fontSize = 18;
         titleText.color = Color.yellow;
         titleText.alignment = TextAnchor.MiddleCenter;
@@ -159,7 +159,7 @@ public class LocalizationDemo : MonoBehaviour
         
         demoText = textObj.AddComponent<Text>();
         demoText.text = "演示文本";
-        demoText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        demoText.font = UIFontResolver.GetUIFont();
         demoText.fontSize = 14;
         demoText.color = Color.white;
         demoText.alignment = TextAnchor.UpperLeft;
@@ -181,7 +181,7 @@ public class LocalizationDemo : MonoBehaviour
         
         languageStatusText = statusObj.AddComponent<Text>();
         languageStatusText.text = "当前语言: 中文";
-        languageStatusText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        languageStatusText.font = UIFontResolver.GetUIFont();
         languageStatusText.fontSize = 12;
         languageStatusText.color = Color.cyan;
         languageStatusText.alignment = TextAnchor.MiddleCenter;
@@ -218,7 +218,7 @@ public class LocalizationDemo : MonoBehaviour
         
         Text buttonText = textObj.AddComponent<Text>();
         buttonText.text = "切换语言";
-        buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        buttonText.font = UIFontResolver.GetUIFont();
         buttonText.fontSize = 12;
         buttonText.color = Color.white;
         buttonText.alignment = TextAnchor.MiddleCenter;
@@ -243,7 +243,7 @@ public class LocalizationDemo : MonoBehaviour
         
         Text instructText = instructObj.AddComponent<Text>();
         instructText.text = "快捷键:\nESC - 设置\nSpace - 切换演示文本";
-        instructText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        instructText.font = UIFontResolver.GetUIFont();
         instructText.fontSize = 10;
         instructText.color = Color.gray;
         instructText.alignment = TextAnchor.UpperLeft;

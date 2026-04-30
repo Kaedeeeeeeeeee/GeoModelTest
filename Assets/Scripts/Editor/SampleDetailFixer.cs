@@ -107,7 +107,7 @@ public class SampleDetailFixer
 
         UnityEngine.UI.Text titleText = titleObj.AddComponent<UnityEngine.UI.Text>();
         titleText.text = "样本详情";
-        titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        titleText.font = UIFontResolver.GetUIFont();
         titleText.fontSize = 18;
         titleText.color = Color.white;
         titleText.alignment = TextAnchor.MiddleCenter;
@@ -123,7 +123,7 @@ public class SampleDetailFixer
 
         UnityEngine.UI.Text infoText = infoObj.AddComponent<UnityEngine.UI.Text>();
         infoText.text = "样本信息将在这里显示";
-        infoText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        infoText.font = UIFontResolver.GetUIFont();
         infoText.fontSize = 14;
         infoText.color = Color.white;
         infoText.alignment = TextAnchor.UpperLeft;
@@ -153,7 +153,7 @@ public class SampleDetailFixer
 
         UnityEngine.UI.Text closeText = closeTextObj.AddComponent<UnityEngine.UI.Text>();
         closeText.text = "关闭";
-        closeText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        closeText.font = UIFontResolver.GetUIFont();
         closeText.fontSize = 14;
         closeText.color = Color.white;
         closeText.alignment = TextAnchor.MiddleCenter;

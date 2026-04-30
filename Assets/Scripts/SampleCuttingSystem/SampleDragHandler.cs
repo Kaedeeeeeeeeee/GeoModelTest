@@ -169,7 +169,7 @@ namespace SampleCuttingSystem
             
             var text = textObj.AddComponent<Text>();
             text.text = sampleData.name;
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 12;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleCenter;

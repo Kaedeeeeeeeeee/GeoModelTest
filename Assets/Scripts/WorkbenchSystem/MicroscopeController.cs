@@ -352,7 +352,7 @@ namespace WorkbenchSystem
             countRect.pivot = new Vector2(0f, 1f);
             countRect.sizeDelta = new Vector2(0f, 32f);
             inventoryCountText = countObj.AddComponent<Text>();
-            inventoryCountText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            inventoryCountText.font = UIFontResolver.GetUIFont();
             inventoryCountText.fontSize = 18;
             inventoryCountText.color = Color.white;
             inventoryCountText.alignment = TextAnchor.MiddleLeft;
@@ -431,7 +431,7 @@ namespace WorkbenchSystem
             compRect.offsetMax = new Vector2(-16f, -12f);
             compositionText = compositionObj.AddComponent<Text>();
             compositionText.text = "拖拽样本到此区域以观察组成";
-            compositionText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            compositionText.font = UIFontResolver.GetUIFont();
             compositionText.fontSize = 20;
             compositionText.color = Color.white;
             compositionText.alignment = TextAnchor.UpperLeft;
@@ -511,7 +511,7 @@ namespace WorkbenchSystem
             detailRect.offsetMax = new Vector2(-20f, -12f);
             detailText = detailObj.AddComponent<Text>();
             detailText.text = "选择或拖拽样本以查看详情";
-            detailText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            detailText.font = UIFontResolver.GetUIFont();
             detailText.fontSize = 18;
             detailText.color = Color.white;
             detailText.alignment = TextAnchor.MiddleLeft;
@@ -534,7 +534,7 @@ namespace WorkbenchSystem
             closeTxtObj.transform.SetParent(closeObj.transform, false);
             var closeTxt = closeTxtObj.AddComponent<Text>();
             closeTxt.text = "X";
-            closeTxt.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            closeTxt.font = UIFontResolver.GetUIFont();
             closeTxt.fontSize = 18;
             closeTxt.color = Color.white;
             closeTxt.alignment = TextAnchor.MiddleCenter;
@@ -577,7 +577,7 @@ namespace WorkbenchSystem
             textObj.transform.SetParent(obj.transform, false);
             var text = textObj.AddComponent<Text>();
             text.text = label;
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 18;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleCenter;
@@ -703,7 +703,7 @@ namespace WorkbenchSystem
             textObj.transform.SetParent(obj.transform, false);
             var text = textObj.AddComponent<Text>();
             text.text = label;
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 18;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleLeft;
@@ -733,7 +733,7 @@ namespace WorkbenchSystem
             obj.transform.SetParent(sampleListContainer, false);
             var text = obj.AddComponent<Text>();
             text.text = message;
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 16;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleLeft;

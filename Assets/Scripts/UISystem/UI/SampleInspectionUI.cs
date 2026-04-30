@@ -208,7 +208,7 @@ public class SampleInspectionUI : MonoBehaviour
         
         // 添加文本组件
         Text detailText = detailObj.AddComponent<Text>();
-        detailText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        detailText.font = UIFontResolver.GetUIFont();
         detailText.fontSize = 12;
         detailText.color = Color.white;
         

@@ -274,7 +274,7 @@ public class UISystemCreator : MonoBehaviour
             
             Text text = textObj.AddComponent<Text>();
             text.text = $"工具{i + 1}";
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 10;
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleCenter;

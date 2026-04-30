@@ -130,17 +130,19 @@ public class LocalizationManager : MonoBehaviour
     {
         string languageCode = LanguageSettings.GetLanguageCode(language);
         string fileName = $"{languageCode}.json";
-        
-        LogDebug($"加载语言文件: {fileName}");
-        
+
+        Debug.Log($"[LocalizationManager] 加载语言文件: {fileName}");
+
         // 尝试从Resources加载
         string resourcePath = $"Localization/Data/{languageCode}";
         TextAsset languageFile = Resources.Load<TextAsset>(resourcePath);
-        
+
         if (languageFile != null)
         {
+            Debug.Log($"[LocalizationManager] Resources.Load 成功，文本长度: {languageFile.text?.Length ?? 0}");
             return ParseLanguageJson(languageFile.text, language);
         }
+        Debug.LogWarning($"[LocalizationManager] Resources.Load 未找到: {resourcePath}");
         
 #if !UNITY_WEBGL || UNITY_EDITOR
         // 尝试从StreamingAssets加载（WebGL 平台不支持 File.ReadAllText 读 StreamingAssets，跳过）
@@ -174,33 +176,38 @@ public class LocalizationManager : MonoBehaviour
         {
             // 清空当前字典
             currentLanguageDict.Clear();
-            
+
             // 解析JSON
             var languageData = JsonUtility.FromJson<LocalizationData>(jsonContent);
-            
-            if (languageData != null && languageData.texts != null)
+
+            if (languageData == null)
             {
-                foreach (var textEntry in languageData.texts)
-                {
-                    if (!string.IsNullOrEmpty(textEntry.key))
-                    {
-                        currentLanguageDict[textEntry.key] = textEntry.value ?? "";
-                    }
-                }
-                
-                LogDebug($"成功加载 {currentLanguageDict.Count} 条文本记录");
-                return true;
-            }
-            else
-            {
-                LogError("语言文件格式错误或为空");
+                Debug.LogError($"[LocalizationManager] JsonUtility.FromJson 返回 null（IL2CPP 可能裁剪了 LocalizationData 类型）");
                 CreateDefaultLanguageDict(language);
                 return false;
             }
+
+            if (languageData.texts == null)
+            {
+                Debug.LogError($"[LocalizationManager] JSON 解析后 texts 为 null（IL2CPP 可能裁剪了 LocalizationTextEntry 类型）。JSON 长度: {jsonContent?.Length ?? 0}");
+                CreateDefaultLanguageDict(language);
+                return false;
+            }
+
+            foreach (var textEntry in languageData.texts)
+            {
+                if (!string.IsNullOrEmpty(textEntry.key))
+                {
+                    currentLanguageDict[textEntry.key] = textEntry.value ?? "";
+                }
+            }
+
+            Debug.Log($"[LocalizationManager] 成功加载 {currentLanguageDict.Count} 条文本记录 ({language})");
+            return true;
         }
         catch (System.Exception e)
         {
-            LogError($"解析语言文件失败: {e.Message}");
+            Debug.LogError($"[LocalizationManager] 解析语言文件失败: {e.GetType().Name}: {e.Message}");
             CreateDefaultLanguageDict(language);
             return false;
         }
@@ -376,17 +383,19 @@ public class LocalizationManager : MonoBehaviour
 /// 本地化数据结构
 /// </summary>
 [System.Serializable]
+[UnityEngine.Scripting.Preserve]
 public class LocalizationData
 {
-    public LocalizationTextEntry[] texts;
+    [UnityEngine.Scripting.Preserve] public LocalizationTextEntry[] texts;
 }
 
 /// <summary>
 /// 本地化文本条目
 /// </summary>
 [System.Serializable]
+[UnityEngine.Scripting.Preserve]
 public class LocalizationTextEntry
 {
-    public string key;
-    public string value;
+    [UnityEngine.Scripting.Preserve] public string key;
+    [UnityEngine.Scripting.Preserve] public string value;
 }

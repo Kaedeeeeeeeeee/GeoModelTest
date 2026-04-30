@@ -736,7 +736,7 @@ namespace WorkbenchSystem
 
             Text text = textObj.AddComponent<Text>();
             text.text = $"按 {interactionKey} 键 进入工作台";
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIFontResolver.GetUIFont();
             text.fontSize = 24;
             text.alignment = TextAnchor.MiddleCenter;
             text.color = Color.white;

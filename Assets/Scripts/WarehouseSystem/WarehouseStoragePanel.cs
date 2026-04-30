@@ -219,7 +219,7 @@ public class WarehouseStoragePanel : MonoBehaviour
         
         Text itemText = textObj.AddComponent<Text>();
         itemText.text = "";
-        itemText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        itemText.font = UIFontResolver.GetUIFont();
         itemText.fontSize = 10;
         itemText.color = Color.white;
         itemText.alignment = TextAnchor.MiddleCenter;
@@ -280,7 +280,7 @@ public class WarehouseStoragePanel : MonoBehaviour
             
             pageInfoText = textObj.AddComponent<Text>();
             pageInfoText.text = "第1页 / 共1页";
-            pageInfoText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            pageInfoText.font = UIFontResolver.GetUIFont();
             pageInfoText.fontSize = 16;
             pageInfoText.color = Color.white;
             pageInfoText.alignment = TextAnchor.MiddleCenter;
@@ -321,7 +321,7 @@ public class WarehouseStoragePanel : MonoBehaviour
         
         Text buttonText = textObj.AddComponent<Text>();
         buttonText.text = text;
-        buttonText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        buttonText.font = UIFontResolver.GetUIFont();
         buttonText.fontSize = 14;
         buttonText.color = Color.white;
         buttonText.alignment = TextAnchor.MiddleCenter;

@@ -213,7 +213,7 @@ public class WarehouseInventoryPanel : MonoBehaviour
         
         Text itemText = textObj.AddComponent<Text>();
         itemText.text = "";
-        itemText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        itemText.font = UIFontResolver.GetUIFont();
         itemText.fontSize = 12;
         itemText.color = Color.white;
         itemText.alignment = TextAnchor.MiddleCenter;

@@ -85,7 +85,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
             nameRect.anchoredPosition = new Vector2(0, 10);
             
             sampleNameText = nameObj.AddComponent<Text>();
-            sampleNameText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            sampleNameText.font = UIFontResolver.GetUIFont();
             sampleNameText.fontSize = 20;
             sampleNameText.color = Color.white;
             sampleNameText.alignment = TextAnchor.MiddleCenter;
@@ -106,7 +106,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
             quantityRect.anchoredPosition = new Vector2(-10, -10);
             
             quantityText = quantityObj.AddComponent<Text>();
-            quantityText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            quantityText.font = UIFontResolver.GetUIFont();
             quantityText.fontSize = 24;
             quantityText.color = Color.yellow;
             quantityText.alignment = TextAnchor.MiddleCenter;

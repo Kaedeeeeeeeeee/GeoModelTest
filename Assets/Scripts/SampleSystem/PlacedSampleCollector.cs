@@ -205,7 +205,7 @@ public class PlacedSampleCollector : MonoBehaviour
         
         promptText = textObj.AddComponent<Text>();
         promptText.text = $"[E] 收回 {originalSampleData?.displayName ?? "样本"}";
-        promptText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        promptText.font = UIFontResolver.GetUIFont();
         promptText.fontSize = 20; // 和钻塔UI类似的字体大小
         promptText.color = Color.white;
         promptText.alignment = TextAnchor.MiddleCenter;

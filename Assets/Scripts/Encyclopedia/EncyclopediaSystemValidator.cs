@@ -83,7 +83,7 @@ namespace Encyclopedia
             
             try
             {
-                Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+                Font font = UIFontResolver.GetUIFont();
                 if (font != null)
                 {
                     Debug.Log("✅ 字体资源正确");

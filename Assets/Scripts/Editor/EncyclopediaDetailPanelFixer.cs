@@ -261,7 +261,7 @@ public class EncyclopediaDetailPanelFixer : EditorWindow
 
         Text text = textGO.AddComponent<Text>();
         text.text = "×";
-        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        text.font = UIFontResolver.GetUIFont();
         text.fontSize = 36;
         text.color = Color.white;
         text.alignment = TextAnchor.MiddleCenter;
