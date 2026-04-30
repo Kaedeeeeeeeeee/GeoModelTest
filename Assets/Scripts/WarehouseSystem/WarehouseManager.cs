@@ -376,7 +376,8 @@ public class WarehouseManager : MonoBehaviour
             
             string jsonData = JsonUtility.ToJson(saveData, true);
             File.WriteAllText(saveFilePath, jsonData);
-            
+            WebGLFileSync.Flush(); // WebGL 下把内存写入同步到 IndexedDB
+
             lastSaveTime = Time.time;
             OnWarehouseDataSaved?.Invoke();
             

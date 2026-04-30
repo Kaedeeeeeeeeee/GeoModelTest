@@ -27,6 +27,7 @@ public static class ProgressResetService
         // 2) 清仓库文件
         var path = Path.Combine(Application.persistentDataPath, "warehouse_data.json");
         if (File.Exists(path)) File.Delete(path);
+        WebGLFileSync.Flush(); // WebGL 下把删除操作同步到 IndexedDB
 
         // 3) 清运行时内存状态
         var inv = Object.FindFirstObjectByType<SampleInventory>();

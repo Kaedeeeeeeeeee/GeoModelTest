@@ -271,6 +271,7 @@ namespace Encyclopedia
                 string json = JsonUtility.ToJson(saveData, true);
                 string savePath = Application.persistentDataPath + "/" + saveFileName + ".json";
                 System.IO.File.WriteAllText(savePath, json);
+                WebGLFileSync.Flush(); // WebGL 下把内存写入同步到 IndexedDB
 
                 lastSaveTime = Time.time;
                 isDirty = false;
