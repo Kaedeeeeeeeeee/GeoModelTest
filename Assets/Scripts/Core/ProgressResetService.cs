@@ -13,6 +13,7 @@ public static class ProgressResetService
     private const string CompletedQuestsKey = "QuestSystem.CompletedQuests";
     private const string CompletedObjectivesKey = "QuestSystem.CompletedObjectives";
     private const string ClassRoomHiddenKey = "MainScene.ClassRoom.Hidden";
+    private const string StoryFlagsKey = "StoryFlags";
 
     public static void ResetAll()
     {
@@ -22,6 +23,7 @@ public static class ProgressResetService
         PlayerPrefs.DeleteKey(CompletedQuestsKey);
         PlayerPrefs.DeleteKey(CompletedObjectivesKey);
         PlayerPrefs.DeleteKey(ClassRoomHiddenKey);
+        PlayerPrefs.DeleteKey(StoryFlagsKey);
         PlayerPrefs.Save();
 
         // 2) 清仓库文件

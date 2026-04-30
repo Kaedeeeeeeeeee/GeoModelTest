@@ -112,12 +112,28 @@ namespace StorySystem
 
         private void OnSceneLoaded(string sceneName)
         {
-            if (enableDebugLog) Debug.Log($"[StoryDirector] OnSceneLoaded: {sceneName}");
+            // 强制日志（不受 enableDebugLog 控制），方便 WebGL 用户从 Console 直接定位
+            Debug.Log($"[StoryDirector] OnSceneLoaded: {sceneName} | flags={string.Join(",", _flags)} | _isRunningCinematic={_isRunningCinematic}");
+
             // 场景1：首次进入 MainScene → 地震演出 + 对白
-            if (sceneName == "MainScene" && !HasFlag("story.main.rescue"))
+            if (sceneName == "MainScene")
             {
-                if (!_isRunningCinematic) StartCoroutine(Run_MainScene_Rescue());
-                return;
+                bool hasMainRescueFlag = HasFlag("story.main.rescue");
+                Debug.Log($"[StoryDirector] MainScene 分支 | story.main.rescue flag={hasMainRescueFlag}");
+                if (!hasMainRescueFlag)
+                {
+                    if (!_isRunningCinematic)
+                    {
+                        Debug.Log("[StoryDirector] 启动 Run_MainScene_Rescue 协程");
+                        StartCoroutine(Run_MainScene_Rescue());
+                    }
+                    else
+                    {
+                        Debug.LogWarning("[StoryDirector] MainScene 演出被 _isRunningCinematic=true 阻止");
+                    }
+                    return;
+                }
+                Debug.Log("[StoryDirector] story.main.rescue flag 已设置，跳过演出（如要重播：URL 加 ?resetstory=1）");
             }
 
             // 场景2/3：首次进入 Laboratory Scene → 实验室开场对白 + 解锁地质锤
