@@ -96,7 +96,7 @@ public class DrillTowerPrefabCreator : EditorWindow
 
         // 配置材质 - 创建明显可见的默认材质
         Material finalMaterial = new Material(Shader.Find("Standard"));
-        finalMaterial.color = new Color(0.8f, 0.3f, 0.1f, 1f); // 橙红色，确保可见
+        finalMaterial.color = new Color(1f, 1f, 1f, 1f); // 默认白灰色
         finalMaterial.SetFloat("_Metallic", 0.2f);
         finalMaterial.SetFloat("_Glossiness", 0.6f);
 

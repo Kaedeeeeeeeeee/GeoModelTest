@@ -150,7 +150,7 @@ public class GameInitializer : MonoBehaviour
         
         DrillTowerVisibilityFixer visibilityFixer = visibilityFixerObj.AddComponent<DrillTowerVisibilityFixer>();
         visibilityFixer.autoFixOnStart = true;
-        visibilityFixer.defaultColor = new Color(0.8f, 0.3f, 0.1f, 1f); // 橙红色
+        visibilityFixer.defaultColor = new Color(1f, 1f, 1f, 1f); // 默认白灰色
         
         
     }

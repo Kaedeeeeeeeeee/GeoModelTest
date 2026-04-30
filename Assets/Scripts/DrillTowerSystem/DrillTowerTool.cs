@@ -275,7 +275,7 @@ public class DrillTowerTool : PlaceableTool
             if (renderer.material == null || renderer.material.color.a < 0.5f)
             {
                 Material visibleMaterial = new Material(Shader.Find("Standard"));
-                visibleMaterial.color = new Color(0.8f, 0.3f, 0.1f, 1f); // 橙红色
+                visibleMaterial.color = new Color(1f, 1f, 1f, 1f); // 默认白灰色
                 renderer.material = visibleMaterial;
             }
         }

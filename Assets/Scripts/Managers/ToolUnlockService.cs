@@ -162,10 +162,11 @@ public static class ToolUnlockService_Internal
             drillTower.sampleSpacing = Mathf.Approximately(drillTower.sampleSpacing, 0f) ? 0.8f : drillTower.sampleSpacing;
         }
 
-        // 若没有预制体，创建一个运行时备用钻塔预制体
+        // 若没有预制体，优先从 Resources 加载已配好材质的真 prefab，加载失败再走运行时兜底
         if (drillTower.drillTowerPrefab == null)
         {
-            drillTower.drillTowerPrefab = CreateFallbackDrillTowerPrefab();
+            var loadedPrefab = Resources.Load<GameObject>("Prefabs/DrillTower/DrillTowerPrefab");
+            drillTower.drillTowerPrefab = loadedPrefab != null ? loadedPrefab : CreateFallbackDrillTowerPrefab();
         }
 
         if (drillTower.prefabToPlace == null)
@@ -173,7 +174,20 @@ public static class ToolUnlockService_Internal
             drillTower.prefabToPlace = drillTower.drillTowerPrefab;
         }
 
+        // 任务解锁路径不会跑 GameInitializer.InitializeInteractionUI，这里兜底确保
+        // 场景中存在 DrillTowerInteractionUI（负责显示"按 F 钻探/按 G 收回"提示）。
+        EnsureDrillTowerInteractionUI();
+
         return drillTower;
+    }
+
+    private static void EnsureDrillTowerInteractionUI()
+    {
+        if (Object.FindFirstObjectByType<DrillTowerInteractionUI>() != null) return;
+
+        var uiObj = new GameObject("DrillTowerInteractionUI");
+        var ui = uiObj.AddComponent<DrillTowerInteractionUI>();
+        ui.promptDistance = 3f;
     }
 
     private static GameObject CreateFallbackDrillTowerPrefab()
@@ -213,7 +227,7 @@ public static class ToolUnlockService_Internal
 
         var standardMaterial = new Material(Shader.Find("Standard"))
         {
-            color = new Color(0.8f, 0.3f, 0.1f, 1f)
+            color = new Color(1f, 1f, 1f, 1f)
         };
         standardMaterial.SetFloat("_Metallic", 0.2f);
         standardMaterial.SetFloat("_Glossiness", 0.6f);
