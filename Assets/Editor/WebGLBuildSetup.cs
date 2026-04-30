@@ -39,6 +39,10 @@ public static class WebGLBuildSetup
         PlayerSettings.WebGL.dataCaching = true;
         Debug.Log("[WebGLBuildSetup] WebGL.dataCaching = true");
 
+        // 自定义 letterbox 模板（保持 16:9 内部分辨率，外层 CSS 缩放 + 黑边）
+        PlayerSettings.WebGL.template = "PROJECT:FixedAspect";
+        Debug.Log("[WebGLBuildSetup] WebGL.template = PROJECT:FixedAspect");
+
         AssetDatabase.SaveAssets();
         Debug.Log("[WebGLBuildSetup] 配置完成，已保存");
     }
