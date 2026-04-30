@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
-using Newtonsoft.Json;
 
 namespace MineralSystem
 {
@@ -92,30 +90,31 @@ namespace MineralSystem
         
         private void LoadDatabase()
         {
-            string dataPath = Path.Combine(Application.streamingAssetsPath, "MineralData", databaseFileName);
-            
-            if (!File.Exists(dataPath))
+            // 数据文件位于 Assets/Resources/MineralData/Data/，通过 Resources.Load 加载，
+            // 兼容编辑器与 WebGL（Newtonsoft + System.IO 的组合在 WebGL/IL2CPP 下不可靠）。
+            string resourcePath = "MineralData/Data/" + System.IO.Path.GetFileNameWithoutExtension(databaseFileName);
+            TextAsset textAsset = Resources.Load<TextAsset>(resourcePath);
+
+            if (textAsset == null)
             {
-                dataPath = Path.Combine(Application.dataPath, "MineralData", "Data", databaseFileName);
+                Debug.LogError($"未找到矿物数据库 Resources/{resourcePath}");
+                return;
             }
-            
-            if (File.Exists(dataPath))
+
+            try
             {
-                try
+                mineralDatabase = JsonUtility.FromJson<SendaiMineralDatabase>(textAsset.text);
+                if (mineralDatabase == null || mineralDatabase.stratigraphicLayers == null)
                 {
-                    string jsonContent = File.ReadAllText(dataPath);
-                    mineralDatabase = JsonConvert.DeserializeObject<SendaiMineralDatabase>(jsonContent);
-                    BuildLookupTables();
-                    Debug.Log($"矿物数据库加载成功: {mineralDatabase.stratigraphicLayers.Count} 个地层");
+                    Debug.LogError("矿物数据库 JSON 解析失败：返回 null 或 stratigraphicLayers 为空");
+                    return;
                 }
-                catch (Exception e)
-                {
-                    Debug.LogError($"加载矿物数据库失败: {e.Message}");
-                }
+                BuildLookupTables();
+                Debug.Log($"矿物数据库加载成功: {mineralDatabase.stratigraphicLayers.Count} 个地层");
             }
-            else
+            catch (Exception e)
             {
-                Debug.LogError($"未找到矿物数据库文件: {dataPath}");
+                Debug.LogError($"加载矿物数据库失败: {e.Message}");
             }
         }
         

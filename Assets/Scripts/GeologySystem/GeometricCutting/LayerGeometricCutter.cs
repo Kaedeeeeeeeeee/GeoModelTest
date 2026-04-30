@@ -138,6 +138,10 @@ public class LayerGeometricCutter : MonoBehaviour
             // 第3步：对每个地层进行切割
             List<LayerCutResult> cutResults = new List<LayerCutResult>();
             
+#if UNITY_WEBGL && !UNITY_EDITOR
+            // WebGL 不支持 Task.Run 多线程，强制走同步路径
+            cutResults = ProcessLayersSync(layersInRange, drillingCylinder, drillingPoint, direction);
+#else
             if (useAsyncProcessing)
             {
                 cutResults = await ProcessLayersAsync(layersInRange, drillingCylinder, drillingPoint, direction);
@@ -146,6 +150,7 @@ public class LayerGeometricCutter : MonoBehaviour
             {
                 cutResults = ProcessLayersSync(layersInRange, drillingCylinder, drillingPoint, direction);
             }
+#endif
             
             // 第4步：按深度排序和验证结果
             var validResults = cutResults.Where(r => r.isValid && r.volume > 0.001f).ToArray();
@@ -192,24 +197,25 @@ public class LayerGeometricCutter : MonoBehaviour
         return results;
     }
     
+#if !UNITY_WEBGL || UNITY_EDITOR
     /// <summary>
-    /// 异步处理地层
+    /// 异步处理地层（WebGL 平台不可用，使用 ProcessLayersSync）
     /// </summary>
     private async Task<List<LayerCutResult>> ProcessLayersAsync(GeologyLayer[] layers, Mesh drillingCylinder, Vector3 drillingPoint, Vector3 direction)
     {
         List<LayerCutResult> results = new List<LayerCutResult>();
-        
+
         for (int i = 0; i < layers.Length; i += maxConcurrentOperations)
         {
             int batchEnd = Mathf.Min(i + maxConcurrentOperations, layers.Length);
             var batchLayers = layers.Skip(i).Take(batchEnd - i).ToArray();
-            
-            var batchTasks = batchLayers.Select(layer => 
+
+            var batchTasks = batchLayers.Select(layer =>
                 Task.Run(() => CutLayerWithCylinder(layer, drillingCylinder, drillingPoint, direction))
             ).ToArray();
-            
+
             var batchResults = await Task.WhenAll(batchTasks);
-            
+
             foreach (var result in batchResults)
             {
                 if (result.isValid)
@@ -217,16 +223,17 @@ public class LayerGeometricCutter : MonoBehaviour
                     results.Add(result);
                 }
             }
-            
+
             if (enableProgressReporting)
             {
                 float progress = (float)batchEnd / layers.Length;
-                
+
             }
         }
-        
+
         return results;
     }
+#endif
     
     /// <summary>
     /// 用圆柱体切割地层
