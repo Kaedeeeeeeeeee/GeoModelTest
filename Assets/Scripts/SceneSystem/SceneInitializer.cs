@@ -197,47 +197,28 @@ public class SceneInitializer : MonoBehaviour
 
         bool needsSimplifiedInitialization = false;
 
-        // 使用更安全的方式检查是否已存在LaboratoryMobileUIInitializer
-        UnityEngine.Object existingInitializerObj = FindFirstObjectByType(System.Type.GetType("LaboratoryMobileUIInitializer"));
-        Component existingInitializer = existingInitializerObj as Component;
+        // 直接使用强类型而非反射，兼容 IL2CPP/WebGL（反射可能因代码裁剪失败）
+        var existingInitializer = FindFirstObjectByType<LaboratoryMobileUIInitializer>();
 
         if (existingInitializer == null)
         {
-            // 尝试通过反射创建组件
             GameObject initializerObj = new GameObject("LaboratoryMobileUIInitializer");
-
-            // 使用反射添加组件
-            System.Type initializerType = System.Type.GetType("LaboratoryMobileUIInitializer");
-            if (initializerType != null)
+            try
             {
-                try
-                {
-                    Component labUIInitializer = initializerObj.AddComponent(initializerType);
+                var labUIInitializer = initializerObj.AddComponent<LaboratoryMobileUIInitializer>();
+                labUIInitializer.enableMobileUI = true;
+                labUIInitializer.forceShowOnDesktop = ShouldForceShowMobileUI();
+                labUIInitializer.enableDebugVisualization = false;
 
-                    // 通过反射设置属性
-                    SetComponentProperty(labUIInitializer, "enableMobileUI", true);
-                    SetComponentProperty(labUIInitializer, "forceShowOnDesktop", ShouldForceShowMobileUI());
-                    SetComponentProperty(labUIInitializer, "enableDebugVisualization", false);
-
-                    Debug.Log("✅ 研究室移动端UI初始化器创建完成（通过反射）");
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogError($"❌ 创建LaboratoryMobileUIInitializer失败: {e.Message}");
-                    DestroyImmediate(initializerObj);
-
-                    // 不能在catch块中使用yield，设置标志位
-                    needsSimplifiedInitialization = true;
-                }
+                Debug.Log("✅ 研究室移动端UI初始化器创建完成");
             }
-            else
+            catch (System.Exception e)
             {
-                Debug.LogWarning("❌ 无法找到LaboratoryMobileUIInitializer类型，将使用简化初始化");
+                Debug.LogError($"❌ 创建LaboratoryMobileUIInitializer失败: {e.Message}");
                 DestroyImmediate(initializerObj);
                 needsSimplifiedInitialization = true;
             }
 
-            // 在try-catch块外处理简化初始化
             if (needsSimplifiedInitialization)
             {
                 yield return StartCoroutine(SimplifiedMobileUIInitialization());
@@ -268,35 +249,6 @@ public class SceneInitializer : MonoBehaviour
         bool hasTouch = UnityEngine.InputSystem.Touchscreen.current != null;
 
         return isMobile || hasTouch;
-    }
-
-    /// <summary>
-    /// 通过反射设置组件属性
-    /// </summary>
-    void SetComponentProperty(Component component, string propertyName, object value)
-    {
-        if (component == null) return;
-
-        try
-        {
-            System.Type componentType = component.GetType();
-            System.Reflection.FieldInfo field = componentType.GetField(propertyName,
-                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-
-            if (field != null)
-            {
-                field.SetValue(component, value);
-                Debug.Log($"🔧 设置属性 {propertyName} = {value}");
-            }
-            else
-            {
-                Debug.LogWarning($"❌ 无法找到属性: {propertyName}");
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"❌ 设置属性 {propertyName} 失败: {e.Message}");
-        }
     }
 
     /// <summary>
@@ -358,38 +310,22 @@ public class SceneInitializer : MonoBehaviour
         // 等待场景完全加载
         yield return new WaitForSeconds(0.5f);
 
-        // 使用反射检查是否已存在SimpleLaboratoryMobileUIManager
-        System.Type managerType = System.Type.GetType("SimpleLaboratoryMobileUIManager");
-        UnityEngine.Object existingManagerObj = null;
+        // 直接强类型访问，兼容 IL2CPP/WebGL
+        var existingManager = FindFirstObjectByType<SimpleLaboratoryMobileUIManager>();
 
-        if (managerType != null)
+        if (existingManager == null)
         {
-            existingManagerObj = FindFirstObjectByType(managerType);
-        }
-
-        Component existingManager = existingManagerObj as Component;
-
-        if (existingManager == null && managerType != null)
-        {
-            // 创建简化的移动端UI管理器
             GameObject managerObj = new GameObject("SimpleLaboratoryMobileUIManager");
-            Component uiManager = managerObj.AddComponent(managerType);
+            var uiManager = managerObj.AddComponent<SimpleLaboratoryMobileUIManager>();
+            uiManager.enableMobileUI = true;
+            uiManager.forceShowOnDesktop = ShouldForceShowMobileUI();
+            uiManager.enableDebugVisualization = false;
 
-            // 通过反射配置管理器
-            SetComponentProperty(uiManager, "enableMobileUI", true);
-            SetComponentProperty(uiManager, "forceShowOnDesktop", ShouldForceShowMobileUI());
-            SetComponentProperty(uiManager, "enableDebugVisualization", false);
-
-            Debug.Log("✅ SimpleLaboratoryMobileUIManager创建完成（通过反射）");
-        }
-        else if (existingManager != null)
-        {
-            Debug.Log("✅ SimpleLaboratoryMobileUIManager已存在，跳过创建");
+            Debug.Log("✅ SimpleLaboratoryMobileUIManager创建完成");
         }
         else
         {
-            Debug.LogWarning("❌ 无法找到SimpleLaboratoryMobileUIManager类型，使用简化初始化");
-            yield return StartCoroutine(SimplifiedMobileUIInitialization());
+            Debug.Log("✅ SimpleLaboratoryMobileUIManager已存在，跳过创建");
         }
 
         Debug.Log("🎉 简化研究室移动端UI初始化完成");
@@ -405,36 +341,17 @@ public class SceneInitializer : MonoBehaviour
         // 等待场景完全加载
         yield return new WaitForSeconds(0.8f);
 
-        // 尝试通过反射调用辅助器方法
+        // 直接调用静态方法，兼容 IL2CPP/WebGL
         bool helperCallSuccess = false;
-
-        // 在非yield上下文中处理反射调用
-        System.Type helperType = System.Type.GetType("LaboratoryMobileUIHelper");
-        if (helperType != null)
+        try
         {
-            try
-            {
-                var method = helperType.GetMethod("InitializeLaboratoryMobileUI",
-                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-                if (method != null)
-                {
-                    method.Invoke(null, null);
-                    Debug.Log("✅ 通过反射调用辅助器初始化成功");
-                    helperCallSuccess = true;
-                }
-                else
-                {
-                    Debug.LogWarning("❌ 无法找到InitializeLaboratoryMobileUI方法");
-                }
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"❌ 调用辅助器失败: {e.Message}");
-            }
+            LaboratoryMobileUIHelper.InitializeLaboratoryMobileUI();
+            Debug.Log("✅ 调用辅助器初始化成功");
+            helperCallSuccess = true;
         }
-        else
+        catch (System.Exception e)
         {
-            Debug.LogWarning("❌ 无法找到LaboratoryMobileUIHelper类型");
+            Debug.LogError($"❌ 调用辅助器失败: {e.Message}");
         }
 
         // 如果辅助器调用失败，使用简化初始化
