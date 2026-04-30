@@ -1,0 +1,17 @@
+<linker>
+  <!--
+    保护这些类型在 IL2CPP 裁剪时不被剔除。
+    主要面向 WebGL 构建：MineralDatabase 的数据结构通过 JsonUtility 反序列化使用，
+    SceneSystem 的几个 Mobile UI 类型曾经被反射查找，转强类型后留作保险。
+  -->
+  <assembly fullname="Assembly-CSharp">
+    <type fullname="MineralSystem.SendaiMineralDatabase" preserve="all"/>
+    <type fullname="MineralSystem.StratigraphicLayer" preserve="all"/>
+    <type fullname="MineralSystem.RockType" preserve="all"/>
+    <type fullname="MineralSystem.MineralData" preserve="all"/>
+    <type fullname="MineralSystem.MineralProperties" preserve="all"/>
+    <type fullname="LaboratoryMobileUIInitializer" preserve="all"/>
+    <type fullname="SimpleLaboratoryMobileUIManager" preserve="all"/>
+    <type fullname="LaboratoryMobileUIHelper" preserve="all"/>
+  </assembly>
+</linker>

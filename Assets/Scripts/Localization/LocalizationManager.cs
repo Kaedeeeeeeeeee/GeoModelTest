@@ -142,7 +142,8 @@ public class LocalizationManager : MonoBehaviour
             return ParseLanguageJson(languageFile.text, language);
         }
         
-        // 尝试从StreamingAssets加载
+#if !UNITY_WEBGL || UNITY_EDITOR
+        // 尝试从StreamingAssets加载（WebGL 平台不支持 File.ReadAllText 读 StreamingAssets，跳过）
         string streamingPath = Path.Combine(Application.streamingAssetsPath, "Localization", fileName);
         if (File.Exists(streamingPath))
         {
@@ -156,6 +157,7 @@ public class LocalizationManager : MonoBehaviour
                 LogError($"读取语言文件失败: {streamingPath}, 错误: {e.Message}");
             }
         }
+#endif
         
         // 如果无法加载，创建默认字典
         LogWarning($"无法加载语言文件 {fileName}，使用默认文本");

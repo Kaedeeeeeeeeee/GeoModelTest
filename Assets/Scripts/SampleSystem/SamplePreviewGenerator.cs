@@ -345,7 +345,12 @@ public class SamplePreviewGenerator : MonoBehaviour
     void SavePreviewToFile(Texture2D texture, string sampleName)
     {
         if (texture == null) return;
-        
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        // WebGL 不支持 Directory.CreateDirectory；该功能在浏览器端无意义，直接跳过
+        Debug.Log("[SamplePreviewGenerator] WebGL 平台不保存预览图到磁盘");
+        return;
+#else
         try
         {
             string directoryPath = Path.Combine(Application.persistentDataPath, saveDirectory);
@@ -353,19 +358,20 @@ public class SamplePreviewGenerator : MonoBehaviour
             {
                 Directory.CreateDirectory(directoryPath);
             }
-            
+
             string fileName = $"{sampleName}_preview_{System.DateTime.Now:yyyyMMdd_HHmmss}.png";
             string filePath = Path.Combine(directoryPath, fileName);
-            
+
             byte[] pngData = texture.EncodeToPNG();
             File.WriteAllBytes(filePath, pngData);
-            
+
             Debug.Log($"样本预览图已保存: {filePath}");
         }
         catch (System.Exception e)
         {
             Debug.LogError($"保存预览图失败: {e.Message}");
         }
+#endif
     }
     
     /// <summary>
