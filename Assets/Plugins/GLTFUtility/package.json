@@ -1,0 +1,15 @@
+{
+  "name": "com.siccity.gltfutility",
+  "displayName": "GLTFUtility",
+  "version": "0.7.2",
+  "unity": "2018.2",
+  "keywords": [
+    "glTF",
+    "import"
+  ],
+  "description": "Lightweight glTF loader.",
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "2.0.0"
+  },
+  "_fingerprint": "dfdc50830c201c53306fba4ab57ced763d2930c8"
+}

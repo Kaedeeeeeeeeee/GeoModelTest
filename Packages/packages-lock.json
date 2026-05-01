@@ -9,15 +9,6 @@
       },
       "hash": "e67b806f5425b6877e2e0d5589ef9577d5730560"
     },
-    "com.siccity.gltfutility": {
-      "version": "https://github.com/Siccity/GLTFUtility.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.nuget.newtonsoft-json": "2.0.0"
-      },
-      "hash": "dfdc50830c201c53306fba4ab57ced763d2930c8"
-    },
     "com.unity.burst": {
       "version": "1.8.21",
       "depth": 2,
@@ -124,7 +115,7 @@
     },
     "com.unity.nuget.newtonsoft-json": {
       "version": "3.2.1",
-      "depth": 1,
+      "depth": 0,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -224,9 +215,9 @@
       "depth": 1,
       "source": "registry",
       "dependencies": {
-        "com.unity.modules.unitywebrequest": "1.0.0",
+        "com.unity.modules.androidjni": "1.0.0",
         "com.unity.nuget.newtonsoft-json": "3.2.1",
-        "com.unity.modules.androidjni": "1.0.0"
+        "com.unity.modules.unitywebrequest": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },

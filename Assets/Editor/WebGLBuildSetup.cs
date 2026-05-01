@@ -47,6 +47,25 @@ public static class WebGLBuildSetup
         Debug.Log("[WebGLBuildSetup] 配置完成，已保存");
     }
 
+    [MenuItem("Tools/WebGL/Reimport Mineral GLBs (Apply Texture Compression)")]
+    public static void ReimportMineralGLBs()
+    {
+        string[] guids = AssetDatabase.FindAssets("", new[] { "Assets/Resources/MineralData/Models" });
+        int count = 0;
+        foreach (var guid in guids)
+        {
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            if (path.EndsWith(".glb"))
+            {
+                Debug.Log($"[WebGLBuildSetup] Reimporting: {path}");
+                AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+                count++;
+            }
+        }
+        AssetDatabase.SaveAssets();
+        Debug.Log($"[WebGLBuildSetup] Reimported {count} .glb files with WebGL texture compression");
+    }
+
     [MenuItem("Tools/WebGL/Build")]
     public static void BuildWebGL()
     {
