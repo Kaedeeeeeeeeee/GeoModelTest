@@ -102,12 +102,31 @@ namespace SceneSystem
             float y = 0f;
             float spacing = 90f;
 
-            // Game Start
-            var startBtn = CreateButton(container.transform, "Game Start");
-            var sRt = startBtn.GetComponent<RectTransform>();
-            sRt.anchoredPosition = new Vector2(0f, y);
-            startBtn.onClick.AddListener(OnStartGame);
-            y -= spacing;
+            // 检测玩家是否已有存档：决定是单 "Game Start" 还是 "Continue + New Game"
+            bool hasProgress = HasSavedProgress();
+
+            if (hasProgress)
+            {
+                // Continue（接着上次玩，不清档）
+                var continueBtn = CreateButton(container.transform, "Continue");
+                continueBtn.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
+                continueBtn.onClick.AddListener(OnStartGame);
+                y -= spacing;
+
+                // New Game（弹确认对话框 → 清档 → 进 MainScene）
+                var newGameBtn = CreateButton(container.transform, "New Game");
+                newGameBtn.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
+                newGameBtn.onClick.AddListener(OnNewGameClicked);
+                y -= spacing;
+            }
+            else
+            {
+                // 首次玩或已清档：只显示一个 "Game Start"
+                var startBtn = CreateButton(container.transform, "Game Start");
+                startBtn.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
+                startBtn.onClick.AddListener(OnStartGame);
+                y -= spacing;
+            }
 
             // Settings（复用 ESC 设置界面的语言切换UI）
             var settingBtn = CreateButton(container.transform, "Settings");
@@ -121,6 +140,19 @@ namespace SceneSystem
             var qRt = quitBtn.GetComponent<RectTransform>();
             qRt.anchoredPosition = new Vector2(0f, y);
             quitBtn.onClick.AddListener(OnQuitGame);
+        }
+
+        /// <summary>
+        /// 检查 PlayerPrefs 里是否存在任何已保存的进度。
+        /// 任何一个核心存档键存在就算"有进度"。
+        /// </summary>
+        private static bool HasSavedProgress()
+        {
+            return PlayerPrefs.HasKey("StoryFlags")
+                || PlayerPrefs.HasKey("PlayerPersistentData.UnlockedToolIds")
+                || PlayerPrefs.HasKey("PlayerPersistentData.Inventory")
+                || PlayerPrefs.HasKey("QuestSystem.CompletedObjectives")
+                || PlayerPrefs.HasKey("QuestSystem.CompletedQuests");
         }
 
         private void Update()
@@ -224,6 +256,102 @@ namespace SceneSystem
 #else
             Application.Quit();
 #endif
+        }
+
+        /// <summary>
+        /// 玩家点击 New Game 按钮。弹确认框，确认后清掉所有 PlayerPrefs 进度并进 MainScene。
+        /// </summary>
+        private void OnNewGameClicked()
+        {
+            Debug.Log("[StartMenu] New Game clicked, showing confirm dialog");
+            ShowConfirmDialog(
+                title: "New Game",
+                message: "覆盖现有进度？\nThis will erase your current save (story progress, quests, inventory).",
+                confirmLabel: "确认开始 / Start Fresh",
+                cancelLabel: "取消 / Cancel",
+                onConfirm: () =>
+                {
+                    Debug.Log("[StartMenu] Resetting all progress and starting new game");
+                    ProgressResetService.ResetAll();
+                    OnStartGame();
+                }
+            );
+        }
+
+        /// <summary>
+        /// 在 StartMenu Canvas 里动态构造一个简单的确认对话框（半透明遮罩 + 中央面板 + 两按钮）。
+        /// </summary>
+        private void ShowConfirmDialog(string title, string message, string confirmLabel, string cancelLabel, System.Action onConfirm)
+        {
+            // 半透明全屏遮罩
+            var overlay = new GameObject("ConfirmDialog");
+            overlay.transform.SetParent(_canvas.transform, false);
+            var oRt = overlay.AddComponent<RectTransform>();
+            oRt.anchorMin = Vector2.zero;
+            oRt.anchorMax = Vector2.one;
+            oRt.offsetMin = Vector2.zero;
+            oRt.offsetMax = Vector2.zero;
+            var oImg = overlay.AddComponent<Image>();
+            oImg.color = new Color(0f, 0f, 0f, 0.75f);
+            oImg.raycastTarget = true; // 拦截背景点击
+
+            // 中央面板
+            var panel = new GameObject("Panel");
+            panel.transform.SetParent(overlay.transform, false);
+            var pRt = panel.AddComponent<RectTransform>();
+            pRt.anchorMin = new Vector2(0.5f, 0.5f);
+            pRt.anchorMax = new Vector2(0.5f, 0.5f);
+            pRt.sizeDelta = new Vector2(720f, 380f);
+            pRt.anchoredPosition = Vector2.zero;
+            var pImg = panel.AddComponent<Image>();
+            pImg.color = new Color(0.15f, 0.15f, 0.15f, 1f);
+
+            // 标题
+            var titleGo = CreateText(panel.transform, "Title", title, 38);
+            var titleRt = titleGo.GetComponent<RectTransform>();
+            titleRt.anchorMin = new Vector2(0f, 1f);
+            titleRt.anchorMax = new Vector2(1f, 1f);
+            titleRt.pivot = new Vector2(0.5f, 1f);
+            titleRt.anchoredPosition = new Vector2(0f, -36f);
+            titleRt.sizeDelta = new Vector2(-40f, 60f);
+
+            // 消息正文
+            var msgGo = CreateText(panel.transform, "Message", message, 22);
+            var msgRt = msgGo.GetComponent<RectTransform>();
+            msgRt.anchorMin = new Vector2(0f, 0.5f);
+            msgRt.anchorMax = new Vector2(1f, 0.5f);
+            msgRt.pivot = new Vector2(0.5f, 0.5f);
+            msgRt.anchoredPosition = new Vector2(0f, 10f);
+            msgRt.sizeDelta = new Vector2(-60f, 130f);
+            var msgText = msgGo.GetComponent<Text>();
+            msgText.horizontalOverflow = HorizontalWrapMode.Wrap;
+            msgText.verticalOverflow = VerticalWrapMode.Overflow;
+
+            // 确认按钮（红色，靠左）
+            var confirmBtn = CreateButton(panel.transform, confirmLabel);
+            confirmBtn.GetComponent<Image>().color = new Color(0.78f, 0.25f, 0.25f, 1f);
+            var cBtnRt = confirmBtn.GetComponent<RectTransform>();
+            cBtnRt.anchorMin = new Vector2(0.5f, 0f);
+            cBtnRt.anchorMax = new Vector2(0.5f, 0f);
+            cBtnRt.pivot = new Vector2(0.5f, 0f);
+            cBtnRt.anchoredPosition = new Vector2(-140f, 36f);
+            cBtnRt.sizeDelta = new Vector2(260f, 64f);
+            confirmBtn.onClick.AddListener(() =>
+            {
+                Destroy(overlay);
+                onConfirm?.Invoke();
+            });
+
+            // 取消按钮（灰色，靠右）
+            var cancelBtn = CreateButton(panel.transform, cancelLabel);
+            cancelBtn.GetComponent<Image>().color = new Color(0.4f, 0.4f, 0.4f, 1f);
+            var caBtnRt = cancelBtn.GetComponent<RectTransform>();
+            caBtnRt.anchorMin = new Vector2(0.5f, 0f);
+            caBtnRt.anchorMax = new Vector2(0.5f, 0f);
+            caBtnRt.pivot = new Vector2(0.5f, 0f);
+            caBtnRt.anchoredPosition = new Vector2(140f, 36f);
+            caBtnRt.sizeDelta = new Vector2(260f, 64f);
+            cancelBtn.onClick.AddListener(() => Destroy(overlay));
         }
 
         private void EnsureEventSystem()
