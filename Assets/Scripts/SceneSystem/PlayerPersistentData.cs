@@ -607,6 +607,26 @@ public class PlayerPersistentData : MonoBehaviour
             yield return null;
         }
 
+        // 兜底：场景里始终找不到玩家（如 Lab 场景没预置 Lily 也没 SceneAutoSetup）
+        // 时，从 Resources 加载并实例化 Lily prefab
+        if (player == null)
+        {
+            var lilyPrefab = Resources.Load<GameObject>("Model/Player/Lily");
+            if (lilyPrefab != null)
+            {
+                GameObject newPlayer = Instantiate(lilyPrefab);
+                newPlayer.name = "Lily";
+                player = newPlayer.GetComponent<FirstPersonController>();
+                Camera playerCam = newPlayer.GetComponentInChildren<Camera>();
+                if (playerCam != null) playerCam.tag = "MainCamera";
+                Debug.Log($"{GetTimestamp()} [PlayerPersistentData] 找不到玩家，从 Resources 创建 Lily 兜底，位置 {position}");
+            }
+            else
+            {
+                Debug.LogError($"{GetTimestamp()} [PlayerPersistentData] Resources/Model/Player/Lily 加载失败");
+            }
+        }
+
         if (player != null)
         {
             // 获取 CharacterController 并临时禁用
