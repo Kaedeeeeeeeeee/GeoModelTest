@@ -224,6 +224,19 @@ namespace StorySystem
             }
         }
 
+        /// <summary>
+        /// 强制从 PlayerPrefs 重新载入剧情 flags。给 ProgressResetService.ResetAll() 用：
+        /// StoryDirector 是 DontDestroyOnLoad 单例，启动时已 load 过 flags 到 _flags HashSet；
+        /// 即便外部清掉 PlayerPrefs key，内存里的 _flags 也不变 → HasFlag 仍返回 true → 跳过演出。
+        /// 调这个方法可以让 _flags 重新跟 PlayerPrefs 对齐（如果 key 不存在，结果是空 HashSet）。
+        /// </summary>
+        public void ReloadFlags()
+        {
+            _flags = ProgressPersistence.LoadFlags();
+            _isRunningCinematic = false; // 顺便重置正在演出的标志，防止某种残留
+            Debug.Log($"[StoryDirector] ReloadFlags 完成，当前 flags 数量: {_flags.Count}");
+        }
+
         private List<SubtitleUI.SubtitleLine> LoadStoryLines(string resourcePath, IReadOnlyList<SubtitleUI.SubtitleLine> fallback)
         {
             var sequence = StorySequenceLoader.LoadFromResources(resourcePath, enableDebugLog);

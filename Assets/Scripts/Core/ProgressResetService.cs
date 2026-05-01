@@ -42,7 +42,12 @@ public static class ProgressResetService
             wm.SaveWarehouseData();
         }
 
-        // 4) 可选：刷新UI
+        // 4) 通知 DontDestroyOnLoad 单例重新载入剧情 flags（StoryDirector 内存里
+        //    缓存了启动时的 flags HashSet，必须主动让它重读，否则 New Game 后剧情仍跳过）
+        var sd = Object.FindFirstObjectByType<StorySystem.StoryDirector>();
+        if (sd != null) sd.ReloadFlags();
+
+        // 5) 可选：刷新UI
         var ui = Object.FindFirstObjectByType<InventoryUISystem>();
         if (ui != null) ui.RefreshTools();
 
