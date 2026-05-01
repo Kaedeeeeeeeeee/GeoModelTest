@@ -698,7 +698,27 @@ public class PlayerPersistentData : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"{GetTimestamp()} [PlayerPersistentData] 未找到玩家对象，尝试查找主摄像机");
+            Debug.LogWarning($"{GetTimestamp()} [PlayerPersistentData] 未找到玩家对象，尝试从 Resources/Model/Player/Lily 创建");
+            // 尝试从 Resources 加载 Lily 预制件创建玩家（Lab 场景里没预置 Lily 也没 SceneAutoSetup 时的兜底）
+            var lilyPrefab = Resources.Load<GameObject>("Model/Player/Lily");
+            if (lilyPrefab != null)
+            {
+                GameObject newPlayer = Instantiate(lilyPrefab);
+                newPlayer.name = "Lily";
+                newPlayer.transform.position = position;
+                newPlayer.transform.rotation = rotation;
+
+                // 把摄像机标签设为 MainCamera，方便后续脚本用 Camera.main
+                Camera playerCam = newPlayer.GetComponentInChildren<Camera>();
+                if (playerCam != null)
+                {
+                    playerCam.tag = "MainCamera";
+                }
+
+                Debug.Log($"{GetTimestamp()} [PlayerPersistentData] 从 Resources 创建 Lily 玩家成功，位置 {position}");
+                yield break;
+            }
+            Debug.LogError($"{GetTimestamp()} [PlayerPersistentData] Resources/Model/Player/Lily 加载失败，回退到只放摄像机");
             EnsureCameraExists(position, rotation);
         }
     }
