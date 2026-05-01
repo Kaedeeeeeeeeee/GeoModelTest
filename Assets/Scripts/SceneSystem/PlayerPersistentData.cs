@@ -607,19 +607,34 @@ public class PlayerPersistentData : MonoBehaviour
             yield return null;
         }
 
-        // 兜底：场景里始终找不到玩家（如 Lab 场景没预置 Lily 也没 SceneAutoSetup）
-        // 时，从 Resources 加载并实例化 Lily prefab
-        if (player == null)
+        // 兜底：场景里没有玩家，或者玩家不完整（缺 Camera 子物体），从 Resources 重建 Lily
+        bool playerIncomplete = player != null && player.GetComponentInChildren<Camera>(true) == null;
+        if (player == null || playerIncomplete)
         {
+            if (playerIncomplete)
+            {
+                Debug.LogWarning($"{GetTimestamp()} [PlayerPersistentData] 现有 player 缺 Camera 子物体，销毁后重建");
+                Destroy(player.gameObject);
+                player = null;
+                yield return null; // 等一帧让 Destroy 生效
+            }
+
             var lilyPrefab = Resources.Load<GameObject>("Model/Player/Lily");
             if (lilyPrefab != null)
             {
                 GameObject newPlayer = Instantiate(lilyPrefab);
                 newPlayer.name = "Lily";
+                newPlayer.transform.position = position;
+                newPlayer.transform.rotation = rotation;
                 player = newPlayer.GetComponent<FirstPersonController>();
-                Camera playerCam = newPlayer.GetComponentInChildren<Camera>();
-                if (playerCam != null) playerCam.tag = "MainCamera";
-                Debug.Log($"{GetTimestamp()} [PlayerPersistentData] 找不到玩家，从 Resources 创建 Lily 兜底，位置 {position}");
+                Camera playerCam = newPlayer.GetComponentInChildren<Camera>(true);
+                if (playerCam != null)
+                {
+                    playerCam.gameObject.SetActive(true);
+                    playerCam.enabled = true;
+                    playerCam.tag = "MainCamera";
+                }
+                Debug.Log($"{GetTimestamp()} [PlayerPersistentData] 从 Resources 创建 Lily 兜底成功，位置 {position}, Camera={(playerCam!=null)}");
             }
             else
             {
