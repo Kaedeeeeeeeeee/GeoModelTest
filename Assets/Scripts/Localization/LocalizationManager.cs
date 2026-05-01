@@ -172,45 +172,101 @@ public class LocalizationManager : MonoBehaviour
     /// </summary>
     private bool ParseLanguageJson(string jsonContent, LanguageSettings.Language language)
     {
+        currentLanguageDict.Clear();
+
+        // 优先用 JsonUtility（性能好）
         try
         {
-            // 清空当前字典
-            currentLanguageDict.Clear();
-
-            // 解析JSON
             var languageData = JsonUtility.FromJson<LocalizationData>(jsonContent);
-
-            if (languageData == null)
+            if (languageData != null && languageData.texts != null && languageData.texts.Length > 0)
             {
-                Debug.LogError($"[LocalizationManager] JsonUtility.FromJson 返回 null（IL2CPP 可能裁剪了 LocalizationData 类型）");
-                CreateDefaultLanguageDict(language);
-                return false;
-            }
-
-            if (languageData.texts == null)
-            {
-                Debug.LogError($"[LocalizationManager] JSON 解析后 texts 为 null（IL2CPP 可能裁剪了 LocalizationTextEntry 类型）。JSON 长度: {jsonContent?.Length ?? 0}");
-                CreateDefaultLanguageDict(language);
-                return false;
-            }
-
-            foreach (var textEntry in languageData.texts)
-            {
-                if (!string.IsNullOrEmpty(textEntry.key))
+                foreach (var textEntry in languageData.texts)
                 {
-                    currentLanguageDict[textEntry.key] = textEntry.value ?? "";
+                    if (!string.IsNullOrEmpty(textEntry.key))
+                    {
+                        currentLanguageDict[textEntry.key] = textEntry.value ?? "";
+                    }
                 }
+                Debug.Log($"[LocalizationManager] (JsonUtility) 加载 {currentLanguageDict.Count} 条 ({language})");
+                return true;
             }
-
-            Debug.Log($"[LocalizationManager] 成功加载 {currentLanguageDict.Count} 条文本记录 ({language})");
-            return true;
+            Debug.LogWarning($"[LocalizationManager] JsonUtility 返回空（IL2CPP 可能裁剪了序列化类型），降级到 Regex 解析");
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"[LocalizationManager] 解析语言文件失败: {e.GetType().Name}: {e.Message}");
+            Debug.LogWarning($"[LocalizationManager] JsonUtility 抛异常 ({e.GetType().Name}: {e.Message})，降级到 Regex 解析");
+        }
+
+        // Fallback: 不依赖反射的 Regex 解析，专门处理 {"texts":[{"key":"...","value":"..."}]} 结构
+        // 在 WebGL/IL2CPP 下当 JsonUtility 因序列化元数据被裁剪而失败时使用
+        return ParseWithRegex(jsonContent, language);
+    }
+
+    private bool ParseWithRegex(string jsonContent, LanguageSettings.Language language)
+    {
+        if (string.IsNullOrEmpty(jsonContent))
+        {
             CreateDefaultLanguageDict(language);
             return false;
         }
+
+        // 匹配 "key":"...","value":"..." 对（顺序固定，匹配项目中的实际格式）
+        // (?:[^"\\]|\\.) 匹配非转义字符或转义序列（\", \\, \n 等）
+        var pattern = @"""key""\s*:\s*""((?:[^""\\]|\\.)*)""\s*,\s*""value""\s*:\s*""((?:[^""\\]|\\.)*)""";
+        var matches = System.Text.RegularExpressions.Regex.Matches(
+            jsonContent, pattern,
+            System.Text.RegularExpressions.RegexOptions.Singleline);
+
+        foreach (System.Text.RegularExpressions.Match m in matches)
+        {
+            string key = UnescapeJsonString(m.Groups[1].Value);
+            string val = UnescapeJsonString(m.Groups[2].Value);
+            if (!string.IsNullOrEmpty(key))
+            {
+                currentLanguageDict[key] = val;
+            }
+        }
+
+        if (currentLanguageDict.Count == 0)
+        {
+            Debug.LogError($"[LocalizationManager] Regex fallback 也未匹配到任何条目，JSON 长度: {jsonContent.Length}");
+            CreateDefaultLanguageDict(language);
+            return false;
+        }
+
+        Debug.Log($"[LocalizationManager] (Regex fallback) 加载 {currentLanguageDict.Count} 条 ({language})");
+        return true;
+    }
+
+    private static string UnescapeJsonString(string s)
+    {
+        if (string.IsNullOrEmpty(s)) return s;
+        var sb = new System.Text.StringBuilder(s.Length);
+        for (int i = 0; i < s.Length; i++)
+        {
+            char c = s[i];
+            if (c == '\\' && i + 1 < s.Length)
+            {
+                char next = s[++i];
+                switch (next)
+                {
+                    case '"': sb.Append('"'); break;
+                    case '\\': sb.Append('\\'); break;
+                    case '/': sb.Append('/'); break;
+                    case 'n': sb.Append('\n'); break;
+                    case 'r': sb.Append('\r'); break;
+                    case 't': sb.Append('\t'); break;
+                    case 'b': sb.Append('\b'); break;
+                    case 'f': sb.Append('\f'); break;
+                    default: sb.Append(c).Append(next); break;
+                }
+            }
+            else
+            {
+                sb.Append(c);
+            }
+        }
+        return sb.ToString();
     }
     
     /// <summary>

@@ -52,6 +52,9 @@ public static class WebGLBuildSetup
     {
         Debug.Log("[WebGLBuildSetup] 准备 WebGL 构建...");
 
+        // 强制把 StartScene 放在 scenes[0]，保证游戏从开始菜单进入而不是直接跳 MainScene
+        EnsureStartSceneIsFirst();
+
         // 收集启用的 scenes
         var enabledScenes = System.Array.FindAll(EditorBuildSettings.scenes, s => s.enabled);
         if (enabledScenes.Length == 0)
@@ -93,6 +96,46 @@ public static class WebGLBuildSetup
         else
         {
             Debug.Log("[WebGLBuildSetup] 构建成功 ✓");
+        }
+    }
+
+    /// <summary>
+    /// 把 StartScene 强制放在 EditorBuildSettings.scenes[0]，保证 build 出的游戏从开始菜单进入。
+    /// 如果 StartScene 不在列表里就追加；如果已在但不是第一个，就移到第一位。
+    /// </summary>
+    private static void EnsureStartSceneIsFirst()
+    {
+        const string startScenePath = "Assets/Scenes/StartScene.unity";
+
+        var scenes = new System.Collections.Generic.List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
+        int idx = scenes.FindIndex(s => s.path == startScenePath);
+
+        if (idx == 0 && scenes[0].enabled)
+        {
+            Debug.Log($"[WebGLBuildSetup] StartScene 已在 scenes[0] 且启用");
+            return;
+        }
+
+        if (idx >= 0)
+        {
+            // 已存在，但不在第一位 → 移到第一位
+            var item = scenes[idx];
+            item.enabled = true;
+            scenes.RemoveAt(idx);
+            scenes.Insert(0, item);
+            Debug.Log($"[WebGLBuildSetup] StartScene 从 scenes[{idx}] 移到 scenes[0]");
+        }
+        else
+        {
+            // 不在列表里 → 插入第一位
+            scenes.Insert(0, new EditorBuildSettingsScene(startScenePath, true));
+            Debug.Log($"[WebGLBuildSetup] StartScene 插入到 scenes[0]");
+        }
+
+        EditorBuildSettings.scenes = scenes.ToArray();
+        for (int i = 0; i < scenes.Count; i++)
+        {
+            Debug.Log($"[WebGLBuildSetup] 最终 Scene[{i}]: {scenes[i].path} (enabled={scenes[i].enabled})");
         }
     }
 }
