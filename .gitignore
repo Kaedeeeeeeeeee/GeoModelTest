@@ -37,8 +37,9 @@
 # macOS
 .DS_Store
 
-# TextMesh Pro
-[Aa]ssets/TextMesh*Pro/
+# TextMesh Pro essentials are committed on purpose: the project needs TMP_Settings +
+# default font/shaders for ANY TextMeshPro text to render (剧情框/注音依赖). Do not re-ignore.
+# [Aa]ssets/TextMesh*Pro/
 
 # Plastic SCM
 .plastic/
