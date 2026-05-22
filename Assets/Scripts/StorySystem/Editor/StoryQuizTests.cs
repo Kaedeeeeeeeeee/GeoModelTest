@@ -55,6 +55,7 @@ namespace StorySystem.EditorTests
             TestQuizScoreManager();
             TestBeatParsing();
             TestLocalizationCoverage();
+            TestFurigana();
 
             string summary = $"[StoryQuizTests] DONE — {_pass} passed, {_fail} failed.";
             if (_fail == 0) Debug.Log(summary);
@@ -190,6 +191,28 @@ namespace StorySystem.EditorTests
                 foreach (var key in CodeKeys)
                     Check(keysByLang[lang].Contains(key), $"code key '{key}' missing in {lang}");
             }
+        }
+
+        // 4) 注音转换：地震（じしん）→ ruby；旁注/嵌套括号正确处理；无括号原样返回。
+        private static void TestFurigana()
+        {
+            Check(FuriganaProcessor.IsKanji('地') && !FuriganaProcessor.IsKanji('A'), "IsKanji basic");
+            Check(FuriganaProcessor.IsKana('じ') && FuriganaProcessor.IsKana('ジ') && !FuriganaProcessor.IsKana('地'), "IsKana basic");
+
+            string r1 = FuriganaProcessor.ToRubyMarkup("地震（じしん）だ");
+            Check(r1.Contains("地震") && r1.Contains("じしん"), "ruby keeps base + reading");
+            Check(r1.Contains("<voffset") && r1.Contains("<size"), "ruby emits voffset/size markup");
+            Check(!r1.Contains("（じしん）"), "ruby removes the inline parens");
+            Check(r1.EndsWith("だ"), "trailing text preserved");
+
+            string r2 = FuriganaProcessor.ToRubyMarkup("ABC 123");
+            Check(r2 == "ABC 123", "no parens -> unchanged");
+
+            // 旁注/嵌套：外层括号是旁注(含汉字)，内层 二酸化炭素（にさんかたんそ）才是注音
+            string r3 = FuriganaProcessor.ToRubyMarkup("あわ（二酸化炭素（にさんかたんそ））");
+            Check(r3.StartsWith("あわ（"), "aside outer paren preserved");
+            Check(r3.Contains("にさんかたんそ") && r3.Contains("<voffset"), "nested real reading becomes ruby");
+            Check(r3.EndsWith("）"), "aside closing paren preserved");
         }
     }
 }

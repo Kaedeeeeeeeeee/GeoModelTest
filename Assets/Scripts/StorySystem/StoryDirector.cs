@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 using Core;
 
 namespace StorySystem
@@ -709,13 +710,12 @@ namespace StorySystem
             var tr = textGO.AddComponent<RectTransform>();
             tr.anchorMin = Vector2.zero;
             tr.anchorMax = Vector2.one;
-            var txt = textGO.AddComponent<Text>();
-            txt.font = UIFontResolver.GetUIFont();
+            var txt = textGO.AddComponent<TextMeshProUGUI>();
+            ApplyTmpFont(txt);
             txt.fontSize = 28;
             txt.color = Color.white;
-            txt.alignment = TextAnchor.UpperLeft;
-            txt.horizontalOverflow = HorizontalWrapMode.Wrap;
-            txt.verticalOverflow = VerticalWrapMode.Overflow;
+            txt.alignment = TextAlignmentOptions.TopLeft;
+            txt.lineSpacing = RubyLineSpacing; // 给头顶注音留行距
             tr.offsetMin = new Vector2(24f, 32f);
             tr.offsetMax = new Vector2(-24f, -64f);
 
@@ -728,13 +728,11 @@ namespace StorySystem
             speakerRt.anchoredPosition = new Vector2(0f, 0f);
             speakerRt.offsetMin = new Vector2(24f, -40f);
             speakerRt.offsetMax = new Vector2(-24f, -12f);
-            var speakerTxt = speakerGO.AddComponent<Text>();
-            speakerTxt.font = txt.font;
+            var speakerTxt = speakerGO.AddComponent<TextMeshProUGUI>();
+            ApplyTmpFont(speakerTxt);
             speakerTxt.fontSize = 24;
             speakerTxt.color = new Color(1f, 1f, 1f, 0.85f);
-            speakerTxt.alignment = TextAnchor.UpperLeft;
-            speakerTxt.horizontalOverflow = HorizontalWrapMode.Wrap;
-            speakerTxt.verticalOverflow = VerticalWrapMode.Overflow;
+            speakerTxt.alignment = TextAlignmentOptions.TopLeft;
 
             var hintGO = new GameObject("Hint");
             hintGO.transform.SetParent(bg.transform, false);
@@ -744,12 +742,12 @@ namespace StorySystem
             hintRt.pivot = new Vector2(0.5f, 0f);
             hintRt.anchoredPosition = new Vector2(0f, 6f);
             hintRt.sizeDelta = new Vector2(0f, 24f);
-            var hintTxt = hintGO.AddComponent<Text>();
-            hintTxt.font = txt.font;
+            var hintTxt = hintGO.AddComponent<TextMeshProUGUI>();
+            ApplyTmpFont(hintTxt);
             hintTxt.fontSize = 20;
             hintTxt.color = new Color(1f, 1f, 1f, 0.7f);
-            hintTxt.alignment = TextAnchor.MiddleCenter;
-            string hintContinue = LocalizedOr("ui.dialog.continue", "ダイアログをクリックして続ける");
+            hintTxt.alignment = TextAlignmentOptions.Center;
+            string hintContinue = FuriganaProcessor.Process(LocalizedOr("ui.dialog.continue", "ダイアログをクリックして続ける"));
             hintTxt.text = hintContinue;
 
             bool advanceRequested = false;
@@ -761,8 +759,8 @@ namespace StorySystem
                 var line = lines[i];
                 onLineDisplayed?.Invoke(line, i);
                 speakerGO.SetActive(!string.IsNullOrEmpty(line.Speaker));
-                speakerTxt.text = line.Speaker ?? string.Empty;
-                txt.text = line.Text ?? string.Empty; // 可后续替换为本地化Key
+                speakerTxt.text = FuriganaProcessor.Process(line.Speaker ?? string.Empty);
+                txt.text = FuriganaProcessor.Process(line.Text ?? string.Empty);
                 advanceRequested = false;
                 yield return null; // 避免前一次点击连带跳过
 
@@ -772,7 +770,7 @@ namespace StorySystem
                     int picked = -1;
                     var choicePanel = BuildChoicePanel(canvasGO.transform, line.Choices, idx => picked = idx);
                     button.interactable = false; // 选择期间屏蔽背景点击推进
-                    hintTxt.text = LocalizedOr("ui.dialog.choose", "答えをえらんでね");
+                    hintTxt.text = FuriganaProcessor.Process(LocalizedOr("ui.dialog.choose", "答えをえらんでね"));
 
                     while (picked < 0)
                     {
@@ -795,7 +793,7 @@ namespace StorySystem
                                       chosen.IsCorrect ? "正解（せいかい）！" : "ざんねん、もう一度（いちど）かんがえてみよう。");
 
                     speakerGO.SetActive(false);
-                    txt.text = feedback;
+                    txt.text = FuriganaProcessor.Process(feedback);
                     hintTxt.text = hintContinue;
                     advanceRequested = false;
                     yield return null;
@@ -851,6 +849,49 @@ namespace StorySystem
             }
             es.AddComponent<EventSystem>();
             es.AddComponent<StandaloneInputModule>();
+        }
+
+        // 头顶注音(ruby)需要额外的行距留白；看到效果后可微调。
+        private const float RubyLineSpacing = 18f;
+
+        private static TMP_FontAsset _tmpFont;
+        private static bool _tmpFontTried;
+
+        /// <summary>
+        /// 运行时从内嵌的 NotoSansCJKjp 动态生成 TMP 字体资源（Dynamic SDF），
+        /// 这样无需在编辑器里手动烘焙字体资源。失败则回退到 TMP 默认字体。
+        /// </summary>
+        private static TMP_FontAsset GetTmpFont()
+        {
+            if (_tmpFont != null) return _tmpFont;
+            if (_tmpFontTried) return _tmpFont;
+            _tmpFontTried = true;
+
+            try
+            {
+                var src = UIFontResolver.GetUIFont();
+                if (src != null)
+                {
+                    _tmpFont = TMP_FontAsset.CreateFontAsset(src);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[SubtitleUI] 运行时创建 TMP 字体失败，回退默认字体: {e.Message}");
+            }
+
+            if (_tmpFont == null && TMP_Settings.defaultFontAsset != null)
+            {
+                _tmpFont = TMP_Settings.defaultFontAsset;
+            }
+            return _tmpFont;
+        }
+
+        private static void ApplyTmpFont(TMP_Text t)
+        {
+            var f = GetTmpFont();
+            if (f != null) t.font = f;
+            t.richText = true;
         }
 
         private static string LocalizedOr(string key, string fallback)
@@ -912,14 +953,13 @@ namespace StorySystem
                 ltr.anchorMax = Vector2.one;
                 ltr.offsetMin = new Vector2(18f, 4f);
                 ltr.offsetMax = new Vector2(-18f, -4f);
-                var label = labelGO.AddComponent<Text>();
-                label.font = UIFontResolver.GetUIFont();
+                var label = labelGO.AddComponent<TextMeshProUGUI>();
+                ApplyTmpFont(label);
                 label.fontSize = 24;
                 label.color = Color.white;
-                label.alignment = TextAnchor.MiddleCenter;
-                label.horizontalOverflow = HorizontalWrapMode.Wrap;
-                label.verticalOverflow = VerticalWrapMode.Overflow;
-                label.text = $"{idx + 1}. {choices[idx].Text}";
+                label.alignment = TextAlignmentOptions.Center;
+                label.lineSpacing = RubyLineSpacing;
+                label.text = FuriganaProcessor.Process($"{idx + 1}. {choices[idx].Text}");
             }
 
             return panel;
@@ -996,14 +1036,13 @@ namespace StorySystem
             rt.anchorMax = anchorMax;
             rt.offsetMin = new Vector2(24f, 0f);
             rt.offsetMax = new Vector2(-24f, 0f);
-            var t = go.AddComponent<Text>();
-            t.font = UIFontResolver.GetUIFont();
+            var t = go.AddComponent<TextMeshProUGUI>();
+            ApplyTmpFont(t);
             t.fontSize = fontSize;
             t.color = Color.white;
-            t.alignment = TextAnchor.MiddleCenter;
-            t.horizontalOverflow = HorizontalWrapMode.Wrap;
-            t.verticalOverflow = VerticalWrapMode.Overflow;
-            t.text = content;
+            t.alignment = TextAlignmentOptions.Center;
+            t.lineSpacing = RubyLineSpacing;
+            t.text = FuriganaProcessor.Process(content);
         }
     }
 
