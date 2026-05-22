@@ -10,10 +10,28 @@
             "textKey": "story.beat3.l01"
         },
         {
+            "speaker": "主人公",
+            "text": "こんな大（おお）きな機械（きかい）で掘（ほ）るなんて……！",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.beat3.l05"
+        },
+        {
             "speaker": "ナレーション",
             "text": "深（ふか）い層（そう）をほり進（すす）めると、岩（いわ）の中（なか）から化石（かせき）が見（み）つかった。",
             "speakerKey": "story.speaker.narration",
             "textKey": "story.beat3.l02"
+        },
+        {
+            "speaker": "主人公",
+            "text": "うわ、本物（ほんもの）の化石（かせき）だ……！　何千万年（なんせんまんねん）も前（まえ）の生（い）きものが、今（いま）、目（め）の前（まえ）に。",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.beat3.l03"
+        },
+        {
+            "speaker": "ナレーション",
+            "text": "ドリルが深（ふか）く進（すす）むほど、足元（あしもと）から低（ひく）い響（ひび）きが伝（つた）わってくる気（き）がした。",
+            "speakerKey": "story.speaker.narration",
+            "textKey": "story.beat3.l04"
         },
         {
             "speaker": "Dr.Kaede",

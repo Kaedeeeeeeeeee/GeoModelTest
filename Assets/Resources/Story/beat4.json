@@ -63,9 +63,21 @@
         },
         {
             "speaker": "Dr.Kaede",
+            "text": "君（きみ）が読（よ）み解（と）いた地層（ちそう）は、この街（まち）の“過去（かこ）の記録（きろく）”そのもの。これがあれば、次（つぎ）の災害（さいがい）にも備（そな）えられる。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat4.l04"
+        },
+        {
+            "speaker": "Dr.Kaede",
             "text": "おつかれさま！　君（きみ）はもう立派（りっぱ）な地質調査員（ちしつちょうさいん）だね。地球（ちきゅう）の「呼吸（こきゅう）」、少（すこ）しは聞（き）こえた？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat4.l02"
+        },
+        {
+            "speaker": "主人公",
+            "text": "地球（ちきゅう）の声（こえ）……ほんの少（すこ）しだけ、聞（き）こえた気（き）がするよ。",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.beat4.l05"
         },
         {
             "speaker": "ナレーション",

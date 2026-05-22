@@ -712,7 +712,7 @@ namespace StorySystem
             tr.anchorMax = Vector2.one;
             var txt = textGO.AddComponent<TextMeshProUGUI>();
             ApplyTmpFont(txt);
-            txt.fontSize = 28;
+            txt.fontSize = 34;
             txt.color = Color.white;
             txt.alignment = TextAlignmentOptions.TopLeft;
             txt.lineSpacing = RubyLineSpacing; // 给头顶注音留行距
@@ -852,7 +852,7 @@ namespace StorySystem
         }
 
         // 头顶注音(ruby)需要额外的行距留白；看到效果后可微调。
-        private const float RubyLineSpacing = 18f;
+        private const float RubyLineSpacing = 24f;
 
         private static TMP_FontAsset _tmpFont;
         private static bool _tmpFontTried;
@@ -955,7 +955,7 @@ namespace StorySystem
                 ltr.offsetMax = new Vector2(-18f, -4f);
                 var label = labelGO.AddComponent<TextMeshProUGUI>();
                 ApplyTmpFont(label);
-                label.fontSize = 24;
+                label.fontSize = 30;
                 label.color = Color.white;
                 label.alignment = TextAlignmentOptions.Center;
                 label.lineSpacing = RubyLineSpacing;

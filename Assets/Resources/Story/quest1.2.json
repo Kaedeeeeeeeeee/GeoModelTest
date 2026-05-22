@@ -23,6 +23,18 @@
         },
         {
             "speaker": "Dr.Kaede",
+            "text": "実（じつ）はこの街（まち）の地下（ちか）で、今（いま）も“何（なに）か”が動（うご）いている。その正体（しょうたい）を、君（きみ）の力（ちから）で確（たし）かめたいの。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat1.l09"
+        },
+        {
+            "speaker": "主人公",
+            "text": "地球（ちきゅう）の声（こえ）、か……正直（しょうじき）こわいけど、ちょっとワクワクする。",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.beat1.l10"
+        },
+        {
+            "speaker": "Dr.Kaede",
             "text": "いっしょに大地（だいち）のなぞを調（しら）べてほしいの。まずは基本（きほん）のおさらいからね。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat1.l07"

@@ -2367,6 +2367,16 @@
     { "key": "story.beat4.q2.c", "value": "Conformity" },
     { "key": "story.beat4.q2.fb_ok", "value": "Right. Strata bent by compression from both sides is called a fold." },
     { "key": "story.beat4.l02", "value": "Well done! You're a fine field geologist now. Did you hear a little of the Earth's 'breathing'?" },
-    { "key": "story.beat4.l03", "value": "Let's sum up today's survey and write the report." }
+    { "key": "story.beat4.l03", "value": "Let's sum up today's survey and write the report." },
+    { "key": "story.beat1.l09", "value": "Truth is, something is still stirring deep beneath this town. I want to use your power to uncover what it is." },
+    { "key": "story.beat1.l10", "value": "The voice of the Earth, huh... Honestly it's scary — but kind of thrilling too." },
+    { "key": "story.beat2.l04", "value": "The cliff's strata had locked tens of thousands of years into stripes of stone." },
+    { "key": "story.beat2.l05", "value": "Heh, sharp eye. You've got the makings of a field geologist." },
+    { "key": "story.beat2.l06", "value": "Even plain 'rocks' can be this different...!" },
+    { "key": "story.beat3.l03", "value": "Whoa, a real fossil...! A creature from tens of millions of years ago, right before my eyes." },
+    { "key": "story.beat3.l04", "value": "The deeper the drill bit went, the more a low hum seemed to rise through my feet." },
+    { "key": "story.beat3.l05", "value": "Drilling with a machine this huge...!" },
+    { "key": "story.beat4.l04", "value": "The strata you decoded are this town's very record of its past. With them, we can prepare for the next disaster." },
+    { "key": "story.beat4.l05", "value": "The Earth's voice... I think I heard it — just a little." }
   ]
 }

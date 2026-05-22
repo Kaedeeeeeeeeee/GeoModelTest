@@ -17,8 +17,8 @@ namespace StorySystem
     /// </summary>
     public static class FuriganaProcessor
     {
-        private const float ReadingSizePct = 45f;            // 注音相对正文字号(%)
-        private const float ReadingRiseEm = 0.9f;            // 注音上移量(em)
+        private const float ReadingSizePct = 55f;            // 注音相对正文字号(%)
+        private const float ReadingRiseEm = 0.95f;           // 注音上移量(em)
         private const float ReadingCharEm = ReadingSizePct / 100f; // 每个假名约多宽(em)
 
         public static bool IsKanji(char c)

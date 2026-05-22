@@ -10,6 +10,12 @@
             "textKey": "story.beat2.l01"
         },
         {
+            "speaker": "ナレーション",
+            "text": "崖（がけ）の地層（ちそう）は、何万年（なんまんねん）もの時間（じかん）を、しましま模様（もよう）に閉（と）じこめていた。",
+            "speakerKey": "story.speaker.narration",
+            "textKey": "story.beat2.l04"
+        },
+        {
             "speaker": "Dr.Kaede",
             "text": "ハンマーでサンプルを取（と）ったら、顕微鏡（けんびきょう）で粒（つぶ）の大（おお）きさを見（み）てみよう。",
             "speakerKey": "story.speaker.drkaede",
@@ -92,6 +98,18 @@
                     "isCorrect": false
                 }
             ]
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "ふふ、いい目（め）をしてる。地質調査員（ちしつちょうさいん）の素質（そしつ）あり、ね。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat2.l05"
+        },
+        {
+            "speaker": "主人公",
+            "text": "同（おな）じ“石（いし）”でも、こんなに違（ちが）うんだ……！",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.beat2.l06"
         },
         {
             "speaker": "Dr.Kaede",
