@@ -41,6 +41,9 @@
 # default font/shaders for ANY TextMeshPro text to render (剧情框/注音依赖). Do not re-ignore.
 # [Aa]ssets/TextMesh*Pro/
 
+# 学术参考文献 PDF 仅本地保留（版权考虑，不进仓库；URL 见 ReadingSpeedResearch/reading-speed-analysis.md）
+ReadingSpeedResearch/References/
+
 # Plastic SCM
 .plastic/
 
