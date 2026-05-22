@@ -46,11 +46,10 @@ namespace QuestSystem
         private int _fieldPhaseTargetIndex = 0;
         private GuidanceTarget _chapter4SampleGuidanceTarget;
 
+        // 15分钟教学版：野外采集精简为 1 个采样点（原为 3 个），缩短流程。
         private static readonly string[] FieldPhaseTargetSequence =
         {
-            "chapter3.field.sample_site_a",
-            "chapter3.field.sample_site_b",
-            "chapter3.field.sample_site_c"
+            "chapter3.field.sample_site_a"
         };
 
         private static readonly FieldInfo GuidanceTargetIdField = typeof(GuidanceTarget)
@@ -60,12 +59,13 @@ namespace QuestSystem
         private static readonly FieldInfo GuidanceTargetRadiusField = typeof(GuidanceTarget)
             .GetField("detectionRadius", BindingFlags.Instance | BindingFlags.NonPublic);
 
-        private const string Chapter4FieldStoryPath = "Story/quest4.2";
-        private const string Chapter4SampleCompletionStoryPath = "Story/quest4.3";
+        // 15分钟教学版重构：将代码控制的剧情路径指向新的 beat 文件（含内嵌选择题）。
+        private const string Chapter4FieldStoryPath = "Story/beat3";            // 钻塔 + 化石测验
+        private const string Chapter4SampleCompletionStoryPath = "Story/beat4"; // 对比 + 地层倾斜 + 收尾
         private const string Chapter4ReturnStoryPath = "Story/quest4.4";
         private const string Chapter4SampleGuidanceTargetId = "chapter4.sample.site";
         private static readonly Vector3 Chapter4SampleTargetPosition = new Vector3(-10f, 14f, -28f);
-        private const string FieldPhaseSampleStoryPath = "Story/quest3.3";
+        private const string FieldPhaseSampleStoryPath = "Story/beat2";         // 野外采集 + 岩石判定测验
 
         // 事件（供UI订阅）
         public System.Action<Quest> OnQuestStarted;
@@ -732,10 +732,8 @@ namespace QuestSystem
                     _chapter4SampleCutscenePending = false;
                     _chapter4SampleCutscenePlayed = true;
                     GuidanceManager.Instance?.ClearTarget();
+                    // 完成最终采集目标 → 触发 GrantRewards(q.chapter4.sample) → 弹出调查报告（教学流程结束）。
                     CompleteObjective("q.chapter4.sample.collect");
-                    
-                    // Auto start next quest 4.4
-                    StartQuest("q.chapter4.return");
                 };
 
                 if (director != null)
@@ -933,15 +931,18 @@ namespace QuestSystem
         {
             if (questId == "q.lab.intro")
             {
-                // 发放：地质锤 + 场景切换器
-                ToolUnlockService.UnlockToolById("1002");
-                ToolUnlockService.UnlockToolById("999");
+                // 15分钟教学版：工具前置——开场即发放 锤/切换器/简易钻/钻塔，
+                // 让 beat2(采集判定) 与 beat3(钻塔+化石) 所需工具都已可用。
+                ToolUnlockService.UnlockToolById("1002"); // 地质锤
+                ToolUnlockService.UnlockToolById("999");  // 场景切换器
+                ToolUnlockService.UnlockToolById("1000"); // 简易钻探工具
+                ToolUnlockService.UnlockToolById("1001"); // 钻塔工具
 
                 // 刷新UI
                 var ui = Object.FindFirstObjectByType<InventoryUISystem>();
                 if (ui != null) ui.RefreshTools();
 
-                if (debugLog) Debug.Log("[QuestManager] 奖励已发放：地质锤(1002) + 场景切换器(999)");
+                if (debugLog) Debug.Log("[QuestManager] 奖励已发放：地质锤(1002) + 场景切换器(999) + 简易钻(1000) + 钻塔(1001)");
 
                 // 推进到下一任务：与Dr. Kaede对话
                 StartQuest("q.lab.drkaede");
@@ -990,14 +991,16 @@ namespace QuestSystem
             }
             else if (questId == "q.chapter4.sample")
             {
-                if (debugLog) Debug.Log("[QuestManager] 章节4样本目标完成，引导返回研究室");
+                // 15分钟教学版：beat4 是最后一个 beat，完成后弹出 A/B/C 调查报告并结束教学流程，
+                // 不再链入章节5/6（无人机等）。
+                if (debugLog) Debug.Log("[QuestManager] 最终 beat 完成，显示调查报告");
                 GuidanceManager.Instance?.ClearTarget();
                 if (_chapter4SampleGuidanceTarget != null)
                 {
                     Destroy(_chapter4SampleGuidanceTarget.gameObject);
                     _chapter4SampleGuidanceTarget = null;
                 }
-                StartQuest("q.chapter4.return");
+                StorySystem.StoryDirector.Instance?.PlayReport();
             }
             else if (questId == "q.chapter4.return")
             {

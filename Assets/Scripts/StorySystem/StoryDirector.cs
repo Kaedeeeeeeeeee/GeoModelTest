@@ -252,6 +252,7 @@ namespace StorySystem
         private IEnumerator Run_MainScene_Rescue()
         {
             _isRunningCinematic = true;
+            QuizScoreManager.Instance.Reset(); // 新一轮游玩开始，清空测验成绩
             if (enableDebugLog) Debug.Log("[StoryDirector] Run_MainScene_Rescue 开始");
             // 进入场景即切第三人称，正面朝向角色，并在期间保持震动与字幕推进
             var lines = LoadStoryLines(mainRescueSequenceResource, DefaultMainRescueLines);
@@ -316,6 +317,14 @@ namespace StorySystem
             }
 
             StartCoroutine(PlaySequenceRoutine(resourcePath, onComplete, disablePlayerControl));
+        }
+
+        /// <summary>
+        /// 显示结尾调查报告（A/B/C 评级 + 正解数），用于最终 beat 结束时。
+        /// </summary>
+        public void PlayReport(Action onComplete = null)
+        {
+            StartCoroutine(SubtitleUI.ShowReport(onComplete));
         }
 
         private IEnumerator PlaySequenceRoutine(string resourcePath, Action onComplete, bool disablePlayerControl)
@@ -617,6 +626,16 @@ namespace StorySystem
             inputBlockReleaseFrame = Time.frameCount + 1;
         }
 
+        /// <summary>
+        /// 运行时已解析的选择题选项（文本已本地化）。
+        /// </summary>
+        public class SubtitleChoice
+        {
+            public string Text;
+            public bool IsCorrect;
+            public string Feedback;
+        }
+
         public struct SubtitleLine
         {
             public string Speaker;
@@ -624,12 +643,20 @@ namespace StorySystem
             public bool TriggerCameraShake;
             public float ShakeAmplitudeOverride;
 
+            // 选择题支持（可选）：QuestionId 用于计分/报告，Choices 为 null/空表示普通线性台词。
+            public string QuestionId;
+            public System.Collections.Generic.List<SubtitleChoice> Choices;
+
+            public bool HasChoices => Choices != null && Choices.Count > 0;
+
             public SubtitleLine(string speaker, string text, bool triggerCameraShake = false, float shakeAmplitudeOverride = 0f)
             {
                 Speaker = speaker;
                 Text = text ?? string.Empty;
                 TriggerCameraShake = triggerCameraShake;
                 ShakeAmplitudeOverride = shakeAmplitudeOverride;
+                QuestionId = null;
+                Choices = null;
             }
 
             public SubtitleLine(string text, bool triggerCameraShake = false, float shakeAmplitudeOverride = 0f)
@@ -722,7 +749,8 @@ namespace StorySystem
             hintTxt.fontSize = 20;
             hintTxt.color = new Color(1f, 1f, 1f, 0.7f);
             hintTxt.alignment = TextAnchor.MiddleCenter;
-            hintTxt.text = "ダイアログをクリックして続ける";
+            string hintContinue = LocalizedOr("ui.dialog.continue", "ダイアログをクリックして続ける");
+            hintTxt.text = hintContinue;
 
             bool advanceRequested = false;
             void RequestAdvance() => advanceRequested = true;
@@ -737,6 +765,51 @@ namespace StorySystem
                 txt.text = line.Text ?? string.Empty; // 可后续替换为本地化Key
                 advanceRequested = false;
                 yield return null; // 避免前一次点击连带跳过
+
+                // 选择题分支：显示答案按钮，记录得分，再播放反馈
+                if (line.HasChoices)
+                {
+                    int picked = -1;
+                    var choicePanel = BuildChoicePanel(canvasGO.transform, line.Choices, idx => picked = idx);
+                    button.interactable = false; // 选择期间屏蔽背景点击推进
+                    hintTxt.text = LocalizedOr("ui.dialog.choose", "答えをえらんでね");
+
+                    while (picked < 0)
+                    {
+                        if (Input.GetKeyDown(KeyCode.Alpha1) && line.Choices.Count >= 1) picked = 0;
+                        else if (Input.GetKeyDown(KeyCode.Alpha2) && line.Choices.Count >= 2) picked = 1;
+                        else if (Input.GetKeyDown(KeyCode.Alpha3) && line.Choices.Count >= 3) picked = 2;
+                        else if (Input.GetKeyDown(KeyCode.Alpha4) && line.Choices.Count >= 4) picked = 3;
+                        yield return null;
+                    }
+
+                    if (choicePanel != null) UnityEngine.Object.Destroy(choicePanel);
+                    button.interactable = true;
+
+                    var chosen = line.Choices[Mathf.Clamp(picked, 0, line.Choices.Count - 1)];
+                    QuizScoreManager.Instance.Record(line.QuestionId, chosen.IsCorrect);
+
+                    string feedback = !string.IsNullOrEmpty(chosen.Feedback)
+                        ? chosen.Feedback
+                        : LocalizedOr(chosen.IsCorrect ? "quiz.correct" : "quiz.incorrect",
+                                      chosen.IsCorrect ? "正解（せいかい）！" : "ざんねん、もう一度（いちど）かんがえてみよう。");
+
+                    speakerGO.SetActive(false);
+                    txt.text = feedback;
+                    hintTxt.text = hintContinue;
+                    advanceRequested = false;
+                    yield return null;
+                    while (!advanceRequested)
+                    {
+                        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+                        {
+                            advanceRequested = true;
+                            break;
+                        }
+                        yield return null;
+                    }
+                    continue;
+                }
 
                 while (!advanceRequested)
                 {
@@ -778,6 +851,159 @@ namespace StorySystem
             }
             es.AddComponent<EventSystem>();
             es.AddComponent<StandaloneInputModule>();
+        }
+
+        private static string LocalizedOr(string key, string fallback)
+        {
+            var lm = LocalizationManager.Instance;
+            if (lm != null && lm.IsInitialized && !string.IsNullOrEmpty(key) && lm.HasText(key))
+            {
+                return lm.GetText(key);
+            }
+            return fallback;
+        }
+
+        /// <summary>
+        /// 动态生成选择题答案按钮（垂直排列，叠在对话框上方）。点击或数字键 1-4 选择。
+        /// </summary>
+        private static GameObject BuildChoicePanel(Transform parent, List<SubtitleChoice> choices, System.Action<int> onPick)
+        {
+            var panel = new GameObject("ChoicePanel");
+            panel.transform.SetParent(parent, false);
+            var rt = panel.AddComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0.15f, 0.26f);
+            rt.anchorMax = new Vector2(0.85f, 0.64f);
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
+
+            var layout = panel.AddComponent<VerticalLayoutGroup>();
+            layout.spacing = 10f;
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childControlWidth = true;
+            layout.childControlHeight = true;
+            layout.childForceExpandWidth = true;
+            layout.childForceExpandHeight = false;
+
+            for (int i = 0; i < choices.Count; i++)
+            {
+                int idx = i;
+                var btnGO = new GameObject($"Choice{i}");
+                btnGO.transform.SetParent(panel.transform, false);
+                var img = btnGO.AddComponent<Image>();
+                img.color = new Color(0.12f, 0.16f, 0.22f, 0.92f);
+
+                var le = btnGO.AddComponent<LayoutElement>();
+                le.minHeight = 52f;
+                le.preferredHeight = 56f;
+
+                var btn = btnGO.AddComponent<Button>();
+                btn.targetGraphic = img;
+                var colors = btn.colors;
+                colors.normalColor = Color.white;
+                colors.highlightedColor = new Color(0.6f, 0.8f, 1f, 1f);
+                colors.pressedColor = new Color(0.4f, 0.65f, 0.95f, 1f);
+                btn.colors = colors;
+                btn.onClick.AddListener(() => onPick(idx));
+
+                var labelGO = new GameObject("Label");
+                labelGO.transform.SetParent(btnGO.transform, false);
+                var ltr = labelGO.AddComponent<RectTransform>();
+                ltr.anchorMin = Vector2.zero;
+                ltr.anchorMax = Vector2.one;
+                ltr.offsetMin = new Vector2(18f, 4f);
+                ltr.offsetMax = new Vector2(-18f, -4f);
+                var label = labelGO.AddComponent<Text>();
+                label.font = UIFontResolver.GetUIFont();
+                label.fontSize = 24;
+                label.color = Color.white;
+                label.alignment = TextAnchor.MiddleCenter;
+                label.horizontalOverflow = HorizontalWrapMode.Wrap;
+                label.verticalOverflow = VerticalWrapMode.Overflow;
+                label.text = $"{idx + 1}. {choices[idx].Text}";
+            }
+
+            return panel;
+        }
+
+        /// <summary>
+        /// 结尾调查报告界面：显示 A/B/C 评级与正解数。点击或空格/回车继续。
+        /// </summary>
+        public static IEnumerator ShowReport(System.Action onComplete = null)
+        {
+            MarkDialogOpened();
+
+            var score = QuizScoreManager.Instance;
+            string grade = score.Grade;
+
+            var canvasGO = new GameObject("ReportCanvas");
+            var canvas = canvasGO.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 32767;
+            var scaler = canvasGO.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
+            canvasGO.AddComponent<GraphicRaycaster>();
+            EnsureEventSystem(canvasGO.transform);
+
+            var dim = new GameObject("Dim");
+            dim.transform.SetParent(canvasGO.transform, false);
+            var dimRt = dim.AddComponent<RectTransform>();
+            dimRt.anchorMin = Vector2.zero;
+            dimRt.anchorMax = Vector2.one;
+            dimRt.offsetMin = Vector2.zero;
+            dimRt.offsetMax = Vector2.zero;
+            var dimImg = dim.AddComponent<Image>();
+            dimImg.color = new Color(0f, 0f, 0f, 0.75f);
+            bool advance = false;
+            var dimBtn = dim.AddComponent<Button>();
+            dimBtn.transition = Selectable.Transition.None;
+            dimBtn.targetGraphic = dimImg;
+            dimBtn.onClick.AddListener(() => advance = true);
+
+            var card = new GameObject("Card");
+            card.transform.SetParent(canvasGO.transform, false);
+            var cardRt = card.AddComponent<RectTransform>();
+            cardRt.anchorMin = new Vector2(0.25f, 0.22f);
+            cardRt.anchorMax = new Vector2(0.75f, 0.78f);
+            cardRt.offsetMin = Vector2.zero;
+            cardRt.offsetMax = Vector2.zero;
+            var cardImg = card.AddComponent<Image>();
+            cardImg.color = new Color(0.08f, 0.10f, 0.14f, 0.96f);
+
+            CreateReportText(card.transform, LocalizedOr("report.title", "ちょうさ報告（ほうこく）"), 40, new Vector2(0f, 0.78f), new Vector2(1f, 0.98f));
+            CreateReportText(card.transform, $"{LocalizedOr("report.grade", "そうごう評価（ひょうか）")}: {grade}", 64, new Vector2(0f, 0.42f), new Vector2(1f, 0.74f));
+            CreateReportText(card.transform, $"{LocalizedOr("report.score", "せいかい数（すう）")}: {score.CorrectCount} / {score.Total}", 32, new Vector2(0f, 0.24f), new Vector2(1f, 0.40f));
+            CreateReportText(card.transform, LocalizedOr("ui.dialog.continue", "ダイアログをクリックして続ける"), 22, new Vector2(0f, 0.04f), new Vector2(1f, 0.16f));
+
+            yield return null;
+            while (!advance)
+            {
+                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)) break;
+                yield return null;
+            }
+
+            MarkDialogClosed();
+            StoryDirectorRunner.Instance.Run(DestroyCanvasNextFrame(canvasGO));
+            onComplete?.Invoke();
+        }
+
+        private static void CreateReportText(Transform parent, string content, int fontSize, Vector2 anchorMin, Vector2 anchorMax)
+        {
+            var go = new GameObject("ReportText");
+            go.transform.SetParent(parent, false);
+            var rt = go.AddComponent<RectTransform>();
+            rt.anchorMin = anchorMin;
+            rt.anchorMax = anchorMax;
+            rt.offsetMin = new Vector2(24f, 0f);
+            rt.offsetMax = new Vector2(-24f, 0f);
+            var t = go.AddComponent<Text>();
+            t.font = UIFontResolver.GetUIFont();
+            t.fontSize = fontSize;
+            t.color = Color.white;
+            t.alignment = TextAnchor.MiddleCenter;
+            t.horizontalOverflow = HorizontalWrapMode.Wrap;
+            t.verticalOverflow = VerticalWrapMode.Overflow;
+            t.text = content;
         }
     }
 

@@ -1,49 +1,63 @@
 {
-    "scene": "Laboratory Intro",
+    "scene": "Beat1B - G-Lab",
     "background": "laboratory",
     "bgm": "lab_theme",
     "dialogues": [
         {
-            "speaker": "narration",
-            "text": "視界がねじれ、音が遠ざかる。次に目を開けたとき――そこは見知らぬ白い施設だった。",
+            "speaker": "ナレーション",
+            "text": "目（め）をさますと、そこは見（み）たことのない白（しろ）い研究室（けんきゅうしつ）だった。",
             "speakerKey": "story.speaker.narration",
-            "textKey": "story.quest1_2.line01"
-        },
-        {
-            "speaker": "主人公",
-            "text": "ここ……どこ？　みなと……！　大丈夫か？",
-            "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.quest1_2.line02"
-        },
-        {
-            "speaker": "みなと",
-            "text": "……う、うん……。ここ……学校じゃないよね……？",
-            "speakerKey": "story.speaker.minato",
-            "textKey": "story.quest1_2.line03"
-        },
-        {
-            "speaker": "narration",
-            "text": "はっと顔を上げると、目の前に男が立っていた。",
-            "speakerKey": "story.speaker.narration",
-            "textKey": "story.quest1_2.line04"
+            "textKey": "story.beat1.l04"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "......",
+            "text": "気（き）がついた？　ここは大地（だいち）を研究（けんきゅう）する施設（しせつ）「G-Lab」。わたしは研究員（けんきゅういん）のカエデ。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.quest1_2.line05"
-        },
-        {
-            "speaker": "主人公",
-            "text": "ここって...?",
-            "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.quest1_2.line06"
+            "textKey": "story.beat1.l05"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "G-Labへようこそ",
+            "text": "さっきの地震（じしん）で、君（きみ）には特別（とくべつ）な力（ちから）が芽生（めば）えたみたい。地球（ちきゅう）の声（こえ）を聞（き）く力（ちから）よ。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.quest1_2.line07"
+            "textKey": "story.beat1.l06"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "いっしょに大地（だいち）のなぞを調（しら）べてほしいの。まずは基本（きほん）のおさらいからね。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat1.l07"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "山（やま）の岩石（がんせき）がけずられて、海（うみ）や湖（みずうみ）で地層（ちそう）になるまで。正（ただ）しい順番（じゅんばん）はどれ？",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat1.q1.prompt",
+            "questionId": "q.weathering_order",
+            "choices": [
+                {
+                    "text": "風化（ふうか）→ 侵食（しんしょく）→ 運搬（うんぱん）→ 堆積（たいせき）",
+                    "textKey": "story.beat1.q1.a",
+                    "isCorrect": true,
+                    "feedback": "せいかい！　もろくなって、けずられて、運（はこ）ばれて、積（つ）もる。この順番（じゅんばん）が基本（きほん）だよ。",
+                    "feedbackKey": "story.beat1.q1.fb_ok"
+                },
+                {
+                    "text": "堆積（たいせき）→ 運搬（うんぱん）→ 侵食（しんしょく）→ 風化（ふうか）",
+                    "textKey": "story.beat1.q1.b",
+                    "isCorrect": false
+                },
+                {
+                    "text": "侵食（しんしょく）→ 風化（ふうか）→ 堆積（たいせき）→ 運搬（うんぱん）",
+                    "textKey": "story.beat1.q1.c",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "いい調子（ちょうし）！　じゃあ、さっそく野外（やがい）に出（で）てサンプルを集（あつ）めてみよう。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat1.l08"
         }
     ]
 }

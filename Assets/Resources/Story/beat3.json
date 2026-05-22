@@ -1,0 +1,139 @@
+{
+    "scene": "Beat3 - 柱状図と化石",
+    "background": "field_day",
+    "bgm": "field_theme",
+    "dialogues": [
+        {
+            "speaker": "Dr.Kaede",
+            "text": "ドリルタワーで、深（ふか）さごとにサンプルを取（と）ろう。地層（ちそう）の重（かさ）なりが「柱状図（ちゅうじょうず）」でわかるよ。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.l01"
+        },
+        {
+            "speaker": "ナレーション",
+            "text": "深（ふか）い層（そう）をほり進（すす）めると、岩（いわ）の中（なか）から化石（かせき）が見（み）つかった。",
+            "speakerKey": "story.speaker.narration",
+            "textKey": "story.beat3.l02"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "サンゴの化石（かせき）だ。この地層（ちそう）ができた当時（とうじ）は、どんな環境（かんきょう）だったと考（かんが）えられる？",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.q1.prompt",
+            "questionId": "q.fossil_coral_env",
+            "choices": [
+                {
+                    "text": "あたたかくて浅（あさ）い海（うみ）",
+                    "textKey": "story.beat3.q1.a",
+                    "isCorrect": true,
+                    "feedback": "せいかい！　サンゴはあたたかくて浅（あさ）い海（うみ）にすむ。だから当時（とうじ）の環境（かんきょう）がわかるんだ。",
+                    "feedbackKey": "story.beat3.q1.fb_ok"
+                },
+                {
+                    "text": "冷（つめ）たくて深（ふか）い海（うみ）",
+                    "textKey": "story.beat3.q1.b",
+                    "isCorrect": false
+                },
+                {
+                    "text": "川（かわ）と海（うみ）が混（ま）じる場所（ばしょ）",
+                    "textKey": "story.beat3.q1.c",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "サンゴのように、地層（ちそう）ができた当時（とうじ）の「環境（かんきょう）」を教（おし）えてくれる化石（かせき）を何（なに）という？",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.q2.prompt",
+            "questionId": "q.fossil_facies_term",
+            "choices": [
+                {
+                    "text": "示相化石（しそうかせき）",
+                    "textKey": "story.beat3.q2.a",
+                    "isCorrect": true,
+                    "feedback": "そのとおり。環境（かんきょう）を示（しめ）すのが示相化石（しそうかせき）。シジミなら川（かわ）と海（うみ）が混（ま）じる場所（ばしょ）だよ。",
+                    "feedbackKey": "story.beat3.q2.fb_ok"
+                },
+                {
+                    "text": "示準化石（しじゅんかせき）",
+                    "textKey": "story.beat3.q2.b",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "別（べつ）の層（そう）からアンモナイトが出（で）たよ。この地層（ちそう）ができたのはどの時代（じだい）？",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.q3.prompt",
+            "questionId": "q.fossil_ammonite_era",
+            "choices": [
+                {
+                    "text": "中生代（ちゅうせいだい）",
+                    "textKey": "story.beat3.q3.a",
+                    "isCorrect": true,
+                    "feedback": "正解（せいかい）！　アンモナイトは中生代（ちゅうせいだい）の示準化石（しじゅんかせき）。サンヨウチュウなら古生代（こせいだい）だよ。",
+                    "feedbackKey": "story.beat3.q3.fb_ok"
+                },
+                {
+                    "text": "古生代（こせいだい）",
+                    "textKey": "story.beat3.q3.b",
+                    "isCorrect": false
+                },
+                {
+                    "text": "新生代（しんせいだい）",
+                    "textKey": "story.beat3.q3.c",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "アンモナイトのように、地層（ちそう）ができた「時代（じだい）」を教（おし）えてくれる化石（かせき）を何（なに）という？",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.q4.prompt",
+            "questionId": "q.fossil_index_term",
+            "choices": [
+                {
+                    "text": "示準化石（しじゅんかせき）",
+                    "textKey": "story.beat3.q4.a",
+                    "isCorrect": true,
+                    "feedback": "そう。広（ひろ）い範囲（はんい）にすみ、短（みじか）い期間（きかん）だけ栄（さか）えた生物（せいぶつ）が示準化石（しじゅんかせき）になるよ。",
+                    "feedbackKey": "story.beat3.q4.fb_ok"
+                },
+                {
+                    "text": "示相化石（しそうかせき）",
+                    "textKey": "story.beat3.q4.b",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "柱状図（ちゅうじょうず）の中（なか）に、火山灰（かざんばい）がおし固（かた）まった「凝灰岩（ぎょうかいがん）」の層（そう）があるね。当時（とうじ）、何（なに）があった？",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.q5.prompt",
+            "questionId": "q.tuff_volcano",
+            "choices": [
+                {
+                    "text": "近（ちか）くで火山（かざん）の噴火（ふんか）があった",
+                    "textKey": "story.beat3.q5.a",
+                    "isCorrect": true,
+                    "feedback": "正解（せいかい）！　凝灰岩（ぎょうかいがん）の層（そう）は、その時代（じだい）に火山（かざん）の噴火（ふんか）があった証拠（しょうこ）だよ。",
+                    "feedbackKey": "story.beat3.q5.fb_ok"
+                },
+                {
+                    "text": "大（おお）きな地震（じしん）があった",
+                    "textKey": "story.beat3.q5.b",
+                    "isCorrect": false
+                },
+                {
+                    "text": "海（うみ）がかれた",
+                    "textKey": "story.beat3.q5.c",
+                    "isCorrect": false
+                }
+            ]
+        }
+    ]
+}

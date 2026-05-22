@@ -1,0 +1,103 @@
+{
+    "scene": "Beat2 - 採集と岩石判定",
+    "background": "field_day",
+    "bgm": "field_theme",
+    "dialogues": [
+        {
+            "speaker": "ナレーション",
+            "text": "野外（やがい）の露頭（ろとう）。地震（じしん）でわれた地面（じめん）に、しま模様（もよう）の地層（ちそう）が見（み）えている。",
+            "speakerKey": "story.speaker.narration",
+            "textKey": "story.beat2.l01"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "ハンマーでサンプルを取（と）ったら、顕微鏡（けんびきょう）で粒（つぶ）の大（おお）きさを見（み）てみよう。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat2.l02"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "このサンプル、粒（つぶ）がとても細（こま）かくて 0.06mm 以下（いか）。さわるとなめらか。これは何（なに）という岩石（がんせき）？",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat2.q1.prompt",
+            "questionId": "q.rock_mudstone",
+            "choices": [
+                {
+                    "text": "泥岩（でいがん）",
+                    "textKey": "story.beat2.q1.a",
+                    "isCorrect": true,
+                    "feedback": "せいかい！　粒（つぶ）が細（こま）かいほど、河口（かこう）から遠（とお）い深（ふか）い海（うみ）でたまるんだ。",
+                    "feedbackKey": "story.beat2.q1.fb_ok"
+                },
+                {
+                    "text": "砂岩（さがん）",
+                    "textKey": "story.beat2.q1.b",
+                    "isCorrect": false
+                },
+                {
+                    "text": "れき岩（がん）",
+                    "textKey": "story.beat2.q1.c",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "次（つぎ）のサンプルに、うすい塩酸（えんさん）をかけたら、あわ（二酸化炭素（にさんかたんそ））が出（で）たわ。この岩石（がんせき）は？",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat2.q2.prompt",
+            "questionId": "q.rock_limestone",
+            "choices": [
+                {
+                    "text": "石灰岩（せっかいがん）",
+                    "textKey": "story.beat2.q2.a",
+                    "isCorrect": true,
+                    "feedback": "そのとおり。石灰岩（せっかいがん）は貝（かい）やサンゴなどが積（つ）もってできて、塩酸（えんさん）で二酸化炭素（にさんかたんそ）を出（だ）すよ。",
+                    "feedbackKey": "story.beat2.q2.fb_ok"
+                },
+                {
+                    "text": "チャート",
+                    "textKey": "story.beat2.q2.b",
+                    "isCorrect": false
+                },
+                {
+                    "text": "凝灰岩（ぎょうかいがん）",
+                    "textKey": "story.beat2.q2.c",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "もうひとつ。くぎでひっかいても傷（きず）がつかないほど、とてもかたい岩石（がんせき）は？",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat2.q3.prompt",
+            "questionId": "q.rock_chert",
+            "choices": [
+                {
+                    "text": "チャート",
+                    "textKey": "story.beat2.q3.a",
+                    "isCorrect": true,
+                    "feedback": "正解（せいかい）！　チャートは海（うみ）の小（ちい）さな生物（せいぶつ）の殻（から）が積（つ）もってできた、とてもかたい岩石（がんせき）だよ。",
+                    "feedbackKey": "story.beat2.q3.fb_ok"
+                },
+                {
+                    "text": "泥岩（でいがん）",
+                    "textKey": "story.beat2.q3.b",
+                    "isCorrect": false
+                },
+                {
+                    "text": "れき岩（がん）",
+                    "textKey": "story.beat2.q3.c",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "完璧（かんぺき）！　岩石（がんせき）の見分（みわ）け方（かた）がわかってきたね。次（つぎ）は深（ふか）いところを調（しら）べよう。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat2.l03"
+        }
+    ]
+}

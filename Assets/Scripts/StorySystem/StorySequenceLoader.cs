@@ -22,6 +22,23 @@ namespace StorySystem
         public float shakeAmplitude;
         public string speakerKey;
         public string textKey;
+
+        // 选择题（可选）。choices 为空时该行是普通台词。
+        public string questionId;
+        public List<StoryChoice> choices;
+    }
+
+    /// <summary>
+    /// 对话内嵌选择题的单个选项（教材题目做成的分支）。
+    /// </summary>
+    [Serializable]
+    public class StoryChoice
+    {
+        public string text;        // 直接文本
+        public string textKey;     // 本地化键（优先）
+        public bool isCorrect;     // 是否正确答案（用于计分）
+        public string feedback;    // 选后反馈文本
+        public string feedbackKey; // 反馈本地化键（优先）
     }
 
     public static class StorySequenceLoader
@@ -90,10 +107,48 @@ namespace StorySystem
                 if (string.IsNullOrEmpty(text)) continue;
                 bool triggerShake = entry.shake;
                 float overrideAmplitude = entry.shakeAmplitude;
-                result.Add(new StoryDirector.SubtitleUI.SubtitleLine(speaker, text, triggerShake, overrideAmplitude));
+                var subtitleLine = new StoryDirector.SubtitleUI.SubtitleLine(speaker, text, triggerShake, overrideAmplitude);
+
+                if (entry.choices != null && entry.choices.Count > 0)
+                {
+                    subtitleLine.QuestionId = entry.questionId;
+                    subtitleLine.Choices = new List<StoryDirector.SubtitleUI.SubtitleChoice>();
+                    foreach (var choice in entry.choices)
+                    {
+                        if (choice == null) continue;
+                        subtitleLine.Choices.Add(new StoryDirector.SubtitleUI.SubtitleChoice
+                        {
+                            Text = ResolveText(choice.text, choice.textKey, localizationManager, canLocalize),
+                            IsCorrect = choice.isCorrect,
+                            Feedback = ResolveText(choice.feedback, choice.feedbackKey, localizationManager, canLocalize)
+                        });
+                    }
+                }
+
+                result.Add(subtitleLine);
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// 解析文本：优先使用本地化键（若可用且存在），否则回退到直接文本，再否则回退到键本身。
+        /// </summary>
+        private static string ResolveText(string directText, string key, LocalizationManager localizationManager, bool canLocalize)
+        {
+            string resolved = directText?.Trim() ?? string.Empty;
+            if (!string.IsNullOrEmpty(key))
+            {
+                if (canLocalize && localizationManager.HasText(key))
+                {
+                    resolved = localizationManager.GetText(key)?.Trim();
+                }
+                else if (string.IsNullOrEmpty(resolved))
+                {
+                    resolved = key; // 至少显示键值，便于调试
+                }
+            }
+            return resolved;
         }
     }
 }
