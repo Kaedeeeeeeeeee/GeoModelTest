@@ -1001,6 +1001,8 @@ namespace StorySystem
             img.preserveAspect = true;
             img.raycastTarget = false;
             var c = img.color; c.a = 0f; img.color = c;
+            // 右侧立绘水平镜像 → 让 Kaede 面朝左(主人公)，形成对视感
+            if (right) inner.transform.localScale = new Vector3(-1f, 1f, 1f);
             return img;
         }
 
