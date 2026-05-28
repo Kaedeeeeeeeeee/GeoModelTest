@@ -766,21 +766,21 @@ namespace StorySystem
                 var line = lines[i];
                 onLineDisplayed?.Invoke(line, i);
 
-                // 立绘 alpha 更新：当前说话者全显示，已露过脸但不在说话则半透明
+                // 立绘 alpha 渐变：当前说话者全显示，已露过脸但不在说话则半透明
                 var spKind = ClassifySpeaker(line.Speaker);
                 if (portraitLeft != null)
                 {
                     if (spKind == SpeakerKind.Player) leftAppeared = true;
-                    var pc = portraitLeft.color;
-                    pc.a = leftAppeared ? (spKind == SpeakerKind.Player ? 1f : 0.55f) : 0f;
-                    portraitLeft.color = pc;
+                    float targetL = leftAppeared ? (spKind == SpeakerKind.Player ? 1f : 0.55f) : 0f;
+                    if (_fadeLeft != null) StoryDirectorRunner.Instance.StopCoroutine(_fadeLeft);
+                    _fadeLeft = StoryDirectorRunner.Instance.StartCoroutine(FadeAlpha(portraitLeft, targetL, PortraitFadeSec));
                 }
                 if (portraitRight != null)
                 {
                     if (spKind == SpeakerKind.Kaede) rightAppeared = true;
-                    var pc = portraitRight.color;
-                    pc.a = rightAppeared ? (spKind == SpeakerKind.Kaede ? 1f : 0.55f) : 0f;
-                    portraitRight.color = pc;
+                    float targetR = rightAppeared ? (spKind == SpeakerKind.Kaede ? 1f : 0.55f) : 0f;
+                    if (_fadeRight != null) StoryDirectorRunner.Instance.StopCoroutine(_fadeRight);
+                    _fadeRight = StoryDirectorRunner.Instance.StartCoroutine(FadeAlpha(portraitRight, targetR, PortraitFadeSec));
                 }
 
                 speakerGO.SetActive(!string.IsNullOrEmpty(line.Speaker));
@@ -847,10 +847,14 @@ namespace StorySystem
 
             button.onClick.RemoveListener(RequestAdvance);
             MarkDialogClosed();
-            
+
+            // 停掉挂着的立绘渐变协程，避免 Canvas/Image 销毁后悬挂
+            if (_fadeLeft != null) { StoryDirectorRunner.Instance.StopCoroutine(_fadeLeft); _fadeLeft = null; }
+            if (_fadeRight != null) { StoryDirectorRunner.Instance.StopCoroutine(_fadeRight); _fadeRight = null; }
+
             // Delay destruction to next frame to avoid Assertion failed errors in ProcessEvent
             StoryDirectorRunner.Instance.Run(DestroyCanvasNextFrame(canvasGO));
-            
+
             onComplete?.Invoke();
         }
 
@@ -1004,6 +1008,34 @@ namespace StorySystem
             // 右侧立绘水平镜像 → 让 Kaede 面朝左(主人公)，形成对视感
             if (right) inner.transform.localScale = new Vector3(-1f, 1f, 1f);
             return img;
+        }
+
+        // ===== 立绘 alpha 渐变 =====
+
+        private const float PortraitFadeSec = 0.25f;
+        private static Coroutine _fadeLeft, _fadeRight;
+
+        /// <summary>
+        /// 缓动立绘 alpha 到目标值；img 为 null（Canvas 已销毁）则安全退出。
+        /// </summary>
+        private static IEnumerator FadeAlpha(Image img, float target, float duration)
+        {
+            if (img == null) yield break;
+            float start = img.color.a;
+            float t = 0f;
+            while (t < duration)
+            {
+                t += Time.unscaledDeltaTime;
+                if (img == null) yield break;
+                var c = img.color;
+                c.a = Mathf.Lerp(start, target, t / duration);
+                img.color = c;
+                yield return null;
+            }
+            if (img != null)
+            {
+                var fc = img.color; fc.a = target; img.color = fc;
+            }
         }
 
         private static string LocalizedOr(string key, string fallback)
