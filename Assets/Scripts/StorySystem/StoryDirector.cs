@@ -793,49 +793,67 @@ namespace StorySystem
                 // 选择题分支：显示答案按钮，记录得分，再播放反馈
                 if (line.HasChoices)
                 {
-                    int picked = -1;
-                    var choicePanel = BuildChoicePanel(canvasGO.transform, line.Choices, idx => picked = idx);
+                    // E: 答错可重答。已错过的选项灰掉禁用；最终必须答对才推进。
+                    var disabledIdx = new HashSet<int>();
+                    bool correctlyAnswered = false;
                     button.interactable = false; // 选择期间屏蔽背景点击推进
-                    hintTxt.text = FuriganaProcessor.Process(LocalizedOr("ui.dialog.choose", "答えをえらんでね"));
 
-                    while (picked < 0)
+                    while (!correctlyAnswered)
                     {
-                        if (Input.GetKeyDown(KeyCode.Alpha1) && line.Choices.Count >= 1) picked = 0;
-                        else if (Input.GetKeyDown(KeyCode.Alpha2) && line.Choices.Count >= 2) picked = 1;
-                        else if (Input.GetKeyDown(KeyCode.Alpha3) && line.Choices.Count >= 3) picked = 2;
-                        else if (Input.GetKeyDown(KeyCode.Alpha4) && line.Choices.Count >= 4) picked = 3;
-                        yield return null;
-                    }
+                        // 每次循环（含重答）恢复 speaker + prompt
+                        speakerGO.SetActive(!string.IsNullOrEmpty(line.Speaker));
+                        speakerTxt.text = FuriganaProcessor.Process(line.Speaker ?? string.Empty);
+                        txt.text = FuriganaProcessor.Process(line.Text ?? string.Empty);
 
-                    if (choicePanel != null) UnityEngine.Object.Destroy(choicePanel);
-                    button.interactable = true;
+                        int picked = -1;
+                        var choicePanel = BuildChoicePanel(canvasGO.transform, line.Choices, disabledIdx, idx => picked = idx);
+                        hintTxt.text = FuriganaProcessor.Process(LocalizedOr("ui.dialog.choose", "答えをえらんでね"));
 
-                    var chosen = line.Choices[Mathf.Clamp(picked, 0, line.Choices.Count - 1)];
-                    QuizScoreManager.Instance.Record(line.QuestionId, chosen.IsCorrect);
-                    if (chosen.IsCorrect)
-                        AudioManager.Instance?.PlaySFX(AudioKeys.SFX.SamplePickup);
-                    else
-                        AudioManager.Instance?.PlayUI(AudioKeys.UI.PanelClose);
-
-                    string feedback = !string.IsNullOrEmpty(chosen.Feedback)
-                        ? chosen.Feedback
-                        : LocalizedOr(chosen.IsCorrect ? "quiz.correct" : "quiz.incorrect",
-                                      chosen.IsCorrect ? "正解（せいかい）！" : "ざんねん、もう一度（いちど）かんがえてみよう。");
-
-                    speakerGO.SetActive(false);
-                    txt.text = FuriganaProcessor.Process(feedback);
-                    hintTxt.text = hintContinue;
-                    advanceRequested = false;
-                    yield return null;
-                    while (!advanceRequested)
-                    {
-                        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+                        while (picked < 0)
                         {
-                            advanceRequested = true;
-                            break;
+                            if (Input.GetKeyDown(KeyCode.Alpha1) && line.Choices.Count >= 1 && !disabledIdx.Contains(0)) picked = 0;
+                            else if (Input.GetKeyDown(KeyCode.Alpha2) && line.Choices.Count >= 2 && !disabledIdx.Contains(1)) picked = 1;
+                            else if (Input.GetKeyDown(KeyCode.Alpha3) && line.Choices.Count >= 3 && !disabledIdx.Contains(2)) picked = 2;
+                            else if (Input.GetKeyDown(KeyCode.Alpha4) && line.Choices.Count >= 4 && !disabledIdx.Contains(3)) picked = 3;
+                            yield return null;
                         }
+
+                        if (choicePanel != null) UnityEngine.Object.Destroy(choicePanel);
+
+                        var chosen = line.Choices[Mathf.Clamp(picked, 0, line.Choices.Count - 1)];
+                        QuizScoreManager.Instance.Record(line.QuestionId, chosen.IsCorrect); // dedup → 最终算最后一次
+                        if (chosen.IsCorrect)
+                            AudioManager.Instance?.PlaySFX(AudioKeys.SFX.SamplePickup);
+                        else
+                            AudioManager.Instance?.PlayUI(AudioKeys.UI.PanelClose);
+
+                        string feedback = !string.IsNullOrEmpty(chosen.Feedback)
+                            ? chosen.Feedback
+                            : LocalizedOr(chosen.IsCorrect ? "quiz.correct" : "quiz.incorrect",
+                                          chosen.IsCorrect ? "正解（せいかい）！" : "ざんねん、もう一度（いちど）かんがえてみよう。");
+
+                        speakerGO.SetActive(false);
+                        txt.text = FuriganaProcessor.Process(feedback);
+                        hintTxt.text = hintContinue;
+                        advanceRequested = false;
                         yield return null;
+                        while (!advanceRequested)
+                        {
+                            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+                            {
+                                advanceRequested = true;
+                                break;
+                            }
+                            yield return null;
+                        }
+
+                        if (chosen.IsCorrect)
+                            correctlyAnswered = true;
+                        else
+                            disabledIdx.Add(picked);
                     }
+
+                    button.interactable = true;
                     continue;
                 }
 
@@ -1056,7 +1074,7 @@ namespace StorySystem
         /// <summary>
         /// 动态生成选择题答案按钮（垂直排列，叠在对话框上方）。点击或数字键 1-4 选择。
         /// </summary>
-        private static GameObject BuildChoicePanel(Transform parent, List<SubtitleChoice> choices, System.Action<int> onPick)
+        private static GameObject BuildChoicePanel(Transform parent, List<SubtitleChoice> choices, HashSet<int> disabledIndices, System.Action<int> onPick)
         {
             var panel = new GameObject("ChoicePanel");
             panel.transform.SetParent(parent, false);
@@ -1086,6 +1104,7 @@ namespace StorySystem
                 le.minHeight = 52f;
                 le.preferredHeight = 56f;
 
+                bool isDisabled = disabledIndices != null && disabledIndices.Contains(idx);
                 var btn = btnGO.AddComponent<Button>();
                 btn.targetGraphic = img;
                 var colors = btn.colors;
@@ -1093,6 +1112,11 @@ namespace StorySystem
                 colors.highlightedColor = new Color(0.6f, 0.8f, 1f, 1f);
                 colors.pressedColor = new Color(0.4f, 0.65f, 0.95f, 1f);
                 btn.colors = colors;
+                if (isDisabled)
+                {
+                    btn.interactable = false;
+                    img.color = new Color(0.08f, 0.10f, 0.14f, 0.55f);
+                }
                 btn.onClick.AddListener(() => { AudioManager.Instance?.PlayUI(AudioKeys.UI.Click); onPick(idx); });
 
                 var labelGO = new GameObject("Label");
@@ -1105,7 +1129,7 @@ namespace StorySystem
                 var label = labelGO.AddComponent<TextMeshProUGUI>();
                 ApplyTmpFont(label);
                 label.fontSize = 30;
-                label.color = Color.white;
+                label.color = isDisabled ? new Color(1f, 1f, 1f, 0.4f) : Color.white;
                 label.alignment = TextAlignmentOptions.Center;
                 label.lineSpacing = RubyLineSpacing;
                 label.text = FuriganaProcessor.Process($"{idx + 1}. {choices[idx].Text}");
