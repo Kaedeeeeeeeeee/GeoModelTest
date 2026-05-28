@@ -41,7 +41,19 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "山（やま）の岩石（がんせき）がけずられて、海（うみ）や湖（みずうみ）で地層（ちそう）になるまで。正（ただ）しい順番（じゅんばん）はどれ？",
+            "text": "山（やま）の岩石（がんせき）が地層（ちそう）になるまでには、4つの「はたらき」があるの。「風化（ふうか）」「侵食（しんしょく）」「運搬（うんぱん）」「堆積（たいせき）」、ね。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat1.q1.teach1"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "風化（ふうか）はもろくなる、侵食（しんしょく）はけずられる、運搬（うんぱん）は運（はこ）ばれる、堆積（たいせき）は積（つ）もる。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat1.q1.teach2"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "山（やま）の岩石（がんせき）が地層（ちそう）になるまで——正（ただ）しい順番（じゅんばん）は？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat1.q1.prompt",
             "questionId": "q.weathering_order",

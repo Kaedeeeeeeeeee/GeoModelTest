@@ -23,7 +23,19 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "このサンプル、粒（つぶ）がとても細（こま）かくて 0.06mm 以下（いか）。さわるとなめらか。これは何（なに）という岩石（がんせき）？",
+            "text": "堆積岩（たいせきがん）はね、粒（つぶ）の大（おお）きさで名前（なまえ）が決（き）まるんだ。大（おお）きい方（ほう）から「れき岩（がん）」(>2mm)、「砂岩（さがん）」、「泥岩（でいがん）」(<0.06mm)。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat2.q1.teach1"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "それと、変（か）わり種（だね）が2つ——塩酸（えんさん）で泡（あわ）が出（で）るのが「石灰岩（せっかいがん）」、くぎでも傷（きず）がつかないかたさが「チャート」。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat2.q1.teach2"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "じゃあ、このサンプル——粒（つぶ）は 0.06mm より細（こま）かい、なめらか。これは？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat2.q1.prompt",
             "questionId": "q.rock_mudstone",
@@ -49,7 +61,7 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "次（つぎ）のサンプルに、うすい塩酸（えんさん）をかけたら、あわ（二酸化炭素（にさんかたんそ））が出（で）たわ。この岩石（がんせき）は？",
+            "text": "次（つぎ）のサンプルは、うすい塩酸（えんさん）をかけたら泡（あわ）（二酸化炭素（にさんかたんそ））が出（で）たわ。これは？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat2.q2.prompt",
             "questionId": "q.rock_limestone",
@@ -75,7 +87,7 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "もうひとつ。くぎでひっかいても傷（きず）がつかないほど、とてもかたい岩石（がんせき）は？",
+            "text": "もうひとつ。くぎでひっかいても傷（きず）がつかないほどかたい。これは？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat2.q3.prompt",
             "questionId": "q.rock_chert",
