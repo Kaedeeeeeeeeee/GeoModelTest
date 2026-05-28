@@ -2444,6 +2444,17 @@
     { "key": "story.beat4.q1.fb_ng_b", "value": "反过来了。同一层在东边更深，说明整个地层朝东倾斜变低。" },
     { "key": "story.beat4.q1.fb_ng_c", "value": "南北方向上深度没有变化，注意东西方向上的差异。" },
     { "key": "story.beat4.q2.fb_ng_b", "value": "断层是地层「错开」。弯曲是另一种现象。" },
-    { "key": "story.beat4.q2.fb_ng_c", "value": "整合指地层连续不间断地叠加。波浪形的弯曲不是这个。" }
+    { "key": "story.beat4.q2.fb_ng_c", "value": "整合指地层连续不间断地叠加。波浪形的弯曲不是这个。" },
+    { "key": "story.beat1.q1.hint", "value": "「松脆→刮削→搬运→堆积」的自然流程，回忆一下吧。" },
+    { "key": "story.beat2.q1.hint", "value": "按颗粒大小分的 3 种岩石里，最细的是哪一种？" },
+    { "key": "story.beat2.q2.hint", "value": "能与盐酸反应的岩石很有限。由贝壳和珊瑚堆积形成的岩是？" },
+    { "key": "story.beat2.q3.hint", "value": "海里小生物的壳堆积形成、非常坚硬的岩石是？" },
+    { "key": "story.beat3.q1.hint", "value": "现在的珊瑚只在什么样的海里生长？回忆一下。" },
+    { "key": "story.beat3.q2.hint", "value": "「指示环境的化石」——3 个汉字。" },
+    { "key": "story.beat3.q3.hint", "value": "和恐龙同时代繁盛的化石属于哪个时代？" },
+    { "key": "story.beat3.q4.hint", "value": "「指示时代的化石」——3 个汉字。" },
+    { "key": "story.beat3.q5.hint", "value": "凝灰岩由火山灰形成。火山灰从哪里飞来？" },
+    { "key": "story.beat4.q1.hint", "value": "同一层在哪个方向更深 = 整个地层往那边倾斜变低。" },
+    { "key": "story.beat4.q2.hint", "value": "被两侧挤压、地层呈波浪状弯曲的现象。" }
   ]
 }

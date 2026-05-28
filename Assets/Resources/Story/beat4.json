@@ -27,6 +27,8 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat4.q1.prompt",
             "questionId": "q.strata_tilt",
+            "hint": "同（おな）じ層（そう）が深（ふか）い方向（ほうこう）＝地層全体（ちそうぜんたい）が低（ひく）くなる方向（ほうこう）だよ。",
+            "hintKey": "story.beat4.q1.hint",
             "choices": [
                 {
                     "text": "東（ひがし）",
@@ -63,6 +65,8 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat4.q2.prompt",
             "questionId": "q.fold_term",
+            "hint": "両側（りょうがわ）から押（お）し縮（ちぢ）められた地層（ちそう）が、波（なみ）のように曲（ま）がる現象（げんしょう）。",
+            "hintKey": "story.beat4.q2.hint",
             "choices": [
                 {
                     "text": "しゅう曲（きょく）",

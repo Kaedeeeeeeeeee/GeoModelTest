@@ -57,6 +57,8 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat1.q1.prompt",
             "questionId": "q.weathering_order",
+            "hint": "もろくなる→けずられる→運（はこ）ばれる→積（つ）もる、の自然（しぜん）な流（なが）れを思（おも）い出（だ）してみよう。",
+            "hintKey": "story.beat1.q1.hint",
             "choices": [
                 {
                     "text": "風化（ふうか）→ 侵食（しんしょく）→ 運搬（うんぱん）→ 堆積（たいせき）",

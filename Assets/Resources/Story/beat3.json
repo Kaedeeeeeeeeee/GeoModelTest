@@ -57,6 +57,8 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q1.prompt",
             "questionId": "q.fossil_coral_env",
+            "hint": "今（いま）のサンゴはどんな海（うみ）でしか育（そだ）たないか、思（おも）い出（だ）してみよう。",
+            "hintKey": "story.beat3.q1.hint",
             "choices": [
                 {
                     "text": "あたたかくて浅（あさ）い海（うみ）",
@@ -87,6 +89,8 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q2.prompt",
             "questionId": "q.fossil_facies_term",
+            "hint": "「環境（かんきょう）」を「示（しめ）す」「化石（かせき）」——漢字（かんじ）3つで。",
+            "hintKey": "story.beat3.q2.hint",
             "choices": [
                 {
                     "text": "示相化石（しそうかせき）",
@@ -128,6 +132,8 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q3.prompt",
             "questionId": "q.fossil_ammonite_era",
+            "hint": "恐竜（きょうりゅう）と同（おな）じ時代（じだい）に栄（さか）えた化石（かせき）は、どの時代（じだい）？",
+            "hintKey": "story.beat3.q3.hint",
             "choices": [
                 {
                     "text": "中生代（ちゅうせいだい）",
@@ -164,6 +170,8 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q4.prompt",
             "questionId": "q.fossil_index_term",
+            "hint": "「時代（じだい）」を「示（しめ）す」「化石（かせき）」——漢字（かんじ）3つで。",
+            "hintKey": "story.beat3.q4.hint",
             "choices": [
                 {
                     "text": "示準化石（しじゅんかせき）",
@@ -187,6 +195,8 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q5.prompt",
             "questionId": "q.tuff_volcano",
+            "hint": "凝灰岩（ぎょうかいがん）は火山灰（かざんばい）からできるよ。火山灰（かざんばい）はどこから飛（と）んでくる？",
+            "hintKey": "story.beat3.q5.hint",
             "choices": [
                 {
                     "text": "近（ちか）くで火山（かざん）の噴火（ふんか）があった",

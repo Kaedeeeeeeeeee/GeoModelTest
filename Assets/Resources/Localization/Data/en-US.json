@@ -2444,6 +2444,17 @@
     { "key": "story.beat4.q1.fb_ng_b", "value": "Other way! If the same layer is deeper to the east, the whole strata tilts down toward the east." },
     { "key": "story.beat4.q1.fb_ng_c", "value": "Depth doesn't change north–south. Look at the east–west difference." },
     { "key": "story.beat4.q2.fb_ng_b", "value": "A fault is where strata 'break apart.' Bending is a different phenomenon." },
-    { "key": "story.beat4.q2.fb_ng_c", "value": "Conformity is when strata stack continuously. A wave-like bend isn't that." }
+    { "key": "story.beat4.q2.fb_ng_c", "value": "Conformity is when strata stack continuously. A wave-like bend isn't that." },
+    { "key": "story.beat1.q1.hint", "value": "Brittle → eroded → carried → piled up — recall the natural flow." },
+    { "key": "story.beat2.q1.hint", "value": "Among the three rock types by grain size, which has the finest grain?" },
+    { "key": "story.beat2.q2.hint", "value": "Few rocks react with acid. What rock is made of shells and coral?" },
+    { "key": "story.beat2.q3.hint", "value": "What very hard rock is made from the shells of tiny sea organisms?" },
+    { "key": "story.beat3.q1.hint", "value": "What kind of sea do living corals grow in today?" },
+    { "key": "story.beat3.q2.hint", "value": "'Environment-indicating fossil' — 3 kanji." },
+    { "key": "story.beat3.q3.hint", "value": "Which era's fossils thrived alongside the dinosaurs?" },
+    { "key": "story.beat3.q4.hint", "value": "'Era-indicating fossil' — 3 kanji." },
+    { "key": "story.beat3.q5.hint", "value": "Tuff comes from volcanic ash. Where does volcanic ash come from?" },
+    { "key": "story.beat4.q1.hint", "value": "Which direction the same layer gets deeper = which way the whole strata tilts down." },
+    { "key": "story.beat4.q2.hint", "value": "Strata bent like waves under compression from both sides." }
   ]
 }

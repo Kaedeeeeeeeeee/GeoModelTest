@@ -26,6 +26,10 @@ namespace StorySystem
         // 选择题（可选）。choices 为空时该行是普通台词。
         public string questionId;
         public List<StoryChoice> choices;
+
+        // 选择题"ヒント"按钮文本（可选）；选择题专用，普通台词上无效。
+        public string hint;
+        public string hintKey;
     }
 
     /// <summary>
@@ -112,6 +116,7 @@ namespace StorySystem
                 if (entry.choices != null && entry.choices.Count > 0)
                 {
                     subtitleLine.QuestionId = entry.questionId;
+                    subtitleLine.Hint = ResolveText(entry.hint, entry.hintKey, localizationManager, canLocalize);
                     subtitleLine.Choices = new List<StoryDirector.SubtitleUI.SubtitleChoice>();
                     foreach (var choice in entry.choices)
                     {

@@ -39,6 +39,8 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat2.q1.prompt",
             "questionId": "q.rock_mudstone",
+            "hint": "粒（つぶ）の大（おお）きさで分（わ）かれる岩石（がんせき）3 種類（しゅるい）のうち、一番（いちばん）細（こま）かいのは？",
+            "hintKey": "story.beat2.q1.hint",
             "choices": [
                 {
                     "text": "泥岩（でいがん）",
@@ -69,6 +71,8 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat2.q2.prompt",
             "questionId": "q.rock_limestone",
+            "hint": "塩酸（えんさん）に反応（はんのう）する岩石（がんせき）は限（かぎ）られているよ。貝（かい）やサンゴからできた岩（いわ）は？",
+            "hintKey": "story.beat2.q2.hint",
             "choices": [
                 {
                     "text": "石灰岩（せっかいがん）",
@@ -99,6 +103,8 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat2.q3.prompt",
             "questionId": "q.rock_chert",
+            "hint": "海（うみ）の小（ちい）さな生物（せいぶつ）の殻（から）が積（つ）もってできた、とてもかたい岩（いわ）は？",
+            "hintKey": "story.beat2.q3.hint",
             "choices": [
                 {
                     "text": "チャート",

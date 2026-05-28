@@ -648,8 +648,10 @@ namespace StorySystem
             // 选择题支持（可选）：QuestionId 用于计分/报告，Choices 为 null/空表示普通线性台词。
             public string QuestionId;
             public System.Collections.Generic.List<SubtitleChoice> Choices;
+            public string Hint; // 选择题"ヒント"按钮显示的提示文本（可选）
 
             public bool HasChoices => Choices != null && Choices.Count > 0;
+            public bool HasHint => !string.IsNullOrEmpty(Hint);
 
             public SubtitleLine(string speaker, string text, bool triggerCameraShake = false, float shakeAmplitudeOverride = 0f)
             {
@@ -659,6 +661,7 @@ namespace StorySystem
                 ShakeAmplitudeOverride = shakeAmplitudeOverride;
                 QuestionId = null;
                 Choices = null;
+                Hint = null;
             }
 
             public SubtitleLine(string text, bool triggerCameraShake = false, float shakeAmplitudeOverride = 0f)
@@ -806,10 +809,14 @@ namespace StorySystem
                         txt.text = FuriganaProcessor.Process(line.Text ?? string.Empty);
 
                         int picked = -1;
-                        var choicePanel = BuildChoicePanel(canvasGO.transform, line.Choices, disabledIdx, idx => picked = idx);
+                        bool showHintRequested = false;
+                        var choicePanel = BuildChoicePanel(
+                            canvasGO.transform, line.Choices, disabledIdx,
+                            idx => picked = idx,
+                            line.HasHint ? () => showHintRequested = true : (System.Action)null);
                         hintTxt.text = FuriganaProcessor.Process(LocalizedOr("ui.dialog.choose", "答えをえらんでね"));
 
-                        while (picked < 0)
+                        while (picked < 0 && !showHintRequested)
                         {
                             if (Input.GetKeyDown(KeyCode.Alpha1) && line.Choices.Count >= 1 && !disabledIdx.Contains(0)) picked = 0;
                             else if (Input.GetKeyDown(KeyCode.Alpha2) && line.Choices.Count >= 2 && !disabledIdx.Contains(1)) picked = 1;
@@ -819,6 +826,26 @@ namespace StorySystem
                         }
 
                         if (choicePanel != null) UnityEngine.Object.Destroy(choicePanel);
+
+                        // D: 点了 ヒント → 显示提示，按推进键后重建选择面板（不计分、不算尝试）
+                        if (showHintRequested)
+                        {
+                            speakerGO.SetActive(false);
+                            txt.text = FuriganaProcessor.Process(line.Hint);
+                            hintTxt.text = hintContinue;
+                            advanceRequested = false;
+                            yield return null;
+                            while (!advanceRequested)
+                            {
+                                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+                                {
+                                    advanceRequested = true;
+                                    break;
+                                }
+                                yield return null;
+                            }
+                            continue;
+                        }
 
                         var chosen = line.Choices[Mathf.Clamp(picked, 0, line.Choices.Count - 1)];
                         QuizScoreManager.Instance.Record(line.QuestionId, chosen.IsCorrect); // dedup → 最终算最后一次
@@ -1074,7 +1101,7 @@ namespace StorySystem
         /// <summary>
         /// 动态生成选择题答案按钮（垂直排列，叠在对话框上方）。点击或数字键 1-4 选择。
         /// </summary>
-        private static GameObject BuildChoicePanel(Transform parent, List<SubtitleChoice> choices, HashSet<int> disabledIndices, System.Action<int> onPick)
+        private static GameObject BuildChoicePanel(Transform parent, List<SubtitleChoice> choices, HashSet<int> disabledIndices, System.Action<int> onPick, System.Action onHintClicked)
         {
             var panel = new GameObject("ChoicePanel");
             panel.transform.SetParent(parent, false);
@@ -1133,6 +1160,40 @@ namespace StorySystem
                 label.alignment = TextAlignmentOptions.Center;
                 label.lineSpacing = RubyLineSpacing;
                 label.text = FuriganaProcessor.Process($"{idx + 1}. {choices[idx].Text}");
+            }
+
+            // D: 可选「ヒント」按钮 (黄色, 小字号) — 仅当传入 onHintClicked
+            if (onHintClicked != null)
+            {
+                var hintBtnGO = new GameObject("HintBtn");
+                hintBtnGO.transform.SetParent(panel.transform, false);
+                var hintImg = hintBtnGO.AddComponent<Image>();
+                hintImg.color = new Color(0.85f, 0.72f, 0.30f, 0.92f);
+                var hintLE = hintBtnGO.AddComponent<LayoutElement>();
+                hintLE.minHeight = 42f;
+                hintLE.preferredHeight = 46f;
+                var hintBtn = hintBtnGO.AddComponent<Button>();
+                hintBtn.targetGraphic = hintImg;
+                var hintColors = hintBtn.colors;
+                hintColors.normalColor = Color.white;
+                hintColors.highlightedColor = new Color(0.95f, 0.85f, 0.50f, 1f);
+                hintColors.pressedColor = new Color(0.70f, 0.58f, 0.22f, 1f);
+                hintBtn.colors = hintColors;
+                hintBtn.onClick.AddListener(() => { AudioManager.Instance?.PlayUI(AudioKeys.UI.Click); onHintClicked(); });
+
+                var hintLabelGO = new GameObject("Label");
+                hintLabelGO.transform.SetParent(hintBtnGO.transform, false);
+                var hintLrt = hintLabelGO.AddComponent<RectTransform>();
+                hintLrt.anchorMin = Vector2.zero;
+                hintLrt.anchorMax = Vector2.one;
+                hintLrt.offsetMin = new Vector2(14f, 2f);
+                hintLrt.offsetMax = new Vector2(-14f, -2f);
+                var hintLabel = hintLabelGO.AddComponent<TextMeshProUGUI>();
+                ApplyTmpFont(hintLabel);
+                hintLabel.fontSize = 22;
+                hintLabel.color = new Color(0.20f, 0.15f, 0.05f, 1f);
+                hintLabel.alignment = TextAlignmentOptions.Center;
+                hintLabel.text = "ヒント (?)";
             }
 
             return panel;
