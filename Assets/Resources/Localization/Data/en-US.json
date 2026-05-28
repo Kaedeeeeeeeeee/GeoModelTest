@@ -9,6 +9,26 @@
       "value": "Language"
     },
     {
+      "key": "ui.settings.audio",
+      "value": "Audio"
+    },
+    {
+      "key": "ui.settings.master_volume",
+      "value": "Master Volume"
+    },
+    {
+      "key": "ui.settings.bgm_volume",
+      "value": "Music Volume"
+    },
+    {
+      "key": "ui.settings.sfx_volume",
+      "value": "SFX Volume"
+    },
+    {
+      "key": "ui.settings.ui_volume",
+      "value": "UI Volume"
+    },
+    {
       "key": "ui.button.close",
       "value": "Close"
     },
@@ -2332,21 +2352,21 @@
     { "key": "story.beat2.l03", "value": "Perfect! You're getting the hang of identifying rocks. Next, let's investigate deeper down." },
     { "key": "story.beat3.l01", "value": "Let's use the drill tower to sample at each depth. The layering shows up as a columnar section." },
     { "key": "story.beat3.l02", "value": "As you drill into the deeper layers, a fossil appears inside the rock." },
-    { "key": "story.beat3.q1.prompt", "value": "It's a coral fossil. What environment do you think this layer formed in?" },
+    { "key": "story.beat3.q1.prompt", "value": "...So, what environment do you think this layer formed in?" },
     { "key": "story.beat3.q1.a", "value": "A warm, shallow sea" },
     { "key": "story.beat3.q1.b", "value": "A cold, deep sea" },
     { "key": "story.beat3.q1.c", "value": "Where river and sea water mix" },
-    { "key": "story.beat3.q1.fb_ok", "value": "Correct! Coral lives in warm shallow seas, so it tells us the environment at the time." },
-    { "key": "story.beat3.q2.prompt", "value": "A fossil like coral that tells us the ENVIRONMENT when a layer formed is called what?" },
+    { "key": "story.beat3.q1.fb_ok", "value": "Correct! The fossil told us the environment of the time." },
+    { "key": "story.beat3.q2.prompt", "value": "A fossil like coral that tells us the environment a layer formed in — what's it called?" },
     { "key": "story.beat3.q2.a", "value": "Facies fossil" },
     { "key": "story.beat3.q2.b", "value": "Index fossil" },
     { "key": "story.beat3.q2.fb_ok", "value": "Right. A facies fossil indicates environment. A clam (Shijimi) means where river and sea mix." },
-    { "key": "story.beat3.q3.prompt", "value": "An ammonite came out of another layer. Which era did this layer form in?" },
+    { "key": "story.beat3.q3.prompt", "value": "...So, which era did this layer form in?" },
     { "key": "story.beat3.q3.a", "value": "Mesozoic" },
     { "key": "story.beat3.q3.b", "value": "Paleozoic" },
     { "key": "story.beat3.q3.c", "value": "Cenozoic" },
     { "key": "story.beat3.q3.fb_ok", "value": "Correct! The ammonite is a Mesozoic index fossil. The trilobite would be Paleozoic." },
-    { "key": "story.beat3.q4.prompt", "value": "A fossil like the ammonite that tells us the ERA a layer formed in is called what?" },
+    { "key": "story.beat3.q4.prompt", "value": "A fossil like the ammonite — what's it called?" },
     { "key": "story.beat3.q4.a", "value": "Index fossil" },
     { "key": "story.beat3.q4.b", "value": "Facies fossil" },
     { "key": "story.beat3.q4.fb_ok", "value": "Yes. Organisms that lived widely but thrived only briefly make good index fossils." },
@@ -2355,13 +2375,13 @@
     { "key": "story.beat3.q5.b", "value": "A large earthquake occurred" },
     { "key": "story.beat3.q5.c", "value": "The sea dried up" },
     { "key": "story.beat3.q5.fb_ok", "value": "Correct! A tuff layer is evidence of a volcanic eruption in that era." },
-    { "key": "story.beat4.l01", "value": "Finally, let's compare the columns from sites A, B, and C. The ash layer makes a handy marker (key bed)." },
-    { "key": "story.beat4.q1.prompt", "value": "The same ash layer is deeper the farther east you go. Which way do the strata tilt downward?" },
+    { "key": "story.beat4.l01", "value": "Lastly, let's compare the columns from sites A, B and C." },
+    { "key": "story.beat4.q1.prompt", "value": "So — the ash layer is deeper the farther east we go. Which way do the strata tilt?" },
     { "key": "story.beat4.q1.a", "value": "East" },
     { "key": "story.beat4.q1.b", "value": "West" },
     { "key": "story.beat4.q1.c", "value": "North" },
     { "key": "story.beat4.q1.fb_ok", "value": "Correct! The direction where the same layer gets deeper is the way the strata tilt down." },
-    { "key": "story.beat4.q2.prompt", "value": "The cliff also shows strata bent like waves. What is a bend in strata pushed by great force called?" },
+    { "key": "story.beat4.q2.prompt", "value": "Look at the cliff. The strata bend like waves! What do we call this kind of bending?" },
     { "key": "story.beat4.q2.a", "value": "Fold" },
     { "key": "story.beat4.q2.b", "value": "Fault" },
     { "key": "story.beat4.q2.c", "value": "Conformity" },
@@ -2390,6 +2410,16 @@
     { "key": "story.bridge.q34.l03", "value": "Next — let's peek underground with the drill tower." },
     { "key": "story.bridge.q41.l01", "value": "The drill tower samples at every depth — it shows the layering clearly." },
     { "key": "story.bridge.q41.l02", "value": "If a fossil comes out, let me know. It's a clue to when the layer formed." },
-    { "key": "story.bridge.q41.l03", "value": "A fossil...! Kind of exciting, honestly." }
+    { "key": "story.bridge.q41.l03", "value": "A fossil...! Kind of exciting, honestly." },
+    { "key": "story.beat3.q1.teach1", "value": "You know, a fossil is like a little 'time capsule.'" },
+    { "key": "story.beat3.q1.teach2", "value": "Every living thing has its own habitat. So a fossil tells us the environment of its time." },
+    { "key": "story.beat3.q1.teach3", "value": "Take this coral. Even today, it only grows in warm, shallow seas." },
+    { "key": "story.beat3.q3.teach1", "value": "And from another layer — an ammonite fossil!" },
+    { "key": "story.beat3.q3.teach2", "value": "Earth's history is divided roughly into Paleozoic → Mesozoic → Cenozoic." },
+    { "key": "story.beat3.q3.teach3", "value": "Ammonites only thrived in the Mesozoic — the same era as the dinosaurs." },
+    { "key": "story.beat3.q4.teach1", "value": "Organisms that lived widely but only for a short time make great year-markers." },
+    { "key": "story.beat4.q1.teach1", "value": "If you find 'the same layer' in several places, it becomes a marker — we call it a 'key bed.' An ash layer is very distinct, a great key bed." },
+    { "key": "story.beat4.q1.teach2", "value": "If the key bed gets deeper as you go in some direction? That means the whole strata is tilting downward in that direction." },
+    { "key": "story.beat4.q2.teach1", "value": "Strata should stack straight by default. But squeeze them from both sides and they bend like that." }
   ]
 }

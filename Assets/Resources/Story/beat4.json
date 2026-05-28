@@ -5,13 +5,25 @@
     "dialogues": [
         {
             "speaker": "Dr.Kaede",
-            "text": "最後（さいご）は、A・B・C 三（みっ）つの地点（ちてん）の柱状図（ちゅうじょうず）をくらべよう。火山灰（かざんばい）の層（そう）を目印（めじるし）（鍵層（かぎそう））にするといいよ。",
+            "text": "最後（さいご）は、A・B・C 三（みっ）つの地点（ちてん）の柱状図（ちゅうじょうず）をくらべるよ。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat4.l01"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "同（おな）じ火山灰（かざんばい）の層（そう）が、東（ひがし）の地点（ちてん）ほど深（ふか）い位置（いち）にあったわ。地層（ちそう）はどの方位（ほうい）に向（む）かって低（ひく）くなって傾（かたむ）いている？",
+            "text": "「同（おな）じ層（そう）」が見（み）つかれば、それを目印（めじるし）にできる——「鍵層（かぎそう）」っていうの。火山灰（かざんばい）はとても目立（めだ）つ、いい鍵層（かぎそう）よ。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat4.q1.teach1"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "その鍵層（かぎそう）が「ある方向（ほうこう）に行（い）くほど深（ふか）い位置（いち）」にあったら？　地層全体（ちそうぜんたい）がそっちに傾（かたむ）いて低（ひく）くなってる、ってこと。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat4.q1.teach2"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "じゃあ今回（こんかい）——火山灰（かざんばい）の層（そう）が、東（ひがし）の地点（ちてん）ほど深（ふか）い位置（いち）にあったわ。地層（ちそう）はどっちに傾（かたむ）いてる？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat4.q1.prompt",
             "questionId": "q.strata_tilt",
@@ -37,7 +49,13 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "がけには、波（なみ）のように曲（ま）がった地層（ちそう）も見（み）えた。大（おお）きな力（ちから）でおし曲（ま）げられた地層（ちそう）の曲（ま）がりを何（なに）という？",
+            "text": "地層（ちそう）は本来（ほんらい）まっすぐ重（かさ）なるはず。でも、両側（りょうがわ）から押（お）し縮（ちぢ）められると——あんなふうに曲（ま）がっちゃうの。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat4.q2.teach1"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "ねえ、あのがけ見（み）て。地層（ちそう）が波（なみ）のように曲（ま）がってる！　あの曲（ま）がりを、何（なん）て呼（よ）ぶ？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat4.q2.prompt",
             "questionId": "q.fold_term",

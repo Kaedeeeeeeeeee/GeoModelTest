@@ -9,6 +9,26 @@
       "value": "语言"
     },
     {
+      "key": "ui.settings.audio",
+      "value": "音频"
+    },
+    {
+      "key": "ui.settings.master_volume",
+      "value": "主音量"
+    },
+    {
+      "key": "ui.settings.bgm_volume",
+      "value": "音乐音量"
+    },
+    {
+      "key": "ui.settings.sfx_volume",
+      "value": "音效音量"
+    },
+    {
+      "key": "ui.settings.ui_volume",
+      "value": "界面音量"
+    },
+    {
       "key": "ui.button.close",
       "value": "关闭"
     },
@@ -2332,21 +2352,21 @@
     { "key": "story.beat2.l03", "value": "太棒了！你已经掌握了岩石的辨认方法。接下来去调查更深的地方吧。" },
     { "key": "story.beat3.l01", "value": "用钻塔按深度逐层取样吧。地层的叠置关系就能用「柱状图」表示出来。" },
     { "key": "story.beat3.l02", "value": "向更深的地层钻进时，从岩石中发现了化石。" },
-    { "key": "story.beat3.q1.prompt", "value": "是珊瑚化石。可以推测这个地层形成时是什么样的环境？" },
+    { "key": "story.beat3.q1.prompt", "value": "……也就是说，这层地层形成当时，是怎样的环境？" },
     { "key": "story.beat3.q1.a", "value": "温暖的浅海" },
     { "key": "story.beat3.q1.b", "value": "寒冷的深海" },
     { "key": "story.beat3.q1.c", "value": "河水与海水交汇的地方" },
-    { "key": "story.beat3.q1.fb_ok", "value": "答对了！珊瑚生活在温暖的浅海，所以能据此判断当时的环境。" },
-    { "key": "story.beat3.q2.prompt", "value": "像珊瑚这样，能告诉我们地层形成时「环境」的化石叫什么？" },
+    { "key": "story.beat3.q1.fb_ok", "value": "答对了！化石告诉了我们当时的「环境」。" },
+    { "key": "story.beat3.q2.prompt", "value": "像珊瑚这样，能告诉我们地层形成当时「环境」的化石——它叫什么名字？" },
     { "key": "story.beat3.q2.a", "value": "示相化石" },
     { "key": "story.beat3.q2.b", "value": "示准化石" },
     { "key": "story.beat3.q2.fb_ok", "value": "没错。指示环境的是示相化石。如果是蚬，就代表河海交汇的地方。" },
-    { "key": "story.beat3.q3.prompt", "value": "另一层里出现了菊石。这个地层形成于哪个时代？" },
+    { "key": "story.beat3.q3.prompt", "value": "……所以，这层地层形成于哪个时代？" },
     { "key": "story.beat3.q3.a", "value": "中生代" },
     { "key": "story.beat3.q3.b", "value": "古生代" },
     { "key": "story.beat3.q3.c", "value": "新生代" },
     { "key": "story.beat3.q3.fb_ok", "value": "正确！菊石是中生代的示准化石。三叶虫则是古生代的。" },
-    { "key": "story.beat3.q4.prompt", "value": "像菊石这样，能告诉我们地层形成「时代」的化石叫什么？" },
+    { "key": "story.beat3.q4.prompt", "value": "像菊石那样的化石——叫什么名字？" },
     { "key": "story.beat3.q4.a", "value": "示准化石" },
     { "key": "story.beat3.q4.b", "value": "示相化石" },
     { "key": "story.beat3.q4.fb_ok", "value": "对。分布范围广、繁盛时间短的生物，才能成为示准化石。" },
@@ -2355,13 +2375,13 @@
     { "key": "story.beat3.q5.b", "value": "发生了大地震" },
     { "key": "story.beat3.q5.c", "value": "海水干涸了" },
     { "key": "story.beat3.q5.fb_ok", "value": "正确！凝灰岩层是那个时代附近发生过火山喷发的证据。" },
-    { "key": "story.beat4.l01", "value": "最后，对比 A、B、C 三个地点的柱状图吧。用火山灰层作为标志（键层）会很方便。" },
-    { "key": "story.beat4.q1.prompt", "value": "同一火山灰层，越往东的地点位置越深。地层朝哪个方位倾斜变低？" },
+    { "key": "story.beat4.l01", "value": "最后，把 A、B、C 三个地点的柱状图比一比吧。" },
+    { "key": "story.beat4.q1.prompt", "value": "那么这次——火山灰层在越往东的地点位置越深。地层向哪个方位倾斜？" },
     { "key": "story.beat4.q1.a", "value": "东" },
     { "key": "story.beat4.q1.b", "value": "西" },
     { "key": "story.beat4.q1.c", "value": "北" },
     { "key": "story.beat4.q1.fb_ok", "value": "答对了！同一层变深的方向，就是地层倾斜变低的方向。" },
-    { "key": "story.beat4.q2.prompt", "value": "崖壁上还能看到像波浪一样弯曲的地层。被巨大的力压弯的地层弯曲叫什么？" },
+    { "key": "story.beat4.q2.prompt", "value": "你看那悬崖。地层像波浪一样弯了！这种弯曲叫什么？" },
     { "key": "story.beat4.q2.a", "value": "褶曲" },
     { "key": "story.beat4.q2.b", "value": "断层" },
     { "key": "story.beat4.q2.c", "value": "整合" },
@@ -2390,6 +2410,16 @@
     { "key": "story.bridge.q34.l03", "value": "接下来——用钻塔往地下看看吧。" },
     { "key": "story.bridge.q41.l01", "value": "钻塔可以按深度逐层取样，地层叠置一目了然。" },
     { "key": "story.bridge.q41.l02", "value": "找到化石就告诉我。它能成为判断地层形成时代的线索。" },
-    { "key": "story.bridge.q41.l03", "value": "化石……！有点期待呢。" }
+    { "key": "story.bridge.q41.l03", "value": "化石……！有点期待呢。" },
+    { "key": "story.beat3.q1.teach1", "value": "化石啊，就像是「时间胶囊」一样。" },
+    { "key": "story.beat3.q1.teach2", "value": "每种生物，能住的地方都是固定的。所以从化石里，就能知道当时的「环境」。" },
+    { "key": "story.beat3.q1.teach3", "value": "比如这只珊瑚。即便到了今天，它也只在温暖的浅海里生长。" },
+    { "key": "story.beat3.q3.teach1", "value": "另一层里——又出现了一颗菊石化石！" },
+    { "key": "story.beat3.q3.teach2", "value": "地球的历史，大致分为「古生代 → 中生代 → 新生代」三段。" },
+    { "key": "story.beat3.q3.teach3", "value": "菊石呢，只在「中生代」繁盛过。和恐龙是同一个时代哦。" },
+    { "key": "story.beat3.q4.teach1", "value": "生活范围广、繁盛时间短的生物，化石用来判断年代特别好用。" },
+    { "key": "story.beat4.q1.teach1", "value": "如果能找到「相同的一层」，就能拿它当标志——这叫「键层（鍵層）」。火山灰特别醒目，是好用的键层。" },
+    { "key": "story.beat4.q1.teach2", "value": "键层在「某个方向上越来越深」？　就说明整个地层正在朝那个方向倾斜变低。" },
+    { "key": "story.beat4.q2.teach1", "value": "地层本来是横平竖直叠着的。但被两边挤压，就会像那样弯下去。" }
   ]
 }

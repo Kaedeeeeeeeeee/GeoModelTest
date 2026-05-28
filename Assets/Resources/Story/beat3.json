@@ -28,6 +28,24 @@
             "textKey": "story.beat3.l03"
         },
         {
+            "speaker": "Dr.Kaede",
+            "text": "ねえ、化石（かせき）って「タイムカプセル」みたいなものなの。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.q1.teach1"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "生（い）きものは住（す）める場所（ばしょ）が決（き）まってる。だから化石（かせき）からは、当時（とうじ）の「環境（かんきょう）」がわかるんだよ。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.q1.teach2"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "たとえばこのサンゴ。今（いま）も、あたたかくて浅（あさ）い海（うみ）にしか育（そだ）たないんだ。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.q1.teach3"
+        },
+        {
             "speaker": "ナレーション",
             "text": "ドリルが深（ふか）く進（すす）むほど、足元（あしもと）から低（ひく）い響（ひび）きが伝（つた）わってくる気（き）がした。",
             "speakerKey": "story.speaker.narration",
@@ -35,7 +53,7 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "サンゴの化石（かせき）だ。この地層（ちそう）ができた当時（とうじ）は、どんな環境（かんきょう）だったと考（かんが）えられる？",
+            "text": "……ということは、この地層（ちそう）ができた当時（とうじ）は、どんな環境（かんきょう）だった？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q1.prompt",
             "questionId": "q.fossil_coral_env",
@@ -44,7 +62,7 @@
                     "text": "あたたかくて浅（あさ）い海（うみ）",
                     "textKey": "story.beat3.q1.a",
                     "isCorrect": true,
-                    "feedback": "せいかい！　サンゴはあたたかくて浅（あさ）い海（うみ）にすむ。だから当時（とうじ）の環境（かんきょう）がわかるんだ。",
+                    "feedback": "せいかい！　化石（かせき）が当時（とうじ）の「環境（かんきょう）」を教（おし）えてくれたね。",
                     "feedbackKey": "story.beat3.q1.fb_ok"
                 },
                 {
@@ -61,7 +79,7 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "サンゴのように、地層（ちそう）ができた当時（とうじ）の「環境（かんきょう）」を教（おし）えてくれる化石（かせき）を何（なに）という？",
+            "text": "サンゴみたいに、地層（ちそう）ができた当時（とうじ）の「環境（かんきょう）」を教（おし）えてくれる化石（かせき）——これを何（なん）て呼（よ）ぶ？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q2.prompt",
             "questionId": "q.fossil_facies_term",
@@ -82,7 +100,25 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "別（べつ）の層（そう）からアンモナイトが出（で）たよ。この地層（ちそう）ができたのはどの時代（じだい）？",
+            "text": "今度（こんど）は別（べつ）の層（そう）から——アンモナイトの化石（かせき）！",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.q3.teach1"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "地球（ちきゅう）の歴史（れきし）は、大（おお）きく「古生代（こせいだい）→ 中生代（ちゅうせいだい）→ 新生代（しんせいだい）」って分（わ）かれてるの。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.q3.teach2"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "アンモナイトは、その中（なか）の「中生代（ちゅうせいだい）」にだけ栄（さか）えた生（い）きもの。恐竜（きょうりゅう）と同（おな）じ時代（じだい）だね。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.q3.teach3"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "……ということは、この地層（ちそう）ができたのは？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q3.prompt",
             "questionId": "q.fossil_ammonite_era",
@@ -108,7 +144,13 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "アンモナイトのように、地層（ちそう）ができた「時代（じだい）」を教（おし）えてくれる化石（かせき）を何（なに）という？",
+            "text": "広（ひろ）い範囲（はんい）にすんで、短（みじか）い期間（きかん）だけ栄（さか）えた生（い）きものの化石（かせき）は、年代（ねんだい）を決（き）めるのに役立（やくだ）つの。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.q4.teach1"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "アンモナイトみたいなのを——何（なん）て呼（よ）ぶ？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q4.prompt",
             "questionId": "q.fossil_index_term",
