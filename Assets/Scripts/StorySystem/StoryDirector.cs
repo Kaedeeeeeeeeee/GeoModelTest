@@ -985,7 +985,7 @@ namespace StorySystem
             rt.anchorMax = new Vector2(right ? 1f : 0f, 0f);
             rt.pivot = new Vector2(right ? 1f : 0f, 0f);
             rt.anchoredPosition = new Vector2(right ? -40f : 40f, 240f);
-            rt.sizeDelta = new Vector2(340f, 400f);
+            rt.sizeDelta = new Vector2(480f, 600f);
             go.AddComponent<RectMask2D>();
 
             var inner = new GameObject("Image");
@@ -995,7 +995,7 @@ namespace StorySystem
             irt.anchorMax = new Vector2(1f, 1f);
             irt.pivot = new Vector2(0.5f, 1f);
             irt.anchoredPosition = Vector2.zero;
-            irt.sizeDelta = new Vector2(0f, 510f);
+            irt.sizeDelta = new Vector2(0f, 720f);
             var img = inner.AddComponent<Image>();
             img.sprite = sprite;
             img.preserveAspect = true;
