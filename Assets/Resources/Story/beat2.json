@@ -50,12 +50,16 @@
                 {
                     "text": "砂岩（さがん）",
                     "textKey": "story.beat2.q1.b",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "砂岩（さがん）の粒（つぶ）はもう少（すこ）し大（おお）きいんだ（0.06–2mm）。なめらかさが手（て）がかりだよ。",
+                    "feedbackKey": "story.beat2.q1.fb_ng_b"
                 },
                 {
                     "text": "れき岩（がん）",
                     "textKey": "story.beat2.q1.c",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "れき岩（がん）は粒（つぶ）が 2mm 以上（いじょう）と、はっきり見（み）えるくらい大（おお）きいよ。",
+                    "feedbackKey": "story.beat2.q1.fb_ng_c"
                 }
             ]
         },
@@ -76,12 +80,16 @@
                 {
                     "text": "チャート",
                     "textKey": "story.beat2.q2.b",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "チャートは塩酸（えんさん）には反応（はんのう）しないんだ。あわが出（で）る＝石灰岩（せっかいがん）の特徴（とくちょう）だよ。",
+                    "feedbackKey": "story.beat2.q2.fb_ng_b"
                 },
                 {
                     "text": "凝灰岩（ぎょうかいがん）",
                     "textKey": "story.beat2.q2.c",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "凝灰岩（ぎょうかいがん）は火山灰（かざんばい）からできる岩石（がんせき）。塩酸（えんさん）には反応（はんのう）しないよ。",
+                    "feedbackKey": "story.beat2.q2.fb_ng_c"
                 }
             ]
         },
@@ -102,12 +110,16 @@
                 {
                     "text": "泥岩（でいがん）",
                     "textKey": "story.beat2.q3.b",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "泥岩（でいがん）は意外（いがい）とやわらかい。くぎで傷（きず）がつかないほどかたいのは別（べつ）の岩（いわ）だよ。",
+                    "feedbackKey": "story.beat2.q3.fb_ng_b"
                 },
                 {
                     "text": "れき岩（がん）",
                     "textKey": "story.beat2.q3.c",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "れき岩（がん）も粒（つぶ）の集（あつ）まりだから、くぎでガリガリ削（けず）れちゃうんだ。",
+                    "feedbackKey": "story.beat2.q3.fb_ng_c"
                 }
             ]
         },

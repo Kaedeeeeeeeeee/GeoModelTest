@@ -68,12 +68,16 @@
                 {
                     "text": "冷（つめ）たくて深（ふか）い海（うみ）",
                     "textKey": "story.beat3.q1.b",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "サンゴは光合成（こうごうせい）する藻（も）と共生（きょうせい）するから、冷（つめ）たく深（ふか）い海（うみ）では育（そだ）たないんだよ。",
+                    "feedbackKey": "story.beat3.q1.fb_ng_b"
                 },
                 {
                     "text": "川（かわ）と海（うみ）が混（ま）じる場所（ばしょ）",
                     "textKey": "story.beat3.q1.c",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "そこにすむのはシジミだね。サンゴは塩分（えんぶん）の濃（こ）い海（うみ）が好（す）きなんだ。",
+                    "feedbackKey": "story.beat3.q1.fb_ng_c"
                 }
             ]
         },
@@ -94,7 +98,9 @@
                 {
                     "text": "示準化石（しじゅんかせき）",
                     "textKey": "story.beat3.q2.b",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "示準化石（しじゅんかせき）は「時代（じだい）」を教（おし）えてくれる方（ほう）。「環境（かんきょう）」を示（しめ）すのは別（べつ）の名前（なまえ）だよ。",
+                    "feedbackKey": "story.beat3.q2.fb_ng_b"
                 }
             ]
         },
@@ -133,12 +139,16 @@
                 {
                     "text": "古生代（こせいだい）",
                     "textKey": "story.beat3.q3.b",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "古生代（こせいだい）はサンヨウチュウやフズリナの時代（じだい）。アンモナイトはもう少（すこ）し後（あと）なんだ。",
+                    "feedbackKey": "story.beat3.q3.fb_ng_b"
                 },
                 {
                     "text": "新生代（しんせいだい）",
                     "textKey": "story.beat3.q3.c",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "新生代（しんせいだい）はビカリアやナウマンゾウの時代（じだい）。アンモナイトはその前（まえ）に絶滅（ぜつめつ）してるよ。",
+                    "feedbackKey": "story.beat3.q3.fb_ng_c"
                 }
             ]
         },
@@ -165,7 +175,9 @@
                 {
                     "text": "示相化石（しそうかせき）",
                     "textKey": "story.beat3.q4.b",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "示相化石（しそうかせき）は「環境（かんきょう）」を教（おし）える方（ほう）。「時代（じだい）」の決（き）め手（て）になるのは別（べつ）の名前（なまえ）だよ。",
+                    "feedbackKey": "story.beat3.q4.fb_ng_b"
                 }
             ]
         },
@@ -186,12 +198,16 @@
                 {
                     "text": "大（おお）きな地震（じしん）があった",
                     "textKey": "story.beat3.q5.b",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "地震（じしん）は岩（いわ）をゆらすけど、火山灰（かざんばい）の層（そう）はつくらないんだ。",
+                    "feedbackKey": "story.beat3.q5.fb_ng_b"
                 },
                 {
                     "text": "海（うみ）がかれた",
                     "textKey": "story.beat3.q5.c",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "海（うみ）がかれるとできるのは岩塩（がんえん）など別（べつ）の岩（いわ）。火山灰（かざんばい）はやっぱり火山（かざん）から来（く）るよ。",
+                    "feedbackKey": "story.beat3.q5.fb_ng_c"
                 }
             ]
         }

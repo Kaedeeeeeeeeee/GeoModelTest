@@ -38,12 +38,16 @@
                 {
                     "text": "西（にし）",
                     "textKey": "story.beat4.q1.b",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "逆（ぎゃく）だね。同（おな）じ層（そう）が東（ひがし）ほど深（ふか）いなら、地層（ちそう）全体（ぜんたい）は東（ひがし）に向（む）かって低（ひく）くなるんだ。",
+                    "feedbackKey": "story.beat4.q1.fb_ng_b"
                 },
                 {
                     "text": "北（きた）",
                     "textKey": "story.beat4.q1.c",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "南北（なんぼく）方向（ほうこう）で深（ふか）さは変（か）わってないよ。東西（とうざい）の差（さ）に注目（ちゅうもく）して。",
+                    "feedbackKey": "story.beat4.q1.fb_ng_c"
                 }
             ]
         },
@@ -70,12 +74,16 @@
                 {
                     "text": "断層（だんそう）",
                     "textKey": "story.beat4.q2.b",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "断層（だんそう）は地層（ちそう）が「ずれる」こと。曲（ま）がるのは別（べつ）の現象（げんしょう）だよ。",
+                    "feedbackKey": "story.beat4.q2.fb_ng_b"
                 },
                 {
                     "text": "整合（せいごう）",
                     "textKey": "story.beat4.q2.c",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "整合（せいごう）は地層（ちそう）が途切（とぎ）れずに重（かさ）なってる状態（じょうたい）。波（なみ）状（じょう）の曲（ま）がりとはちがうよ。",
+                    "feedbackKey": "story.beat4.q2.fb_ng_c"
                 }
             ]
         },

@@ -68,12 +68,16 @@
                 {
                     "text": "堆積（たいせき）→ 運搬（うんぱん）→ 侵食（しんしょく）→ 風化（ふうか）",
                     "textKey": "story.beat1.q1.b",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "順番（じゅんばん）が逆（ぎゃく）！　岩石（がんせき）が先（さき）にもろくならないと、削（けず）られないよ。",
+                    "feedbackKey": "story.beat1.q1.fb_ng_b"
                 },
                 {
                     "text": "侵食（しんしょく）→ 風化（ふうか）→ 堆積（たいせき）→ 運搬（うんぱん）",
                     "textKey": "story.beat1.q1.c",
-                    "isCorrect": false
+                    "isCorrect": false,
+                    "feedback": "おしい。「もろくなる→削（けず）られる→運（はこ）ばれる→積（つ）もる」が基本（きほん）。運搬（うんぱん）は最後（さいご）にはこないんだ。",
+                    "feedbackKey": "story.beat1.q1.fb_ng_c"
                 }
             ]
         },

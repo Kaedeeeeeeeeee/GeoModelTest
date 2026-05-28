@@ -2424,6 +2424,26 @@
     { "key": "story.beat1.q1.teach1", "value": "From mountain rock to a stratum, there are 4 \"processes\": weathering, erosion, transport, deposition." },
     { "key": "story.beat1.q1.teach2", "value": "Weathering = becoming brittle, erosion = being worn away, transport = being carried, deposition = piling up." },
     { "key": "story.beat2.q1.teach1", "value": "Sedimentary rocks are named by grain size. Largest to smallest: conglomerate (>2mm), sandstone, mudstone (<0.06mm)." },
-    { "key": "story.beat2.q1.teach2", "value": "Plus two special ones — limestone fizzes with acid, and chert is so hard not even a nail can scratch it." }
+    { "key": "story.beat2.q1.teach2", "value": "Plus two special ones — limestone fizzes with acid, and chert is so hard not even a nail can scratch it." },
+    { "key": "story.beat1.q1.fb_ng_b", "value": "Order's reversed! Rock has to crumble first before it can be eroded." },
+    { "key": "story.beat1.q1.fb_ng_c", "value": "Close. The flow is crumble → eroded → transported → deposited. Transport isn't last." },
+    { "key": "story.beat2.q1.fb_ng_b", "value": "Sandstone grains are a bit larger (0.06–2mm). That smooth feel is your clue." },
+    { "key": "story.beat2.q1.fb_ng_c", "value": "Conglomerate grains are >2mm — visibly chunky to the eye." },
+    { "key": "story.beat2.q2.fb_ng_b", "value": "Chert doesn't react with acid. Bubbling is the hallmark of limestone." },
+    { "key": "story.beat2.q2.fb_ng_c", "value": "Tuff comes from volcanic ash and doesn't react with acid either." },
+    { "key": "story.beat2.q3.fb_ng_b", "value": "Mudstone is actually quite soft. The 'a nail can't scratch it' hardness belongs to a different rock." },
+    { "key": "story.beat2.q3.fb_ng_c", "value": "Conglomerate is just bound grains — a nail digs right in." },
+    { "key": "story.beat3.q1.fb_ng_b", "value": "Coral lives in symbiosis with photosynthetic algae, so it can't grow in cold deep seas." },
+    { "key": "story.beat3.q1.fb_ng_c", "value": "That's where the clam (Shijimi) lives. Coral prefers salty open seas." },
+    { "key": "story.beat3.q2.fb_ng_b", "value": "Index fossils tell us the 'era.' Fossils that show 'environment' have a different name." },
+    { "key": "story.beat3.q3.fb_ng_b", "value": "The Paleozoic is the era of trilobites and fusulinids. Ammonites came a bit later." },
+    { "key": "story.beat3.q3.fb_ng_c", "value": "The Cenozoic is the era of Vicarya and the Naumann elephant. Ammonites went extinct before then." },
+    { "key": "story.beat3.q4.fb_ng_b", "value": "Facies fossils tell us the 'environment.' Fossils that pin down the 'era' have a different name." },
+    { "key": "story.beat3.q5.fb_ng_b", "value": "Earthquakes shake rocks but don't create a layer of volcanic ash." },
+    { "key": "story.beat3.q5.fb_ng_c", "value": "A dried sea leaves rocks like rock salt. Volcanic ash still comes from volcanoes." },
+    { "key": "story.beat4.q1.fb_ng_b", "value": "Other way! If the same layer is deeper to the east, the whole strata tilts down toward the east." },
+    { "key": "story.beat4.q1.fb_ng_c", "value": "Depth doesn't change north–south. Look at the east–west difference." },
+    { "key": "story.beat4.q2.fb_ng_b", "value": "A fault is where strata 'break apart.' Bending is a different phenomenon." },
+    { "key": "story.beat4.q2.fb_ng_c", "value": "Conformity is when strata stack continuously. A wave-like bend isn't that." }
   ]
 }

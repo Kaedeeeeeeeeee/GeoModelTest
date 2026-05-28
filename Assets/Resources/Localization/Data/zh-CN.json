@@ -2424,6 +2424,26 @@
     { "key": "story.beat1.q1.teach1", "value": "山上的岩石变成地层，会经过 4 种「作用」哦：「风化」「侵蚀」「搬运」「沉积」。" },
     { "key": "story.beat1.q1.teach2", "value": "风化＝变松脆，侵蚀＝被刮削，搬运＝被运送，沉积＝堆积下来。" },
     { "key": "story.beat2.q1.teach1", "value": "沉积岩呀，是按颗粒大小命名的。从大到小：「砾岩」(>2mm)、「砂岩」、「泥岩」(<0.06mm)。" },
-    { "key": "story.beat2.q1.teach2", "value": "另外还有 2 个特殊的——盐酸冒泡的是「石灰岩」，钉子刮不出痕迹的是「燧石（チャート）」。" }
+    { "key": "story.beat2.q1.teach2", "value": "另外还有 2 个特殊的——盐酸冒泡的是「石灰岩」，钉子刮不出痕迹的是「燧石（チャート）」。" },
+    { "key": "story.beat1.q1.fb_ng_b", "value": "顺序反了！岩石得先变松脆，再被刮削，才能被搬运。" },
+    { "key": "story.beat1.q1.fb_ng_c", "value": "差一点。「松脆→刮削→搬运→堆积」是基本流程，搬运不会是最后一步。" },
+    { "key": "story.beat2.q1.fb_ng_b", "value": "砂岩的颗粒要稍大一点（0.06–2mm）。光滑的触感是关键线索。" },
+    { "key": "story.beat2.q1.fb_ng_c", "value": "砾岩的颗粒大于 2mm，肉眼能看出粒粒分明。" },
+    { "key": "story.beat2.q2.fb_ng_b", "value": "燧石不与盐酸反应。冒泡是石灰岩的特征。" },
+    { "key": "story.beat2.q2.fb_ng_c", "value": "凝灰岩来自火山灰，遇盐酸也不反应。" },
+    { "key": "story.beat2.q3.fb_ng_b", "value": "泥岩其实挺软的。钉子刮不出痕迹的那种坚硬属于另一种岩石。" },
+    { "key": "story.beat2.q3.fb_ng_c", "value": "砾岩也是颗粒集合，钉子能刮出粒粒分明的痕迹。" },
+    { "key": "story.beat3.q1.fb_ng_b", "value": "珊瑚要和能光合作用的藻类共生，冷的深海长不出珊瑚。" },
+    { "key": "story.beat3.q1.fb_ng_c", "value": "那种地方住的是蚬。珊瑚喜欢盐分浓的海水。" },
+    { "key": "story.beat3.q2.fb_ng_b", "value": "示准化石告诉我们「时代」。指示「环境」的化石另有名字。" },
+    { "key": "story.beat3.q3.fb_ng_b", "value": "古生代是三叶虫和纺锤虫的时代，菊石稍晚一些。" },
+    { "key": "story.beat3.q3.fb_ng_c", "value": "新生代是 ビカリア 和 Naumann 象的时代，菊石那时早就灭绝了。" },
+    { "key": "story.beat3.q4.fb_ng_b", "value": "示相化石告诉我们「环境」。决定「时代」的化石另有名字。" },
+    { "key": "story.beat3.q5.fb_ng_b", "value": "地震会摇岩石，但不会形成火山灰的地层。" },
+    { "key": "story.beat3.q5.fb_ng_c", "value": "海干涸会留下岩盐之类的岩石。火山灰还是来自火山。" },
+    { "key": "story.beat4.q1.fb_ng_b", "value": "反过来了。同一层在东边更深，说明整个地层朝东倾斜变低。" },
+    { "key": "story.beat4.q1.fb_ng_c", "value": "南北方向上深度没有变化，注意东西方向上的差异。" },
+    { "key": "story.beat4.q2.fb_ng_b", "value": "断层是地层「错开」。弯曲是另一种现象。" },
+    { "key": "story.beat4.q2.fb_ng_c", "value": "整合指地层连续不间断地叠加。波浪形的弯曲不是这个。" }
   ]
 }
