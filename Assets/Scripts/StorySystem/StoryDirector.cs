@@ -617,14 +617,30 @@ namespace StorySystem
         public static bool IsPlayerInputBlocked =>
             IsDialogOpen || Time.frameCount <= inputBlockReleaseFrame;
 
+        // 对话/报告期间临时解锁鼠标供 UI 点击（选项、ヒント、推进等）；结束时还原。
+        private static CursorLockMode _prevCursorLock;
+        private static bool _prevCursorVisible;
+
         private static void MarkDialogOpened()
         {
+            if (activeSequenceCount == 0)
+            {
+                _prevCursorLock = Cursor.lockState;
+                _prevCursorVisible = Cursor.visible;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
             activeSequenceCount++;
         }
 
         private static void MarkDialogClosed()
         {
             activeSequenceCount = Mathf.Max(0, activeSequenceCount - 1);
+            if (activeSequenceCount == 0)
+            {
+                Cursor.lockState = _prevCursorLock;
+                Cursor.visible = _prevCursorVisible;
+            }
             inputBlockReleaseFrame = Time.frameCount + 1;
         }
 
