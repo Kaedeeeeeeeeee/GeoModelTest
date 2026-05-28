@@ -617,21 +617,11 @@ namespace StorySystem
         public static bool IsPlayerInputBlocked =>
             IsDialogOpen || Time.frameCount <= inputBlockReleaseFrame;
 
-        // 对话/报告期间临时解锁鼠标供 UI 点击；用 guard 协程每帧强制写，
-        // 防止 FirstPersonController / MobileCursorManager 等的 Update 把锁状态抢回去。
+        // 对话/报告期间临时解锁鼠标供 UI 点击。
+        // 强制写放在 StoryDirectorRunner.LateUpdate 里，保证在所有 Update 之后跑，
+        // 任何在 Update 里偷偷把鼠标锁回去的脚本（FPC / MobileCursorManager 等）都被一帧内覆盖掉。
         private static CursorLockMode _prevCursorLock;
         private static bool _prevCursorVisible;
-        private static Coroutine _cursorGuard;
-
-        private static IEnumerator EnforceCursorVisible()
-        {
-            while (activeSequenceCount > 0)
-            {
-                if (Cursor.lockState != CursorLockMode.None) Cursor.lockState = CursorLockMode.None;
-                if (!Cursor.visible) Cursor.visible = true;
-                yield return null;
-            }
-        }
 
         private static void MarkDialogOpened()
         {
@@ -641,7 +631,8 @@ namespace StorySystem
                 _prevCursorVisible = Cursor.visible;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                _cursorGuard = StoryDirectorRunner.Instance.StartCoroutine(EnforceCursorVisible());
+                // 确保 Runner 已实例化（其 LateUpdate 将每帧强制 Cursor）
+                _ = StoryDirectorRunner.Instance;
             }
             activeSequenceCount++;
         }
@@ -651,7 +642,6 @@ namespace StorySystem
             activeSequenceCount = Mathf.Max(0, activeSequenceCount - 1);
             if (activeSequenceCount == 0)
             {
-                if (_cursorGuard != null) { StoryDirectorRunner.Instance.StopCoroutine(_cursorGuard); _cursorGuard = null; }
                 Cursor.lockState = _prevCursorLock;
                 Cursor.visible = _prevCursorVisible;
             }
@@ -1351,6 +1341,17 @@ namespace StorySystem
         public void Run(IEnumerator routine)
         {
             if (routine != null) StartCoroutine(routine);
+        }
+
+        // 每帧（在所有 Update 之后）强制鼠标解锁可见——只要有对话/报告在播。
+        // 用 LateUpdate 而不是 Update 或协程，确保最后一个写入 Cursor 的就是这里。
+        private void LateUpdate()
+        {
+            if (StoryDirector.SubtitleUI.IsDialogOpen)
+            {
+                if (Cursor.lockState != CursorLockMode.None) Cursor.lockState = CursorLockMode.None;
+                if (!Cursor.visible) Cursor.visible = true;
+            }
         }
     }
 }
