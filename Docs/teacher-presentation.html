@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>地質探究ゲーム — 開発の考え方と授業活用プラン</title>
+<style>
+  :root{
+    --navy:#1f4e79; --teal:#2c7a7b; --ink:#222a33; --muted:#5b6776;
+    --line:#d6dee8; --soft:#eef4fa; --soft2:#f6f9fc; --ok:#1f7a4d; --accent:#c2762a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{
+    font-family:-apple-system,"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif;
+    color:var(--ink);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+  @page{ size:1280px 720px; margin:0; }
+  .slide{
+    width:1280px;height:720px;padding:60px 72px 72px;page-break-after:always;
+    position:relative;display:flex;flex-direction:column;background:#fff;overflow:hidden;
+  }
+  .slide:last-child{page-break-after:auto;}
+  .kicker{color:var(--teal);font-weight:700;letter-spacing:.10em;font-size:17px;margin-bottom:10px;}
+  h2{font-size:33px;color:var(--navy);padding-bottom:14px;border-bottom:3px solid var(--navy);margin-bottom:26px;font-weight:800;}
+  p,li{font-size:21px;line-height:1.7;color:var(--ink);}
+  .muted{color:var(--muted);}
+  .footer{position:absolute;left:72px;right:72px;bottom:26px;display:flex;justify-content:space-between;
+    font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:9px;}
+  ruby rt{font-size:.5em;color:var(--muted);font-weight:500;}
+
+  /* Title slide */
+  .title-slide{justify-content:center;background:linear-gradient(160deg,#fff 0%,var(--soft) 100%);}
+  .title-slide .bar{width:84px;height:6px;background:var(--teal);margin-bottom:28px;}
+  h1{font-size:50px;line-height:1.25;color:var(--navy);font-weight:800;letter-spacing:.01em;}
+  .subtitle{font-size:23px;color:var(--muted);margin-top:22px;line-height:1.6;}
+  .title-meta{margin-top:48px;font-size:17px;color:var(--muted);}
+
+  /* Step flow */
+  .steps{display:flex;flex-direction:column;gap:14px;}
+  .step{display:flex;align-items:flex-start;gap:18px;background:var(--soft2);border:1px solid var(--line);
+    border-left:6px solid var(--teal);border-radius:8px;padding:16px 22px;}
+  .step .n{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;
+    font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center;}
+  .step .t{font-size:20px;line-height:1.55;}
+  .note{margin-top:22px;background:#fff7ec;border:1px solid #f0d9b8;border-radius:8px;padding:14px 20px;font-size:18px;color:#7a531c;}
+
+  /* Calc */
+  .formula{background:var(--navy);color:#fff;border-radius:10px;padding:26px 30px;font-size:26px;
+    font-weight:700;text-align:center;letter-spacing:.02em;margin-bottom:26px;}
+  .formula b{color:#ffd98a;}
+  table{width:100%;border-collapse:collapse;font-size:20px;}
+  th,td{border:1px solid var(--line);padding:13px 16px;text-align:left;}
+  th{background:var(--soft);color:var(--navy);font-weight:700;}
+  tr:nth-child(even) td{background:var(--soft2);}
+  .big{font-size:30px;color:var(--navy);font-weight:800;}
+
+  /* Cards */
+  .card{background:var(--soft2);border:1px solid var(--line);border-radius:10px;padding:24px 28px;}
+  .speaker{color:var(--teal);font-weight:800;font-size:18px;}
+  .line{font-size:23px;line-height:2.0;margin:6px 0;}
+  .qprompt{font-size:22px;font-weight:700;line-height:1.6;margin-bottom:16px;}
+  .opt{font-size:21px;padding:9px 16px;border-radius:7px;border:1px solid var(--line);background:#fff;margin:8px 0;}
+  .opt.correct{border-color:var(--ok);background:#eaf6ef;color:var(--ok);font-weight:700;}
+  .opt.correct::after{content:" ✓ 正解";font-size:16px;}
+  .fb{margin-top:14px;font-size:18px;color:var(--muted);}
+  .src{display:inline-block;margin-top:10px;font-size:15px;color:var(--accent);font-weight:700;}
+
+  /* Lesson plan */
+  table.plan td:first-child{white-space:nowrap;font-weight:700;color:var(--navy);width:130px;}
+  table.plan td:nth-child(2){white-space:nowrap;font-weight:700;width:120px;}
+  table.plan th,table.plan td{font-size:18px;padding:11px 14px;}
+  .total{margin-top:16px;text-align:right;font-size:19px;color:var(--navy);font-weight:800;}
+
+  ul.tight{margin-left:26px;}
+  ul.tight li{margin:9px 0;}
+  .two{display:flex;gap:26px;}
+  .two>div{flex:1;}
+</style>
+</head>
+<body>
+
+<!-- 1. Title -->
+<section class="slide title-slide">
+  <div class="bar"></div>
+  <div class="kicker">中学校 理科 ｜ 単元4「大地の変化」第3章 地層から読みとる大地の変化</div>
+  <h1>「大地の変化」を体験する<br>地質探究ゲーム</h1>
+  <div class="subtitle">— テキスト量設計の考え方と、50分授業の活用プラン —</div>
+  <div class="title-meta">教材：教科書 p.219–241 ｜ 対象：中学1年生 ｜ 2026年5月</div>
+  <div class="footer"><span>地質探究ゲーム</span><span></span></div>
+</section>
+
+<!-- 2. Design thinking -->
+<section class="slide">
+  <div class="kicker">DESIGN PROCESS</div>
+  <h2>剧情テキスト量の決め方（設計の考え方）</h2>
+  <p class="muted" style="margin-bottom:20px;">文献を先に網羅するのではなく、<b>「読む速さ × 読む時間」から必要な文字数を逆算する</b>推定ベースで設計しました。</p>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><div class="t">中学1年生が <b>1分間に読める文字数</b>の目安を、調査データから把握する。</div></div>
+    <div class="step"><div class="n">2</div><div class="t">ゲームが <b>剧情の読書に充てる時間</b>（約 5〜7 分）と組み合わせる。</div></div>
+    <div class="step"><div class="n">3</div><div class="t">両者から、<b>剧情に適した文字数</b>を算出する。</div></div>
+    <div class="step"><div class="n">4</div><div class="t">その文字数に合わせて<b>本文を調整</b>し、<b>選択題（問題演習）</b>を組み込む。</div></div>
+  </div>
+  <div class="note">※ 後から学術文献（J-STAGE 等）でも目安を裏づけ。詳細は調査レポート参照。</div>
+  <div class="footer"><span>地質探究ゲーム</span><span>2 / 7</span></div>
+</section>
+
+<!-- 3. Calculation -->
+<section class="slide">
+  <div class="kicker">ESTIMATION</div>
+  <h2>文字数の試算と現状</h2>
+  <div class="formula">読む速さ <b>約400字/分</b> × 読書時間 <b>約5分</b> ＝ 本文の目安 <b>約2,000字</b></div>
+  <table>
+    <tr><th>項目</th><th>値</th><th>備考</th></tr>
+    <tr><td>中1の黙読速度の目安</td><td>約 400〜500 字/分</td><td>設計は安全側で 350〜400 字/分</td></tr>
+    <tr><td>1コマ中の読書時間</td><td>約 5〜7 分</td><td>残りは操作・採集・思考に配分</td></tr>
+    <tr><td>本文の上限（目安）</td><td>約 2,000 字</td><td>遅い生徒も置き去りにしない</td></tr>
+    <tr><td><b>現在の本文量</b></td><td><b>約 1,742 字</b></td><td>台詞27・選択題11（余裕あり）</td></tr>
+  </table>
+  <div class="footer"><span>地質探究ゲーム</span><span>3 / 7</span></div>
+</section>
+
+<!-- 4. Story example -->
+<section class="slide">
+  <div class="kicker">SCRIPT EXAMPLE</div>
+  <h2>剧情テキストの例（漢字＋ふりがな）</h2>
+  <p class="muted" style="margin-bottom:18px;">難しい漢字には<b>ふりがな（ルビ）</b>を付け、中学1年生が読みやすいように。</p>
+  <div class="card">
+    <div class="line"><span class="speaker">ナレーション</span>：<ruby>目<rt>め</rt></ruby>をさますと、そこは<ruby>見<rt>み</rt></ruby>たことのない<ruby>白<rt>しろ</rt></ruby>い<ruby>研究室<rt>けんきゅうしつ</rt></ruby>だった。</div>
+    <div class="line"><span class="speaker">Dr.カエデ</span>：<ruby>気<rt>き</rt></ruby>がついた？　ここは<ruby>大地<rt>だいち</rt></ruby>を<ruby>研究<rt>けんきゅう</rt></ruby>する<ruby>施設<rt>しせつ</rt></ruby>「G-Lab」。わたしは<ruby>研究員<rt>けんきゅういん</rt></ruby>のカエデ。</div>
+    <div class="line"><span class="speaker">Dr.カエデ</span>：この<ruby>街<rt>まち</rt></ruby>の<ruby>地下<rt>ちか</rt></ruby>で、<ruby>今<rt>いま</rt></ruby>も“<ruby>何<rt>なに</rt></ruby>か”が<ruby>動<rt>うご</rt></ruby>いている。その<ruby>正体<rt>しょうたい</rt></ruby>を、<ruby>君<rt>きみ</rt></ruby>の<ruby>力<rt>ちから</rt></ruby>で<ruby>確<rt>たし</rt></ruby>かめたいの。</div>
+  </div>
+  <p class="muted" style="margin-top:18px;font-size:18px;">物語は「地球の声を聞く力」を軸に、調査を続ける動機づけを与える。</p>
+  <div class="footer"><span>地質探究ゲーム</span><span>4 / 7</span></div>
+</section>
+
+<!-- 5. Quiz example -->
+<section class="slide">
+  <div class="kicker">QUIZ EXAMPLE</div>
+  <h2>選択題の例（教材の問題を会話に組み込む）</h2>
+  <div class="card">
+    <div class="qprompt">Q（Dr.カエデ）：サンゴの化石だ。この地層ができた当時は、どんな環境だったと考えられる？</div>
+    <div class="opt correct">あたたかくて浅い海</div>
+    <div class="opt">冷たくて深い海</div>
+    <div class="opt">川と海が混じる場所</div>
+    <div class="fb">▶ 正解フィードバック：「サンゴはあたたかく浅い海にすむ。だから当時の環境がわかるんだ」（＝示相化石）</div>
+    <span class="src">教材出典：p.125 / p.127（示相化石・サンゴ）</span>
+  </div>
+  <p class="muted" style="margin-top:18px;font-size:18px;">採集・観察などの操作の<b>直後</b>に出題 → 体験と知識を結びつける形成的評価。</p>
+  <div class="footer"><span>地質探究ゲーム</span><span>5 / 7</span></div>
+</section>
+
+<!-- 6. Lesson plan -->
+<section class="slide">
+  <div class="kicker">LESSON PLAN</div>
+  <h2>授業活用プラン（中学校 1コマ・50分）</h2>
+  <table class="plan">
+    <tr><th>時間</th><th>段階</th><th>内容</th><th>ねらい</th></tr>
+    <tr><td>0–7分<br>(7分)</td><td>導入</td><td>あいさつ・自己紹介／本時のめあて「地層から大地の変化を読みとる」を提示</td><td>学習の見通しをもつ</td></tr>
+    <tr><td>7–12分<br>(5分)</td><td>操作説明</td><td>移動・道具（ハンマー／ドリル／ドリルタワー／顕微鏡）・選択題の答え方を説明</td><td>操作の理解</td></tr>
+    <tr><td>12–27分<br>(15分)</td><td>ゲーム体験</td><td>露頭で採集→岩石判定→ドリルで柱状図→化石→地層の傾き（A/B/C地点の比較）</td><td>体験的に概念へ触れる</td></tr>
+    <tr><td>27–42分<br>(15分)</td><td>ふりかえり</td><td>アンケート(5分)＋選択題の解説・話し合い(10分)</td><td>形成的評価・言語化</td></tr>
+    <tr><td>42–50分<br>(8分)</td><td>まとめ</td><td>重要用語（堆積岩・示相/示準化石・地層の傾き）の確認／次時へつなぐ</td><td>知識の定着</td></tr>
+  </table>
+  <div class="total">合計　50分</div>
+  <div class="footer"><span>地質探究ゲーム</span><span>6 / 7</span></div>
+</section>
+
+<!-- 7. Summary -->
+<section class="slide">
+  <div class="kicker">SUMMARY</div>
+  <h2>まとめ</h2>
+  <div class="two">
+    <div>
+      <ul class="tight">
+        <li><b>15分</b>で完結する流れ（1コマに収まる）。</li>
+        <li>本文は<b>読む速さから逆算</b>（約1,742字）。</li>
+        <li>漢字＋<b>ふりがな</b>で読みやすさを確保。</li>
+      </ul>
+    </div>
+    <div>
+      <ul class="tight">
+        <li>教材の問題を<b>会話の選択題</b>として自然に出題。</li>
+        <li>操作の直後に出題 → <b>体験と知識の接続</b>。</li>
+        <li>最後に<b>A/B/C 評価</b>でふりかえり。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note" style="margin-top:30px;background:var(--soft);border-color:var(--line);color:var(--navy);">
+    扱う用語：風化・侵食・運搬・堆積／堆積岩（砂岩・泥岩・れき岩・石灰岩・チャート・凝灰岩）／示相化石・示準化石／地質年代／柱状図・地層の傾き／しゅう曲
+  </div>
+  <div class="footer"><span>地質探究ゲーム</span><span>7 / 7</span></div>
+</section>
+
+</body>
+</html>
