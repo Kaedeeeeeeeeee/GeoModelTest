@@ -2377,6 +2377,19 @@
     { "key": "story.beat3.l04", "value": "钻头越往深处，脚下仿佛传来低沉的回响。" },
     { "key": "story.beat3.l05", "value": "居然用这么大的机器来钻探……！" },
     { "key": "story.beat4.l04", "value": "你解读出的地层，正是这座城市“过去的记录”。有了它，就能为下一次灾害做好准备。" },
-    { "key": "story.beat4.l05", "value": "地球的声音……我好像，真的听到了一点点。" }
+    { "key": "story.beat4.l05", "value": "地球的声音……我好像，真的听到了一点点。" },
+    { "key": "story.bridge.q21.l01", "value": "第二天清晨，G-Lab 研究室。" },
+    { "key": "story.bridge.q21.l02", "value": "早安！马上是第一项任务。去城市北边的露头，采一份样本回来。" },
+    { "key": "story.bridge.q21.l03", "value": "移动用「相位转移器（Phase Shifter）」。按 Tab 键切换工具就行。" },
+    { "key": "story.bridge.q31.l01", "value": "在露头那里，仔细观察颗粒的大小、对盐酸的反应——这些都能帮你判断岩石的名字。" },
+    { "key": "story.bridge.q31.l02", "value": "明白，我去观察一下！" },
+    { "key": "story.bridge.q32.l01", "value": "一瞬间被风和泥土的气味包围——是野外。" },
+    { "key": "story.bridge.q32.l02", "value": "到了。用锤子敲开岩石，取一份样本吧。" },
+    { "key": "story.bridge.q34.l01", "value": "回到 G-Lab。桌上摆着刚采到的样本。" },
+    { "key": "story.bridge.q34.l02", "value": "是好样本！不过答案，似乎在更深的地方。" },
+    { "key": "story.bridge.q34.l03", "value": "接下来——用钻塔往地下看看吧。" },
+    { "key": "story.bridge.q41.l01", "value": "钻塔可以按深度逐层取样，地层叠置一目了然。" },
+    { "key": "story.bridge.q41.l02", "value": "找到化石就告诉我。它能成为判断地层形成时代的线索。" },
+    { "key": "story.bridge.q41.l03", "value": "化石……！有点期待呢。" }
   ]
 }

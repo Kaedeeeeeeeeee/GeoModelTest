@@ -2377,6 +2377,19 @@
     { "key": "story.beat3.l04", "value": "The deeper the drill bit went, the more a low hum seemed to rise through my feet." },
     { "key": "story.beat3.l05", "value": "Drilling with a machine this huge...!" },
     { "key": "story.beat4.l04", "value": "The strata you decoded are this town's very record of its past. With them, we can prepare for the next disaster." },
-    { "key": "story.beat4.l05", "value": "The Earth's voice... I think I heard it — just a little." }
+    { "key": "story.beat4.l05", "value": "The Earth's voice... I think I heard it — just a little." },
+    { "key": "story.bridge.q21.l01", "value": "The next morning. The G-Lab research room." },
+    { "key": "story.bridge.q21.l02", "value": "Good morning! Your first mission. Head to the outcrop north of town and bring back a sample." },
+    { "key": "story.bridge.q21.l03", "value": "Use the Phase Shifter to travel. Switch tools with the Tab key." },
+    { "key": "story.bridge.q31.l01", "value": "At the outcrop, watch the grain size and how each rock reacts to acid — that'll tell you what it is." },
+    { "key": "story.bridge.q31.l02", "value": "Got it — I'll go observe!" },
+    { "key": "story.bridge.q32.l01", "value": "In an instant the smell of wind and earth surrounds you. You're outside." },
+    { "key": "story.bridge.q32.l02", "value": "We're here. Crack the rock with the hammer and take a sample." },
+    { "key": "story.bridge.q34.l01", "value": "Back at G-Lab. Your fresh samples line the desk." },
+    { "key": "story.bridge.q34.l02", "value": "Nice samples! But the answer seems to be deeper down." },
+    { "key": "story.bridge.q34.l03", "value": "Next — let's peek underground with the drill tower." },
+    { "key": "story.bridge.q41.l01", "value": "The drill tower samples at every depth — it shows the layering clearly." },
+    { "key": "story.bridge.q41.l02", "value": "If a fossil comes out, let me know. It's a clue to when the layer formed." },
+    { "key": "story.bridge.q41.l03", "value": "A fossil...! Kind of exciting, honestly." }
   ]
 }

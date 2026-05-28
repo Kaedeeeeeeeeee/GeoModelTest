@@ -1,25 +1,19 @@
 {
-    "scene": "Quest 3.2 - Briefing Before Field",
-    "background": "laboratory",
-    "bgm": "lab_theme_soft",
+    "scene": "Bridge - Field arrival",
+    "background": "field_day",
+    "bgm": "field_theme",
     "dialogues": [
         {
-            "speaker": "narration",
-            "text": "再び目を開ける時、{name}はもう野外にいた。",
+            "speaker": "ナレーション",
+            "text": "一瞬（いっしゅん）で風（かぜ）と土（つち）のにおいに包（つつ）まれた。野外（やがい）だ。",
             "speakerKey": "story.speaker.narration",
-            "textKey": "story.quest3_2.line01"
+            "textKey": "story.bridge.q32.l01"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "無事に到着したね、じゃ採集任務を始めよ",
+            "text": "着（つ）いたわね。ハンマーで岩（いわ）を割（わ）って、サンプルを取（と）ろう。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.quest3_2.line02"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "地面上の指示を見えるか、それを従って、目的地でサンプルを採集しよう",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.quest3_2.line03"
+            "textKey": "story.bridge.q32.l02"
         }
     ]
 }
