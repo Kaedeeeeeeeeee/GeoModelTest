@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 using Core;
+using GeoModel.AudioSystem;
 
 namespace StorySystem
 {
@@ -811,6 +812,10 @@ namespace StorySystem
 
                     var chosen = line.Choices[Mathf.Clamp(picked, 0, line.Choices.Count - 1)];
                     QuizScoreManager.Instance.Record(line.QuestionId, chosen.IsCorrect);
+                    if (chosen.IsCorrect)
+                        AudioManager.Instance?.PlaySFX(AudioKeys.SFX.SamplePickup);
+                    else
+                        AudioManager.Instance?.PlayUI(AudioKeys.UI.PanelClose);
 
                     string feedback = !string.IsNullOrEmpty(chosen.Feedback)
                         ? chosen.Feedback
@@ -1088,7 +1093,7 @@ namespace StorySystem
                 colors.highlightedColor = new Color(0.6f, 0.8f, 1f, 1f);
                 colors.pressedColor = new Color(0.4f, 0.65f, 0.95f, 1f);
                 btn.colors = colors;
-                btn.onClick.AddListener(() => onPick(idx));
+                btn.onClick.AddListener(() => { AudioManager.Instance?.PlayUI(AudioKeys.UI.Click); onPick(idx); });
 
                 var labelGO = new GameObject("Label");
                 labelGO.transform.SetParent(btnGO.transform, false);
