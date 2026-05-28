@@ -690,6 +690,13 @@ namespace StorySystem
 
             EnsureEventSystem(canvasGO.transform);
 
+            // 立绘槽（要在 bg 之前创建，让对话框渲染在立绘之上）
+            LoadPortraits();
+            Image portraitLeft = _spritePlayer != null ? CreatePortrait(canvasGO.transform, _spritePlayer, false) : null;
+            Image portraitRight = _spriteKaede != null ? CreatePortrait(canvasGO.transform, _spriteKaede, true) : null;
+            bool leftAppeared = false;
+            bool rightAppeared = false;
+
             var bg = new GameObject("BG");
             bg.transform.SetParent(canvasGO.transform, false);
             var bgRt = bg.AddComponent<RectTransform>();
@@ -758,6 +765,24 @@ namespace StorySystem
             {
                 var line = lines[i];
                 onLineDisplayed?.Invoke(line, i);
+
+                // 立绘 alpha 更新：当前说话者全显示，已露过脸但不在说话则半透明
+                var spKind = ClassifySpeaker(line.Speaker);
+                if (portraitLeft != null)
+                {
+                    if (spKind == SpeakerKind.Player) leftAppeared = true;
+                    var pc = portraitLeft.color;
+                    pc.a = leftAppeared ? (spKind == SpeakerKind.Player ? 1f : 0.55f) : 0f;
+                    portraitLeft.color = pc;
+                }
+                if (portraitRight != null)
+                {
+                    if (spKind == SpeakerKind.Kaede) rightAppeared = true;
+                    var pc = portraitRight.color;
+                    pc.a = rightAppeared ? (spKind == SpeakerKind.Kaede ? 1f : 0.55f) : 0f;
+                    portraitRight.color = pc;
+                }
+
                 speakerGO.SetActive(!string.IsNullOrEmpty(line.Speaker));
                 speakerTxt.text = FuriganaProcessor.Process(line.Speaker ?? string.Empty);
                 txt.text = FuriganaProcessor.Process(line.Text ?? string.Empty);
@@ -892,6 +917,91 @@ namespace StorySystem
             var f = GetTmpFont();
             if (f != null) t.font = f;
             t.richText = true;
+        }
+
+        // ===== 立绘 =====
+
+        private static Sprite _spritePlayer;
+        private static Sprite _spriteKaede;
+        private static bool _portraitsTried;
+
+        private enum SpeakerKind { Other, Player, Kaede }
+
+        /// <summary>
+        /// 从 Assets/Resources/Tachie/ 加载立绘。优先 Sprite 导入；若以 Texture2D 导入则运行时包成 Sprite。
+        /// </summary>
+        private static void LoadPortraits()
+        {
+            if (_portraitsTried) return;
+            _portraitsTried = true;
+            try
+            {
+                _spritePlayer = Resources.Load<Sprite>("Tachie/player");
+                if (_spritePlayer == null)
+                {
+                    var tex = Resources.Load<Texture2D>("Tachie/player");
+                    if (tex != null) _spritePlayer = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+                }
+                _spriteKaede = Resources.Load<Sprite>("Tachie/kaede");
+                if (_spriteKaede == null)
+                {
+                    var tex = Resources.Load<Texture2D>("Tachie/kaede");
+                    if (tex != null) _spriteKaede = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[SubtitleUI] 立绘加载失败: {e.Message}");
+            }
+        }
+
+        private static SpeakerKind ClassifySpeaker(string speaker)
+        {
+            if (string.IsNullOrEmpty(speaker)) return SpeakerKind.Other;
+            if (speaker.IndexOf("Kaede", System.StringComparison.OrdinalIgnoreCase) >= 0
+                || speaker.IndexOf("カエデ", System.StringComparison.Ordinal) >= 0
+                || speaker == "枫")
+            {
+                return SpeakerKind.Kaede;
+            }
+            if (speaker == "主人公" || speaker == "Lily" || speaker == "みなと"
+                || speaker.IndexOf("Player", System.StringComparison.OrdinalIgnoreCase) >= 0
+                || speaker.IndexOf("プレイヤー", System.StringComparison.Ordinal) >= 0)
+            {
+                return SpeakerKind.Player;
+            }
+            return SpeakerKind.Other;
+        }
+
+        /// <summary>
+        /// 创建一个立绘槽：外层 RectMask2D 限定可见区，内层 Image 比容器高，向下溢出被遮住 → 只露上半身。
+        /// </summary>
+        private static Image CreatePortrait(Transform parent, Sprite sprite, bool right)
+        {
+            var go = new GameObject(right ? "PortraitRight" : "PortraitLeft");
+            go.transform.SetParent(parent, false);
+            var rt = go.AddComponent<RectTransform>();
+            rt.anchorMin = new Vector2(right ? 1f : 0f, 0f);
+            rt.anchorMax = new Vector2(right ? 1f : 0f, 0f);
+            rt.pivot = new Vector2(right ? 1f : 0f, 0f);
+            rt.anchoredPosition = new Vector2(right ? -40f : 40f, 240f);
+            rt.sizeDelta = new Vector2(340f, 400f);
+            go.AddComponent<RectMask2D>();
+
+            var inner = new GameObject("Image");
+            inner.transform.SetParent(go.transform, false);
+            var irt = inner.AddComponent<RectTransform>();
+            irt.anchorMin = new Vector2(0f, 1f);
+            irt.anchorMax = new Vector2(1f, 1f);
+            irt.pivot = new Vector2(0.5f, 1f);
+            irt.anchoredPosition = Vector2.zero;
+            irt.sizeDelta = new Vector2(0f, 510f);
+            var img = inner.AddComponent<Image>();
+            img.sprite = sprite;
+            img.preserveAspect = true;
+            img.raycastTarget = false;
+            var c = img.color; c.a = 0f; img.color = c;
+            return img;
         }
 
         private static string LocalizedOr(string key, string fallback)
