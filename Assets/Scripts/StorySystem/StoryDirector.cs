@@ -617,9 +617,21 @@ namespace StorySystem
         public static bool IsPlayerInputBlocked =>
             IsDialogOpen || Time.frameCount <= inputBlockReleaseFrame;
 
-        // 对话/报告期间临时解锁鼠标供 UI 点击（选项、ヒント、推进等）；结束时还原。
+        // 对话/报告期间临时解锁鼠标供 UI 点击；用 guard 协程每帧强制写，
+        // 防止 FirstPersonController / MobileCursorManager 等的 Update 把锁状态抢回去。
         private static CursorLockMode _prevCursorLock;
         private static bool _prevCursorVisible;
+        private static Coroutine _cursorGuard;
+
+        private static IEnumerator EnforceCursorVisible()
+        {
+            while (activeSequenceCount > 0)
+            {
+                if (Cursor.lockState != CursorLockMode.None) Cursor.lockState = CursorLockMode.None;
+                if (!Cursor.visible) Cursor.visible = true;
+                yield return null;
+            }
+        }
 
         private static void MarkDialogOpened()
         {
@@ -629,6 +641,7 @@ namespace StorySystem
                 _prevCursorVisible = Cursor.visible;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+                _cursorGuard = StoryDirectorRunner.Instance.StartCoroutine(EnforceCursorVisible());
             }
             activeSequenceCount++;
         }
@@ -638,6 +651,7 @@ namespace StorySystem
             activeSequenceCount = Mathf.Max(0, activeSequenceCount - 1);
             if (activeSequenceCount == 0)
             {
+                if (_cursorGuard != null) { StoryDirectorRunner.Instance.StopCoroutine(_cursorGuard); _cursorGuard = null; }
                 Cursor.lockState = _prevCursorLock;
                 Cursor.visible = _prevCursorVisible;
             }
@@ -710,6 +724,21 @@ namespace StorySystem
 
             EnsureEventSystem(canvasGO.transform);
 
+            // 全屏点击捕获：在 bg 以外的屏幕区域也能点击推进对话。
+            // 放在 canvas 最底层（先于立绘和 bg 添加 → 渲染顺序最靠后），
+            // 选择题/选项按钮在更高层级，自然抢先消费 click。
+            var clickCatcher = new GameObject("ClickCatcher");
+            clickCatcher.transform.SetParent(canvasGO.transform, false);
+            var ccRt = clickCatcher.AddComponent<RectTransform>();
+            ccRt.anchorMin = Vector2.zero; ccRt.anchorMax = Vector2.one;
+            ccRt.offsetMin = Vector2.zero; ccRt.offsetMax = Vector2.zero;
+            var ccImg = clickCatcher.AddComponent<Image>();
+            ccImg.color = new Color(0f, 0f, 0f, 0f); // 完全透明但 raycastTarget 默认 true
+            var ccBtn = clickCatcher.AddComponent<Button>();
+            ccBtn.transition = Selectable.Transition.None;
+            ccBtn.targetGraphic = ccImg;
+            var ccNav = ccBtn.navigation; ccNav.mode = Navigation.Mode.None; ccBtn.navigation = ccNav;
+
             // 立绘槽（要在 bg 之前创建，让对话框渲染在立绘之上）
             LoadPortraits();
             Image portraitLeft = _spritePlayer != null ? CreatePortrait(canvasGO.transform, _spritePlayer, false) : null;
@@ -780,6 +809,7 @@ namespace StorySystem
             bool advanceRequested = false;
             void RequestAdvance() => advanceRequested = true;
             button.onClick.AddListener(RequestAdvance);
+            ccBtn.onClick.AddListener(RequestAdvance);
 
             for (int i = 0; i < lines.Count; i++)
             {
@@ -815,7 +845,7 @@ namespace StorySystem
                     // E: 答错可重答。已错过的选项灰掉禁用；最终必须答对才推进。
                     var disabledIdx = new HashSet<int>();
                     bool correctlyAnswered = false;
-                    button.interactable = false; // 选择期间屏蔽背景点击推进
+                    button.interactable = false; ccBtn.interactable = false; // 选择期间屏蔽背景点击推进
 
                     while (!correctlyAnswered)
                     {
@@ -896,7 +926,7 @@ namespace StorySystem
                             disabledIdx.Add(picked);
                     }
 
-                    button.interactable = true;
+                    button.interactable = true; ccBtn.interactable = true;
                     continue;
                 }
 
