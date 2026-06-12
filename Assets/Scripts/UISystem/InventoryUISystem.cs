@@ -879,6 +879,9 @@ public class InventoryUISystem : MonoBehaviour
         SetupWheelAppearance();
         UpdateWheelSize();
 
+        // Tab 轮盘打开音效
+        GeoModel.AudioSystem.AudioManager.Instance.PlayUI(GeoModel.AudioSystem.AudioKeys.UI.TabOpen);
+
         // 强制刷新Canvas
         if (canvas != null)
         {
@@ -919,7 +922,10 @@ public class InventoryUISystem : MonoBehaviour
         
         isWheelOpen = false;
         wheelUI.SetActive(false);
-        
+
+        // Tab 轮盘关闭音效
+        GeoModel.AudioSystem.AudioManager.Instance.PlayUI(GeoModel.AudioSystem.AudioKeys.UI.TabClose);
+
         // 简化逻辑：直接恢复鼠标锁定状态
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

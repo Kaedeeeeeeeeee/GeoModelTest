@@ -200,12 +200,14 @@ public class HammerTool : CollectionTool
             targetMarker.CompleteCollection();
         }
         
-        // 播放完成音效
+        // 播放完成音效（样本拾取音）
+        GeoModel.AudioSystem.AudioManager.Instance.PlaySFX3D(
+            GeoModel.AudioSystem.AudioKeys.SFX.SamplePickup, collectionPos);
         if (collectionCompleteSound != null && audioSource != null)
         {
             audioSource.PlayOneShot(collectionCompleteSound);
         }
-        
+
         // 生成薄片样本
         GenerateSlabSample(collectionPos);
         
@@ -264,12 +266,14 @@ public class HammerTool : CollectionTool
     /// </summary>
     void PlayHammerHit()
     {
-        // 播放音效
+        // 播放音效（AudioManager 优先，旧 AudioSource 作为可选 fallback）
+        GeoModel.AudioSystem.AudioManager.Instance.PlaySFX3D(
+            GeoModel.AudioSystem.AudioKeys.SFX.HammerHit, transform.position);
         if (hammerHitSound != null && audioSource != null)
         {
             audioSource.PlayOneShot(hammerHitSound);
         }
-        
+
         // 播放锤击动画
         PlayHammerAnimation();
     }

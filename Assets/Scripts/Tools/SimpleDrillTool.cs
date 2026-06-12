@@ -164,9 +164,13 @@ public class SimpleDrillTool : CollectionTool
         // 检查是否可以在此位置钻探
         if (hit.collider.gameObject.layer == 0) // 默认layer
         {
+            // 钻探音效
+            GeoModel.AudioSystem.AudioManager.Instance.PlaySFX3D(
+                GeoModel.AudioSystem.AudioKeys.SFX.DrillComplete, drillingPosition);
+
             // 执行钻探并生成样本
             CreateDrillingSample(drillingPosition);
-            
+
             Debug.Log($"简易钻探完成，位置: {drillingPosition}");
             
             // 钻探完成后自动退出工具

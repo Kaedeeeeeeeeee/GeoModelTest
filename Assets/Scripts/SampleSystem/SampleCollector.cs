@@ -549,7 +549,11 @@ public class SampleCollector : MonoBehaviour
             Debug.LogWarning("样本数据为空，无法采集");
             return;
         }
-        
+
+        // 样本拾取音效
+        GeoModel.AudioSystem.AudioManager.Instance.PlaySFX3D(
+            GeoModel.AudioSystem.AudioKeys.SFX.SamplePickup, transform.position);
+
         // 查找样本背包 - 使用多种方式确保找到
         var inventory = GetOrCreateSampleInventory();
         if (inventory == null)

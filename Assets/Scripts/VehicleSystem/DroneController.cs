@@ -41,6 +41,9 @@ public class DroneController : MonoBehaviour
     
     // 地面检测变量
     private bool isOnGround = false;
+
+    // 引擎循环音源
+    private AudioSource engineLoopSource;
     
     void Start()
     {
@@ -202,6 +205,10 @@ public class DroneController : MonoBehaviour
         
         isBeingControlled = true;
 
+        // 启动无人机引擎循环音
+        engineLoopSource = GeoModel.AudioSystem.AudioManager.Instance.StartLoopSFX3D(
+            GeoModel.AudioSystem.AudioKeys.SFX.DroneLoop, transform, 0.6f);
+
         // 显示无人机移动端控制UI
         if (mobileControlsUI != null)
         {
@@ -212,8 +219,15 @@ public class DroneController : MonoBehaviour
     
     void StopControlling()
     {
+        // 停止引擎循环音（哪怕 playerController 为 null 也要清理）
+        if (engineLoopSource != null)
+        {
+            GeoModel.AudioSystem.AudioManager.Instance.StopLoop(engineLoopSource, 0.4f);
+            engineLoopSource = null;
+        }
+
         if (playerController == null) return;
-        
+
         // 恢复摄像机到第一人称
         if (playerCamera != null)
         {

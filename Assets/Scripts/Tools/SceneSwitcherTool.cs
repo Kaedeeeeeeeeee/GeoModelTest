@@ -177,6 +177,8 @@ public class SceneSwitcherTool : CollectionTool
         Debug.Log("场景切换器被激活！");
 
         // 播放激活音效
+        GeoModel.AudioSystem.AudioManager.Instance.PlaySFX3D(
+            GeoModel.AudioSystem.AudioKeys.SFX.SceneSwitch, transform.position);
         if (switcherActivateSound != null && audioSource != null)
         {
             audioSource.PlayOneShot(switcherActivateSound);

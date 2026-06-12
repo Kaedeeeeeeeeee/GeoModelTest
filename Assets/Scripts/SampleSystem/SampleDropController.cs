@@ -389,19 +389,29 @@ public class SampleDropController : MonoBehaviour
     
     void PlayDropSound()
     {
+        // AudioManager 全局路由（推荐路径）
+        GeoModel.AudioSystem.AudioManager.Instance.PlaySFX3D(
+            GeoModel.AudioSystem.AudioKeys.SFX.SampleDrop, transform.position, soundVolume);
+
+        // 旧 AudioSource 字段作为可选 fallback
         if (dropSounds != null && dropSounds.Length > 0 && audioSource != null)
         {
             AudioClip clip = dropSounds[Random.Range(0, dropSounds.Length)];
             audioSource.PlayOneShot(clip, soundVolume);
         }
     }
-    
+
     void PlayBounceSound(float intensity)
     {
+        float volume = Mathf.Clamp01(soundVolume * (intensity / 5f));
+
+        // AudioManager 全局路由
+        GeoModel.AudioSystem.AudioManager.Instance.PlaySFX3D(
+            GeoModel.AudioSystem.AudioKeys.SFX.SampleBounce, transform.position, volume);
+
         if (bounceSounds != null && bounceSounds.Length > 0 && audioSource != null)
         {
             AudioClip clip = bounceSounds[Random.Range(0, bounceSounds.Length)];
-            float volume = Mathf.Clamp01(soundVolume * (intensity / 5f)); // 根据撞击力度调整音量
             audioSource.PlayOneShot(clip, volume);
         }
     }

@@ -245,9 +245,13 @@ public abstract class PlaceableTool : CollectionTool
         if (templateObject != null)
         {
             GameObject placedObject = Instantiate(templateObject, position, rotation);
-            
+
             // 直接保持模板对象的原始缩放，不做任何修改
-            
+
+            // 工具放置音效
+            GeoModel.AudioSystem.AudioManager.Instance.PlaySFX3D(
+                GeoModel.AudioSystem.AudioKeys.SFX.ToolPlace, position);
+
             OnObjectPlaced(placedObject);
         }
         else

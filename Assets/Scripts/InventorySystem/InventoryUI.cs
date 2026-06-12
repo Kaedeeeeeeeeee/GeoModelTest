@@ -754,18 +754,21 @@ public class InventoryUI : MonoBehaviour
         }
         
         isInventoryOpen = true;
-        
+
         if (inventoryPanel == null)
         {
             Debug.LogError("[InventoryUI] inventoryPanel为null，尝试重新创建UI");
             CreateInventoryUI();
         }
-        
+
         if (inventoryPanel != null)
         {
             inventoryPanel.SetActive(true);
             Debug.Log("[InventoryUI] 背包面板已激活");
         }
+
+        // 背包打开音效
+        GeoModel.AudioSystem.AudioManager.Instance.PlayUI(GeoModel.AudioSystem.AudioKeys.UI.PanelOpen);
         
         // 禁用鼠标视角控制
         if (fpController != null)
@@ -859,6 +862,9 @@ public class InventoryUI : MonoBehaviour
         isInventoryOpen = false;
         inventoryPanel.SetActive(false);
         CloseDetailPanel();
+
+        // 背包关闭音效
+        GeoModel.AudioSystem.AudioManager.Instance.PlayUI(GeoModel.AudioSystem.AudioKeys.UI.PanelClose);
 
         // 恢复鼠标视角控制
         if (fpController != null)

@@ -18,7 +18,7 @@ public class FirstPersonController : MonoBehaviour
     public bool enableMouseLook = true; // 控制是否启用鼠标视角控制
     
     [Header("摄像机设置")]
-    public Vector3 cameraPosition = new Vector3(0f, 0.452f, 0.065f); // 摄像机相对于玩家的位置
+    public Vector3 cameraPosition = new Vector3(0f, 1.0f, 0.065f); // 摄像机相对于玩家的位置（眼高）
     public float nearClipPlane = 0.1f; // 近裁剪面
     public bool hidePlayerFromCamera = true; // 是否隐藏玩家模型
     
@@ -277,6 +277,10 @@ public class FirstPersonController : MonoBehaviour
         }
     }
     
+    private float footstepTimer = 0f;
+    private const float WalkStepInterval = 0.45f;
+    private const float RunStepInterval = 0.28f;
+
     void HandleMovement()
     {
         float currentSpeed = runInput ? runSpeed : walkSpeed;
@@ -294,6 +298,22 @@ public class FirstPersonController : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
 
         jumpInput = false;
+
+        // 脚步声：仅在地面、有水平移动时触发
+        if (isGrounded && moveInput.sqrMagnitude > 0.01f)
+        {
+            footstepTimer -= Time.deltaTime;
+            if (footstepTimer <= 0f)
+            {
+                GeoModel.AudioSystem.AudioManager.Instance.PlaySFXRandom(
+                    GeoModel.AudioSystem.AudioKeys.SFX.Footsteps, transform.position, 0.6f);
+                footstepTimer = runInput ? RunStepInterval : WalkStepInterval;
+            }
+        }
+        else
+        {
+            footstepTimer = 0f;
+        }
     }
     
     void HandleLook()

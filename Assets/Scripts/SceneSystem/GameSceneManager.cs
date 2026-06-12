@@ -367,14 +367,18 @@ public class GameSceneManager : MonoBehaviour
             Debug.LogWarning("正在加载场景，请稍后");
             return;
         }
-        
+
         if (sceneName == currentSceneName)
         {
             Debug.LogWarning("已经在当前场景中");
             HideSceneSelectionUI();
             return;
         }
-        
+
+        // 穿越时空音效（按下场景按钮的瞬间）
+        GeoModel.AudioSystem.AudioManager.Instance.PlayUI(
+            GeoModel.AudioSystem.AudioKeys.SFX.SceneTeleport);
+
         StartCoroutine(LoadSceneAsync(sceneName));
     }
     

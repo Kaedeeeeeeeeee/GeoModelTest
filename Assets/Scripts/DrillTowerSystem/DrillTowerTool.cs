@@ -459,26 +459,37 @@ public class DrillTower : MonoBehaviour
         // 播放钻探效果
         PlayDrillingEffects();
 
+        // 钻探循环音（挂在钻塔上的 3D 循环）
+        var drillLoop = GeoModel.AudioSystem.AudioManager.Instance.StartLoopSFX3D(
+            GeoModel.AudioSystem.AudioKeys.SFX.DrillLoop, transform);
+
         EnsureToolReference();
-        if (toolReference == null) yield break;
+        if (toolReference == null)
+        {
+            if (drillLoop != null) GeoModel.AudioSystem.AudioManager.Instance.StopLoop(drillLoop, 0.2f);
+            yield break;
+        }
 
         float currentDepthStart = currentDrillCount * toolReference.depthPerDrill;
         float currentDepthEnd = currentDepthStart + toolReference.depthPerDrill;
-        
-        
+
+
         // 钻探动画延迟
         yield return new WaitForSeconds(2.0f);
-        
+
         // 执行实际钻探
         PerformDrilling(currentDepthStart, currentDepthEnd);
-        
+
         // 停止效果
         StopDrillingEffects();
-        
+        if (drillLoop != null) GeoModel.AudioSystem.AudioManager.Instance.StopLoop(drillLoop, 0.3f);
+        GeoModel.AudioSystem.AudioManager.Instance.PlaySFX3D(
+            GeoModel.AudioSystem.AudioKeys.SFX.DrillComplete, transform.position);
+
         currentDrillCount++;
         isDrilling = false;
         UpdateTowerAppearance();
-        
+
     }
     
     void PerformDrilling(float depthStart, float depthEnd)

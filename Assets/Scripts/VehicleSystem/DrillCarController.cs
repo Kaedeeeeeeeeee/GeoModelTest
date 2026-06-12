@@ -32,6 +32,9 @@ public class DrillCarController : MonoBehaviour
     private bool wasFKeyPressedLastFrame = false; // 上一帧F键状态
     private Quaternion originalCameraRotation;
     private Rigidbody rb;
+
+    // 引擎循环音源
+    private AudioSource engineLoopSource;
     
     void Start()
     {
@@ -166,10 +169,14 @@ public class DrillCarController : MonoBehaviour
     void StartDriving(FirstPersonController player)
     {
         if (isBeingDriven) return;
-        
+
         playerController = player;
         playerCamera = Camera.main;
         isBeingDriven = true;
+
+        // 启动钻车引擎循环音
+        engineLoopSource = GeoModel.AudioSystem.AudioManager.Instance.StartLoopSFX3D(
+            GeoModel.AudioSystem.AudioKeys.SFX.DrillCarLoop, transform, 0.5f);
         
         // 保存玩家原始摄像机设置（相对位置）
         if (playerCamera != null && playerController != null)
@@ -315,8 +322,15 @@ public class DrillCarController : MonoBehaviour
     void StopDriving()
     {
         if (!isBeingDriven) return;
-        
+
         isBeingDriven = false;
+
+        // 停止钻车引擎循环音
+        if (engineLoopSource != null)
+        {
+            GeoModel.AudioSystem.AudioManager.Instance.StopLoop(engineLoopSource, 0.4f);
+            engineLoopSource = null;
+        }
         
         // 先显示玩家并设置位置
         if (playerController != null)

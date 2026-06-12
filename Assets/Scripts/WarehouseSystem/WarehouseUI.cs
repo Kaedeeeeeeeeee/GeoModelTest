@@ -607,15 +607,18 @@ public class WarehouseUI : MonoBehaviour
     public void OpenWarehouseInterface()
     {
         if (isWarehouseOpen) return;
-        
+
         isWarehouseOpen = true;
-        
+
+        // 仓库打开音效
+        GeoModel.AudioSystem.AudioManager.Instance.PlayUI(GeoModel.AudioSystem.AudioKeys.UI.PanelOpen);
+
         // 显示整个Canvas
         if (warehouseCanvas != null)
         {
             warehouseCanvas.gameObject.SetActive(true);
         }
-        
+
         // 显示UI面板
         if (warehousePanel != null)
         {
@@ -641,17 +644,20 @@ public class WarehouseUI : MonoBehaviour
         {
             warehouseCanvas.gameObject.SetActive(false);
         }
-        
+
         // 强制隐藏UI面板（双重保险）
         if (warehousePanel != null)
         {
             warehousePanel.SetActive(false);
         }
-        
+
         // 如果仓库已经是关闭状态，就不需要执行其他操作
         if (!isWarehouseOpen) return;
-        
+
         isWarehouseOpen = false;
+
+        // 仓库关闭音效
+        GeoModel.AudioSystem.AudioManager.Instance.PlayUI(GeoModel.AudioSystem.AudioKeys.UI.PanelClose);
         
         // 退出多选模式
         if (multiSelectSystem != null && multiSelectSystem.IsInMultiSelectMode())
