@@ -31,7 +31,8 @@
             "speaker": "Dr.Kaede",
             "text": "ねえ、化石（かせき）って「タイムカプセル」みたいなものなの。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.q1.teach1"
+            "textKey": "story.beat3.q1.teach1",
+            "illustrationKey": "05_coral_env"
         },
         {
             "speaker": "Dr.Kaede",
@@ -88,6 +89,7 @@
             "text": "サンゴみたいに、地層（ちそう）ができた当時（とうじ）の「環境（かんきょう）」を教（おし）えてくれる化石（かせき）——これを何（なん）て呼（よ）ぶ？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q2.prompt",
+            "illustrationKey": "06_facies_fossil",
             "questionId": "q.fossil_facies_term",
             "hint": "「環境（かんきょう）」を「示（しめ）す」「化石（かせき）」——漢字（かんじ）3つで。",
             "hintKey": "story.beat3.q2.hint",
@@ -112,7 +114,8 @@
             "speaker": "Dr.Kaede",
             "text": "今度（こんど）は別（べつ）の層（そう）から——アンモナイトの化石（かせき）！",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.q3.teach1"
+            "textKey": "story.beat3.q3.teach1",
+            "illustrationKey": "07_ammonite_mesozoic"
         },
         {
             "speaker": "Dr.Kaede",
@@ -162,7 +165,8 @@
             "speaker": "Dr.Kaede",
             "text": "広（ひろ）い範囲（はんい）にすんで、短（みじか）い期間（きかん）だけ栄（さか）えた生（い）きものの化石（かせき）は、年代（ねんだい）を決（き）めるのに役立（やくだ）つの。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.q4.teach1"
+            "textKey": "story.beat3.q4.teach1",
+            "illustrationKey": "08_index_fossil_eras"
         },
         {
             "speaker": "Dr.Kaede",
@@ -194,6 +198,7 @@
             "text": "柱状図（ちゅうじょうず）の中（なか）に、火山灰（かざんばい）がおし固（かた）まった「凝灰岩（ぎょうかいがん）」の層（そう）があるね。当時（とうじ）、何（なに）があった？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q5.prompt",
+            "illustrationKey": "09_tuff_volcano",
             "questionId": "q.tuff_volcano",
             "hint": "凝灰岩（ぎょうかいがん）は火山灰（かざんばい）からできるよ。火山灰（かざんばい）はどこから飛（と）んでくる？",
             "hintKey": "story.beat3.q5.hint",
@@ -220,6 +225,30 @@
                     "feedbackKey": "story.beat3.q5.fb_ng_c"
                 }
             ]
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "つまりこの場所（ばしょ）は、昔（むかし）ほんとうに大（おお）きく姿（すがた）を変（か）えてきた——浅（あさ）い海（うみ）、深（ふか）い海（うみ）、そして火山（かざん）……地層（ちそう）はそれを全部（ぜんぶ）、記録（きろく）してたんだ。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.l06"
+        },
+        {
+            "speaker": "ナレーション",
+            "text": "——ズン。足元（あしもと）が、また小（ちい）さくゆれた。",
+            "speakerKey": "story.speaker.narration",
+            "textKey": "story.beat3.l07"
+        },
+        {
+            "speaker": "主人公",
+            "text": "今（いま）の、地震（じしん）……？　さっきより小（ちい）さいけど……",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.beat3.l08"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "余震（よしん）。でもこれは「記録（きろく）」じゃない——「今（いま）」も動（うご）いてる証拠（しょうこ）。……急（いそ）ごう。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.l09"
         }
     ]
 }

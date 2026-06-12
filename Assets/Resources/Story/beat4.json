@@ -13,7 +13,8 @@
             "speaker": "Dr.Kaede",
             "text": "「同（おな）じ層（そう）」が見（み）つかれば、それを目印（めじるし）にできる——「鍵層（かぎそう）」っていうの。火山灰（かざんばい）はとても目立（めだ）つ、いい鍵層（かぎそう）よ。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat4.q1.teach1"
+            "textKey": "story.beat4.q1.teach1",
+            "illustrationKey": "10_keybed_tilt"
         },
         {
             "speaker": "Dr.Kaede",
@@ -34,7 +35,7 @@
                     "text": "東（ひがし）",
                     "textKey": "story.beat4.q1.a",
                     "isCorrect": true,
-                    "feedback": "せいかい！　同（おな）じ層（そう）が深（ふか）くなる方向（ほうこう）に、地層（ちそう）は傾（かたむ）いて低（ひく）くなっているんだ。",
+                    "feedback": "せいかい！　同（おな）じ層（そう）が深（ふか）くなる方向（ほうこう）に、地層（ちそう）は傾（かたむ）いて低（ひく）くなっているんだ。火山灰（かざんばい）の層（そう）が東（ひがし）へ下（さ）がる＝この一帯（いったい）、東（ひがし）へ傾（かたむ）きながら沈（しず）んでる。",
                     "feedbackKey": "story.beat4.q1.fb_ok"
                 },
                 {
@@ -57,7 +58,8 @@
             "speaker": "Dr.Kaede",
             "text": "地層（ちそう）は本来（ほんらい）まっすぐ重（かさ）なるはず。でも、両側（りょうがわ）から押（お）し縮（ちぢ）められると——あんなふうに曲（ま）がっちゃうの。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat4.q2.teach1"
+            "textKey": "story.beat4.q2.teach1",
+            "illustrationKey": "11_fold_fault"
         },
         {
             "speaker": "Dr.Kaede",
@@ -72,7 +74,7 @@
                     "text": "しゅう曲（きょく）",
                     "textKey": "story.beat4.q2.a",
                     "isCorrect": true,
-                    "feedback": "そのとおり。両側（りょうがわ）からおし縮（ちぢ）められる力（ちから）で、地層（ちそう）が曲（ま）がったものをしゅう曲（きょく）というよ。",
+                    "feedback": "そのとおり。両側（りょうがわ）からおし縮（ちぢ）められる力（ちから）で、地層（ちそう）が曲（ま）がったものをしゅう曲（きょく）というよ。しかも曲（ま）がってる＝今（いま）も地下（ちか）には「おす力（ちから）」がかかったまま、ってこと。",
                     "feedbackKey": "story.beat4.q2.fb_ok"
                 },
                 {
@@ -93,13 +95,26 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "君（きみ）が読（よ）み解（と）いた地層（ちそう）は、この街（まち）の“過去（かこ）の記録（きろく）”そのもの。これがあれば、次（つぎ）の災害（さいがい）にも備（そな）えられる。",
+            "text": "わかった？　力（ちから）がたまってる場所（ばしょ）——そこが、次（つぎ）にいちばん動（うご）きやすい。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat4.l04"
+            "textKey": "story.beat4.l04",
+            "illustrationKey": "-"
+        },
+        {
+            "speaker": "主人公",
+            "text": "だったら……危（あぶ）ないのは、ここ。学校（がっこう）の、すぐ西（にし）。",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.beat4.l06"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "おつかれさま！　君（きみ）はもう立派（りっぱ）な地質調査員（ちしつちょうさいん）だね。地球（ちきゅう）の「呼吸（こきゅう）」、少（すこ）しは聞（き）こえた？",
+            "text": "……うん。これはもう「宿題（しゅくだい）」じゃない。「警告（けいこく）」よ。みんなに伝（つた）えよう。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat4.l07"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "「地球（ちきゅう）の声（こえ）」なんて、ふしぎな力（ちから）じゃなかったでしょ？　地層（ちそう）を一枚（いちまい）ずつ読（よ）めば、だれにだって聞（き）こえる。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat4.l02"
         },

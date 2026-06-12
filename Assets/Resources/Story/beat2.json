@@ -25,7 +25,8 @@
             "speaker": "Dr.Kaede",
             "text": "堆積岩（たいせきがん）はね、粒（つぶ）の大（おお）きさで名前（なまえ）が決（き）まるんだ。大（おお）きい方（ほう）から「れき岩（がん）」(>2mm)、「砂岩（さがん）」、「泥岩（でいがん）」(<0.06mm)。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat2.q1.teach1"
+            "textKey": "story.beat2.q1.teach1",
+            "illustrationKey": "02_rock_grainsize"
         },
         {
             "speaker": "Dr.Kaede",
@@ -46,7 +47,7 @@
                     "text": "泥岩（でいがん）",
                     "textKey": "story.beat2.q1.a",
                     "isCorrect": true,
-                    "feedback": "せいかい！　粒（つぶ）が細（こま）かいほど、河口（かこう）から遠（とお）い深（ふか）い海（うみ）でたまるんだ。",
+                    "feedback": "せいかい！　粒（つぶ）が細（こま）かいほど、河口（かこう）から遠（とお）い深（ふか）い海（うみ）でたまるんだ。つまりここは昔（むかし）、静（しず）かで深（ふか）い海（うみ）の底（そこ）だった。",
                     "feedbackKey": "story.beat2.q1.fb_ok"
                 },
                 {
@@ -70,6 +71,7 @@
             "text": "次（つぎ）のサンプルは、うすい塩酸（えんさん）をかけたら泡（あわ）（二酸化炭素（にさんかたんそ））が出（で）たわ。これは？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat2.q2.prompt",
+            "illustrationKey": "03_limestone",
             "questionId": "q.rock_limestone",
             "hint": "塩酸（えんさん）に反応（はんのう）する岩石（がんせき）は限（かぎ）られているよ。貝（かい）やサンゴからできた岩（いわ）は？",
             "hintKey": "story.beat2.q2.hint",
@@ -78,7 +80,7 @@
                     "text": "石灰岩（せっかいがん）",
                     "textKey": "story.beat2.q2.a",
                     "isCorrect": true,
-                    "feedback": "そのとおり。石灰岩（せっかいがん）は貝（かい）やサンゴなどが積（つ）もってできて、塩酸（えんさん）で二酸化炭素（にさんかたんそ）を出（だ）すよ。",
+                    "feedback": "そのとおり。石灰岩（せっかいがん）は貝（かい）やサンゴなどが積（つ）もってできて、塩酸（えんさん）で二酸化炭素（にさんかたんそ）を出（だ）すよ。つまりここは昔（むかし）、あたたかい浅（あさ）い海（うみ）だったの。",
                     "feedbackKey": "story.beat2.q2.fb_ok"
                 },
                 {
@@ -102,6 +104,7 @@
             "text": "もうひとつ。くぎでひっかいても傷（きず）がつかないほどかたい。これは？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat2.q3.prompt",
+            "illustrationKey": "04_chert",
             "questionId": "q.rock_chert",
             "hint": "海（うみ）の小（ちい）さな生物（せいぶつ）の殻（から）が積（つ）もってできた、とてもかたい岩（いわ）は？",
             "hintKey": "story.beat2.q3.hint",
@@ -110,7 +113,7 @@
                     "text": "チャート",
                     "textKey": "story.beat2.q3.a",
                     "isCorrect": true,
-                    "feedback": "正解（せいかい）！　チャートは海（うみ）の小（ちい）さな生物（せいぶつ）の殻（から）が積（つ）もってできた、とてもかたい岩石（がんせき）だよ。",
+                    "feedback": "正解（せいかい）！　チャートは海（うみ）の小（ちい）さな生物（せいぶつ）の殻（から）が積（つ）もってできた、とてもかたい岩石（がんせき）だよ。大昔（おおむかし）の海（うみ）が、何百万年（なんびゃくまんねん）もかけて積（つ）み上（あ）げたものなの。",
                     "feedbackKey": "story.beat2.q3.fb_ok"
                 },
                 {
@@ -133,7 +136,8 @@
             "speaker": "Dr.Kaede",
             "text": "ふふ、いい目（め）をしてる。地質調査員（ちしつちょうさいん）の素質（そしつ）あり、ね。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat2.l05"
+            "textKey": "story.beat2.l05",
+            "illustrationKey": "-"
         },
         {
             "speaker": "主人公",
@@ -142,8 +146,14 @@
             "textKey": "story.beat2.l06"
         },
         {
+            "speaker": "主人公",
+            "text": "待（ま）って……この崖（がけ）、地層（ちそう）の線（せん）が少（すこ）し「ゆがんで」ない？　まっすぐじゃない。",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.beat2.l07"
+        },
+        {
             "speaker": "Dr.Kaede",
-            "text": "完璧（かんぺき）！　岩石（がんせき）の見分（みわ）け方（かた）がわかってきたね。次（つぎ）は深（ふか）いところを調（しら）べよう。",
+            "text": "気（き）づいた？　そこが引（ひ）っかかるところなの。もっと深（ふか）く掘（ほ）って、確（たし）かめよう。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat2.l03"
         }

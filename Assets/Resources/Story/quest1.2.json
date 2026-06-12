@@ -10,40 +10,77 @@
             "textKey": "story.beat1.l04"
         },
         {
+            "speaker": "主人公",
+            "text": "さっきまで教室（きょうしつ）がくずれてたはず……ここは、どこ？　どうして……？",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.beat1.l12"
+        },
+        {
             "speaker": "Dr.Kaede",
-            "text": "気（き）がついた？　ここは大地（だいち）を研究（けんきゅう）する施設（しせつ）「G-Lab」。わたしは研究員（けんきゅういん）のカエデ。",
+            "text": "気（き）がついた？　ここは大地（だいち）を調（しら）べ、街（まち）を守（まも）るための防災研究所（ぼうさいけんきゅうじょ）「G-Lab」。わたしは研究員（けんきゅういん）のカエデ。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat1.l05"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "さっきの地震（じしん）で、君（きみ）には特別（とくべつ）な力（ちから）が芽生（めば）えたみたい。地球（ちきゅう）の声（こえ）を聞（き）く力（ちから）よ。",
+            "text": "落（お）ち着（つ）いて。天井（てんじょう）がくずれるその一瞬（いっしゅん）に、研究所（けんきゅうじょ）の「転送装置（てんそうそうち）」で、君（きみ）を教室（きょうしつ）から引（ひ）き上（あ）げたの。さっきの白（しろ）い光（ひかり）、あれがそれよ。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat1.l13"
+        },
+        {
+            "speaker": "主人公",
+            "text": "転送（てんそう）……装置（そうち）？",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.beat1.l14"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "でもこの装置（そうち）、研究所（けんきゅうじょ）のまわりにしか届（とど）かないし、一度（いちど）に運（はこ）べるのは一人（ひとり）だけ。街（まち）ぜんぶは、救（すく）えない。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat1.l15"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "さっきの地震（じしん）で、君（きみ）の中（なか）の「力（ちから）」が目覚（めざ）めた。むずかしく考（かんが）えないで——「地層（ちそう）を読（よ）む力（ちから）」のこと。大地（だいち）の声（こえ）に、ちゃんと耳（みみ）をすませられる人（ひと）、それだけよ。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat1.l06"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "実（じつ）はこの街（まち）の地下（ちか）で、今（いま）も“何（なに）か”が動（うご）いている。その正体（しょうたい）を、君（きみ）の力（ちから）で確（たし）かめたいの。",
+            "text": "正直（しょうじき）に言（い）うね。さっきの地震（じしん）は、たぶん「終（お）わり」じゃない。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat1.l09"
         },
         {
+            "speaker": "Dr.Kaede",
+            "text": "でも地面（じめん）が割（わ）れて、いつもは草木（くさき）にかくれてる地層（ちそう）が、今（いま）だけ顔（かお）を出（だ）してる。今（いま）のうちに読（よ）み解（と）けば——次（つぎ）がいつ、どこで来（く）るか、先回（さきまわ）りできる。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat1.l11"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "でも、わたし一人（ひとり）じゃ手（て）も目（め）も足（た）りない。それに——この土地（とち）の地下（ちか）は、ここに住（す）む君（きみ）自身（じしん）が読（よ）むのが、いちばんいい。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat1.l16"
+        },
+        {
             "speaker": "主人公",
-            "text": "地球（ちきゅう）の声（こえ）、か……正直（しょうじき）こわいけど、ちょっとワクワクする。",
+            "text": "……あの教室（きょうしつ）を、もう一度（いちど）あんな目（め）にあわせたくない。やる。",
             "speakerKey": "story.speaker.protagonist",
             "textKey": "story.beat1.l10"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "いっしょに大地（だいち）のなぞを調（しら）べてほしいの。まずは基本（きほん）のおさらいからね。",
+            "text": "ありがとう。地層（ちそう）っていう「本（ほん）」を読（よ）むには、まずそれがどう書（か）かれたかを知（し）らなきゃ。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat1.l07"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "山（やま）の岩石（がんせき）が地層（ちそう）になるまでには、4つの「はたらき」があるの。「風化（ふうか）」「侵食（しんしょく）」「運搬（うんぱん）」「堆積（たいせき）」、ね。",
+            "text": "地層（ちそう）はね、大地（だいち）が書（か）いた「日記（にっき）」なの。山（やま）の岩石（がんせき）が地層（ちそう）になるまでには、4つの「はたらき」がある——「風化（ふうか）」「侵食（しんしょく）」「運搬（うんぱん）」「堆積（たいせき）」、ね。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat1.q1.teach1"
+            "textKey": "story.beat1.q1.teach1",
+            "illustrationKey": "01_weathering_order"
         },
         {
             "speaker": "Dr.Kaede",
@@ -85,9 +122,10 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "いい調子（ちょうし）！　じゃあ、さっそく野外（やがい）に出（で）てサンプルを集（あつ）めてみよう。",
+            "text": "いい調子（ちょうし）！　じゃあ野外（やがい）へ——大地（だいち）の最初（さいしょ）の1ページを、自分（じぶん）の手（て）でめくってみよう。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat1.l08"
+            "textKey": "story.beat1.l08",
+            "illustrationKey": "-"
         }
     ]
 }
