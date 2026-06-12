@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using GeoModel.AudioSystem;
 
 /// <summary>
 /// 设置管理器 - 管理ESC键触发的设置界面
@@ -46,6 +47,17 @@ public class SettingsManager : MonoBehaviour
     public Text englishText;
     public Text japaneseText;
     public Text closeText;
+
+    [Header("音量滑条")]
+    public Text audioSectionLabel;
+    public Slider masterVolumeSlider;
+    public Slider bgmVolumeSlider;
+    public Slider sfxVolumeSlider;
+    public Slider uiVolumeSlider;
+    public Text masterVolumeLabel;
+    public Text bgmVolumeLabel;
+    public Text sfxVolumeLabel;
+    public Text uiVolumeLabel;
     
     [Header("设置")]
     public bool pauseGameWhenOpen = true;
@@ -265,8 +277,8 @@ public class SettingsManager : MonoBehaviour
         contentObj.transform.SetParent(settingsPanel.transform);
         
         RectTransform contentRect = contentObj.AddComponent<RectTransform>();
-        contentRect.anchorMin = new Vector2(0.3f, 0.3f);
-        contentRect.anchorMax = new Vector2(0.7f, 0.7f);
+        contentRect.anchorMin = new Vector2(0.25f, 0.08f);
+        contentRect.anchorMax = new Vector2(0.75f, 0.92f);
         contentRect.offsetMin = Vector2.zero;
         contentRect.offsetMax = Vector2.zero;
         
@@ -276,13 +288,16 @@ public class SettingsManager : MonoBehaviour
         
         // 创建标题
         CreateTitle(contentObj);
-        
+
         // 创建语言标签
         CreateLanguageLabel(contentObj);
-        
+
         // 创建语言按钮
         CreateLanguageButtons(contentObj);
-        
+
+        // 创建音频设置区
+        CreateAudioSection(contentObj);
+
         // 创建关闭按钮
         CreateCloseButton(contentObj);
     }
@@ -296,8 +311,8 @@ public class SettingsManager : MonoBehaviour
         titleObj.transform.SetParent(parent.transform);
         
         RectTransform titleRect = titleObj.AddComponent<RectTransform>();
-        titleRect.anchorMin = new Vector2(0.1f, 0.8f);
-        titleRect.anchorMax = new Vector2(0.9f, 0.95f);
+        titleRect.anchorMin = new Vector2(0.1f, 0.92f);
+        titleRect.anchorMax = new Vector2(0.9f, 0.99f);
         titleRect.offsetMin = Vector2.zero;
         titleRect.offsetMax = Vector2.zero;
         
@@ -323,8 +338,8 @@ public class SettingsManager : MonoBehaviour
         labelObj.transform.SetParent(parent.transform);
         
         RectTransform labelRect = labelObj.AddComponent<RectTransform>();
-        labelRect.anchorMin = new Vector2(0.1f, 0.6f);
-        labelRect.anchorMax = new Vector2(0.9f, 0.7f);
+        labelRect.anchorMin = new Vector2(0.1f, 0.85f);
+        labelRect.anchorMax = new Vector2(0.9f, 0.90f);
         labelRect.offsetMin = Vector2.zero;
         labelRect.offsetMax = Vector2.zero;
         
@@ -346,18 +361,18 @@ public class SettingsManager : MonoBehaviour
     private void CreateLanguageButtons(GameObject parent)
     {
         // 中文按钮
-        chineseButton = CreateLanguageButton(parent, "ChineseButton", "中文", 
-            new Vector2(0.1f, 0.4f), new Vector2(0.35f, 0.55f));
+        chineseButton = CreateLanguageButton(parent, "ChineseButton", "中文",
+            new Vector2(0.1f, 0.77f), new Vector2(0.35f, 0.83f));
         chineseText = chineseButton.GetComponentInChildren<Text>();
-        
+
         // 英文按钮
-        englishButton = CreateLanguageButton(parent, "EnglishButton", "English", 
-            new Vector2(0.375f, 0.4f), new Vector2(0.625f, 0.55f));
+        englishButton = CreateLanguageButton(parent, "EnglishButton", "English",
+            new Vector2(0.375f, 0.77f), new Vector2(0.625f, 0.83f));
         englishText = englishButton.GetComponentInChildren<Text>();
-        
+
         // 日文按钮
-        japaneseButton = CreateLanguageButton(parent, "JapaneseButton", "日本語", 
-            new Vector2(0.65f, 0.4f), new Vector2(0.9f, 0.55f));
+        japaneseButton = CreateLanguageButton(parent, "JapaneseButton", "日本語",
+            new Vector2(0.65f, 0.77f), new Vector2(0.9f, 0.83f));
         japaneseText = japaneseButton.GetComponentInChildren<Text>();
     }
     
@@ -411,6 +426,138 @@ public class SettingsManager : MonoBehaviour
     }
     
     /// <summary>
+    /// 创建音频设置区（标题 + 4 个音量滑条）
+    /// </summary>
+    private void CreateAudioSection(GameObject parent)
+    {
+        // 音频区标题
+        GameObject headerObj = new GameObject("AudioSectionLabel");
+        headerObj.transform.SetParent(parent.transform);
+        RectTransform headerRect = headerObj.AddComponent<RectTransform>();
+        headerRect.anchorMin = new Vector2(0.1f, 0.69f);
+        headerRect.anchorMax = new Vector2(0.9f, 0.74f);
+        headerRect.offsetMin = Vector2.zero;
+        headerRect.offsetMax = Vector2.zero;
+
+        audioSectionLabel = headerObj.AddComponent<Text>();
+        audioSectionLabel.text = "音频";
+        audioSectionLabel.font = UIFontResolver.GetUIFont();
+        audioSectionLabel.fontSize = 22;
+        audioSectionLabel.color = new Color(0.85f, 0.85f, 0.85f, 1f);
+        audioSectionLabel.alignment = TextAnchor.MiddleCenter;
+        audioSectionLabel.fontStyle = FontStyle.Bold;
+
+        LocalizedText loc = headerObj.AddComponent<LocalizedText>();
+        loc.TextKey = "ui.settings.audio";
+
+        // 4 个滑条（顶部到底部）
+        masterVolumeSlider = CreateVolumeSliderRow(parent, "MasterVolume",
+            "ui.settings.master_volume", "主音量",
+            0.60f, 0.67f, out masterVolumeLabel);
+        bgmVolumeSlider = CreateVolumeSliderRow(parent, "BGMVolume",
+            "ui.settings.bgm_volume", "音乐音量",
+            0.51f, 0.58f, out bgmVolumeLabel);
+        sfxVolumeSlider = CreateVolumeSliderRow(parent, "SFXVolume",
+            "ui.settings.sfx_volume", "音效音量",
+            0.42f, 0.49f, out sfxVolumeLabel);
+        uiVolumeSlider = CreateVolumeSliderRow(parent, "UIVolume",
+            "ui.settings.ui_volume", "界面音量",
+            0.33f, 0.40f, out uiVolumeLabel);
+    }
+
+    /// <summary>
+    /// 创建一行音量滑条（左侧标签 + 右侧滑条）
+    /// </summary>
+    private Slider CreateVolumeSliderRow(GameObject parent, string name, string labelKey, string fallbackText,
+                                         float yMin, float yMax, out Text labelText)
+    {
+        // 标签
+        GameObject labelObj = new GameObject($"{name}_Label");
+        labelObj.transform.SetParent(parent.transform);
+        RectTransform labelRect = labelObj.AddComponent<RectTransform>();
+        labelRect.anchorMin = new Vector2(0.05f, yMin);
+        labelRect.anchorMax = new Vector2(0.38f, yMax);
+        labelRect.offsetMin = Vector2.zero;
+        labelRect.offsetMax = Vector2.zero;
+
+        labelText = labelObj.AddComponent<Text>();
+        labelText.text = fallbackText;
+        labelText.font = UIFontResolver.GetUIFont();
+        labelText.fontSize = 16;
+        labelText.color = Color.white;
+        labelText.alignment = TextAnchor.MiddleLeft;
+
+        LocalizedText loc = labelObj.AddComponent<LocalizedText>();
+        loc.TextKey = labelKey;
+
+        // 滑条容器
+        GameObject sliderObj = new GameObject($"{name}_Slider");
+        sliderObj.transform.SetParent(parent.transform);
+        RectTransform sliderRect = sliderObj.AddComponent<RectTransform>();
+        sliderRect.anchorMin = new Vector2(0.40f, yMin);
+        sliderRect.anchorMax = new Vector2(0.95f, yMax);
+        sliderRect.offsetMin = Vector2.zero;
+        sliderRect.offsetMax = Vector2.zero;
+
+        Slider slider = sliderObj.AddComponent<Slider>();
+        slider.direction = Slider.Direction.LeftToRight;
+        slider.minValue = 0f;
+        slider.maxValue = 1f;
+
+        // Background
+        GameObject bgObj = new GameObject("Background");
+        bgObj.transform.SetParent(sliderObj.transform);
+        RectTransform bgRect = bgObj.AddComponent<RectTransform>();
+        bgRect.anchorMin = new Vector2(0f, 0.3f);
+        bgRect.anchorMax = new Vector2(1f, 0.7f);
+        bgRect.offsetMin = Vector2.zero;
+        bgRect.offsetMax = Vector2.zero;
+        Image bgImg = bgObj.AddComponent<Image>();
+        bgImg.color = new Color(0.15f, 0.15f, 0.15f, 1f);
+
+        // Fill Area + Fill
+        GameObject fillAreaObj = new GameObject("Fill Area");
+        fillAreaObj.transform.SetParent(sliderObj.transform);
+        RectTransform fillAreaRect = fillAreaObj.AddComponent<RectTransform>();
+        fillAreaRect.anchorMin = new Vector2(0f, 0.3f);
+        fillAreaRect.anchorMax = new Vector2(1f, 0.7f);
+        fillAreaRect.offsetMin = new Vector2(5f, 0f);
+        fillAreaRect.offsetMax = new Vector2(-15f, 0f);
+
+        GameObject fillObj = new GameObject("Fill");
+        fillObj.transform.SetParent(fillAreaObj.transform);
+        RectTransform fillRect = fillObj.AddComponent<RectTransform>();
+        fillRect.anchorMin = Vector2.zero;
+        fillRect.anchorMax = Vector2.one;
+        fillRect.offsetMin = Vector2.zero;
+        fillRect.offsetMax = Vector2.zero;
+        Image fillImg = fillObj.AddComponent<Image>();
+        fillImg.color = new Color(0.4f, 0.7f, 0.95f, 1f);
+
+        // Handle Slide Area + Handle
+        GameObject handleAreaObj = new GameObject("Handle Slide Area");
+        handleAreaObj.transform.SetParent(sliderObj.transform);
+        RectTransform handleAreaRect = handleAreaObj.AddComponent<RectTransform>();
+        handleAreaRect.anchorMin = Vector2.zero;
+        handleAreaRect.anchorMax = Vector2.one;
+        handleAreaRect.offsetMin = new Vector2(10f, 0f);
+        handleAreaRect.offsetMax = new Vector2(-10f, 0f);
+
+        GameObject handleObj = new GameObject("Handle");
+        handleObj.transform.SetParent(handleAreaObj.transform);
+        RectTransform handleRect = handleObj.AddComponent<RectTransform>();
+        handleRect.sizeDelta = new Vector2(18f, 0f);
+        Image handleImg = handleObj.AddComponent<Image>();
+        handleImg.color = new Color(0.7f, 0.85f, 1f, 1f);
+
+        slider.fillRect = fillRect;
+        slider.handleRect = handleRect;
+        slider.targetGraphic = handleImg;
+
+        return slider;
+    }
+
+    /// <summary>
     /// 创建关闭按钮
     /// </summary>
     private void CreateCloseButton(GameObject parent)
@@ -419,11 +566,11 @@ public class SettingsManager : MonoBehaviour
         buttonObj.transform.SetParent(parent.transform);
         
         RectTransform buttonRect = buttonObj.AddComponent<RectTransform>();
-        buttonRect.anchorMin = new Vector2(0.35f, 0.1f);
-        buttonRect.anchorMax = new Vector2(0.65f, 0.25f);
+        buttonRect.anchorMin = new Vector2(0.35f, 0.04f);
+        buttonRect.anchorMax = new Vector2(0.65f, 0.13f);
         buttonRect.offsetMin = Vector2.zero;
         buttonRect.offsetMax = Vector2.zero;
-        
+
         closeButton = buttonObj.AddComponent<Button>();
         
         // 添加背景图片
@@ -484,6 +631,37 @@ public class SettingsManager : MonoBehaviour
         if (closeButton != null)
         {
             closeButton.onClick.AddListener(CloseSettings);
+        }
+
+        // 音量滑条
+        var am = AudioManager.Instance;
+        if (masterVolumeSlider != null)
+        {
+            masterVolumeSlider.SetValueWithoutNotify(am.GetVolume(AudioChannel.Master));
+            masterVolumeSlider.onValueChanged.AddListener(v => am.SetVolume(AudioChannel.Master, v));
+        }
+        if (bgmVolumeSlider != null)
+        {
+            bgmVolumeSlider.SetValueWithoutNotify(am.GetVolume(AudioChannel.BGM));
+            bgmVolumeSlider.onValueChanged.AddListener(v => am.SetVolume(AudioChannel.BGM, v));
+        }
+        if (sfxVolumeSlider != null)
+        {
+            sfxVolumeSlider.SetValueWithoutNotify(am.GetVolume(AudioChannel.SFX));
+            sfxVolumeSlider.onValueChanged.AddListener(v =>
+            {
+                am.SetVolume(AudioChannel.SFX, v);
+                am.PlayUI(AudioKeys.UI.Click); // 拖动时小反馈
+            });
+        }
+        if (uiVolumeSlider != null)
+        {
+            uiVolumeSlider.SetValueWithoutNotify(am.GetVolume(AudioChannel.UI));
+            uiVolumeSlider.onValueChanged.AddListener(v =>
+            {
+                am.SetVolume(AudioChannel.UI, v);
+                am.PlayUI(AudioKeys.UI.Click);
+            });
         }
     }
     
