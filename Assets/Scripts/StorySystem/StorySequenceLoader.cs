@@ -23,6 +23,9 @@ namespace StorySystem
         public string speakerKey;
         public string textKey;
 
+        // 知识讲解插画 banner 资源键（可选）。Resources/Story/Illustrations/<key>，"-" 收起。
+        public string illustrationKey;
+
         // 选择题（可选）。choices 为空时该行是普通台词。
         public string questionId;
         public List<StoryChoice> choices;
@@ -112,6 +115,7 @@ namespace StorySystem
                 bool triggerShake = entry.shake;
                 float overrideAmplitude = entry.shakeAmplitude;
                 var subtitleLine = new StoryDirector.SubtitleUI.SubtitleLine(speaker, text, triggerShake, overrideAmplitude);
+                subtitleLine.IllustrationKey = entry.illustrationKey;
 
                 if (entry.choices != null && entry.choices.Count > 0)
                 {

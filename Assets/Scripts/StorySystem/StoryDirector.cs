@@ -670,6 +670,9 @@ namespace StorySystem
             public System.Collections.Generic.List<SubtitleChoice> Choices;
             public string Hint; // 选择题"ヒント"按钮显示的提示文本（可选）
 
+            // 知识讲解插画 banner 资源键（可选）。Resources/Story/Illustrations/<key>，"-" 收起，空/缺省保持不变。
+            public string IllustrationKey;
+
             public bool HasChoices => Choices != null && Choices.Count > 0;
             public bool HasHint => !string.IsNullOrEmpty(Hint);
 
@@ -682,6 +685,7 @@ namespace StorySystem
                 QuestionId = null;
                 Choices = null;
                 Hint = null;
+                IllustrationKey = null;
             }
 
             public SubtitleLine(string text, bool triggerCameraShake = false, float shakeAmplitudeOverride = 0f)
@@ -735,6 +739,22 @@ namespace StorySystem
             Image portraitRight = _spriteKaede != null ? CreatePortrait(canvasGO.transform, _spriteKaede, true) : null;
             bool leftAppeared = false;
             bool rightAppeared = false;
+
+            // 知识讲解插画 banner（顶部，对话框上方 / 选项面板上沿之上 / 两条立绘之间居中）
+            // 点击 banner → 全屏看大图（预览较小也能看清注音）
+            Image illustration = CreateIllustrationBanner(canvasGO.transform);
+            string currentIllustrationKey = null;
+            {
+                var illBtn = illustration.gameObject.AddComponent<Button>();
+                illBtn.transition = Selectable.Transition.None;
+                illBtn.targetGraphic = illustration;
+                var illNav = illBtn.navigation; illNav.mode = Navigation.Mode.None; illBtn.navigation = illNav;
+                illBtn.onClick.AddListener(() =>
+                {
+                    if (illustration != null && illustration.sprite != null && illustration.raycastTarget)
+                        ShowIllustrationFullscreen(canvasGO.transform, illustration.sprite);
+                });
+            }
 
             var bg = new GameObject("BG");
             bg.transform.SetParent(canvasGO.transform, false);
@@ -821,6 +841,25 @@ namespace StorySystem
                     float targetR = rightAppeared ? (spKind == SpeakerKind.Kaede ? 1f : 0.55f) : 0f;
                     if (_fadeRight != null) StoryDirectorRunner.Instance.StopCoroutine(_fadeRight);
                     _fadeRight = StoryDirectorRunner.Instance.StartCoroutine(FadeAlpha(portraitRight, targetR, PortraitFadeSec));
+                }
+
+                // 知识讲解插画 banner：带 key 即切换并持续显示；"-" 收起；空/缺省保持不变。
+                if (illustration != null && !string.IsNullOrEmpty(line.IllustrationKey))
+                {
+                    string want = line.IllustrationKey.Trim();
+                    bool hide = want == "-" || want.Equals("none", System.StringComparison.OrdinalIgnoreCase);
+                    if (hide && currentIllustrationKey != null)
+                    {
+                        currentIllustrationKey = null;
+                        if (_fadeIllustration != null) StoryDirectorRunner.Instance.StopCoroutine(_fadeIllustration);
+                        _fadeIllustration = StoryDirectorRunner.Instance.StartCoroutine(SwapIllustration(illustration, null, IllustrationFadeSec));
+                    }
+                    else if (!hide && want != currentIllustrationKey)
+                    {
+                        currentIllustrationKey = want;
+                        if (_fadeIllustration != null) StoryDirectorRunner.Instance.StopCoroutine(_fadeIllustration);
+                        _fadeIllustration = StoryDirectorRunner.Instance.StartCoroutine(SwapIllustration(illustration, LoadIllustration(want), IllustrationFadeSec));
+                    }
                 }
 
                 speakerGO.SetActive(!string.IsNullOrEmpty(line.Speaker));
@@ -934,9 +973,10 @@ namespace StorySystem
             button.onClick.RemoveListener(RequestAdvance);
             MarkDialogClosed();
 
-            // 停掉挂着的立绘渐变协程，避免 Canvas/Image 销毁后悬挂
+            // 停掉挂着的立绘/插画渐变协程，避免 Canvas/Image 销毁后悬挂
             if (_fadeLeft != null) { StoryDirectorRunner.Instance.StopCoroutine(_fadeLeft); _fadeLeft = null; }
             if (_fadeRight != null) { StoryDirectorRunner.Instance.StopCoroutine(_fadeRight); _fadeRight = null; }
+            if (_fadeIllustration != null) { StoryDirectorRunner.Instance.StopCoroutine(_fadeIllustration); _fadeIllustration = null; }
 
             // Delay destruction to next frame to avoid Assertion failed errors in ProcessEvent
             StoryDirectorRunner.Instance.Run(DestroyCanvasNextFrame(canvasGO));
@@ -1122,6 +1162,131 @@ namespace StorySystem
             {
                 var fc = img.color; fc.a = target; img.color = fc;
             }
+        }
+
+        // ===== 知识讲解插画 banner =====
+
+        private const float IllustrationFadeSec = 0.3f;
+        private static Coroutine _fadeIllustration;
+        private static readonly System.Collections.Generic.Dictionary<string, Sprite> _illustrationCache
+            = new System.Collections.Generic.Dictionary<string, Sprite>();
+
+        /// <summary>
+        /// 从 Assets/Resources/Story/Illustrations/ 加载知识插画。命中/未命中都缓存，避免每行重复 Resources.Load。
+        /// 图片尚未生成时返回 null —— banner 自然保持隐藏，不影响现有对话流程。
+        /// </summary>
+        private static Sprite LoadIllustration(string key)
+        {
+            if (string.IsNullOrEmpty(key)) return null;
+            if (_illustrationCache.TryGetValue(key, out var cached)) return cached;
+            Sprite sprite = null;
+            try
+            {
+                string path = "Story/Illustrations/" + key;
+                sprite = Resources.Load<Sprite>(path);
+                if (sprite == null)
+                {
+                    var tex = Resources.Load<Texture2D>(path);
+                    if (tex != null) sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[SubtitleUI] 插画加载失败 {key}: {e.Message}");
+            }
+            _illustrationCache[key] = sprite;
+            return sprite;
+        }
+
+        /// <summary>
+        /// 顶部插画 banner：对话框上方、选项面板(0.26–0.64)之上、两条立绘之间居中。
+        /// 初始透明；preserveAspect 保持比例不变形；raycastTarget 随显隐切换（显示时可点击放大）。
+        /// </summary>
+        private static Image CreateIllustrationBanner(Transform parent)
+        {
+            var go = new GameObject("IllustrationBanner");
+            go.transform.SetParent(parent, false);
+            var rt = go.AddComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0.31f, 0.645f);
+            rt.anchorMax = new Vector2(0.69f, 0.99f);
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
+            var img = go.AddComponent<Image>();
+            img.preserveAspect = true;
+            img.raycastTarget = false;
+            var c = img.color; c.a = 0f; img.color = c;
+            return img;
+        }
+
+        /// <summary>
+        /// 切换 banner 图：当前可见且要换图/收起时先淡出，再换 sprite 淡入。next 为 null 表示收起。
+        /// </summary>
+        private static IEnumerator SwapIllustration(Image img, Sprite next, float duration)
+        {
+            if (img == null) yield break;
+            if (img.sprite != next && img.color.a > 0.01f)
+            {
+                yield return FadeAlpha(img, 0f, duration * 0.5f);
+            }
+            if (img == null) yield break;
+            if (next == null)
+            {
+                var c = img.color; c.a = 0f; img.color = c;
+                img.sprite = null;
+                img.raycastTarget = false; // 隐藏时不挡背景点击推进
+                yield break;
+            }
+            img.sprite = next;
+            img.raycastTarget = true;      // 显示时可点击 → 全屏放大
+            yield return FadeAlpha(img, 1f, duration * 0.5f);
+        }
+
+        /// <summary>
+        /// 全屏查看插画：暗背景 + 近全屏大图，点击任意处关闭。
+        /// </summary>
+        private static void ShowIllustrationFullscreen(Transform canvas, Sprite sprite)
+        {
+            if (canvas == null || sprite == null) return;
+            var overlay = new GameObject("IllustrationFullscreen");
+            overlay.transform.SetParent(canvas, false);
+            overlay.transform.SetAsLastSibling();
+            var oRt = overlay.AddComponent<RectTransform>();
+            oRt.anchorMin = Vector2.zero; oRt.anchorMax = Vector2.one;
+            oRt.offsetMin = Vector2.zero; oRt.offsetMax = Vector2.zero;
+            var dim = overlay.AddComponent<Image>();
+            dim.color = new Color(0f, 0f, 0f, 0.85f);
+            var btn = overlay.AddComponent<Button>();
+            btn.transition = Selectable.Transition.None;
+            btn.targetGraphic = dim;
+            var nav = btn.navigation; nav.mode = Navigation.Mode.None; btn.navigation = nav;
+            btn.onClick.AddListener(() => { if (overlay != null) UnityEngine.Object.Destroy(overlay); });
+
+            var bigGO = new GameObject("BigImage");
+            bigGO.transform.SetParent(overlay.transform, false);
+            var bRt = bigGO.AddComponent<RectTransform>();
+            bRt.anchorMin = new Vector2(0.5f, 0.5f);
+            bRt.anchorMax = new Vector2(0.5f, 0.5f);
+            bRt.pivot = new Vector2(0.5f, 0.5f);
+            bRt.sizeDelta = new Vector2(1760f, 1000f); // preserveAspect 下按高度填满，近全屏
+            var big = bigGO.AddComponent<Image>();
+            big.sprite = sprite;
+            big.preserveAspect = true;
+            big.raycastTarget = false; // 点击穿透到背景 → 关闭
+
+            var hintGO = new GameObject("CloseHint");
+            hintGO.transform.SetParent(overlay.transform, false);
+            var hRt = hintGO.AddComponent<RectTransform>();
+            hRt.anchorMin = new Vector2(0.5f, 0f); hRt.anchorMax = new Vector2(0.5f, 0f);
+            hRt.pivot = new Vector2(0.5f, 0f);
+            hRt.anchoredPosition = new Vector2(0f, 32f);
+            hRt.sizeDelta = new Vector2(900f, 36f);
+            var hTxt = hintGO.AddComponent<TextMeshProUGUI>();
+            ApplyTmpFont(hTxt);
+            hTxt.fontSize = 26;
+            hTxt.color = new Color(1f, 1f, 1f, 0.8f);
+            hTxt.alignment = TextAlignmentOptions.Center;
+            hTxt.raycastTarget = false;
+            hTxt.text = FuriganaProcessor.Process(LocalizedOr("ui.dialog.tap_close", "タップで閉（と）じる"));
         }
 
         private static string LocalizedOr(string key, string fallback)
