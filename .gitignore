@@ -101,3 +101,12 @@ crashlytics-build.properties
 .vscode/
 *.log
 .vercel
+
+# Claude Code session data (very large; never commit)
+.claude/
+
+# Node dependencies (art-pipeline tooling)
+node_modules/
+
+# Dev screenshots
+/Text_ScreenShot/
