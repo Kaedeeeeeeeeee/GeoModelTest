@@ -5,19 +5,19 @@
     "dialogues": [
         {
             "speaker": "Dr.Kaede",
-            "text": "ドリルタワーで、深（ふか）さごとにサンプルを取（と）ろう。地層（ちそう）の重（かさ）なりが「柱状図（ちゅうじょうず）」でわかるよ。",
+            "text": "ドリルタワーのサンプルが取（と）れたね。深（ふか）さごとの記録（きろく）を「柱状図（ちゅうじょうず）」で見（み）ていこう。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.l01"
         },
         {
             "speaker": "主人公",
-            "text": "こんな大（おお）きな機械（きかい）で掘（ほ）るなんて……！",
+            "text": "こんな大（おお）きな機械（きかい）で取（と）ったデータ、迫力（はくりょく）あるな……！",
             "speakerKey": "story.speaker.protagonist",
             "textKey": "story.beat3.l05"
         },
         {
             "speaker": "ナレーション",
-            "text": "深（ふか）い層（そう）をほり進（すす）めると、岩（いわ）の中（なか）から化石（かせき）が見（み）つかった。",
+            "text": "深（ふか）い層（そう）のサンプルから、岩（いわ）の中（なか）に化石（かせき）が見（み）つかった。",
             "speakerKey": "story.speaker.narration",
             "textKey": "story.beat3.l02"
         },
@@ -48,7 +48,7 @@
         },
         {
             "speaker": "ナレーション",
-            "text": "ドリルが深（ふか）く進（すす）むほど、足元（あしもと）から低（ひく）い響（ひび）きが伝（つた）わってくる気（き）がした。",
+            "text": "柱状図（ちゅうじょうず）を追（お）うほど、地下（ちか）から低（ひく）い響（ひび）きが伝（つた）わってくる気（き）がした。",
             "speakerKey": "story.speaker.narration",
             "textKey": "story.beat3.l04"
         },
@@ -235,6 +235,8 @@
         {
             "speaker": "ナレーション",
             "text": "——ズン。足元（あしもと）が、また小（ちい）さくゆれた。",
+            "shake": true,
+            "shakeAmplitude": 0.25,
             "speakerKey": "story.speaker.narration",
             "textKey": "story.beat3.l07"
         },

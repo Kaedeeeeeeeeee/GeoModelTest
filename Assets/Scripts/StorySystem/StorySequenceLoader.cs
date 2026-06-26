@@ -80,12 +80,15 @@ namespace StorySystem
 
     public static class StorySequenceExtensions
     {
+        private const string PlayerNamePlaceholder = "{name}";
+        private const string DefaultPlayerDisplayName = "Lily";
+
         public static List<StoryDirector.SubtitleUI.SubtitleLine> ToSubtitleLines(this StorySequence sequence)
         {
             var result = new List<StoryDirector.SubtitleUI.SubtitleLine>();
             if (sequence?.dialogues == null) return result;
 
-            var localizationManager = LocalizationManager.Instance;
+            var localizationManager = ResolveLocalizationManager();
             bool canLocalize = localizationManager != null && localizationManager.IsInitialized;
 
             foreach (var entry in sequence.dialogues)
@@ -96,6 +99,11 @@ namespace StorySystem
                 if (!string.IsNullOrEmpty(entry.speakerKey) && canLocalize && localizationManager.HasText(entry.speakerKey))
                 {
                     speaker = localizationManager.GetText(entry.speakerKey);
+                }
+
+                if (IsSfxLine(entry, speaker))
+                {
+                    continue;
                 }
 
                 string text = entry.text?.Trim() ?? string.Empty;
@@ -111,6 +119,7 @@ namespace StorySystem
                     }
                 }
 
+                text = ApplyPlaceholders(text);
                 if (string.IsNullOrEmpty(text)) continue;
                 bool triggerShake = entry.shake;
                 float overrideAmplitude = entry.shakeAmplitude;
@@ -157,7 +166,41 @@ namespace StorySystem
                     resolved = key; // 至少显示键值，便于调试
                 }
             }
-            return resolved;
+            return ApplyPlaceholders(resolved);
+        }
+
+        private static LocalizationManager ResolveLocalizationManager()
+        {
+            if (Application.isPlaying)
+            {
+                return LocalizationManager.Instance;
+            }
+
+            return UnityEngine.Object.FindFirstObjectByType<LocalizationManager>();
+        }
+
+        private static bool IsSfxLine(StoryDialogueLine entry, string resolvedSpeaker)
+        {
+            if (entry == null) return false;
+
+            if (!string.IsNullOrEmpty(entry.speakerKey) &&
+                entry.speakerKey.EndsWith(".sfx", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return string.Equals(entry.speaker, "sfx", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(resolvedSpeaker, "sfx", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string ApplyPlaceholders(string text)
+        {
+            if (string.IsNullOrEmpty(text) || !text.Contains(PlayerNamePlaceholder))
+            {
+                return text;
+            }
+
+            return text.Replace(PlayerNamePlaceholder, DefaultPlayerDisplayName);
         }
     }
 }

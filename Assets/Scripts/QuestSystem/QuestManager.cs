@@ -60,9 +60,9 @@ namespace QuestSystem
             .GetField("detectionRadius", BindingFlags.Instance | BindingFlags.NonPublic);
 
         // 15分钟教学版重构：将代码控制的剧情路径指向新的 beat 文件（含内嵌选择题）。
-        private const string Chapter4FieldStoryPath = "Story/beat3";            // 钻塔 + 化石测验
+        private const string Chapter4FieldStoryPath = "Story/quest4.2";         // 野外到达 + 采样前提示
+        private const string Chapter4SampleAnalysisStoryPath = "Story/beat3";   // 采样后：钻塔 + 化石测验
         private const string Chapter4SampleCompletionStoryPath = "Story/beat4"; // 对比 + 地层倾斜 + 收尾
-        private const string Chapter4ReturnStoryPath = "Story/quest4.4";
         private const string Chapter4SampleGuidanceTargetId = "chapter4.sample.site";
         private static readonly Vector3 Chapter4SampleTargetPosition = new Vector3(-10f, 14f, -28f);
         private const string FieldPhaseSampleStoryPath = "Story/beat2";         // 野外采集 + 岩石判定测验
@@ -628,7 +628,7 @@ namespace QuestSystem
                     !_chapter4FieldIntroPending)
                 {
                     _chapter4FieldIntroPending = true;
-                    // Play quest4.2 story, then unlock 4.3 sampling
+                    // Play quest4.2 field briefing, then unlock the actual sampling objective.
                     System.Action afterFieldIntro = () =>
                     {
                         if (!IsObjectiveCompleted("q.chapter4.field.enter_field"))
@@ -687,23 +687,8 @@ namespace QuestSystem
                     );
                 }
 
-                // Quest 4.4 Logic: Return to Lab -> Play Story -> Complete Quest
-                if (GetQuestStatus("q.chapter4.return") == QuestStatus.InProgress &&
-                    !IsObjectiveCompleted("q.chapter4.return.enter_lab"))
-                {
-                    var director = StorySystem.StoryDirector.Instance;
-                    if (director != null)
-                    {
-                        director.PlaySequence(Chapter4ReturnStoryPath, () =>
-                        {
-                            CompleteObjective("q.chapter4.return.enter_lab");
-                        });
-                    }
-                    else
-                    {
-                        CompleteObjective("q.chapter4.return.enter_lab");
-                    }
-                }
+                // q.chapter4.return is handled by StoryDirector on lab entry; keeping it there
+                // avoids double-playing the same return cutscene if that legacy route is re-enabled.
             }
         }
 
@@ -738,7 +723,10 @@ namespace QuestSystem
 
                 if (director != null)
                 {
-                    director.PlaySequence(Chapter4SampleCompletionStoryPath, finalize);
+                    director.PlaySequence(Chapter4SampleAnalysisStoryPath, () =>
+                    {
+                        director.PlaySequence(Chapter4SampleCompletionStoryPath, finalize);
+                    });
                 }
                 else
                 {
@@ -907,7 +895,6 @@ namespace QuestSystem
             }
 
             _fieldPhaseSampleCutscenePending = true;
-            PersistentEarthquakeController.Instance?.StartEarthquake();
 
             System.Action finalize = () =>
             {

@@ -38,60 +38,6 @@
             "text": "了解。サンプルを採って戻ります。",
             "speakerKey": "story.speaker.protagonist",
             "textKey": "story.quest4_2.line06"
-        },
-        {
-            "speaker": "narration",
-            "text": "主人公は機材ケースを開き、装置を地面に固定した。薄暗い雲の間から、一瞬だけ光が差し込む。地表の割れ目が白く浮かび上がった。",
-            "speakerKey": "story.speaker.narration",
-            "textKey": "story.quest4_2.line07"
-        },
-        {
-            "speaker": "みなと",
-            "text": "……ねえ、あの線。前より長くなってない？",
-            "speakerKey": "story.speaker.minato",
-            "textKey": "story.quest4_2.line08"
-        },
-        {
-            "speaker": "主人公",
-            "text": "気のせいじゃないかも。地面の色も違う。なんだろう、湿ってる？",
-            "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.quest4_2.line09"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "地中の水分が動いてるのかもしれない。とにかく、安全第一で。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.quest4_2.line10"
-        },
-        {
-            "speaker": "narration",
-            "text": "主人公は慎重に地表の土を取り、分析用の容器に収めた。そのとき、どこかで低い音が響いた。まるで地下の誰かが息を吐いたように。",
-            "speakerKey": "story.speaker.narration",
-            "textKey": "story.quest4_2.line11"
-        },
-        {
-            "speaker": "主人公",
-            "text": "……今、聞こえました？",
-            "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.quest4_2.line12"
-        },
-        {
-            "speaker": "みなと",
-            "text": "うん。マイクにも入ってる。風じゃないね、これ。",
-            "speakerKey": "story.speaker.minato",
-            "textKey": "story.quest4_2.line13"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "気をつけて。サンプルを確保したらすぐ戻ってきなさい。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.quest4_2.line14"
-        },
-        {
-            "speaker": "narration",
-            "text": "{name}は軽くうなずき、装置の収納を終えて、フェーズシフターを使って、GーLabに帰った。",
-            "speakerKey": "story.speaker.narration",
-            "textKey": "story.quest4_2.line15"
         }
     ]
 }

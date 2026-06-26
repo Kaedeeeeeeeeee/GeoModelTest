@@ -24,7 +24,8 @@ namespace StorySystem.EditorTests
         // 教学流程实际加载的剧情资源（含内嵌选择题）。
         private static readonly string[] BeatFiles =
         {
-            "Story/quest1.1", "Story/quest1.2", "Story/beat2", "Story/beat3", "Story/beat4"
+            "Story/quest1.1", "Story/quest1.2", "Story/quest4.2",
+            "Story/beat2", "Story/beat3", "Story/beat4"
         };
 
         private static readonly string[] Langs = { "ja-JP", "zh-CN", "en-US" };
@@ -54,6 +55,7 @@ namespace StorySystem.EditorTests
 
             TestQuizScoreManager();
             TestBeatParsing();
+            TestStoryLineSanitization();
             TestLocalizationCoverage();
             TestFurigana();
 
@@ -141,7 +143,56 @@ namespace StorySystem.EditorTests
             }
         }
 
-        // 3) 本地化覆盖：beat 引用的每个键 + 代码用到的通用键，都必须在三种语言里存在。
+        // 3) 字幕清理：SFX 指令行不直接显示，占位符不会漏到玩家可见文本。
+        private static void TestStoryLineSanitization()
+        {
+            var seq = new StorySequence
+            {
+                dialogues = new List<StoryDialogueLine>
+                {
+                    new StoryDialogueLine
+                    {
+                        speaker = "sfx",
+                        text = "rumble_start"
+                    },
+                    new StoryDialogueLine
+                    {
+                        speaker = "Dr.Kaede",
+                        text = "{name}、すぐ退避して！",
+                        choices = new List<StoryChoice>
+                        {
+                            new StoryChoice
+                            {
+                                text = "{name} understands",
+                                isCorrect = true,
+                                feedback = "{name} moved safely."
+                            },
+                            new StoryChoice
+                            {
+                                text = "Wait",
+                                isCorrect = false,
+                                feedback = "{name} hesitated."
+                            }
+                        }
+                    }
+                }
+            };
+
+            var lines = seq.ToSubtitleLines();
+            Check(lines.Count == 1, "sfx dialogue line is skipped");
+            if (lines.Count == 0) return;
+
+            Check(!lines[0].Text.Contains("{name}"), "line placeholder is replaced");
+            Check(lines[0].Text.Contains("Lily"), "line placeholder uses player display name");
+            Check(lines[0].Choices != null && lines[0].Choices.Count == 2, "choices preserved after sanitization");
+            if (lines[0].Choices != null && lines[0].Choices.Count > 0)
+            {
+                Check(!lines[0].Choices[0].Text.Contains("{name}"), "choice placeholder is replaced");
+                Check(!lines[0].Choices[0].Feedback.Contains("{name}"), "feedback placeholder is replaced");
+            }
+        }
+
+        // 4) 本地化覆盖：beat 引用的每个键 + 代码用到的通用键，都必须在三种语言里存在。
         private static void TestLocalizationCoverage()
         {
             var keysByLang = new Dictionary<string, HashSet<string>>();
@@ -193,7 +244,7 @@ namespace StorySystem.EditorTests
             }
         }
 
-        // 4) 注音转换：地震（じしん）→ ruby；旁注/嵌套括号正确处理；无括号原样返回。
+        // 5) 注音转换：地震（じしん）→ ruby；旁注/嵌套括号正确处理；无括号原样返回。
         private static void TestFurigana()
         {
             Check(FuriganaProcessor.IsKanji('地') && !FuriganaProcessor.IsKanji('A'), "IsKanji basic");
