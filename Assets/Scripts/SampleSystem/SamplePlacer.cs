@@ -366,8 +366,11 @@ public class SamplePlacer : MonoBehaviour
     /// </summary>
     void HandlePlacementInput()
     {
+        var mouse = Mouse.current;
+        var keyboard = Keyboard.current;
+
         // 左键确认放置
-        if (Mouse.current.leftButton.wasPressedThisFrame && previewObject.activeInHierarchy)
+        if (mouse != null && mouse.leftButton.wasPressedThisFrame && previewObject.activeInHierarchy)
         {
             if (canPlaceAtCurrentPosition)
             {
@@ -380,8 +383,9 @@ public class SamplePlacer : MonoBehaviour
         }
         
         // 右键或ESC取消
-        if (Mouse.current.rightButton.wasPressedThisFrame || 
-            Keyboard.current.escapeKey.wasPressedThisFrame)
+        bool cancelPressed = (mouse != null && mouse.rightButton.wasPressedThisFrame) ||
+                             (keyboard != null && keyboard.escapeKey.wasPressedThisFrame);
+        if (cancelPressed)
         {
             CancelPlacement();
         }

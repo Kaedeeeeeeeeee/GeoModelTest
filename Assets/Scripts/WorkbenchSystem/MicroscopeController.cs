@@ -116,7 +116,8 @@ namespace WorkbenchSystem
             HandlePreviewInput();
 
             // 退出快捷键
-            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            var keyboard = Keyboard.current;
+            if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
             {
                 Close();
             }

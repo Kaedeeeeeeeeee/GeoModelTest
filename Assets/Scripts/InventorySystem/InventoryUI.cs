@@ -75,8 +75,10 @@ public class InventoryUI : MonoBehaviour
     {
         HandleInput();
 
+        var keyboard = Keyboard.current;
+
         // 临时测试：按X键强制关闭背包（用于调试）
-        if (isInventoryOpen && Keyboard.current != null && Keyboard.current.xKey.wasPressedThisFrame)
+        if (isInventoryOpen && keyboard != null && keyboard.xKey.wasPressedThisFrame)
         {
             Debug.Log("[InventoryUI] X键测试关闭背包");
             CloseInventory();
@@ -694,19 +696,21 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     void HandleInput()
     {
+        var keyboard = Keyboard.current;
+
         // 检查输入系统是否正常
-        if (Keyboard.current == null)
+        if (keyboard == null)
         {
             return; // 输入系统未初始化
         }
         
-        if (Keyboard.current.iKey.wasPressedThisFrame)
+        if (keyboard.iKey.wasPressedThisFrame)
         {
             Debug.Log("[InventoryUI] 检测到I键按下");
             ToggleInventory();
         }
         
-        if (isInventoryOpen && Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (isInventoryOpen && keyboard.escapeKey.wasPressedThisFrame)
         {
             Debug.Log("[InventoryUI] 检测到ESC键按下，关闭背包");
             CloseInventory();

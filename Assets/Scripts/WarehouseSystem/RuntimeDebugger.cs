@@ -12,10 +12,11 @@ public class RuntimeDebugger : MonoBehaviour
     
     void Update()
     {
-        if (Keyboard.current != null)
+        var keyboard = Keyboard.current;
+        if (keyboard != null)
         {
             // 数字0键: 完整系统检查
-            if (Keyboard.current.digit0Key.wasPressedThisFrame)
+            if (keyboard.digit0Key.wasPressedThisFrame)
             {
                 Debug.Log("=== 运行时系统检查 (数字0) ===");
                 CheckCompleteSystem();

@@ -34,6 +34,7 @@ public class InventoryUISystem : MonoBehaviour
     private bool isWheelOpen = false;
     private bool wheelOpenedByMobileInput = false; // 标记轮盘是否由移动端输入打开
     private int selectedSlot = -1;
+    private int mobileWheelCandidateSlot = -1;
     private Camera playerCamera;
     private FirstPersonController fpController;
     private Canvas canvas;
@@ -42,7 +43,7 @@ public class InventoryUISystem : MonoBehaviour
     
     [Header("移动端适配")]
     public bool enableMobileAdaptation = true;
-    public bool showMobileToolbar = true; // 在移动端显示工具栏而非轮盘
+    public bool showMobileToolbar = false; // legacy: mobile now uses the same radial wheel as desktop Tab
     public float mobileToolbarHeight = 120f;
     public int maxVisibleTools = 5; // 移动端一次显示的最大工具数
     
@@ -51,7 +52,11 @@ public class InventoryUISystem : MonoBehaviour
     private GameObject mobileToolbar;
     private List<Button> mobileToolButtons = new List<Button>();
     private ScrollRect mobileScrollRect;
+    private RectTransform mobileToolbarContent;
     private bool isMobileMode = false;
+    private RectTransform mobileToolbarRect;
+    private Rect lastMobileToolbarSafeArea;
+    private Vector2 lastMobileToolbarScreenSize;
 
 
     /// <summary>
@@ -66,6 +71,8 @@ public class InventoryUISystem : MonoBehaviour
             mobileInputManager.OnToolWheelInput += HandleToolWheelInput;
             mobileInputManager.OnInventoryInput += HandleInventoryInput;
             mobileInputManager.OnWarehouseInput += HandleWarehouseInput;
+            mobileInputManager.OnEncyclopediaInput += HandleEncyclopediaInput;
+            mobileInputManager.OnInteractInput += HandleMobileInteractInput;
 
             Debug.Log("[InventoryUISystem] 移动端输入事件监听已设置");
         }
@@ -80,16 +87,57 @@ public class InventoryUISystem : MonoBehaviour
     /// </summary>
     void HandleToolWheelInput()
     {
-        // Debug.Log("[InventoryUISystem] 收到工具轮盘输入事件");
+        RefreshMobileModeState();
 
+        CloseLegacyMobileToolbar();
+        ToggleWheel(true);
+    }
+
+    void HandleMobileInteractInput(bool isPressed)
+    {
+        RefreshMobileModeState();
+
+        if (!isPressed || !isMobileMode || IsToolMenuOpen())
+        {
+            return;
+        }
+
+        ToolManager toolManager = FindFirstObjectByType<ToolManager>(FindObjectsInactive.Include);
+        CollectionTool currentTool = toolManager != null ? toolManager.GetCurrentTool() : null;
+        if (currentTool != null && currentTool.RequestPrimaryUse())
+        {
+            Debug.Log($"[InventoryUISystem] 移动端使用工具: {currentTool.toolName} ({currentTool.toolID})");
+        }
+    }
+
+    bool IsToolMenuOpen()
+    {
+        return isWheelOpen || (mobileToolbar != null && mobileToolbar.activeSelf);
+    }
+
+    bool ShouldUseMobileToolbar()
+    {
+        return false;
+    }
+
+    void ToggleWheel(bool openedByMobileInput)
+    {
         if (isWheelOpen)
         {
-            CloseWheel();
+            CloseWheel(false);
         }
         else
         {
-            wheelOpenedByMobileInput = true; // 标记为移动端输入打开
+            wheelOpenedByMobileInput = openedByMobileInput;
             OpenWheel();
+        }
+    }
+
+    void CloseLegacyMobileToolbar()
+    {
+        if (mobileToolbar != null && mobileToolbar.activeSelf)
+        {
+            mobileToolbar.SetActive(false);
         }
     }
 
@@ -224,9 +272,10 @@ public class InventoryUISystem : MonoBehaviour
                 Cursor.visible = true;
 
                 // 禁用第一人称视角控制
-                if (fpController != null)
+                FirstPersonController controller = GetFirstPersonController();
+                if (controller != null)
                 {
-                    fpController.enableMouseLook = false;
+                    controller.SetMouseLookEnabled(false);
                 }
 
                 Debug.Log("[InventoryUISystem] 图鉴打开 - 鼠标已显示，视角控制已禁用");
@@ -238,9 +287,10 @@ public class InventoryUISystem : MonoBehaviour
                 Cursor.visible = false;
 
                 // 重新启用第一人称视角控制
-                if (fpController != null)
+                FirstPersonController controller = GetFirstPersonController();
+                if (controller != null)
                 {
-                    fpController.enableMouseLook = true;
+                    controller.SetMouseLookEnabled(true);
                 }
 
                 Debug.Log("[InventoryUISystem] 图鉴关闭 - 鼠标已隐藏，视角控制已启用");
@@ -266,22 +316,10 @@ public class InventoryUISystem : MonoBehaviour
         bgRect.anchoredPosition = Vector2.zero;
         bgRect.localPosition = Vector3.zero;
         
-        // 创建圆形背景图像 - 使用自定义图片
+        // 创建圆形背景图像
         UnityEngine.UI.Image bgImage = wheelBG.AddComponent<UnityEngine.UI.Image>();
-        
-        // 尝试加载自定义背景图片
-        Sprite customBgSprite = LoadCustomBackgroundSprite();
-        if (customBgSprite != null)
-        {
-            bgImage.sprite = customBgSprite;
-            bgImage.color = Color.white; // 保持原图颜色
-        }
-        else
-        {
-            // 如果加载失败，使用默认颜色
-            bgImage.color = new Color(0.1f, 0.1f, 0.1f, 0.95f);
-        }
-        
+        bgImage.sprite = CreateCircleSprite(256);
+        bgImage.color = wheelBackgroundColor;
         bgImage.type = UnityEngine.UI.Image.Type.Simple;
         
         // 初始化数组
@@ -318,6 +356,8 @@ public class InventoryUISystem : MonoBehaviour
             
             UnityEngine.UI.Image iconImage = iconObj.AddComponent<UnityEngine.UI.Image>();
             iconImage.color = Color.white;
+            iconImage.preserveAspect = true;
+            iconImage.raycastTarget = false;
             
             // 创建文本
             GameObject textObj = new GameObject("Text");
@@ -359,6 +399,33 @@ public class InventoryUISystem : MonoBehaviour
         
         // 立即设置为隐藏状态，避免意外显示
         wheelUI.SetActive(false);
+    }
+
+    Sprite CreateCircleSprite(int size)
+    {
+        Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        texture.name = "ToolWheelCircle";
+        texture.wrapMode = TextureWrapMode.Clamp;
+        texture.filterMode = FilterMode.Bilinear;
+
+        Color[] pixels = new Color[size * size];
+        Vector2 center = new Vector2((size - 1) * 0.5f, (size - 1) * 0.5f);
+        float radius = size * 0.5f - 1f;
+        float feather = Mathf.Max(2f, size * 0.025f);
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                float distance = Vector2.Distance(new Vector2(x, y), center);
+                float alpha = Mathf.Clamp01((radius - distance) / feather);
+                pixels[y * size + x] = new Color(1f, 1f, 1f, alpha);
+            }
+        }
+
+        texture.SetPixels(pixels);
+        texture.Apply();
+        return Sprite.Create(texture, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), 100f);
     }
     
     /// <summary>
@@ -405,7 +472,7 @@ public class InventoryUISystem : MonoBehaviour
         InitializeMobileInputEvents();
 
         playerCamera = Camera.main;
-        fpController = FindFirstObjectByType<FirstPersonController>();
+        fpController = GetFirstPersonController();
         canvas = GetComponent<Canvas>();
 
         // 强制创建标准的UI结构
@@ -433,6 +500,16 @@ public class InventoryUISystem : MonoBehaviour
 
         // 额外的安全检查：确保UI在一秒后仍然是隐藏状态
         StartCoroutine(SafetyCheck());
+    }
+
+    FirstPersonController GetFirstPersonController()
+    {
+        if (fpController == null)
+        {
+            fpController = FindFirstObjectByType<FirstPersonController>(FindObjectsInactive.Include);
+        }
+
+        return fpController;
     }
     
     /// <summary>
@@ -551,6 +628,11 @@ public class InventoryUISystem : MonoBehaviour
         {
             UpdateSelection();
         }
+
+        if (mobileToolbar != null && mobileToolbar.activeSelf)
+        {
+            ApplyMobileToolbarLayout();
+        }
         
         // 持续的安全检查：确保UI状态与isWheelOpen一致
         if (wheelUI != null && wheelUI.activeSelf != isWheelOpen)
@@ -559,14 +641,16 @@ public class InventoryUISystem : MonoBehaviour
             wheelUI.SetActive(isWheelOpen);
         }
         
+        var keyboard = UnityEngine.InputSystem.Keyboard.current;
+
         // F2键：调试圆形布局
-        if (UnityEngine.InputSystem.Keyboard.current.f2Key.wasPressedThisFrame)
+        if (keyboard != null && keyboard.f2Key.wasPressedThisFrame)
         {
             DebugCircularLayout();
         }
         
         // R键：刷新工具
-        if (UnityEngine.InputSystem.Keyboard.current.rKey.wasPressedThisFrame)
+        if (keyboard != null && keyboard.rKey.wasPressedThisFrame)
         {
             InitializeTools();
         }
@@ -790,6 +874,12 @@ public class InventoryUISystem : MonoBehaviour
     /// </summary>
     bool HandleMobileInput()
     {
+        if (isWheelOpen)
+        {
+            HandleMobileWheelTouchInput();
+            return true;
+        }
+
         // 在移动端模式下，输入由移动端按钮事件处理
         // 但在桌面测试模式下，仍需允许桌面输入处理Tab键
 
@@ -805,38 +895,58 @@ public class InventoryUISystem : MonoBehaviour
         // 真正的移动设备上，阻止桌面输入
         return true;
     }
+
+    void HandleMobileWheelTouchInput()
+    {
+        var touchscreen = Touchscreen.current;
+        if (touchscreen == null) return;
+
+        var touch = touchscreen.primaryTouch;
+        if (touch.press.isPressed)
+        {
+            int slotIndex = GetWheelSlotAtScreenPoint(touch.position.ReadValue());
+            mobileWheelCandidateSlot = slotIndex >= 0 && slotIndex < availableTools.Count ? slotIndex : -1;
+            SetSelectedSlot(mobileWheelCandidateSlot);
+        }
+
+        if (touch.press.wasReleasedThisFrame)
+        {
+            if (mobileWheelCandidateSlot >= 0 && mobileWheelCandidateSlot < availableTools.Count)
+            {
+                SelectToolAtSlot(mobileWheelCandidateSlot, "触屏");
+            }
+            else
+            {
+                SetSelectedSlot(-1);
+            }
+
+            mobileWheelCandidateSlot = -1;
+        }
+    }
     
     /// <summary>
     /// 处理桌面端输入
     /// </summary>
     void HandleDesktopInput()
     {
-        if (Keyboard.current == null) return;
+        var keyboard = Keyboard.current;
+        if (keyboard == null) return;
 
-        if (Keyboard.current.tabKey.isPressed && !isWheelOpen)
+        if (keyboard.tabKey.wasPressedThisFrame)
         {
-            wheelOpenedByMobileInput = false; // 标记为桌面输入打开
-            OpenWheel();
-        }
-        else if (!Keyboard.current.tabKey.isPressed && isWheelOpen && !wheelOpenedByMobileInput)
-        {
-            // 只有当轮盘不是通过移动端输入打开时，才允许Tab键关闭
-            CloseWheel();
-        }
-        else if (Keyboard.current.tabKey.wasPressedThisFrame && isWheelOpen && wheelOpenedByMobileInput)
-        {
-            // 如果轮盘是通过移动端打开的，Tab键按下时可以关闭它
-            CloseWheel();
+            RefreshMobileModeState();
+            CloseLegacyMobileToolbar();
+            ToggleWheel(false);
         }
 
         // 添加I键打开背包功能
-        if (Keyboard.current.iKey.wasPressedThisFrame)
+        if (keyboard.iKey.wasPressedThisFrame)
         {
             HandleInventoryInput();
         }
 
         // 添加O键打开图鉴功能
-        if (Keyboard.current.oKey.wasPressedThisFrame)
+        if (keyboard.oKey.wasPressedThisFrame)
         {
             HandleEncyclopediaInput();
         }
@@ -848,7 +958,8 @@ public class InventoryUISystem : MonoBehaviour
         }
 
         // 添加鼠标点击检测（桌面端工具选择）
-        if (isWheelOpen && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        var mouse = Mouse.current;
+        if (isWheelOpen && mouse != null && mouse.leftButton.wasPressedThisFrame)
         {
             HandleClickSelection();
         }
@@ -875,6 +986,9 @@ public class InventoryUISystem : MonoBehaviour
         }
 
         isWheelOpen = true;
+        mobileWheelCandidateSlot = -1;
+        selectedSlot = -1;
+        ResetSlotColors();
         wheelUI.SetActive(true);
         SetupWheelAppearance();
         UpdateWheelSize();
@@ -890,11 +1004,13 @@ public class InventoryUISystem : MonoBehaviour
         }
 
         Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
 
         // 只禁用鼠标视角控制，保留键盘移动
-        if (fpController != null)
+        FirstPersonController controller = GetFirstPersonController();
+        if (controller != null)
         {
-            fpController.enableMouseLook = false;
+            controller.SetMouseLookEnabled(false);
         }
 
         // 不暂停游戏，保持正常时间流逝
@@ -903,7 +1019,7 @@ public class InventoryUISystem : MonoBehaviour
         Debug.Log($"📂 TabUI已打开 - wheelUI.activeInHierarchy: {wheelUI.activeInHierarchy}, position: {wheelUI.transform.position}");
     }
     
-    void CloseWheel()
+    void CloseWheel(bool equipSelectedTool)
     {
         if (wheelUI == null) 
         {
@@ -911,13 +1027,9 @@ public class InventoryUISystem : MonoBehaviour
             return;
         }
         
-        if (selectedSlot >= 0 && selectedSlot < availableTools.Count)
+        if (equipSelectedTool && selectedSlot >= 0 && selectedSlot < availableTools.Count)
         {
             SelectToolAndStartPreview(selectedSlot);
-        }
-        else if (selectedSlot >= 0)
-        {
-            
         }
         
         isWheelOpen = false;
@@ -931,14 +1043,16 @@ public class InventoryUISystem : MonoBehaviour
         Cursor.visible = false;
 
         // 重新启用鼠标视角控制
-        if (fpController != null)
+        FirstPersonController controller = GetFirstPersonController();
+        if (controller != null)
         {
-            fpController.enableMouseLook = true; // 恢复鼠标视角
+            controller.SetMouseLookEnabled(true); // 恢复鼠标视角
         }
 
         Debug.Log("[InventoryUISystem] TabUI关闭 - 鼠标已重新锁定并隐藏");
         
         selectedSlot = -1;
+        mobileWheelCandidateSlot = -1;
         wheelOpenedByMobileInput = false; // 重置标记
         ResetSlotColors();
 
@@ -958,9 +1072,10 @@ public class InventoryUISystem : MonoBehaviour
         }
 
         // 检查鼠标输入（桌面端）
-        if (Mouse.current != null)
+        var mouse = Mouse.current;
+        if (mouse != null)
         {
-            Vector2 mousePosition = Mouse.current.position.ReadValue();
+            Vector2 mousePosition = mouse.position.ReadValue();
             // 鼠标悬停时也返回位置（用于预览选择）
             return mousePosition;
         }
@@ -973,16 +1088,9 @@ public class InventoryUISystem : MonoBehaviour
     /// </summary>
     void HandleTouchSelection()
     {
-        if (selectedSlot >= 0 && selectedSlot < availableTools.Count)
-        {
-            Debug.Log($"[InventoryUISystem] 触屏选择工具: {availableTools[selectedSlot].toolName}");
-            SelectToolAndStartPreview(selectedSlot);
-            CloseWheel();
-        }
-        else
-        {
-            Debug.Log($"[InventoryUISystem] 触屏点击，但未选中有效工具 (selectedSlot: {selectedSlot})");
-        }
+        if (Touchscreen.current == null) return;
+
+        TrySelectToolAtScreenPoint(Touchscreen.current.primaryTouch.position.ReadValue(), "触屏");
     }
 
     /// <summary>
@@ -990,16 +1098,66 @@ public class InventoryUISystem : MonoBehaviour
     /// </summary>
     void HandleClickSelection()
     {
-        if (selectedSlot >= 0 && selectedSlot < availableTools.Count)
+        var mouse = Mouse.current;
+        if (mouse == null) return;
+
+        TrySelectToolAtScreenPoint(mouse.position.ReadValue(), "鼠标");
+    }
+
+    bool TrySelectToolAtScreenPoint(Vector2 screenPoint, string source)
+    {
+        int slotIndex = GetWheelSlotAtScreenPoint(screenPoint);
+        return SelectToolAtSlot(slotIndex, source);
+    }
+
+    bool SelectToolAtSlot(int slotIndex, string source)
+    {
+        if (slotIndex >= 0 && slotIndex < availableTools.Count)
         {
-            Debug.Log($"[InventoryUISystem] 鼠标点击选择工具: {availableTools[selectedSlot].toolName}");
-            SelectToolAndStartPreview(selectedSlot);
-            CloseWheel();
+            Debug.Log($"[InventoryUISystem] {source}选择工具: {availableTools[slotIndex].toolName}");
+            SelectToolAndStartPreview(slotIndex);
+            CloseWheel(false);
+            return true;
         }
-        else
+
+        Debug.Log($"[InventoryUISystem] {source}点击，但未选中有效工具 (slotIndex: {slotIndex}, tools: {availableTools.Count})");
+        return false;
+    }
+
+    int GetWheelSlotAtScreenPoint(Vector2 screenPoint)
+    {
+        Camera uiCamera = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
+
+        for (int i = 0; i < wheelSlots.Length && i < availableTools.Count; i++)
         {
-            Debug.Log($"[InventoryUISystem] 鼠标点击，但未选中有效工具 (selectedSlot: {selectedSlot})");
+            RectTransform slot = wheelSlots[i];
+            if (slot == null || !slot.gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+
+            if (RectTransformUtility.RectangleContainsScreenPoint(slot, screenPoint, uiCamera))
+            {
+                return i;
+            }
         }
+
+        return GetWheelSlotByAngle(screenPoint);
+    }
+
+    int GetWheelSlotByAngle(Vector2 screenPoint)
+    {
+        Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
+        Vector2 direction = screenPoint - screenCenter;
+        if (direction.magnitude <= selectionRadius)
+        {
+            return -1;
+        }
+
+        float angle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
+        angle = (angle + 360f) % 360f;
+        int slotIndex = Mathf.FloorToInt(angle / 45f);
+        return slotIndex >= 0 && slotIndex < availableTools.Count ? slotIndex : -1;
     }
     
     void UpdateSelection()
@@ -1008,58 +1166,79 @@ public class InventoryUISystem : MonoBehaviour
         Vector2 inputPosition = GetInputPosition();
         if (inputPosition == Vector2.zero) return; // 没有有效输入
 
-        Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
-        Vector2 direction = inputPosition - screenCenter;
-        
-        if (direction.magnitude > selectionRadius)
+        int newSelectedSlot = GetWheelSlotAtScreenPoint(inputPosition);
+        SetSelectedSlot(newSelectedSlot >= 0 && newSelectedSlot < availableTools.Count ? newSelectedSlot : -1);
+    }
+
+    void SetSelectedSlot(int slotIndex)
+    {
+        if (slotIndex == selectedSlot)
         {
-            float angle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
-            angle = (angle + 360f) % 360f;
-            
-            int newSelectedSlot = Mathf.FloorToInt(angle / 45f);
-            newSelectedSlot = Mathf.Clamp(newSelectedSlot, 0, 7);
-            
-            if (newSelectedSlot != selectedSlot)
+            return;
+        }
+
+        ResetSlotColors();
+        selectedSlot = slotIndex;
+
+        if (selectedSlot < 0 || selectedSlot >= wheelSlots.Length)
+        {
+            return;
+        }
+
+        RectTransform slotTransform = wheelSlots[selectedSlot];
+        if (slotTransform != null)
+        {
+            slotTransform.localScale = Vector3.one * 1.12f;
+
+            Image slotBackground = slotTransform.GetComponent<Image>();
+            if (slotBackground != null)
             {
-                ResetSlotColors();
-                selectedSlot = newSelectedSlot;
-                
-                
-                
-                if (selectedSlot < availableTools.Count && selectedSlot < slotImages.Length && slotImages[selectedSlot] != null)
-                {
-                    slotImages[selectedSlot].color = selectedColor;
-                    Transform slotTransform = slotImages[selectedSlot].transform;
-                    slotTransform.localScale = Vector3.one * 1.2f;
-                    
-                }
-                else if (selectedSlot < slotImages.Length && slotImages[selectedSlot] != null)
-                {
-                    slotImages[selectedSlot].color = selectedColor;
-                    Transform slotTransform = slotImages[selectedSlot].transform;
-                    slotTransform.localScale = Vector3.one * 1.2f;
-                    
-                }
+                slotBackground.color = selectedSlotBackgroundColor;
             }
         }
-        else
+
+        if (selectedSlot < slotImages.Length && slotImages[selectedSlot] != null)
         {
-            if (selectedSlot != -1)
-            {
-                ResetSlotColors();
-                selectedSlot = -1;
-            }
+            slotImages[selectedSlot].color = selectedColor;
+            slotImages[selectedSlot].transform.localScale = Vector3.one * 1.16f;
+        }
+
+        if (selectedSlot < slotTexts.Length && slotTexts[selectedSlot] != null)
+        {
+            slotTexts[selectedSlot].color = selectedColor;
         }
     }
     
     void ResetSlotColors()
     {
+        for (int i = 0; i < wheelSlots.Length; i++)
+        {
+            if (wheelSlots[i] != null)
+            {
+                wheelSlots[i].localScale = Vector3.one;
+
+                Image slotBackground = wheelSlots[i].GetComponent<Image>();
+                if (slotBackground != null)
+                {
+                    slotBackground.color = slotBackgroundColor;
+                }
+            }
+        }
+
         for (int i = 0; i < slotImages.Length; i++)
         {
             if (slotImages[i] != null)
             {
                 slotImages[i].color = normalColor;
                 slotImages[i].transform.localScale = Vector3.one;
+            }
+        }
+
+        for (int i = 0; i < slotTexts.Length; i++)
+        {
+            if (slotTexts[i] != null)
+            {
+                slotTexts[i].color = Color.white;
             }
         }
     }
@@ -1161,6 +1340,7 @@ public class InventoryUISystem : MonoBehaviour
     /// </summary>
     void EnsureUnlockedToolsApplied()
     {
+        GetOrCreateToolManager();
         var playerData = FindFirstObjectByType<PlayerPersistentData>(FindObjectsInactive.Include);
         playerData?.ApplyUnlockedToolsToScene();
     }
@@ -1170,7 +1350,7 @@ public class InventoryUISystem : MonoBehaviour
         // 严格使用 ToolManager 的可用工具列表，避免未解锁工具出现在轮盘
         availableTools.Clear();
 
-        var toolManager = FindFirstObjectByType<ToolManager>();
+        var toolManager = FindFirstObjectByType<ToolManager>(FindObjectsInactive.Include);
         if (toolManager != null && toolManager.availableTools != null)
         {
             foreach (var tool in toolManager.availableTools)
@@ -1273,10 +1453,12 @@ public class InventoryUISystem : MonoBehaviour
                 
                 if (slotImages[i] != null)
                 {
-                    slotImages[i].sprite = availableTools[i].toolIcon;
+                    Sprite toolIcon = ToolIconResolver.GetIcon(availableTools[i]);
+                    slotImages[i].sprite = toolIcon;
+                    slotImages[i].preserveAspect = true;
                     slotImages[i].gameObject.SetActive(true);
                     
-                    if (availableTools[i].toolIcon == null)
+                    if (toolIcon == null)
                     {
                         
                         slotImages[i].color = new Color(0.6f, 0.6f, 0.6f, 1f);
@@ -1410,23 +1592,22 @@ public class InventoryUISystem : MonoBehaviour
         
         // 获取移动端输入管理器
         mobileInputManager = MobileInputManager.Instance;
+        showMobileToolbar = false;
         
-        // 检测是否为移动设备
-        isMobileMode = Application.isMobilePlatform || 
-                      (mobileInputManager != null && mobileInputManager.IsMobileDevice());
+        RefreshMobileModeState();
         
         if (isMobileMode && showMobileToolbar)
         {
             CreateMobileToolbar();
-            
-            // 订阅移动端输入事件
-            if (mobileInputManager != null)
-            {
-                mobileInputManager.OnToolWheelInput += ToggleMobileToolbar;
-            }
         }
         
         Debug.Log($"[InventoryUISystem] 移动端支持初始化完成 - 移动模式: {isMobileMode}");
+    }
+
+    void RefreshMobileModeState()
+    {
+        isMobileMode = Application.isMobilePlatform ||
+                       (mobileInputManager != null && mobileInputManager.IsMobileDevice());
     }
     
     /// <summary>
@@ -1438,81 +1619,118 @@ public class InventoryUISystem : MonoBehaviour
         
         // 创建工具栏容器
         GameObject toolbar = new GameObject("MobileToolbar");
-        toolbar.transform.SetParent(canvas.transform);
+        toolbar.transform.SetParent(canvas.transform, false);
         
-        RectTransform toolbarRect = toolbar.AddComponent<RectTransform>();
-        toolbarRect.anchorMin = new Vector2(0, 0);
-        toolbarRect.anchorMax = new Vector2(1, 0);
-        toolbarRect.pivot = new Vector2(0.5f, 0);
-        toolbarRect.sizeDelta = new Vector2(0, mobileToolbarHeight);
-        toolbarRect.anchoredPosition = Vector2.zero;
+        mobileToolbarRect = toolbar.AddComponent<RectTransform>();
+        mobileToolbarRect.anchorMin = new Vector2(0, 0);
+        mobileToolbarRect.anchorMax = new Vector2(0, 0);
+        mobileToolbarRect.pivot = new Vector2(0.5f, 0);
         
         // 添加背景
         Image toolbarBg = toolbar.AddComponent<Image>();
-        toolbarBg.color = new Color(0.1f, 0.1f, 0.1f, 0.8f);
-        
-        // 添加安全区域适配
-        SafeAreaPanel safeAreaPanel = toolbar.AddComponent<SafeAreaPanel>();
-        safeAreaPanel.adaptHeight = false; // 只适配位置，不适配高度
-        safeAreaPanel.additionalBottomMargin = 10f;
+        toolbarBg.color = new Color(0.08f, 0.08f, 0.08f, 0.88f);
         
         // 创建滚动视图
         CreateMobileScrollView(toolbar);
         
         mobileToolbar = toolbar;
+        ApplyMobileToolbarLayout(true);
         mobileToolbar.SetActive(false); // 初始隐藏
         
         Debug.Log("[InventoryUISystem] 移动端工具栏创建完成");
     }
+
+    void ApplyMobileToolbarLayout(bool force = false)
+    {
+        if (mobileToolbarRect == null) return;
+
+        Vector2 screenSize = new Vector2(Screen.width, Screen.height);
+        Rect safeArea = Screen.safeArea;
+        if (!force && lastMobileToolbarScreenSize == screenSize && lastMobileToolbarSafeArea == safeArea)
+        {
+            return;
+        }
+
+        float safeLeft = safeArea.xMin;
+        float safeRight = Screen.width - safeArea.xMax;
+        float safeBottom = safeArea.yMin;
+
+        float sideMargin = Mathf.Clamp(screenSize.x * 0.035f, 24f, 72f);
+        float leftControlReserve = Mathf.Clamp(screenSize.x * 0.18f, 180f, 320f);
+        float rightControlReserve = Mathf.Clamp(screenSize.x * 0.12f, 140f, 260f);
+
+        float startX = safeLeft + sideMargin + leftControlReserve;
+        float endX = Screen.width - safeRight - sideMargin - rightControlReserve;
+        float availableWidth = Mathf.Max(280f, endX - startX);
+        float toolbarWidth = Mathf.Min(availableWidth, 760f);
+        float toolbarHeight = Mathf.Clamp(mobileToolbarHeight, 144f, 176f);
+
+        float centerX = startX + availableWidth * 0.5f;
+        float bottomOffset = safeBottom + Mathf.Clamp(screenSize.y * 0.24f, 220f, 340f);
+        float maxBottom = Mathf.Max(safeBottom + 24f, Screen.height - toolbarHeight - 24f);
+        bottomOffset = Mathf.Min(bottomOffset, maxBottom);
+
+        mobileToolbarRect.anchorMin = new Vector2(0, 0);
+        mobileToolbarRect.anchorMax = new Vector2(0, 0);
+        mobileToolbarRect.pivot = new Vector2(0.5f, 0);
+        mobileToolbarRect.sizeDelta = new Vector2(toolbarWidth, toolbarHeight);
+        mobileToolbarRect.anchoredPosition = new Vector2(centerX, bottomOffset);
+
+        lastMobileToolbarSafeArea = safeArea;
+        lastMobileToolbarScreenSize = screenSize;
+    }
     
     /// <summary>
-    /// 创建移动端滚动视图
+    /// 创建移动端工具按钮行
     /// </summary>
     void CreateMobileScrollView(GameObject parent)
     {
-        // 创建滚动视图
-        GameObject scrollView = new GameObject("ToolScrollView");
-        scrollView.transform.SetParent(parent.transform);
+        // 创建工具按钮可见区域。这里不使用Mask裁剪，避免WebGL/iPad上按钮被裁到只剩黑条。
+        GameObject scrollView = new GameObject("ToolButtonTray");
+        scrollView.transform.SetParent(parent.transform, false);
         
         RectTransform scrollRect = scrollView.AddComponent<RectTransform>();
         scrollRect.anchorMin = Vector2.zero;
         scrollRect.anchorMax = Vector2.one;
-        scrollRect.offsetMin = new Vector2(20, 20);
-        scrollRect.offsetMax = new Vector2(-20, -20);
+        scrollRect.offsetMin = new Vector2(14, 10);
+        scrollRect.offsetMax = new Vector2(-14, -10);
         
-        // 添加ScrollRect组件
+        // 透明图像只用于接收UI射线，实际按钮挂在Content里。
+        Image scrollImage = scrollView.AddComponent<Image>();
+        scrollImage.color = new Color(0f, 0f, 0f, 0f);
+        scrollImage.raycastTarget = true;
+
         mobileScrollRect = scrollView.AddComponent<ScrollRect>();
+        mobileScrollRect.enabled = false;
         mobileScrollRect.horizontal = true;
         mobileScrollRect.vertical = false;
-        mobileScrollRect.movementType = ScrollRect.MovementType.Elastic;
         
         // 创建内容容器
         GameObject content = new GameObject("Content");
-        content.transform.SetParent(scrollView.transform);
+        content.transform.SetParent(scrollView.transform, false);
         
         RectTransform contentRect = content.AddComponent<RectTransform>();
-        contentRect.anchorMin = new Vector2(0, 0);
-        contentRect.anchorMax = new Vector2(0, 1);
-        contentRect.pivot = new Vector2(0, 0.5f);
+        contentRect.anchorMin = Vector2.zero;
+        contentRect.anchorMax = Vector2.one;
+        contentRect.pivot = new Vector2(0.5f, 0.5f);
         contentRect.anchoredPosition = Vector2.zero;
+        contentRect.offsetMin = Vector2.zero;
+        contentRect.offsetMax = Vector2.zero;
         
         // 添加水平布局组件
         HorizontalLayoutGroup layoutGroup = content.AddComponent<HorizontalLayoutGroup>();
-        layoutGroup.spacing = 15f;
-        layoutGroup.padding = new RectOffset(15, 15, 15, 15);
+        layoutGroup.childAlignment = TextAnchor.MiddleCenter;
+        layoutGroup.spacing = 14f;
+        layoutGroup.padding = new RectOffset(12, 12, 8, 8);
         layoutGroup.childControlWidth = false;
-        layoutGroup.childControlHeight = true;
+        layoutGroup.childControlHeight = false;
         layoutGroup.childForceExpandWidth = false;
-        layoutGroup.childForceExpandHeight = true;
+        layoutGroup.childForceExpandHeight = false;
         
-        // 添加内容大小适配器
-        ContentSizeFitter sizeFitter = content.AddComponent<ContentSizeFitter>();
-        sizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-        sizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
-        
+        mobileToolbarContent = contentRect;
         mobileScrollRect.content = contentRect;
         
-        Debug.Log("[InventoryUISystem] 移动端滚动视图创建完成");
+        Debug.Log("[InventoryUISystem] 移动端工具按钮行创建完成");
     }
     
     /// <summary>
@@ -1520,7 +1738,7 @@ public class InventoryUISystem : MonoBehaviour
     /// </summary>
     void UpdateMobileToolbar()
     {
-        if (!isMobileMode || mobileScrollRect == null) return;
+        if (!isMobileMode || mobileToolbarContent == null) return;
         
         // 清空现有按钮
         foreach (Button button in mobileToolButtons)
@@ -1537,6 +1755,9 @@ public class InventoryUISystem : MonoBehaviour
                 CreateMobileToolButton(availableTools[i], i);
             }
         }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(mobileToolbarContent);
+        Canvas.ForceUpdateCanvases();
         
         Debug.Log($"[InventoryUISystem] 移动端工具栏已更新，包含{mobileToolButtons.Count}个工具");
     }
@@ -1546,24 +1767,31 @@ public class InventoryUISystem : MonoBehaviour
     /// </summary>
     void CreateMobileToolButton(CollectionTool tool, int index)
     {
-        if (mobileScrollRect?.content == null) return;
+        if (mobileToolbarContent == null) return;
         
-        float buttonSize = mobileToolbarHeight - 40f; // 留出边距
+        float buttonSize = Mathf.Clamp(mobileToolbarRect != null ? mobileToolbarRect.sizeDelta.y - 38f : mobileToolbarHeight - 38f, 96f, 128f);
         
         // 创建按钮对象
         GameObject buttonObj = new GameObject($"MobileTool_{index}");
-        buttonObj.transform.SetParent(mobileScrollRect.content);
+        buttonObj.transform.SetParent(mobileToolbarContent, false);
         
         RectTransform buttonRect = buttonObj.AddComponent<RectTransform>();
         buttonRect.sizeDelta = new Vector2(buttonSize, buttonSize);
+
+        LayoutElement layoutElement = buttonObj.AddComponent<LayoutElement>();
+        layoutElement.minWidth = buttonSize;
+        layoutElement.preferredWidth = buttonSize;
+        layoutElement.minHeight = buttonSize;
+        layoutElement.preferredHeight = buttonSize;
         
-        // 添加按钮组件
-        Button button = buttonObj.AddComponent<Button>();
         Image buttonImage = buttonObj.AddComponent<Image>();
+        Button button = buttonObj.AddComponent<Button>();
         
         // 设置按钮样式
-        buttonImage.sprite = tool.toolIcon;
+        buttonImage.sprite = ToolIconResolver.GetIcon(tool);
+        buttonImage.preserveAspect = true;
         buttonImage.color = normalColor;
+        buttonImage.raycastTarget = true;
         button.targetGraphic = buttonImage;
         
         // 添加按钮事件
@@ -1572,21 +1800,22 @@ public class InventoryUISystem : MonoBehaviour
         
         // 添加按钮文本（工具名称）
         GameObject textObj = new GameObject("ToolName");
-        textObj.transform.SetParent(buttonObj.transform);
+        textObj.transform.SetParent(buttonObj.transform, false);
         
         RectTransform textRect = textObj.AddComponent<RectTransform>();
         textRect.anchorMin = new Vector2(0, 0);
         textRect.anchorMax = new Vector2(1, 0);
-        textRect.pivot = new Vector2(0.5f, 1);
+        textRect.pivot = new Vector2(0.5f, 0);
         textRect.sizeDelta = new Vector2(0, 30);
-        textRect.anchoredPosition = new Vector2(0, 0);
+        textRect.anchoredPosition = new Vector2(0, 6);
         
         Text buttonText = textObj.AddComponent<Text>();
-        buttonText.text = tool.toolName;
+        buttonText.text = GetLocalizedToolName(tool);
         buttonText.font = UIFontResolver.GetUIFont();
         buttonText.fontSize = 12;
         buttonText.color = Color.white;
         buttonText.alignment = TextAnchor.MiddleCenter;
+        buttonText.raycastTarget = false;
         
         // 添加本地化支持
         LocalizedText localizedText = textObj.AddComponent<LocalizedText>();
@@ -1604,14 +1833,8 @@ public class InventoryUISystem : MonoBehaviour
         {
             CollectionTool selectedTool = availableTools[toolIndex];
             
-            // 使用移动端工具选择逻辑
-            SelectMobileTool(toolIndex);
-            
-            // 隐藏工具栏
-            if (mobileToolbar != null)
-            {
-                mobileToolbar.SetActive(false);
-            }
+            SelectToolAndStartPreview(toolIndex);
+            SetMobileToolbarOpen(false);
             
             Debug.Log($"[InventoryUISystem] 移动端工具选择: {selectedTool.toolName}");
         }
@@ -1624,18 +1847,35 @@ public class InventoryUISystem : MonoBehaviour
     {
         if (!isMobileMode || mobileToolbar == null) return;
         
-        bool isActive = mobileToolbar.activeSelf;
-        mobileToolbar.SetActive(!isActive);
-        
-        if (!isActive)
+        SetMobileToolbarOpen(!mobileToolbar.activeSelf);
+    }
+
+    void SetMobileToolbarOpen(bool open)
+    {
+        if (mobileToolbar == null) return;
+
+        if (open)
         {
-            // 显示前更新工具栏
+            EnsureUnlockedToolsApplied();
+            InitializeTools();
+
+            if (canvas != null)
+            {
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                canvas.sortingOrder = 2000;
+            }
+
+            ApplyMobileToolbarLayout(true);
+            mobileToolbar.SetActive(true);
+
+            // 激活后再创建按钮并强制重建布局，避免WebGL首帧只显示背景条。
             UpdateMobileToolbar();
             
             // 禁用玩家控制
-            if (fpController != null)
+            FirstPersonController controller = GetFirstPersonController();
+            if (controller != null)
             {
-                fpController.enableMouseLook = false;
+                controller.SetMouseLookEnabled(false);
             }
             
             Cursor.lockState = CursorLockMode.None;
@@ -1643,10 +1883,13 @@ public class InventoryUISystem : MonoBehaviour
         }
         else
         {
+            mobileToolbar.SetActive(false);
+
             // 简化逻辑：直接恢复鼠标锁定状态
-            if (fpController != null)
+            FirstPersonController controller = GetFirstPersonController();
+            if (controller != null)
             {
-                fpController.enableMouseLook = true;
+                controller.SetMouseLookEnabled(true);
             }
 
             Cursor.lockState = CursorLockMode.Locked;
@@ -1654,7 +1897,7 @@ public class InventoryUISystem : MonoBehaviour
             Debug.Log("[InventoryUISystem] 移动端工具栏关闭 - 鼠标已重新锁定并隐藏");
         }
         
-        Debug.Log($"[InventoryUISystem] 移动端工具栏: {(isActive ? "隐藏" : "显示")}");
+        Debug.Log($"[InventoryUISystem] 移动端工具栏: {(open ? "显示" : "隐藏")}");
     }
     
     /// <summary>
@@ -1727,9 +1970,8 @@ public class InventoryUISystem : MonoBehaviour
             mobileInputManager.OnToolWheelInput -= HandleToolWheelInput;
             mobileInputManager.OnInventoryInput -= HandleInventoryInput;
             mobileInputManager.OnWarehouseInput -= HandleWarehouseInput;
-
-            // 清理移动端输入事件订阅
-            mobileInputManager.OnToolWheelInput -= ToggleMobileToolbar;
+            mobileInputManager.OnEncyclopediaInput -= HandleEncyclopediaInput;
+            mobileInputManager.OnInteractInput -= HandleMobileInteractInput;
         }
     }
     

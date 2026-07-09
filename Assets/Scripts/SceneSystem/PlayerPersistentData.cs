@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using Core;
 
 /// <summary>
 /// 玩家持久化数据管理器 - 在场景切换时保存和恢复玩家状态
@@ -73,15 +74,25 @@ public class PlayerPersistentData : MonoBehaviour
     void Awake()
     {
         // 尝试从PlayerPrefs加载已解锁工具（可选持久化）
+        LoadUnlockedToolIdsFromPrefs();
+    }
+
+    void LoadUnlockedToolIdsFromPrefs()
+    {
+        unlockedToolIds.Clear();
         string saved = PlayerPrefs.GetString(UnlockedToolsPrefsKey, string.Empty);
         if (!string.IsNullOrEmpty(saved))
         {
             var parts = saved.Split(',');
             foreach (var p in parts)
             {
-                if (!string.IsNullOrEmpty(p)) unlockedToolIds.Add(p);
+                if (!string.IsNullOrEmpty(p))
+                {
+                    unlockedToolIds.Add(p);
+                }
             }
         }
+
         // 同步到序列化字段以便调试查看
         unlockedToolIdsSerialized = new List<string>(unlockedToolIds).ToArray();
     }
@@ -178,6 +189,7 @@ public class PlayerPersistentData : MonoBehaviour
             PlayerPrefs.Save();
             // 更新调试视图
             unlockedToolIdsSerialized = new List<string>(unlockedToolIds).ToArray();
+            GameEventBus.RaiseProgressDirty("tool_unlocked");
         }
     }
 
@@ -186,11 +198,13 @@ public class PlayerPersistentData : MonoBehaviour
     /// </summary>
     public void ApplyUnlockedToolsToScene()
     {
-        var tm = FindFirstObjectByType<ToolManager>();
+        LoadUnlockedToolIdsFromPrefs();
+
+        var tm = GetOrCreateToolManager();
         if (tm == null) return;
 
         bool changed = false;
-        foreach (var id in unlockedToolIds)
+        foreach (var id in new List<string>(unlockedToolIds))
         {
             if (!ToolUnlockService.IsToolUnlocked(tm, id))
             {
@@ -206,17 +220,39 @@ public class PlayerPersistentData : MonoBehaviour
         }
     }
 
+    ToolManager GetOrCreateToolManager()
+    {
+        var tm = FindFirstObjectByType<ToolManager>(FindObjectsInactive.Include);
+        if (tm != null) return tm;
+
+        var player = FindFirstObjectByType<FirstPersonController>(FindObjectsInactive.Include);
+        if (player == null) return null;
+
+        tm = player.GetComponent<ToolManager>();
+        if (tm == null)
+        {
+            tm = player.gameObject.AddComponent<ToolManager>();
+            tm.availableTools = new CollectionTool[0];
+            Debug.Log("[PlayerPersistentData] 兜底创建ToolManager以恢复已解锁工具");
+        }
+
+        return tm;
+    }
+
     // 延迟确保ToolManager初始化后再应用
-    void EnsureUnlockedToolsApplied()
+    public void EnsureUnlockedToolsApplied()
     {
         StartCoroutine(EnsureUnlockedToolsApplied_Co());
     }
 
     System.Collections.IEnumerator EnsureUnlockedToolsApplied_Co()
     {
-        // 等待工具系统初始化
-        yield return new WaitForSeconds(0.2f);
-        ApplyUnlockedToolsToScene();
+        // 等待工具系统初始化；跨场景时GameInitializer可能晚一两帧才清空/重建ToolManager。
+        for (int i = 0; i < 5; i++)
+        {
+            yield return new WaitForSeconds(i == 0 ? 0.05f : 0.2f);
+            ApplyUnlockedToolsToScene();
+        }
     }
 
     // ===== 背包持久化（PlayerPrefs，最多20项） =====
@@ -319,6 +355,7 @@ public class PlayerPersistentData : MonoBehaviour
         PlayerPrefs.SetString(InventoryPrefsKey, json);
         PlayerPrefs.Save();
         Debug.Log($"[PlayerPersistentData] 已保存背包: {data.items.Count} 个样本");
+        GameEventBus.RaiseProgressDirty("inventory_saved");
         isSavingInventory = false;
     }
 

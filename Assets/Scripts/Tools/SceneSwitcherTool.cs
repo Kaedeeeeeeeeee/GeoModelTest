@@ -118,7 +118,8 @@ public class SceneSwitcherTool : CollectionTool
         if (!canUse) return;
 
         // 处理鼠标左键点击（桌面端）
-        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        var mouse = Mouse.current;
+        if (mouse != null && mouse.leftButton.wasPressedThisFrame)
         {
             UseSceneSwitcher();
             return;
@@ -142,14 +143,25 @@ public class SceneSwitcherTool : CollectionTool
         }
     }
 
+    public override bool RequestPrimaryUse()
+    {
+        if (!isEquipped || !canUse)
+        {
+            return false;
+        }
+
+        UseSceneSwitcher();
+        return true;
+    }
+
     /// <summary>
     /// 检测F键输入 - 支持键盘和移动端虚拟按钮
     /// </summary>
     bool IsFKeyPressed()
     {
         // 键盘F键检测
-        bool keyboardFPressed = UnityEngine.InputSystem.Keyboard.current != null &&
-                                UnityEngine.InputSystem.Keyboard.current.fKey.wasPressedThisFrame;
+        var keyboard = UnityEngine.InputSystem.Keyboard.current;
+        bool keyboardFPressed = keyboard != null && keyboard.fKey.wasPressedThisFrame;
 
         // 移动端F键检测
         bool mobileFPressed = false;

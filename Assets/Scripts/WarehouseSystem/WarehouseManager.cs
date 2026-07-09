@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
+using Core;
 
 /// <summary>
 /// 仓库管理器 - 单例模式管理仓库系统
@@ -380,6 +381,7 @@ public class WarehouseManager : MonoBehaviour
 
             lastSaveTime = Time.time;
             OnWarehouseDataSaved?.Invoke();
+            GameEventBus.RaiseProgressDirty("warehouse_saved");
             
             LogMessage($"仓库数据已保存，物品数: {saveData.storedItems.Count}");
         }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Core;
 using UnityEngine;
 
 namespace StorySystem
@@ -32,7 +33,7 @@ namespace StorySystem
             var raw = string.Join("|", flags);
             PlayerPrefs.SetString(FlagsKey, raw);
             PlayerPrefs.Save();
+            GameEventBus.RaiseProgressDirty("story_flags_saved");
         }
     }
 }
-

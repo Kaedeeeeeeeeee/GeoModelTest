@@ -47,7 +47,12 @@ public static class ProgressResetService
         var sd = Object.FindFirstObjectByType<StorySystem.StoryDirector>();
         if (sd != null) sd.ReloadFlags();
 
-        // 5) 可选：刷新UI
+        // 5) 通知 DontDestroyOnLoad 的任务单例清掉内存状态；否则 New Game 后
+        //    PlayerPrefs 已清空，但左上角任务与任务链仍可能沿用旧进度。
+        var qm = Object.FindFirstObjectByType<QuestSystem.QuestManager>();
+        if (qm != null) qm.ResetProgressForNewGame();
+
+        // 6) 可选：刷新UI
         var ui = Object.FindFirstObjectByType<InventoryUISystem>();
         if (ui != null) ui.RefreshTools();
 

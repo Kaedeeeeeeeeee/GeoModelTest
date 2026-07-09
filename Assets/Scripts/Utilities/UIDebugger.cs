@@ -5,7 +5,8 @@ public class UIDebugger : MonoBehaviour
 {
     void Update()
     {
-        if (Keyboard.current.f1Key.wasPressedThisFrame)
+        var keyboard = Keyboard.current;
+        if (keyboard != null && keyboard.f1Key.wasPressedThisFrame)
         {
             DebugUIState();
         }

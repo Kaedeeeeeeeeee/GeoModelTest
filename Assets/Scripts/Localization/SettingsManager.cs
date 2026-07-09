@@ -105,7 +105,8 @@ public class SettingsManager : MonoBehaviour
     void Update()
     {
         // 监听ESC键
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        var keyboard = Keyboard.current;
+        if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
         {
             ToggleSettings();
         }

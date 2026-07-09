@@ -1093,8 +1093,10 @@ public class WarehouseUI : MonoBehaviour
     {
         if (!isWarehouseOpen) return;
         
+        var keyboard = Keyboard.current;
+
         // ESC键处理
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
         {
             // 如果确认对话框正在显示，先关闭对话框
             if (confirmDialogPanel != null && confirmDialogPanel.activeInHierarchy)

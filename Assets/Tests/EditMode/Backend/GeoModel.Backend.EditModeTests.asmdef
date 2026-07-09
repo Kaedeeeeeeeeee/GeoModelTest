@@ -1,0 +1,9 @@
+{
+    "name": "GeoModel.Backend.EditModeTests",
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ]
+}

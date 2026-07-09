@@ -42,12 +42,10 @@ public static class LaboratoryMobileUIHelper
             return true;
         }
 
-        // 检查是否为移动设备或支持触摸
-        bool isMobile = Application.isMobilePlatform;
-        bool hasTouch = UnityEngine.InputSystem.Touchscreen.current != null;
+        bool isMobile = MobileInputManager.IsRuntimeMobileDevice();
 
-        Debug.Log($"[LaboratoryMobileUIHelper] 设备检测: 移动设备={isMobile}, 触摸支持={hasTouch}");
-        return isMobile || hasTouch;
+        Debug.Log($"[LaboratoryMobileUIHelper] 设备检测: 移动设备={isMobile}");
+        return isMobile;
     }
 
     /// <summary>
@@ -116,16 +114,7 @@ public static class LaboratoryMobileUIHelper
     {
         // 检查MobileInputManager是否存在且启用了桌面测试模式
         MobileInputManager inputManager = MobileInputManager.Instance;
-        if (inputManager != null && inputManager.desktopTestMode)
-        {
-            return true;
-        }
-
-        // 检查是否为移动设备或支持触摸
-        bool isMobile = Application.isMobilePlatform;
-        bool hasTouch = UnityEngine.InputSystem.Touchscreen.current != null;
-
-        return isMobile || hasTouch;
+        return inputManager != null && inputManager.desktopTestMode;
     }
 
     /// <summary>

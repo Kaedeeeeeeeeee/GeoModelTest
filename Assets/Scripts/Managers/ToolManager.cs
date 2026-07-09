@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Core;
 
 public class ToolManager : MonoBehaviour
 {
@@ -137,6 +138,7 @@ public class ToolManager : MonoBehaviour
         if (currentTool != null)
         {
             currentTool.Equip();
+            GameEventBus.RaiseToolEquipped(currentTool.toolID, currentTool.toolName);
             
             for (int i = 0; i < availableTools.Length; i++)
             {

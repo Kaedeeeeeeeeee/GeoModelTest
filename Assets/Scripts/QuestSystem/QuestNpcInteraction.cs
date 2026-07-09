@@ -161,7 +161,8 @@ namespace QuestSystem
 
         private bool IsInteractTriggered()
         {
-            bool keyboardPressed = Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame;
+            var keyboard = Keyboard.current;
+            bool keyboardPressed = keyboard != null && keyboard.eKey.wasPressedThisFrame;
 
             bool mobilePressed = false;
             if (mobileInput != null)

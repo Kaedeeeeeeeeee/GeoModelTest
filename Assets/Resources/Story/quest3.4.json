@@ -11,15 +11,39 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "いいサンプル！　でも答（こた）えは、もっと深（ふか）いところにありそう。",
+            "text": "薄片（はくへん）を顕微鏡（けんびきょう）にかけるね。……粒（つぶ）が細（こま）かくつぶれてる。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.bridge.q34.l02"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "次（つぎ）は——ドリルタワーで地下（ちか）をのぞいてみよう。",
+            "text": "この割（わ）れ方（かた）は、表面（ひょうめん）の揺（ゆ）れだけでできた傷（きず）じゃないかもしれない。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.bridge.q34.l03"
+        },
+        {
+            "speaker": "主人公",
+            "text": "じゃあ、もっと深（ふか）いところで何（なに）か起（お）きてる？",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.bridge.q34.l04"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "その可能性（かのうせい）がある。薄片（はくへん）だけでは、浅（あさ）い部分（ぶぶん）の変化（へんか）しか読（よ）めない。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.bridge.q34.l05"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "深（ふか）さごとの柱状（ちゅうじょう）サンプルがあれば、どの層（そう）が新（あたら）しく動（うご）いたか比（くら）べられる。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.bridge.q34.l06"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "だから次（つぎ）はドリルタワー。表面（ひょうめん）ではなく、もっと深（ふか）い記録（きろく）を取（と）りに行（い）こう。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.bridge.q34.l07"
         }
     ]
 }

@@ -818,6 +818,11 @@ namespace StorySystem
 
             bool advanceRequested = false;
             void RequestAdvance() => advanceRequested = true;
+            void SetDialogAdvanceEnabled(bool enabled)
+            {
+                button.interactable = enabled;
+                ccBtn.interactable = enabled;
+            }
             button.onClick.AddListener(RequestAdvance);
             ccBtn.onClick.AddListener(RequestAdvance);
 
@@ -844,7 +849,13 @@ namespace StorySystem
                 }
 
                 // 知识讲解插画 banner：带 key 即切换并持续显示；"-" 收起；空/缺省保持不变。
-                if (illustration != null && !string.IsNullOrEmpty(line.IllustrationKey))
+                // 选择题阶段不显示教学插图，避免图片直接留在真正作答画面里。
+                if (line.HasChoices)
+                {
+                    currentIllustrationKey = null;
+                    HideIllustrationNow(illustration);
+                }
+                else if (illustration != null && !string.IsNullOrEmpty(line.IllustrationKey))
                 {
                     string want = line.IllustrationKey.Trim();
                     bool hide = want == "-" || want.Equals("none", System.StringComparison.OrdinalIgnoreCase);
@@ -874,10 +885,12 @@ namespace StorySystem
                     // E: 答错可重答。已错过的选项灰掉禁用；最终必须答对才推进。
                     var disabledIdx = new HashSet<int>();
                     bool correctlyAnswered = false;
-                    button.interactable = false; ccBtn.interactable = false; // 选择期间屏蔽背景点击推进
+                    SetDialogAdvanceEnabled(false); // 选择期间屏蔽背景点击推进
 
                     while (!correctlyAnswered)
                     {
+                        SetDialogAdvanceEnabled(false);
+
                         // 每次循环（含重答）恢复 speaker + prompt
                         speakerGO.SetActive(!string.IsNullOrEmpty(line.Speaker));
                         speakerTxt.text = FuriganaProcessor.Process(line.Speaker ?? string.Empty);
@@ -905,6 +918,7 @@ namespace StorySystem
                         // D: 点了 ヒント → 显示提示，按推进键后重建选择面板（不计分、不算尝试）
                         if (showHintRequested)
                         {
+                            SetDialogAdvanceEnabled(true);
                             speakerGO.SetActive(false);
                             txt.text = FuriganaProcessor.Process(line.Hint);
                             hintTxt.text = hintContinue;
@@ -919,6 +933,7 @@ namespace StorySystem
                                 }
                                 yield return null;
                             }
+                            SetDialogAdvanceEnabled(false);
                             continue;
                         }
 
@@ -937,6 +952,7 @@ namespace StorySystem
                         speakerGO.SetActive(false);
                         txt.text = FuriganaProcessor.Process(feedback);
                         hintTxt.text = hintContinue;
+                        SetDialogAdvanceEnabled(true);
                         advanceRequested = false;
                         yield return null;
                         while (!advanceRequested)
@@ -955,7 +971,7 @@ namespace StorySystem
                             disabledIdx.Add(picked);
                     }
 
-                    button.interactable = true; ccBtn.interactable = true;
+                    SetDialogAdvanceEnabled(true);
                     continue;
                 }
 
@@ -1239,6 +1255,23 @@ namespace StorySystem
             img.sprite = next;
             img.raycastTarget = true;      // 显示时可点击 → 全屏放大
             yield return FadeAlpha(img, 1f, duration * 0.5f);
+        }
+
+        private static void HideIllustrationNow(Image img)
+        {
+            if (_fadeIllustration != null)
+            {
+                StoryDirectorRunner.Instance.StopCoroutine(_fadeIllustration);
+                _fadeIllustration = null;
+            }
+
+            if (img == null) return;
+
+            var c = img.color;
+            c.a = 0f;
+            img.color = c;
+            img.sprite = null;
+            img.raycastTarget = false;
         }
 
         /// <summary>

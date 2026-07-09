@@ -110,3 +110,5 @@ node_modules/
 
 # Dev screenshots
 /Text_ScreenShot/
+.playwright-cli/
+supabase/.temp/

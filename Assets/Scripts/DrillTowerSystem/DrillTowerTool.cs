@@ -106,7 +106,8 @@ public class DrillTowerTool : PlaceableTool
     bool IsFKeyPressed()
     {
         // 键盘F键检测
-        bool keyboardFPressed = Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame;
+        var keyboard = Keyboard.current;
+        bool keyboardFPressed = keyboard != null && keyboard.fKey.wasPressedThisFrame;
 
         // 移动端F键检测
         bool mobileFPressed = false;
@@ -163,7 +164,8 @@ public class DrillTowerTool : PlaceableTool
         if (distance <= interactionRange)
         {
             // 按G键收回钻塔
-            if (Keyboard.current.gKey.wasPressedThisFrame)
+            var keyboard = Keyboard.current;
+            if (keyboard != null && keyboard.gKey.wasPressedThisFrame)
             {
                 RecallTower();
             }
@@ -852,4 +854,3 @@ public class DepthSampleMarker : MonoBehaviour
     }
     
 }
-

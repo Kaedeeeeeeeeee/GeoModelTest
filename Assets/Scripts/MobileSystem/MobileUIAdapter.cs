@@ -420,6 +420,11 @@ public class MobileUIAdapter : MonoBehaviour
     /// </summary>
     int GetRecommendedQualityLevel()
     {
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            return QualitySettings.GetQualityLevel();
+        }
+
         switch (CurrentDeviceType)
         {
             case DeviceType.Phone:
@@ -448,9 +453,16 @@ public class MobileUIAdapter : MonoBehaviour
     /// </summary>
     bool HasScreenChanged()
     {
-        return lastScreenSize != ScreenSize ||
-               lastOrientation != CurrentOrientation ||
-               lastSafeArea != SafeArea;
+        Vector2 currentScreenSize = new Vector2(Screen.width, Screen.height);
+        Rect currentSafeArea = Screen.safeArea;
+        if (currentSafeArea.width <= 0 || currentSafeArea.height <= 0)
+        {
+            currentSafeArea = new Rect(0, 0, Screen.width, Screen.height);
+        }
+
+        return currentScreenSize != ScreenSize ||
+               Screen.orientation != CurrentOrientation ||
+               currentSafeArea != SafeArea;
     }
     
     /// <summary>

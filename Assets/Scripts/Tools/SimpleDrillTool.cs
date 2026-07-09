@@ -147,7 +147,7 @@ public class SimpleDrillTool : CollectionTool
         base.HandleInput();
         
         // 右键或ESC键退出预览模式
-        if (Mouse.current.rightButton.wasPressedThisFrame || Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (WasCancelPressed())
         {
             var toolManager = FindFirstObjectByType<ToolManager>();
             if (toolManager != null)

@@ -207,9 +207,23 @@ namespace QuestSystem
             var ui = FindObjectOfType<QuestUI>();
             if (ui != null)
             {
-                ui.UpdateVisibilityByScene();
-                ui.RefreshFromCurrentState();
+                ui.RefreshNow();
             }
+        }
+
+        public static void RefreshAll()
+        {
+            var instances = FindObjectsByType<QuestUI>(FindObjectsSortMode.None);
+            foreach (var ui in instances)
+            {
+                ui.RefreshNow();
+            }
+        }
+
+        public void RefreshNow()
+        {
+            UpdateVisibilityByScene();
+            RefreshFromCurrentState();
         }
 
         private Quest FindQuestToDisplay(QuestManager qm)

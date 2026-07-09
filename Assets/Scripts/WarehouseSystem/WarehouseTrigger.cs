@@ -62,7 +62,8 @@ public class WarehouseTrigger : MonoBehaviour
     bool IsFKeyPressed()
     {
         // 键盘F键检测
-        bool keyboardFPressed = Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame;
+        var keyboard = Keyboard.current;
+        bool keyboardFPressed = keyboard != null && keyboard.fKey.wasPressedThisFrame;
 
         // 移动端F键检测
         bool mobileFPressed = false;

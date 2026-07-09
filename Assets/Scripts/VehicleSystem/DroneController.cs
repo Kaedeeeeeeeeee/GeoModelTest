@@ -68,7 +68,8 @@ public class DroneController : MonoBehaviour
     bool IsFKeyPressed()
     {
         // 键盘F键检测
-        bool keyboardFPressed = UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.fKey.wasPressedThisFrame;
+        var keyboard = UnityEngine.InputSystem.Keyboard.current;
+        bool keyboardFPressed = keyboard != null && keyboard.fKey.wasPressedThisFrame;
 
         // 移动端F键检测
         bool mobileFPressed = false;
@@ -344,15 +345,19 @@ public class DroneController : MonoBehaviour
         
         // 获取输入
         Vector3 moveInput = Vector3.zero;
+        var keyboard = UnityEngine.InputSystem.Keyboard.current;
         
         // 水平移动只有在空中时才允许
         if (!isOnGround)
         {
             // 键盘输入
-            if (UnityEngine.InputSystem.Keyboard.current.wKey.isPressed) moveInput.z = 1; // 前进
-            if (UnityEngine.InputSystem.Keyboard.current.sKey.isPressed) moveInput.z = -1; // 后退
-            if (UnityEngine.InputSystem.Keyboard.current.aKey.isPressed) moveInput.x = -1; // 左转
-            if (UnityEngine.InputSystem.Keyboard.current.dKey.isPressed) moveInput.x = 1; // 右转
+            if (keyboard != null)
+            {
+                if (keyboard.wKey.isPressed) moveInput.z = 1; // 前进
+                if (keyboard.sKey.isPressed) moveInput.z = -1; // 后退
+                if (keyboard.aKey.isPressed) moveInput.x = -1; // 左转
+                if (keyboard.dKey.isPressed) moveInput.x = 1; // 右转
+            }
 
             // 移动端输入（优先级高于键盘）
             if (mobileInputManager != null && mobileInputManager.MoveInput.magnitude > 0.1f)
@@ -365,10 +370,11 @@ public class DroneController : MonoBehaviour
         else
         {
             // 在地面时，如果尝试使用WASD，显示提示
-            if (UnityEngine.InputSystem.Keyboard.current.wKey.isPressed || 
-                UnityEngine.InputSystem.Keyboard.current.sKey.isPressed ||
-                UnityEngine.InputSystem.Keyboard.current.aKey.isPressed ||
-                UnityEngine.InputSystem.Keyboard.current.dKey.isPressed)
+            if (keyboard != null &&
+                (keyboard.wKey.isPressed ||
+                 keyboard.sKey.isPressed ||
+                 keyboard.aKey.isPressed ||
+                 keyboard.dKey.isPressed))
             {
                 // 限制提示频率，避免每帧都输出
                 if (Time.frameCount % 60 == 0) // 每秒显示一次
@@ -380,8 +386,11 @@ public class DroneController : MonoBehaviour
         
         // 垂直移动始终允许
         // 键盘输入
-        if (UnityEngine.InputSystem.Keyboard.current.jKey.isPressed) moveInput.y = 1; // 上升
-        if (UnityEngine.InputSystem.Keyboard.current.kKey.isPressed) moveInput.y = -1; // 下降
+        if (keyboard != null)
+        {
+            if (keyboard.jKey.isPressed) moveInput.y = 1; // 上升
+            if (keyboard.kKey.isPressed) moveInput.y = -1; // 下降
+        }
 
         // 移动端输入（优先级高于键盘）
         if (mobileInputManager != null && mobileInputManager.VerticalInput != 0)

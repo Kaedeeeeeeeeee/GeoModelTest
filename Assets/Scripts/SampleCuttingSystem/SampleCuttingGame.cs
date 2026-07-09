@@ -707,9 +707,11 @@ namespace SampleCuttingSystem
             if (currentState != CuttingState.Cutting) return;
 
             bool shouldCut = false;
+            var keyboard = Keyboard.current;
+            var mouse = Mouse.current;
 
             // 键盘空格键检测
-            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+            if (keyboard != null && keyboard.spaceKey.wasPressedThisFrame)
             {
                 shouldCut = true;
             }
@@ -729,7 +731,7 @@ namespace SampleCuttingSystem
             }
 
             // 鼠标点击检测（桌面端）
-            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            if (mouse != null && mouse.leftButton.wasPressedThisFrame)
             {
                 shouldCut = true;
             }

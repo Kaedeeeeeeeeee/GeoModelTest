@@ -2,6 +2,8 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using System;
+using System.Globalization;
 
 /// <summary>
 /// CLI-friendly WebGL 构建工具：
@@ -12,6 +14,7 @@ using UnityEngine;
 public static class WebGLBuildSetup
 {
     private const string BuildOutputPath = "Build/WebGL";
+    private const string BuildVersionEnvironmentVariable = "GEOMODEL_WEBGL_VERSION";
 
     [MenuItem("Tools/WebGL/Configure Player Settings")]
     public static void ConfigureWebGLSettings()
@@ -19,6 +22,15 @@ public static class WebGLBuildSetup
         Debug.Log("[WebGLBuildSetup] 开始配置 Player Settings...");
 
         var webgl = NamedBuildTarget.WebGL;
+
+        string buildVersion = Environment.GetEnvironmentVariable(BuildVersionEnvironmentVariable);
+        if (string.IsNullOrWhiteSpace(buildVersion))
+        {
+            buildVersion = DateTime.UtcNow.ToString("yyyy.MM.dd-HHmm'Z'", CultureInfo.InvariantCulture);
+        }
+
+        PlayerSettings.bundleVersion = buildVersion;
+        Debug.Log($"[WebGLBuildSetup] ProductVersion = {PlayerSettings.bundleVersion}");
 
         // Managed Stripping Level: Minimal（避免裁剪误删反射目标）
         PlayerSettings.SetManagedStrippingLevel(webgl, ManagedStrippingLevel.Minimal);
@@ -70,6 +82,8 @@ public static class WebGLBuildSetup
     public static void BuildWebGL()
     {
         Debug.Log("[WebGLBuildSetup] 准备 WebGL 构建...");
+
+        ConfigureWebGLSettings();
 
         // 强制把 StartScene 放在 scenes[0]，保证游戏从开始菜单进入而不是直接跳 MainScene
         EnsureStartSceneIsFirst();

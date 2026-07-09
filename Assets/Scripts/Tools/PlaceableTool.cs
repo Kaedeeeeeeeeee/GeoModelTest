@@ -108,16 +108,21 @@ public abstract class PlaceableTool : CollectionTool
     
     protected override void HandleInput()
     {
+        var mouse = Mouse.current;
+        var keyboard = Keyboard.current;
+
         if (isPlacementMode)
         {
             UpdatePreviewPosition();
             
-            if (Mouse.current.leftButton.wasPressedThisFrame && canUse)
+            if (mouse != null && mouse.leftButton.wasPressedThisFrame && canUse)
             {
                 TryPlaceObject();
             }
             
-            if (Mouse.current.rightButton.wasPressedThisFrame || Keyboard.current.escapeKey.wasPressedThisFrame)
+            bool cancelPressed = (mouse != null && mouse.rightButton.wasPressedThisFrame) ||
+                                 (keyboard != null && keyboard.escapeKey.wasPressedThisFrame);
+            if (cancelPressed)
             {
                 ExitPlacementMode();
             }
@@ -125,11 +130,44 @@ public abstract class PlaceableTool : CollectionTool
         else
         {
             // 只有在未放置过对象时才允许通过鼠标左键进入放置模式
-            if (Mouse.current.leftButton.wasPressedThisFrame && canUse && !hasPlacedObject)
+            if (mouse != null && mouse.leftButton.wasPressedThisFrame && canUse && !hasPlacedObject)
             {
                 EnterPlacementMode();
             }
         }
+    }
+
+    public override bool RequestPrimaryUse()
+    {
+        if (!isEquipped || !canUse)
+        {
+            return false;
+        }
+
+        if (isPlacementMode)
+        {
+            TryPlaceObject();
+            return true;
+        }
+
+        if (!hasPlacedObject)
+        {
+            EnterPlacementMode();
+            return true;
+        }
+
+        return false;
+    }
+
+    public override bool RequestCancelUse()
+    {
+        if (!isEquipped || !isPlacementMode)
+        {
+            return false;
+        }
+
+        ExitPlacementMode();
+        return true;
     }
     
     protected virtual void UpdatePreviewPosition()

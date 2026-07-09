@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
 using System;
+using System.Runtime.InteropServices;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 /// <summary>
@@ -19,7 +22,8 @@ public class MobileInputManager : MonoBehaviour
     public float joystickSensitivity = 1.0f;
     
     [Header("触摸控制设置")]
-    public float touchSensitivity = 2.0f;
+    [Range(0.1f, 3.0f)]
+    public float touchSensitivity = 0.55f;
     public float touchDeadZone = 10f; // 像素
     
     [Header("调试设置")]
@@ -66,10 +70,18 @@ public class MobileInputManager : MonoBehaviour
     private bool isDragging = false;
     private float touchStartTime;
     private Vector2 touchStartPosition;
+    private int activeLookTouchId = int.MinValue;
+    private bool activeTouchStartedOverUI = false;
     
     // 设备检测
     private bool isMobileDevice;
     private bool hasTouch;
+    private bool hasActiveTouchInput;
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [DllImport("__Internal")]
+    private static extern int GeoModelTest_IsMobileBrowser();
+#endif
     
     public enum InputMode
     {
@@ -116,22 +128,33 @@ public class MobileInputManager : MonoBehaviour
     
     void Update()
     {
+        DetectDevice();
+
         // 处理不同输入源
         switch (currentInputMode)
         {
             case InputMode.Auto:
                 if (desktopTestMode)
                 {
-                    // 桌面测试模式：只处理移动端输入，禁用桌面输入避免冲突
+                    // 桌面测试模式允许键鼠和虚拟控件同时工作，方便在电脑上验证移动端UI。
+                    ProcessDesktopInput();
                     ProcessMobileInput();
                 }
-                else if (isMobileDevice || hasTouch)
+                else if (isMobileDevice)
                 {
                     ProcessMobileInput();
                 }
                 else
                 {
                     ProcessDesktopInput();
+                    if (HasActiveTouchscreenInput())
+                    {
+                        ProcessMobileInput();
+                    }
+                    else
+                    {
+                        hasActiveTouchInput = false;
+                    }
                 }
                 break;
                 
@@ -158,8 +181,8 @@ public class MobileInputManager : MonoBehaviour
     /// </summary>
     void DetectDevice()
     {
-        // 检测是否为移动设备
-        isMobileDevice = Application.isMobilePlatform;
+        // 检测是否为移动设备。触摸输入单独记录，不能把 PC/Mac 的触摸能力当成移动端。
+        isMobileDevice = IsRuntimeMobileDevice();
         
         // 检测是否支持触摸
         hasTouch = Touchscreen.current != null;
@@ -178,9 +201,9 @@ public class MobileInputManager : MonoBehaviour
     {
         if (currentInputMode == InputMode.Auto)
         {
-            if (isMobileDevice || hasTouch)
+            if (isMobileDevice)
             {
-                // 移动设备或支持触摸的设备
+                // 手机/平板设备
                 enableVirtualControls = true;
                 Debug.Log("[MobileInputManager] 自动切换到移动端输入模式");
             }
@@ -198,36 +221,51 @@ public class MobileInputManager : MonoBehaviour
     /// </summary>
     void ProcessDesktopInput()
     {
-        if (Keyboard.current == null) return;
+        var keyboard = Keyboard.current;
+        if (keyboard == null)
+        {
+            SetMoveInput(Vector2.zero);
+            SetRunInput(false);
+            SetJumpInput(false);
+            SetInteractInput(false);
+            SetSecondaryInteractInput(false);
+            SetLookInput(Vector2.zero);
+            return;
+        }
         
         // 移动输入 (WASD)
         Vector2 move = Vector2.zero;
-        if (Keyboard.current.wKey.isPressed) move.y = 1;
-        if (Keyboard.current.sKey.isPressed) move.y = -1;
-        if (Keyboard.current.aKey.isPressed) move.x = -1;
-        if (Keyboard.current.dKey.isPressed) move.x = 1;
+        if (keyboard.wKey.isPressed) move.y = 1;
+        if (keyboard.sKey.isPressed) move.y = -1;
+        if (keyboard.aKey.isPressed) move.x = -1;
+        if (keyboard.dKey.isPressed) move.x = 1;
         
         SetMoveInput(move);
         
         // 鼠标视角控制
-        if (Mouse.current != null)
+        var mouse = Mouse.current;
+        if (mouse != null)
         {
-            Vector2 mouseDelta = Mouse.current.delta.ReadValue();
+            Vector2 mouseDelta = mouse.delta.ReadValue();
             SetLookInput(mouseDelta);
+        }
+        else
+        {
+            SetLookInput(Vector2.zero);
         }
         
         // 跳跃输入
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        if (keyboard.spaceKey.wasPressedThisFrame)
         {
             SetJumpInput(true);
         }
-        else if (Keyboard.current.spaceKey.wasReleasedThisFrame)
+        else if (keyboard.spaceKey.wasReleasedThisFrame)
         {
             SetJumpInput(false);
         }
         
         // 奔跑输入
-        SetRunInput(Keyboard.current.leftShiftKey.isPressed);
+        SetRunInput(keyboard.leftShiftKey.isPressed);
     }
     
     /// <summary>
@@ -235,21 +273,86 @@ public class MobileInputManager : MonoBehaviour
     /// </summary>
     void ProcessMobileInput()
     {
-        if (!enableTouchInput || Touchscreen.current == null) return;
-        
-        // 处理触摸输入
+        if (!enableTouchInput || Touchscreen.current == null)
+        {
+            hasActiveTouchInput = false;
+            ResetRawTouchState();
+            return;
+        }
+
+        bool processedLookTouch = false;
+        bool anyActiveTouch = false;
         var touches = Touchscreen.current.touches;
-        
-        if (touches.Count > 0)
+        for (int i = 0; i < touches.Count; i++)
         {
-            ProcessPrimaryTouch(touches[0]);
+            var touch = touches[i];
+            TouchPhase phase = touch.phase.ReadValue();
+            if (phase == TouchPhase.None)
+            {
+                continue;
+            }
+
+            if (phase == TouchPhase.Began ||
+                phase == TouchPhase.Moved ||
+                phase == TouchPhase.Stationary)
+            {
+                anyActiveTouch = true;
+            }
+
+            int touchId = touch.touchId.ReadValue();
+            if (touchId == activeLookTouchId)
+            {
+                ProcessPrimaryTouch(touch);
+                processedLookTouch = true;
+                continue;
+            }
+
+            if (activeLookTouchId == int.MinValue && phase == TouchPhase.Began)
+            {
+                Vector2 touchPosition = touch.position.ReadValue();
+                if (!IsPointOverUI(touchPosition, touchId))
+                {
+                    ProcessPrimaryTouch(touch);
+                    processedLookTouch = true;
+                }
+            }
         }
-        
-        // 处理多点触控
-        if (touches.Count > 1)
+
+        if (!processedLookTouch)
         {
-            ProcessSecondaryTouch(touches[1]);
+            if (activeLookTouchId == int.MinValue)
+            {
+                SetLookInput(Vector2.zero);
+            }
+            else
+            {
+                ResetRawTouchState();
+            }
         }
+
+        hasActiveTouchInput = anyActiveTouch;
+    }
+
+    bool HasActiveTouchscreenInput()
+    {
+        if (!enableTouchInput || Touchscreen.current == null)
+        {
+            return false;
+        }
+
+        var touches = Touchscreen.current.touches;
+        for (int i = 0; i < touches.Count; i++)
+        {
+            TouchPhase phase = touches[i].phase.ReadValue();
+            if (phase == TouchPhase.Began ||
+                phase == TouchPhase.Moved ||
+                phase == TouchPhase.Stationary)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     
     /// <summary>
@@ -259,6 +362,7 @@ public class MobileInputManager : MonoBehaviour
     {
         Vector2 touchPosition = touch.position.ReadValue();
         TouchPhase phase = touch.phase.ReadValue();
+        int touchId = touch.touchId.ReadValue();
         
         switch (phase)
         {
@@ -267,12 +371,25 @@ public class MobileInputManager : MonoBehaviour
                 touchStartPosition = touchPosition;
                 touchStartTime = Time.time;
                 isDragging = false;
+                activeLookTouchId = touchId;
+                activeTouchStartedOverUI = IsPointOverUI(touchPosition, touchId);
+
+                if (activeTouchStartedOverUI)
+                {
+                    SetLookInput(Vector2.zero);
+                }
                 
                 if (enableDebugLog)
                     Debug.Log($"[MobileInputManager] 触摸开始: {touchPosition}");
                 break;
                 
             case TouchPhase.Moved:
+                if (touchId != activeLookTouchId || activeTouchStartedOverUI)
+                {
+                    SetLookInput(Vector2.zero);
+                    break;
+                }
+
                 if (!isDragging)
                 {
                     float distance = Vector2.Distance(touchPosition, touchStartPosition);
@@ -290,24 +407,34 @@ public class MobileInputManager : MonoBehaviour
                 
                 lastTouchPosition = touchPosition;
                 break;
+
+            case TouchPhase.Stationary:
+                if (touchId == activeLookTouchId)
+                {
+                    SetLookInput(Vector2.zero);
+                }
+                break;
                 
             case TouchPhase.Ended:
             case TouchPhase.Canceled:
-                if (!isDragging)
+                if (touchId == activeLookTouchId && !isDragging && !activeTouchStartedOverUI)
                 {
                     // 短触摸 - 可能是点击事件
                     float touchDuration = Time.time - touchStartTime;
                     if (touchDuration < 0.3f) // 300ms内算作点击
                     {
-                        ProcessTouchTap(touchStartPosition);
+                        ProcessTouchTap(touchStartPosition, touchId);
                     }
                 }
                 
-                isDragging = false;
-                SetLookInput(Vector2.zero);
+                ResetRawTouchState();
                 
                 if (enableDebugLog)
                     Debug.Log($"[MobileInputManager] 触摸结束");
+                break;
+
+            default:
+                SetLookInput(Vector2.zero);
                 break;
         }
     }
@@ -327,7 +454,7 @@ public class MobileInputManager : MonoBehaviour
     /// <summary>
     /// 处理触摸点击事件
     /// </summary>
-    void ProcessTouchTap(Vector2 position)
+    void ProcessTouchTap(Vector2 position, int pointerId)
     {
         if (enableDebugLog)
         {
@@ -336,10 +463,10 @@ public class MobileInputManager : MonoBehaviour
         
         // 这里可以处理UI点击检测等
         // 如果点击的不是UI元素，可以触发交互事件
-        if (!IsPointOverUI(position))
+        if (!IsPointOverUI(position, pointerId))
         {
-            OnInteractInput?.Invoke(true);
-            OnInteractInput?.Invoke(false); // 立即释放
+            SetInteractInput(true);
+            SetInteractInput(false); // 立即释放
         }
     }
     
@@ -348,44 +475,28 @@ public class MobileInputManager : MonoBehaviour
     /// </summary>
     void ProcessCommonInput()
     {
-        if (Keyboard.current == null) return;
+        var keyboard = Keyboard.current;
+        if (keyboard == null) return;
         
-        // 背包快捷键
-        if (Keyboard.current.iKey.wasPressedThisFrame)
-        {
-            OnInventoryInput?.Invoke();
-        }
-        
-        // 仓库快捷键已移除，F键现在专用于交互
-        
-        // 工具轮盘快捷键
-        if (Keyboard.current.tabKey.wasPressedThisFrame)
-        {
-            OnToolWheelInput?.Invoke();
-        }
-
-        // 图鉴快捷键
-        if (Keyboard.current.oKey.wasPressedThisFrame)
-        {
-            OnEncyclopediaInput?.Invoke();
-        }
+        // UI keyboard shortcuts (Tab/I/O) are handled by InventoryUISystem.
+        // MobileControlsUI still uses Trigger... methods below for touch buttons.
         
         // 交互键 (E键)
-        if (Keyboard.current.eKey.wasPressedThisFrame)
+        if (keyboard.eKey.wasPressedThisFrame)
         {
             OnInteractInput?.Invoke(true);
         }
-        else if (Keyboard.current.eKey.wasReleasedThisFrame)
+        else if (keyboard.eKey.wasReleasedThisFrame)
         {
             OnInteractInput?.Invoke(false);
         }
 
         // F键交互
-        if (Keyboard.current.fKey.wasPressedThisFrame)
+        if (keyboard.fKey.wasPressedThisFrame)
         {
             OnSecondaryInteractInput?.Invoke(true);
         }
-        else if (Keyboard.current.fKey.wasReleasedThisFrame)
+        else if (keyboard.fKey.wasReleasedThisFrame)
         {
             OnSecondaryInteractInput?.Invoke(false);
         }
@@ -394,11 +505,47 @@ public class MobileInputManager : MonoBehaviour
     /// <summary>
     /// 检查点击位置是否在UI上
     /// </summary>
-    bool IsPointOverUI(Vector2 screenPosition)
+    bool IsPointOverUI(Vector2 screenPosition, int pointerId = int.MinValue)
     {
-        // 使用Unity的UI系统检测
-        return UnityEngine.EventSystems.EventSystem.current != null &&
-               UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+        MobileControlsUI mobileControls = MobileControlsUI.ActiveInstance;
+        if (mobileControls == null)
+        {
+            mobileControls = FindFirstObjectByType<MobileControlsUI>();
+        }
+
+        if (mobileControls != null && mobileControls.ContainsControlAtScreenPoint(screenPosition))
+        {
+            return true;
+        }
+
+        EventSystem eventSystem = EventSystem.current;
+        if (eventSystem == null) return false;
+
+        if (pointerId != int.MinValue && eventSystem.IsPointerOverGameObject(pointerId))
+        {
+            return true;
+        }
+
+        if (pointerId == int.MinValue && eventSystem.IsPointerOverGameObject())
+        {
+            return true;
+        }
+
+        PointerEventData eventData = new PointerEventData(eventSystem)
+        {
+            position = screenPosition
+        };
+        List<RaycastResult> results = new List<RaycastResult>();
+        eventSystem.RaycastAll(eventData, results);
+        return results.Count > 0;
+    }
+
+    void ResetRawTouchState()
+    {
+        isDragging = false;
+        activeLookTouchId = int.MinValue;
+        activeTouchStartedOverUI = false;
+        SetLookInput(Vector2.zero);
     }
     
     #region 公共接口方法
@@ -494,7 +641,7 @@ public class MobileInputManager : MonoBehaviour
     /// </summary>
     public bool IsMobileDevice()
     {
-        return isMobileDevice || hasTouch;
+        return isMobileDevice;
     }
     
     /// <summary>
@@ -502,9 +649,53 @@ public class MobileInputManager : MonoBehaviour
     /// </summary>
     public bool ShouldShowVirtualControls()
     {
-        return enableVirtualControls && (currentInputMode == InputMode.Mobile || 
-               (currentInputMode == InputMode.Auto && IsMobileDevice()) ||
-               desktopTestMode);
+        if (!enableVirtualControls)
+        {
+            return false;
+        }
+
+        if (desktopTestMode)
+        {
+            return true;
+        }
+
+        return IsMobileDevice() && currentInputMode != InputMode.Desktop;
+    }
+
+    /// <summary>
+    /// 获取当前是否有触摸或虚拟控件输入正在驱动角色。
+    /// </summary>
+    public bool HasActiveGameplayInput()
+    {
+        return hasActiveTouchInput ||
+               MoveInput.sqrMagnitude > 0.0001f ||
+               LookInput.sqrMagnitude > 0.0001f ||
+               IsJumping ||
+               IsRunning ||
+               IsInteracting ||
+               IsSecondaryInteracting ||
+               IsAscending ||
+               IsDescending ||
+               Mathf.Abs(VerticalInput) > 0.0001f;
+    }
+
+    /// <summary>
+    /// 获取当前运行环境是否是真正的手机/平板。
+    /// </summary>
+    public static bool IsRuntimeMobileDevice()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        try
+        {
+            return GeoModelTest_IsMobileBrowser() == 1;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[MobileInputManager] WebGL移动浏览器检测失败，回退到Unity平台检测: {e.Message}");
+        }
+#endif
+
+        return Application.isMobilePlatform || SystemInfo.deviceType == DeviceType.Handheld;
     }
     
     /// <summary>
@@ -574,158 +765,6 @@ public class MobileInputManager : MonoBehaviour
     {
         Debug.Log("[MobileInputManager] 触发图鉴输入");
         OnEncyclopediaInput?.Invoke();
-
-        // 首先检查并初始化单例
-        EnsureSingletons();
-
-        Debug.Log("[MobileInputManager] 开始查找EncyclopediaUI组件...");
-
-        // 直接调用EncyclopediaUI（包括非激活的）
-        var encyclopediaUI = FindObjectOfType<Encyclopedia.EncyclopediaUI>(true);
-        if (encyclopediaUI != null)
-        {
-            Debug.Log($"[MobileInputManager] 找到EncyclopediaUI在 {encyclopediaUI.gameObject.name}，激活状态: {encyclopediaUI.gameObject.activeInHierarchy}");
-            Debug.Log("[MobileInputManager] 调用ToggleEncyclopedia");
-            encyclopediaUI.ToggleEncyclopedia();
-        }
-        else
-        {
-            Debug.LogWarning("[MobileInputManager] 未找到EncyclopediaUI组件");
-
-            // 尝试查找其他可能的图鉴组件
-            var simpleManager = FindObjectOfType<Encyclopedia.SimpleEncyclopediaManager>(true);
-            if (simpleManager != null)
-            {
-                Debug.Log("[MobileInputManager] 找到SimpleEncyclopediaManager，调用ToggleEncyclopedia");
-                simpleManager.ToggleEncyclopedia();
-            }
-            else
-            {
-                Debug.LogWarning("[MobileInputManager] 也未找到SimpleEncyclopediaManager组件");
-            }
-        }
-    }
-
-    /// <summary>
-    /// 确保图鉴系统单例正确初始化
-    /// </summary>
-    private void EnsureSingletons()
-    {
-        Debug.Log("[MobileInputManager] 检查单例状态...");
-
-        // 检查并修复EncyclopediaData单例
-        if (Encyclopedia.EncyclopediaData.Instance == null)
-        {
-            var encyclopediaData = FindObjectOfType<Encyclopedia.EncyclopediaData>();
-            if (encyclopediaData != null)
-            {
-                Debug.Log("[MobileInputManager] EncyclopediaData组件存在但Instance为null，尝试修复...");
-
-                // 确保组件启用
-                if (!encyclopediaData.gameObject.activeInHierarchy)
-                    encyclopediaData.gameObject.SetActive(true);
-                if (!encyclopediaData.enabled)
-                    encyclopediaData.enabled = true;
-
-                // 手动调用Awake方法初始化单例
-                var awakeMethod = typeof(Encyclopedia.EncyclopediaData).GetMethod("Awake",
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-                if (awakeMethod != null)
-                {
-                    try
-                    {
-                        awakeMethod.Invoke(encyclopediaData, null);
-                        Debug.Log("[MobileInputManager] 已手动调用EncyclopediaData.Awake方法");
-                    }
-                    catch (System.Exception e)
-                    {
-                        Debug.LogError($"[MobileInputManager] 调用Awake方法失败: {e.Message}");
-                    }
-                }
-            }
-        }
-        else
-        {
-            Debug.Log("[MobileInputManager] EncyclopediaData.Instance 正常");
-        }
-
-        // 检查并修复CollectionManager单例
-        if (Encyclopedia.CollectionManager.Instance == null)
-        {
-            var collectionManager = FindObjectOfType<Encyclopedia.CollectionManager>();
-            if (collectionManager != null)
-            {
-                Debug.Log("[MobileInputManager] CollectionManager组件存在但Instance为null，尝试修复...");
-
-                // 确保组件启用
-                if (!collectionManager.gameObject.activeInHierarchy)
-                    collectionManager.gameObject.SetActive(true);
-                if (!collectionManager.enabled)
-                    collectionManager.enabled = true;
-
-                // 手动调用Awake方法初始化单例
-                var awakeMethod = typeof(Encyclopedia.CollectionManager).GetMethod("Awake",
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-                if (awakeMethod != null)
-                {
-                    try
-                    {
-                        awakeMethod.Invoke(collectionManager, null);
-                        Debug.Log("[MobileInputManager] 已手动调用CollectionManager.Awake方法");
-                    }
-                    catch (System.Exception e)
-                    {
-                        Debug.LogError($"[MobileInputManager] 调用CollectionManager Awake方法失败: {e.Message}");
-                    }
-                }
-            }
-        }
-        else
-        {
-            Debug.Log("[MobileInputManager] CollectionManager.Instance 正常");
-        }
-
-        // 验证数据可访问性
-        if (Encyclopedia.EncyclopediaData.Instance != null)
-        {
-            try
-            {
-                var count = Encyclopedia.EncyclopediaData.Instance.AllEntries?.Count ?? 0;
-                Debug.Log($"[MobileInputManager] 数据验证: {count} 个条目可访问");
-
-                if (count == 0)
-                {
-                    Debug.LogWarning("[MobileInputManager] 条目数据为0，可能需要重新加载数据");
-                }
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"[MobileInputManager] 数据访问错误: {e.Message}");
-            }
-        }
-
-        // 验证收集系统
-        if (Encyclopedia.CollectionManager.Instance != null)
-        {
-            try
-            {
-                var stats = Encyclopedia.CollectionManager.Instance.CurrentStats;
-                if (stats != null)
-                {
-                    Debug.Log($"[MobileInputManager] 收集系统验证: {stats.totalEntries} 个总条目");
-                }
-                else
-                {
-                    Debug.LogWarning("[MobileInputManager] 收集统计数据为空");
-                }
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"[MobileInputManager] 收集系统访问错误: {e.Message}");
-            }
-        }
     }
     
     #endregion

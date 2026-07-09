@@ -74,9 +74,10 @@ namespace SampleCuttingSystem
             keyboardFPressed = Input.GetKeyDown(interactionKey);
 
             // 如果旧输入系统无效，尝试新输入系统
-            if (!keyboardFPressed && Keyboard.current != null)
+            var keyboard = Keyboard.current;
+            if (!keyboardFPressed && keyboard != null)
             {
-                keyboardFPressed = Keyboard.current.fKey.wasPressedThisFrame;
+                keyboardFPressed = keyboard.fKey.wasPressedThisFrame;
             }
 
             // 移动端F键检测
@@ -297,9 +298,10 @@ namespace SampleCuttingSystem
 
             // 添加ESC键快速关闭功能 - 支持新旧输入系统
             bool escPressed = Input.GetKeyDown(KeyCode.Escape);
-            if (!escPressed && Keyboard.current != null)
+            var keyboard = Keyboard.current;
+            if (!escPressed && keyboard != null)
             {
-                escPressed = Keyboard.current.escapeKey.wasPressedThisFrame;
+                escPressed = keyboard.escapeKey.wasPressedThisFrame;
             }
 
             if (currentCuttingInterface != null && escPressed)

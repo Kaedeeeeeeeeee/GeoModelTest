@@ -2,7 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 using System.Collections;
+using System.Collections.Generic;
+using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 /// <summary>
 /// 移动端虚拟控制界面
@@ -10,13 +13,45 @@ using System.Collections;
 /// </summary>
 public class MobileControlsUI : MonoBehaviour
 {
+    private enum ControlButtonRole
+    {
+        Action,
+        Interact,
+        Utility,
+        Drone
+    }
+
+    private enum ControlButtonIcon
+    {
+        Jump,
+        Run,
+        Interact,
+        Secondary,
+        Inventory,
+        Encyclopedia,
+        Tools,
+        Ascend,
+        Descend
+    }
+
+    private static readonly Color LegacyJoystickBackgroundColor = new Color(1f, 1f, 1f, 0.3f);
+    private static readonly Color LegacyJoystickHandleColor = new Color(1f, 1f, 1f, 0.6f);
+    private static readonly Color LegacyButtonNormalColor = new Color(1f, 1f, 1f, 0.7f);
+    private static readonly Color LegacyButtonPressedColor = new Color(0.8f, 0.8f, 0.8f, 0.9f);
+    private static readonly Color ModernJoystickBackgroundColor = new Color(0.04f, 0.055f, 0.065f, 0.42f);
+    private static readonly Color ModernJoystickHandleColor = new Color(0.78f, 0.94f, 1f, 0.82f);
+    private static readonly Color ModernButtonNormalColor = new Color(0.045f, 0.055f, 0.07f, 0.78f);
+    private static readonly Color ModernButtonPressedColor = new Color(0.98f, 0.75f, 0.32f, 0.94f);
+    private const float ButtonPressedScale = 0.92f;
+
     [Header("虚拟摇杆设置")]
     public GameObject joystickContainer;
     public RectTransform joystickBackground;
     public RectTransform joystickHandle;
-    public float joystickRange = 50f;
+    public float joystickRange = 86f;
+    public float joystickHitAreaMultiplier = 1.7f;
     public bool isDynamicJoystick = false; // 动态摇杆位置（桌面测试建议禁用）
-    
+
     [Header("虚拟按钮")]
     public Button jumpButton;
     public Button runButton;
@@ -31,54 +66,79 @@ public class MobileControlsUI : MonoBehaviour
     public Button ascendButton; // 上升按钮（无人机模式）
     public Button descendButton; // 下降按钮（无人机模式）
     public GameObject droneControlsContainer; // 无人机控制容器（用于显示/隐藏）
-    
+
     [Header("触摸区域")]
     public RectTransform lookTouchArea; // 视角控制区域
-    
+
     [Header("UI布局")]
-    public float buttonSize = 80f;
-    public float buttonSpacing = 20f;
-    public float edgeMargin = 40f;
-    public Vector2 joystickPosition = new Vector2(100, 100); // 从左下角的偏移 - 安全可见位置
-    
+    public float buttonSize = 120f;
+    public float buttonSpacing = 36f;
+    public float edgeMargin = 64f;
+    public Vector2 joystickPosition = new Vector2(190, 165); // 从左下角的偏移 - 安全可见位置
+
     [Header("视觉效果")]
-    public Color joystickBackgroundColor = new Color(1f, 1f, 1f, 0.3f);
-    public Color joystickHandleColor = new Color(1f, 1f, 1f, 0.6f);
-    public Color buttonNormalColor = new Color(1f, 1f, 1f, 0.7f);
-    public Color buttonPressedColor = new Color(0.8f, 0.8f, 0.8f, 0.9f);
-    
+    public Color joystickBackgroundColor = ModernJoystickBackgroundColor;
+    public Color joystickHandleColor = ModernJoystickHandleColor;
+    public Color buttonNormalColor = ModernButtonNormalColor;
+    public Color buttonPressedColor = ModernButtonPressedColor;
+
     [Header("自适应设置")]
     public bool autoHideOnDesktop = true;
     public bool adaptToSafeArea = true;
-    
+
     [Header("调试")]
     public bool enableDebugVisualization = false;
     public bool forceShowOnDesktop = false; // 强制在桌面显示（用于测试）
     public bool enableMouseInput = true; // 桌面测试模式下允许鼠标输入
-    
+    public bool enableRawTouchFallback = true; // WebGL/iPad兜底：直接读取Touchscreen命中虚拟控件
+
+    public static MobileControlsUI ActiveInstance { get; private set; }
+
     // 私有变量
     private Canvas controlsCanvas;
     private CanvasScaler canvasScaler;
     private MobileInputManager inputManager;
-    
+
     // 摇杆相关
     private bool isJoystickActive = false;
     private Vector2 joystickInput = Vector2.zero;
     private Vector2 joystickStartPosition;
     private int joystickPointerId = -1;
-    
+
     // 触摸区域相关
     private bool isLookTouchActive = false;
     private Vector2 lastLookTouchPosition;
     private int lookTouchPointerId = -1;
-    
+
     // 按钮状态
     private bool isRunPressed = false;
-    
+    private const int NoTouchId = int.MinValue;
+    private int rawJoystickTouchId = NoTouchId;
+    private int rawJumpTouchId = NoTouchId;
+    private int rawRunTouchId = NoTouchId;
+    private int rawInteractTouchId = NoTouchId;
+    private int rawSecondaryInteractTouchId = NoTouchId;
+    private int rawInventoryTouchId = NoTouchId;
+    private int rawEncyclopediaTouchId = NoTouchId;
+    private int rawToolWheelTouchId = NoTouchId;
+    private int rawAscendTouchId = NoTouchId;
+    private int rawDescendTouchId = NoTouchId;
+    private readonly HashSet<int> activeRawTouchIds = new HashSet<int>();
+    private bool isLanguageChangeSubscribed = false;
+    private bool hasPublishedJoystickInput = false;
+
     void Awake()
     {
+        ActiveInstance = this;
+
         // 获取或创建Canvas
         SetupCanvas();
+        EnsureEventSystemForTouch();
+    }
+
+    void OnEnable()
+    {
+        ActiveInstance = this;
     }
 
     void Start()
@@ -88,14 +148,14 @@ public class MobileControlsUI : MonoBehaviour
         if (inputManager == null)
         {
             // 尝试在场景中查找
-            inputManager = FindObjectOfType<MobileInputManager>();
+            inputManager = FindFirstObjectByType<MobileInputManager>();
             if (inputManager == null)
             {
                 Debug.LogError("[MobileControlsUI] 未找到MobileInputManager！移动端输入无法工作");
             }
             else
             {
-                Debug.Log("[MobileControlsUI] 通过FindObjectOfType找到MobileInputManager");
+                Debug.Log("[MobileControlsUI] 通过FindFirstObjectByType找到MobileInputManager");
             }
         }
         else
@@ -105,35 +165,17 @@ public class MobileControlsUI : MonoBehaviour
 
         // 原有的Start逻辑
         StartOriginalLogic();
+        SubscribeLanguageChanges();
+        UpdateLocalizedButtonLabels();
     }
 
     void StartOriginalLogic()
     {
         // 根据设备类型决定是否显示
-        bool shouldShow = true;
-
-        if (forceShowOnDesktop)
-        {
-            shouldShow = true;
-            Debug.Log($"[MobileControlsUI] 强制显示模式 - 显示虚拟控件");
-        }
-        else if (autoHideOnDesktop && !Application.isMobilePlatform)
-        {
-            shouldShow = inputManager != null && inputManager.ShouldShowVirtualControls();
-            Debug.Log($"[MobileControlsUI] 桌面平台检测 - 应该显示虚拟控件: {shouldShow}");
-            Debug.Log($"[MobileControlsUI] 输入管理器存在: {inputManager != null}");
-            if (inputManager != null)
-            {
-                Debug.Log($"[MobileControlsUI] ShouldShowVirtualControls: {inputManager.ShouldShowVirtualControls()}");
-            }
-        }
-        else
-        {
-            Debug.Log($"[MobileControlsUI] 移动平台或未启用桌面隐藏 - 显示虚拟控件");
-        }
+        bool shouldShow = ShouldShowForCurrentDevice();
 
         gameObject.SetActive(shouldShow);
-        
+
         // 设置界面
         if (gameObject.activeInHierarchy)
         {
@@ -145,22 +187,46 @@ public class MobileControlsUI : MonoBehaviour
         {
             Debug.LogWarning("[MobileControlsUI] GameObject未激活，跳过虚拟控制设置");
         }
-        
+
         Debug.Log($"[MobileControlsUI] 虚拟控制界面初始化完成 - 激活状态: {gameObject.activeInHierarchy}");
     }
-    
+
+    bool ShouldShowForCurrentDevice()
+    {
+        if (forceShowOnDesktop)
+        {
+            Debug.Log("[MobileControlsUI] 强制显示模式 - 显示虚拟控件");
+            return true;
+        }
+
+        if (inputManager != null)
+        {
+            bool shouldShow = inputManager.ShouldShowVirtualControls();
+            Debug.Log($"[MobileControlsUI] 平台检测 - 移动设备: {inputManager.IsMobileDevice()}, 应该显示虚拟控件: {shouldShow}");
+            return shouldShow;
+        }
+
+        bool isMobile = MobileInputManager.IsRuntimeMobileDevice();
+        bool shouldShowWithoutManager = isMobile;
+        Debug.Log($"[MobileControlsUI] 无输入管理器平台检测 - 移动设备: {isMobile}, 应该显示虚拟控件: {shouldShowWithoutManager}");
+        return shouldShowWithoutManager;
+    }
+
     void Update()
     {
         // 处理摇杆输入
         ProcessJoystickInput();
+        ProcessRawTouchFallbackInput();
 
         // 桌面测试模式：处理鼠标输入模拟触摸
         if (enableMouseInput && (forceShowOnDesktop || (inputManager != null && inputManager.desktopTestMode)))
         {
             ProcessMouseInput();
 
+            var keyboard = Keyboard.current;
+
             // 调试快捷键：R键重置摇杆位置
-            if (Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame)
+            if (keyboard != null && keyboard.rKey.wasPressedThisFrame)
             {
                 ResetJoystickPosition();
                 Debug.Log("[MobileControlsUI] R键重置摇杆位置");
@@ -168,12 +234,24 @@ public class MobileControlsUI : MonoBehaviour
         }
 
         // 发送输入数据给输入管理器
-        if (inputManager != null)
-        {
-            inputManager.SetMoveInput(joystickInput);
-        }
+        PublishJoystickInput();
     }
-    
+
+    void OnDisable()
+    {
+        if (ActiveInstance == this)
+        {
+            ActiveInstance = null;
+        }
+
+        ResetControlState();
+    }
+
+    void OnDestroy()
+    {
+        UnsubscribeLanguageChanges();
+    }
+
     /// <summary>
     /// 设置Canvas组件
     /// </summary>
@@ -184,37 +262,37 @@ public class MobileControlsUI : MonoBehaviour
         {
             controlsCanvas = gameObject.AddComponent<Canvas>();
         }
-        
+
         // 强制设置为屏幕覆盖模式
         controlsCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
         controlsCanvas.sortingOrder = 100; // 设置为较低层级，让仓库UI等功能性UI在上层
-        
+
         // 重要：重置transform，确保不受父对象影响
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
         transform.localScale = Vector3.one;
-        
+
         // 添加GraphicRaycaster用于UI交互
         if (GetComponent<GraphicRaycaster>() == null)
         {
             gameObject.AddComponent<GraphicRaycaster>();
         }
-        
+
         // 设置CanvasScaler以适应不同分辨率
         canvasScaler = GetComponent<CanvasScaler>();
         if (canvasScaler == null)
         {
             canvasScaler = gameObject.AddComponent<CanvasScaler>();
         }
-        
+
         canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         canvasScaler.referenceResolution = new Vector2(1920, 1080);
         canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
         canvasScaler.matchWidthOrHeight = 0.5f;
-        
+
         Debug.Log($"[MobileControlsUI] Canvas设置完成 - 渲染模式: {controlsCanvas.renderMode}, 排序: {controlsCanvas.sortingOrder}");
     }
-    
+
     /// <summary>
     /// 设置虚拟控制组件
     /// </summary>
@@ -224,12 +302,14 @@ public class MobileControlsUI : MonoBehaviour
         if (joystickContainer == null) CreateVirtualJoystick();
         if (jumpButton == null) CreateVirtualButtons();
         if (lookTouchArea == null) CreateLookTouchArea();
-        
+        ConfigureLookTouchAreaRaycasts();
+        UpdateLocalizedButtonLabels();
+
         // 设置事件监听
         SetupButtonEvents();
         SetupTouchEvents();
     }
-    
+
     /// <summary>
     /// 创建虚拟摇杆
     /// </summary>
@@ -237,52 +317,79 @@ public class MobileControlsUI : MonoBehaviour
     {
         // 创建摇杆容器
         GameObject container = new GameObject("VirtualJoystick");
-        container.transform.SetParent(transform);
-        
+        container.transform.SetParent(transform, false);
+
         RectTransform containerRect = container.AddComponent<RectTransform>();
-        containerRect.sizeDelta = new Vector2(joystickRange * 2, joystickRange * 2);
+        float joystickDiameter = joystickRange * 2f;
+        float hitDiameter = joystickDiameter * Mathf.Max(joystickHitAreaMultiplier, 1f);
+
+        containerRect.sizeDelta = new Vector2(hitDiameter, hitDiameter);
         containerRect.anchorMin = new Vector2(0, 0);
         containerRect.anchorMax = new Vector2(0, 0);
         containerRect.pivot = new Vector2(0.5f, 0.5f);
         containerRect.anchoredPosition = joystickPosition;
-        
+
         joystickContainer = container;
-        
+
+        Image hitImage = container.AddComponent<Image>();
+        hitImage.color = enableDebugVisualization ? new Color(1f, 0.9f, 0f, 0.08f) : new Color(1f, 1f, 1f, 0f);
+        hitImage.raycastTarget = true;
+
         // 创建摇杆背景
         GameObject background = new GameObject("JoystickBackground");
-        background.transform.SetParent(container.transform);
-        
+        background.transform.SetParent(container.transform, false);
+
         joystickBackground = background.AddComponent<RectTransform>();
-        joystickBackground.sizeDelta = new Vector2(joystickRange * 2, joystickRange * 2);
+        joystickBackground.sizeDelta = new Vector2(joystickDiameter, joystickDiameter);
         joystickBackground.anchorMin = new Vector2(0.5f, 0.5f);
         joystickBackground.anchorMax = new Vector2(0.5f, 0.5f);
         joystickBackground.pivot = new Vector2(0.5f, 0.5f);
         joystickBackground.anchoredPosition = Vector2.zero;
-        
+
         Image bgImage = background.AddComponent<Image>();
         bgImage.sprite = CreateCircleSprite(128);
-        bgImage.color = joystickBackgroundColor;
+        bgImage.color = GetJoystickBackgroundColor(false);
         bgImage.type = Image.Type.Simple;
-        
+        bgImage.raycastTarget = false;
+
+        Image bgRingImage = CreateChildImage(
+            background.transform,
+            "JoystickOuterRing",
+            CreateRingSprite(128, 0.82f, 0.98f),
+            new Color(0.72f, 0.92f, 1f, 0.42f),
+            Vector2.zero,
+            Vector2.one);
+        bgRingImage.type = Image.Type.Simple;
+
         // 创建摇杆手柄
         GameObject handle = new GameObject("JoystickHandle");
-        handle.transform.SetParent(container.transform);
-        
+        handle.transform.SetParent(container.transform, false);
+
         joystickHandle = handle.AddComponent<RectTransform>();
         joystickHandle.sizeDelta = new Vector2(joystickRange, joystickRange);
         joystickHandle.anchorMin = new Vector2(0.5f, 0.5f);
         joystickHandle.anchorMax = new Vector2(0.5f, 0.5f);
         joystickHandle.pivot = new Vector2(0.5f, 0.5f);
         joystickHandle.anchoredPosition = Vector2.zero;
-        
+
         Image handleImage = handle.AddComponent<Image>();
         handleImage.sprite = CreateCircleSprite(64);
-        handleImage.color = joystickHandleColor;
+        handleImage.color = GetJoystickHandleColor(false);
         handleImage.type = Image.Type.Simple;
-        
+        handleImage.raycastTarget = false;
+
+        Image handleRingImage = CreateChildImage(
+            handle.transform,
+            "JoystickHandleRing",
+            CreateRingSprite(96, 0.68f, 0.96f),
+            new Color(1f, 1f, 1f, 0.55f),
+            Vector2.zero,
+            Vector2.one);
+        handleRingImage.type = Image.Type.Simple;
+
         Debug.Log("[MobileControlsUI] 虚拟摇杆创建完成");
     }
-    
+
     /// <summary>
     /// 重置摇杆到初始位置
     /// </summary>
@@ -297,49 +404,58 @@ public class MobileControlsUI : MonoBehaviour
                 Debug.Log($"[MobileControlsUI] 摇杆位置已重置到: {joystickPosition}");
             }
         }
-        
+
         if (joystickHandle != null)
         {
             joystickHandle.anchoredPosition = Vector2.zero;
         }
-        
+
+        SetJoystickVisualActive(false);
+
         // 重置摇杆状态
         isJoystickActive = false;
         joystickInput = Vector2.zero;
         joystickPointerId = -1;
     }
-    
+
     /// <summary>
     /// 创建虚拟按钮
     /// </summary>
     void CreateVirtualButtons()
     {
         // 跳跃按钮
-        jumpButton = CreateButton("JumpButton", "⬆", new Vector2(-edgeMargin - buttonSize/2, edgeMargin + buttonSize/2),
+        float primaryX = -edgeMargin - buttonSize * 0.55f;
+        float bottomY = edgeMargin + buttonSize * 0.55f;
+        float staggerSpacing = buttonSpacing * 1.15f;
+        float secondaryX = primaryX - buttonSize - staggerSpacing;
+        float runX = secondaryX - buttonSize - staggerSpacing;
+        float middleY = bottomY + buttonSize * 0.55f + buttonSpacing * 0.5f;
+        float upperY = bottomY + buttonSize + staggerSpacing;
+
+        // 右下角动作区：主按钮靠右，辅助按钮错位展开，减少4键挤在一起造成的误触。
+        jumpButton = CreateButton("JumpButton", "跳跃", new Vector2(primaryX, bottomY),
                                   new Vector2(1, 0), OnJumpButtonDown, OnJumpButtonUp);
 
         // 奔跑按钮
-        runButton = CreateButton("RunButton", "🏃", new Vector2(-edgeMargin - buttonSize * 1.5f - buttonSpacing, edgeMargin + buttonSize/2),
+        runButton = CreateButton("RunButton", "奔跑", new Vector2(runX, bottomY),
                                  new Vector2(1, 0), OnRunButtonDown, OnRunButtonUp);
 
-        // E键交互按钮 - 右下角
-        interactButton = CreateButton("InteractButton", "E", new Vector2(-edgeMargin - buttonSize/2, edgeMargin + buttonSize * 1.5f + buttonSpacing),
+        // 主交互按钮 - 右下角
+        interactButton = CreateButton("InteractButton", "交互", new Vector2(primaryX, upperY),
                                       new Vector2(1, 0), OnInteractButtonDown, OnInteractButtonUp);
 
-        // F键交互按钮 - E键上方
-        secondaryInteractButton = CreateButton("SecondaryInteractButton", "F", new Vector2(-edgeMargin - buttonSize/2, edgeMargin + buttonSize * 2.5f + buttonSpacing * 2),
+        // 次操作按钮 - 主交互左侧
+        secondaryInteractButton = CreateButton("SecondaryInteractButton", "次操作", new Vector2(secondaryX, middleY),
                                                new Vector2(1, 0), OnSecondaryInteractButtonDown, OnSecondaryInteractButtonUp);
-        
-        // 背包按钮
-        inventoryButton = CreateButton("InventoryButton", "🎒", new Vector2(edgeMargin + buttonSize/2, -edgeMargin - buttonSize/2),
+
+        // 顶部低频入口
+        inventoryButton = CreateButton("InventoryButton", "背包", new Vector2(edgeMargin + buttonSize/2, -edgeMargin - buttonSize/2),
                                        new Vector2(0, 1), OnInventoryButtonClick, null);
 
-        // 图鉴按钮 - 在背包按钮旁边
-        encyclopediaButton = CreateButton("EncyclopediaButton", "📚", new Vector2(edgeMargin + buttonSize * 1.5f + buttonSpacing, -edgeMargin - buttonSize/2),
+        encyclopediaButton = CreateButton("EncyclopediaButton", "图鉴", new Vector2(edgeMargin + buttonSize * 1.5f + buttonSpacing, -edgeMargin - buttonSize/2),
                                           new Vector2(0, 1), OnEncyclopediaButtonClick, null);
 
-        // 工具轮盘按钮
-        toolWheelButton = CreateButton("ToolWheelButton", "⚙", new Vector2(edgeMargin + buttonSize/2, -edgeMargin - buttonSize * 1.5f - buttonSpacing),
+        toolWheelButton = CreateButton("ToolWheelButton", "工具", new Vector2(edgeMargin + buttonSize * 2.5f + buttonSpacing * 2, -edgeMargin - buttonSize/2),
                                        new Vector2(0, 1), OnToolWheelButtonClick, null);
 
         // 创建无人机控制容器
@@ -347,77 +463,78 @@ public class MobileControlsUI : MonoBehaviour
 
         Debug.Log("[MobileControlsUI] 虚拟按钮创建完成");
     }
-    
+
     /// <summary>
     /// 创建单个按钮
     /// </summary>
-    Button CreateButton(string name, string text, Vector2 position, Vector2 anchor, 
+    Button CreateButton(string name, string text, Vector2 position, Vector2 anchor,
                        UnityEngine.Events.UnityAction onDown, UnityEngine.Events.UnityAction onUp)
     {
         GameObject buttonObj = new GameObject(name);
-        buttonObj.transform.SetParent(transform);
-        
+        buttonObj.transform.SetParent(transform, false);
+
         RectTransform buttonRect = buttonObj.AddComponent<RectTransform>();
         buttonRect.sizeDelta = new Vector2(buttonSize, buttonSize);
         buttonRect.anchorMin = anchor;
         buttonRect.anchorMax = anchor;
         buttonRect.pivot = new Vector2(0.5f, 0.5f);
         buttonRect.anchoredPosition = position;
-        
+
         Image buttonImage = buttonObj.AddComponent<Image>();
-        buttonImage.sprite = CreateCircleSprite();
-        buttonImage.color = buttonNormalColor;
-        buttonImage.type = Image.Type.Simple;
-        
+
         Button button = buttonObj.AddComponent<Button>();
         button.targetGraphic = buttonImage;
-        
+        ConfigureGameButton(button, buttonImage, name);
+
         // 添加按钮文本
         GameObject textObj = new GameObject("Text");
-        textObj.transform.SetParent(buttonObj.transform);
-        
+        textObj.transform.SetParent(buttonObj.transform, false);
+
         RectTransform textRect = textObj.AddComponent<RectTransform>();
         textRect.sizeDelta = Vector2.zero;
         textRect.anchorMin = Vector2.zero;
         textRect.anchorMax = Vector2.one;
         textRect.anchoredPosition = Vector2.zero;
-        
+
         Text buttonText = textObj.AddComponent<Text>();
-        buttonText.text = text;
-        buttonText.font = UIFontResolver.GetUIFont();
-        buttonText.fontSize = (int)(buttonSize * 0.4f);
-        buttonText.color = Color.white;
-        buttonText.alignment = TextAnchor.MiddleCenter;
-        
+        ConfigureButtonText(buttonText, text);
+
         // 设置按钮事件
+        EventTrigger trigger = buttonObj.AddComponent<EventTrigger>();
         if (onDown != null)
         {
-            // 使用EventTrigger处理按下和释放事件
-            EventTrigger trigger = buttonObj.AddComponent<EventTrigger>();
-            
-            EventTrigger.Entry downEntry = new EventTrigger.Entry();
-            downEntry.eventID = EventTriggerType.PointerDown;
-            downEntry.callback.AddListener((data) => onDown.Invoke());
-            trigger.triggers.Add(downEntry);
-            
+            AddTriggerEntry(trigger, EventTriggerType.PointerDown, (data) =>
+            {
+                SetButtonVisualPressed(button, true);
+                onDown.Invoke();
+            });
+
             if (onUp != null)
             {
-                EventTrigger.Entry upEntry = new EventTrigger.Entry();
-                upEntry.eventID = EventTriggerType.PointerUp;
-                upEntry.callback.AddListener((data) => onUp.Invoke());
-                trigger.triggers.Add(upEntry);
-                
-                EventTrigger.Entry exitEntry = new EventTrigger.Entry();
-                exitEntry.eventID = EventTriggerType.PointerExit;
-                exitEntry.callback.AddListener((data) => onUp.Invoke());
-                trigger.triggers.Add(exitEntry);
+                AddTriggerEntry(trigger, EventTriggerType.PointerUp, (data) =>
+                {
+                    SetButtonVisualPressed(button, false);
+                    onUp.Invoke();
+                });
+                AddTriggerEntry(trigger, EventTriggerType.PointerExit, (data) =>
+                {
+                    SetButtonVisualPressed(button, false);
+                    onUp.Invoke();
+                });
+            }
+            else
+            {
+                AddTriggerEntry(trigger, EventTriggerType.PointerUp, (data) => SetButtonVisualPressed(button, false));
+                AddTriggerEntry(trigger, EventTriggerType.PointerExit, (data) => SetButtonVisualPressed(button, false));
             }
         }
         else
         {
-            button.onClick.AddListener(onDown);
+            AddTriggerEntry(trigger, EventTriggerType.PointerDown, (data) => SetButtonVisualPressed(button, true));
+            AddTriggerEntry(trigger, EventTriggerType.PointerUp, (data) => SetButtonVisualPressed(button, false));
+            AddTriggerEntry(trigger, EventTriggerType.PointerExit, (data) => SetButtonVisualPressed(button, false));
         }
-        
+
         return button;
     }
 
@@ -440,31 +557,12 @@ public class MobileControlsUI : MonoBehaviour
         droneControlsContainer = droneContainer;
 
         // 创建上升按钮（右下角上方位置，对应F键位置）
-        ascendButton = CreateButton("AscendButton", "🔺", new Vector2(0, buttonSize * 1.5f + buttonSpacing),
+        ascendButton = CreateButton("AscendButton", "上升", new Vector2(0, buttonSize * 1.5f + buttonSpacing),
                                    new Vector2(0.5f, 0f), OnAscendButtonDown, OnAscendButtonUp, droneContainer.transform);
 
         // 创建下降按钮（右下角下方位置，对应E键位置）
-        descendButton = CreateButton("DescendButton", "🔻", new Vector2(0, buttonSize * 0.5f),
+        descendButton = CreateButton("DescendButton", "下降", new Vector2(0, buttonSize * 0.5f),
                                     new Vector2(0.5f, 0f), OnDescendButtonDown, OnDescendButtonUp, droneContainer.transform);
-
-        // 设置按钮颜色为蓝色系（区别于普通按钮）
-        if (ascendButton != null)
-        {
-            var ascendImage = ascendButton.GetComponent<Image>();
-            if (ascendImage != null)
-            {
-                ascendImage.color = new Color(0.3f, 0.7f, 1f, 0.8f); // 浅蓝色
-            }
-        }
-
-        if (descendButton != null)
-        {
-            var descendImage = descendButton.GetComponent<Image>();
-            if (descendImage != null)
-            {
-                descendImage.color = new Color(0.3f, 0.7f, 1f, 0.8f); // 浅蓝色
-            }
-        }
 
         // 默认隐藏无人机控制（只有在无人机模式下才显示）
         SetDroneControlsVisible(false);
@@ -490,10 +588,11 @@ public class MobileControlsUI : MonoBehaviour
 
         // 添加Image组件
         Image image = buttonObj.AddComponent<Image>();
-        image.color = buttonNormalColor;
 
         // 添加Button组件
         Button button = buttonObj.AddComponent<Button>();
+        button.targetGraphic = image;
+        ConfigureGameButton(button, image, name);
 
         // 添加文字
         GameObject textObj = new GameObject("Text");
@@ -506,35 +605,37 @@ public class MobileControlsUI : MonoBehaviour
         textRect.offsetMax = Vector2.zero;
 
         Text buttonText = textObj.AddComponent<Text>();
-        buttonText.text = text;
-        buttonText.font = UIFontResolver.GetUIFont();
-        buttonText.fontSize = 24;
-        buttonText.alignment = TextAnchor.MiddleCenter;
-        buttonText.color = Color.white;
+        ConfigureButtonText(buttonText, text);
 
         // 设置按钮事件
+        EventTrigger trigger = buttonObj.AddComponent<EventTrigger>();
         if (onUp != null)
         {
-            EventTrigger trigger = buttonObj.AddComponent<EventTrigger>();
-
-            EventTrigger.Entry downEntry = new EventTrigger.Entry();
-            downEntry.eventID = EventTriggerType.PointerDown;
-            downEntry.callback.AddListener((data) => onDown.Invoke());
-            trigger.triggers.Add(downEntry);
-
-            EventTrigger.Entry upEntry = new EventTrigger.Entry();
-            upEntry.eventID = EventTriggerType.PointerUp;
-            upEntry.callback.AddListener((data) => onUp.Invoke());
-            trigger.triggers.Add(upEntry);
-
-            EventTrigger.Entry exitEntry = new EventTrigger.Entry();
-            exitEntry.eventID = EventTriggerType.PointerExit;
-            exitEntry.callback.AddListener((data) => onUp.Invoke());
-            trigger.triggers.Add(exitEntry);
+            AddTriggerEntry(trigger, EventTriggerType.PointerDown, (data) =>
+            {
+                SetButtonVisualPressed(button, true);
+                onDown?.Invoke();
+            });
+            AddTriggerEntry(trigger, EventTriggerType.PointerUp, (data) =>
+            {
+                SetButtonVisualPressed(button, false);
+                onUp.Invoke();
+            });
+            AddTriggerEntry(trigger, EventTriggerType.PointerExit, (data) =>
+            {
+                SetButtonVisualPressed(button, false);
+                onUp.Invoke();
+            });
         }
         else
         {
-            button.onClick.AddListener(() => onDown?.Invoke());
+            AddTriggerEntry(trigger, EventTriggerType.PointerDown, (data) =>
+            {
+                SetButtonVisualPressed(button, true);
+                onDown?.Invoke();
+            });
+            AddTriggerEntry(trigger, EventTriggerType.PointerUp, (data) => SetButtonVisualPressed(button, false));
+            AddTriggerEntry(trigger, EventTriggerType.PointerExit, (data) => SetButtonVisualPressed(button, false));
         }
 
         return button;
@@ -546,27 +647,46 @@ public class MobileControlsUI : MonoBehaviour
     void CreateLookTouchArea()
     {
         GameObject touchArea = new GameObject("LookTouchArea");
-        touchArea.transform.SetParent(transform);
-        
+        touchArea.transform.SetParent(transform, false);
+        touchArea.transform.SetAsFirstSibling();
+
         lookTouchArea = touchArea.AddComponent<RectTransform>();
         lookTouchArea.anchorMin = new Vector2(0.3f, 0.3f);
         lookTouchArea.anchorMax = new Vector2(1f, 1f);
         lookTouchArea.offsetMin = Vector2.zero;
         lookTouchArea.offsetMax = Vector2.zero;
-        
-        // 添加透明图像以接收触摸事件
+
+        // 视角拖拽由MobileInputManager读取原始触摸；这里不能抢UI射线。
         Image touchImage = touchArea.AddComponent<Image>();
         touchImage.color = new Color(0, 0, 0, 0); // 完全透明
-        touchImage.raycastTarget = false; // 关闭射线检测，避免阻挡其他UI
-        
+        touchImage.raycastTarget = false;
+
         if (enableDebugVisualization)
         {
             touchImage.color = new Color(0, 1, 0, 0.1f); // 调试时显示绿色半透明
         }
-        
+
         Debug.Log("[MobileControlsUI] 视角触摸区域创建完成");
     }
-    
+
+    void ConfigureLookTouchAreaRaycasts()
+    {
+        if (lookTouchArea == null) return;
+
+        Image touchImage = lookTouchArea.GetComponent<Image>();
+        if (touchImage != null)
+        {
+            touchImage.raycastTarget = false;
+            touchImage.color = enableDebugVisualization ? new Color(0, 1, 0, 0.1f) : new Color(0, 0, 0, 0);
+        }
+
+        GraphicRaycaster raycaster = lookTouchArea.GetComponent<GraphicRaycaster>();
+        if (raycaster != null)
+        {
+            raycaster.enabled = false;
+        }
+    }
+
     /// <summary>
     /// 设置按钮事件
     /// </summary>
@@ -575,7 +695,7 @@ public class MobileControlsUI : MonoBehaviour
         // 按钮事件在CreateButton中已经设置
         Debug.Log("[MobileControlsUI] 按钮事件设置完成");
     }
-    
+
     /// <summary>
     /// 设置触摸事件
     /// </summary>
@@ -587,107 +707,689 @@ public class MobileControlsUI : MonoBehaviour
             EventTrigger joystickTrigger = joystickContainer.GetComponent<EventTrigger>();
             if (joystickTrigger == null)
                 joystickTrigger = joystickContainer.AddComponent<EventTrigger>();
-            
+            joystickTrigger.triggers.Clear();
+
             // 摇杆按下事件
             EventTrigger.Entry joystickDownEntry = new EventTrigger.Entry();
             joystickDownEntry.eventID = EventTriggerType.PointerDown;
             joystickDownEntry.callback.AddListener(OnJoystickPointerDown);
             joystickTrigger.triggers.Add(joystickDownEntry);
-            
+
             // 摇杆拖拽事件
             EventTrigger.Entry joystickDragEntry = new EventTrigger.Entry();
             joystickDragEntry.eventID = EventTriggerType.Drag;
             joystickDragEntry.callback.AddListener(OnJoystickDrag);
             joystickTrigger.triggers.Add(joystickDragEntry);
-            
+
             // 摇杆释放事件
             EventTrigger.Entry joystickUpEntry = new EventTrigger.Entry();
             joystickUpEntry.eventID = EventTriggerType.PointerUp;
             joystickUpEntry.callback.AddListener(OnJoystickPointerUp);
             joystickTrigger.triggers.Add(joystickUpEntry);
+
+            EventTrigger.Entry joystickExitEntry = new EventTrigger.Entry();
+            joystickExitEntry.eventID = EventTriggerType.PointerExit;
+            joystickExitEntry.callback.AddListener(OnJoystickPointerUp);
+            joystickTrigger.triggers.Add(joystickExitEntry);
         }
-        
+
         // 为视角触摸区域添加事件
         if (lookTouchArea != null)
         {
             EventTrigger lookTrigger = lookTouchArea.GetComponent<EventTrigger>();
             if (lookTrigger == null)
                 lookTrigger = lookTouchArea.gameObject.AddComponent<EventTrigger>();
-            
+            lookTrigger.triggers.Clear();
+
             // 视角触摸开始
             EventTrigger.Entry lookDownEntry = new EventTrigger.Entry();
             lookDownEntry.eventID = EventTriggerType.PointerDown;
             lookDownEntry.callback.AddListener(OnLookTouchDown);
             lookTrigger.triggers.Add(lookDownEntry);
-            
+
             // 视角触摸拖拽
             EventTrigger.Entry lookDragEntry = new EventTrigger.Entry();
             lookDragEntry.eventID = EventTriggerType.Drag;
             lookDragEntry.callback.AddListener(OnLookTouchDrag);
             lookTrigger.triggers.Add(lookDragEntry);
-            
+
             // 视角触摸结束
             EventTrigger.Entry lookUpEntry = new EventTrigger.Entry();
             lookUpEntry.eventID = EventTriggerType.PointerUp;
             lookUpEntry.callback.AddListener(OnLookTouchUp);
             lookTrigger.triggers.Add(lookUpEntry);
+
+            EventTrigger.Entry lookExitEntry = new EventTrigger.Entry();
+            lookExitEntry.eventID = EventTriggerType.PointerExit;
+            lookExitEntry.callback.AddListener(OnLookTouchUp);
+            lookTrigger.triggers.Add(lookExitEntry);
         }
-        
+
         Debug.Log("[MobileControlsUI] 触摸事件设置完成");
     }
-    
+
     /// <summary>
     /// 设置安全区域适配
     /// </summary>
     void SetupSafeArea()
     {
         if (!adaptToSafeArea) return;
-        
+
         // 获取安全区域
         Rect safeArea = Screen.safeArea;
         Vector2 screenSize = new Vector2(Screen.width, Screen.height);
-        
+
         // 计算安全区域边距
         float leftMargin = safeArea.x;
         float rightMargin = screenSize.x - safeArea.xMax;
         float topMargin = screenSize.y - safeArea.yMax;
         float bottomMargin = safeArea.y;
-        
-        // 调整控件位置以适应安全区域
-        if (joystickContainer != null)
-        {
-            RectTransform joystickRect = joystickContainer.GetComponent<RectTransform>();
-            Vector2 newPos = joystickRect.anchoredPosition;
-            newPos.x += leftMargin / canvasScaler.scaleFactor;
-            newPos.y += bottomMargin / canvasScaler.scaleFactor;
-            joystickRect.anchoredPosition = newPos;
-        }
-        
+
+        ApplySafeAreaOffset(GetRectTransform(joystickContainer), leftMargin, rightMargin, topMargin, bottomMargin);
+        ApplySafeAreaOffset(GetButtonRect(jumpButton), leftMargin, rightMargin, topMargin, bottomMargin);
+        ApplySafeAreaOffset(GetButtonRect(runButton), leftMargin, rightMargin, topMargin, bottomMargin);
+        ApplySafeAreaOffset(GetButtonRect(interactButton), leftMargin, rightMargin, topMargin, bottomMargin);
+        ApplySafeAreaOffset(GetButtonRect(secondaryInteractButton), leftMargin, rightMargin, topMargin, bottomMargin);
+        ApplySafeAreaOffset(GetButtonRect(inventoryButton), leftMargin, rightMargin, topMargin, bottomMargin);
+        ApplySafeAreaOffset(GetButtonRect(encyclopediaButton), leftMargin, rightMargin, topMargin, bottomMargin);
+        ApplySafeAreaOffset(GetButtonRect(toolWheelButton), leftMargin, rightMargin, topMargin, bottomMargin);
+        ApplySafeAreaOffset(GetRectTransform(droneControlsContainer), leftMargin, rightMargin, topMargin, bottomMargin);
+
         Debug.Log($"[MobileControlsUI] 安全区域适配完成 - 边距: L{leftMargin} R{rightMargin} T{topMargin} B{bottomMargin}");
     }
-    
+
+    RectTransform GetRectTransform(GameObject target)
+    {
+        return target != null ? target.GetComponent<RectTransform>() : null;
+    }
+
+    RectTransform GetButtonRect(Button button)
+    {
+        return button != null ? button.GetComponent<RectTransform>() : null;
+    }
+
+    public bool ContainsControlAtScreenPoint(Vector2 screenPosition)
+    {
+        if (!isActiveAndEnabled) return false;
+
+        return IsScreenPointInRect(GetRectTransform(joystickContainer), screenPosition) ||
+               IsScreenPointInButton(jumpButton, screenPosition) ||
+               IsScreenPointInButton(runButton, screenPosition) ||
+               IsScreenPointInButton(interactButton, screenPosition) ||
+               IsScreenPointInButton(secondaryInteractButton, screenPosition) ||
+               IsScreenPointInButton(inventoryButton, screenPosition) ||
+               IsScreenPointInButton(encyclopediaButton, screenPosition) ||
+               IsScreenPointInButton(toolWheelButton, screenPosition) ||
+               IsScreenPointInButton(ascendButton, screenPosition) ||
+               IsScreenPointInButton(descendButton, screenPosition);
+    }
+
+    bool IsScreenPointInButton(Button button, Vector2 screenPosition)
+    {
+        if (!IsButtonTouchable(button)) return false;
+        return IsScreenPointInRect(GetButtonRect(button), screenPosition);
+    }
+
+    bool IsScreenPointInRect(RectTransform rect, Vector2 screenPosition)
+    {
+        return rect != null &&
+               rect.gameObject.activeInHierarchy &&
+               RectTransformUtility.RectangleContainsScreenPoint(rect, screenPosition, null);
+    }
+
+    bool IsButtonTouchable(Button button)
+    {
+        return button != null &&
+               button.gameObject.activeInHierarchy &&
+               button.enabled &&
+               button.interactable;
+    }
+
+    void ApplySafeAreaOffset(RectTransform rect, float left, float right, float top, float bottom)
+    {
+        if (rect == null) return;
+
+        float scaleFactor = canvasScaler != null ? Mathf.Max(canvasScaler.scaleFactor, 0.01f) : 1f;
+        Vector2 position = rect.anchoredPosition;
+
+        if (rect.anchorMin.x <= 0.01f && rect.anchorMax.x <= 0.01f)
+        {
+            position.x += left / scaleFactor;
+        }
+        else if (rect.anchorMin.x >= 0.99f && rect.anchorMax.x >= 0.99f)
+        {
+            position.x -= right / scaleFactor;
+        }
+
+        if (rect.anchorMin.y <= 0.01f && rect.anchorMax.y <= 0.01f)
+        {
+            position.y += bottom / scaleFactor;
+        }
+        else if (rect.anchorMin.y >= 0.99f && rect.anchorMax.y >= 0.99f)
+        {
+            position.y -= top / scaleFactor;
+        }
+
+        rect.anchoredPosition = position;
+    }
+
+    void ConfigureGameButton(Button button, Image buttonImage, string buttonName)
+    {
+        ControlButtonRole role = GetButtonRole(buttonName);
+
+        buttonImage.sprite = CreateCircleSprite(128);
+        buttonImage.color = GetButtonBaseColor(role, false);
+        buttonImage.type = Image.Type.Simple;
+        buttonImage.raycastTarget = true;
+
+        ColorBlock colors = button.colors;
+        colors.normalColor = GetButtonBaseColor(role, false);
+        colors.highlightedColor = GetButtonBaseColor(role, true);
+        colors.pressedColor = GetButtonPressedColor(role);
+        colors.selectedColor = GetButtonBaseColor(role, true);
+        colors.disabledColor = new Color(0.05f, 0.055f, 0.06f, 0.34f);
+        colors.colorMultiplier = 1f;
+        colors.fadeDuration = 0.06f;
+        button.colors = colors;
+
+        CreateChildImage(
+            button.transform,
+            "ButtonGlow",
+            CreateCircleSprite(128),
+            GetButtonGlowColor(role),
+            new Vector2(0.13f, 0.18f),
+            new Vector2(0.87f, 0.92f));
+
+        CreateChildImage(
+            button.transform,
+            "ButtonRim",
+            CreateRingSprite(128, 0.84f, 0.98f),
+            GetButtonRingColor(role),
+            Vector2.zero,
+            Vector2.one);
+
+        CreateChildImage(
+            button.transform,
+            "Icon",
+            CreateIconSprite(GetButtonIcon(buttonName), 96),
+            GetButtonIconColor(role),
+            new Vector2(0.27f, 0.36f),
+            new Vector2(0.73f, 0.83f));
+    }
+
+    Image CreateChildImage(Transform parent, string name, Sprite sprite, Color color, Vector2 anchorMin, Vector2 anchorMax)
+    {
+        GameObject imageObj = new GameObject(name);
+        imageObj.transform.SetParent(parent, false);
+
+        RectTransform rect = imageObj.AddComponent<RectTransform>();
+        rect.anchorMin = anchorMin;
+        rect.anchorMax = anchorMax;
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+
+        Image image = imageObj.AddComponent<Image>();
+        image.sprite = sprite;
+        image.color = color;
+        image.type = Image.Type.Simple;
+        image.raycastTarget = false;
+        return image;
+    }
+
+    void AddTriggerEntry(EventTrigger trigger, EventTriggerType eventID, UnityEngine.Events.UnityAction<BaseEventData> callback)
+    {
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = eventID;
+        entry.callback.AddListener(callback);
+        trigger.triggers.Add(entry);
+    }
+
+    ControlButtonRole GetButtonRole(string buttonName)
+    {
+        switch (buttonName)
+        {
+            case "InteractButton":
+            case "SecondaryInteractButton":
+                return ControlButtonRole.Interact;
+            case "InventoryButton":
+            case "EncyclopediaButton":
+            case "ToolWheelButton":
+                return ControlButtonRole.Utility;
+            case "AscendButton":
+            case "DescendButton":
+                return ControlButtonRole.Drone;
+            default:
+                return ControlButtonRole.Action;
+        }
+    }
+
+    ControlButtonIcon GetButtonIcon(string buttonName)
+    {
+        switch (buttonName)
+        {
+            case "RunButton":
+                return ControlButtonIcon.Run;
+            case "InteractButton":
+                return ControlButtonIcon.Interact;
+            case "SecondaryInteractButton":
+                return ControlButtonIcon.Secondary;
+            case "InventoryButton":
+                return ControlButtonIcon.Inventory;
+            case "EncyclopediaButton":
+                return ControlButtonIcon.Encyclopedia;
+            case "ToolWheelButton":
+                return ControlButtonIcon.Tools;
+            case "AscendButton":
+                return ControlButtonIcon.Ascend;
+            case "DescendButton":
+                return ControlButtonIcon.Descend;
+            default:
+                return ControlButtonIcon.Jump;
+        }
+    }
+
+    Color GetButtonBaseColor(ControlButtonRole role, bool highlighted)
+    {
+        Color baseColor;
+        switch (role)
+        {
+            case ControlButtonRole.Interact:
+                baseColor = new Color(0.56f, 0.32f, 0.08f, 0.84f);
+                break;
+            case ControlButtonRole.Utility:
+                baseColor = new Color(0.045f, 0.13f, 0.15f, 0.68f);
+                break;
+            case ControlButtonRole.Drone:
+                baseColor = new Color(0.06f, 0.22f, 0.34f, 0.82f);
+                break;
+            default:
+                baseColor = ResolveLegacyColor(buttonNormalColor, LegacyButtonNormalColor, ModernButtonNormalColor);
+                break;
+        }
+
+        return highlighted ? Color.Lerp(baseColor, GetButtonPressedColor(role), 0.35f) : baseColor;
+    }
+
+    Color GetButtonPressedColor(ControlButtonRole role)
+    {
+        switch (role)
+        {
+            case ControlButtonRole.Interact:
+                return new Color(1f, 0.64f, 0.18f, 0.96f);
+            case ControlButtonRole.Utility:
+                return new Color(0.12f, 0.45f, 0.48f, 0.86f);
+            case ControlButtonRole.Drone:
+                return new Color(0.16f, 0.62f, 0.96f, 0.96f);
+            default:
+                return ResolveLegacyColor(buttonPressedColor, LegacyButtonPressedColor, ModernButtonPressedColor);
+        }
+    }
+
+    Color GetButtonRingColor(ControlButtonRole role)
+    {
+        switch (role)
+        {
+            case ControlButtonRole.Interact:
+                return new Color(1f, 0.72f, 0.32f, 0.78f);
+            case ControlButtonRole.Utility:
+                return new Color(0.58f, 1f, 0.9f, 0.48f);
+            case ControlButtonRole.Drone:
+                return new Color(0.48f, 0.86f, 1f, 0.72f);
+            default:
+                return new Color(0.9f, 0.97f, 1f, 0.56f);
+        }
+    }
+
+    Color GetButtonGlowColor(ControlButtonRole role)
+    {
+        switch (role)
+        {
+            case ControlButtonRole.Interact:
+                return new Color(1f, 0.75f, 0.28f, 0.13f);
+            case ControlButtonRole.Utility:
+                return new Color(0.42f, 1f, 0.9f, 0.09f);
+            case ControlButtonRole.Drone:
+                return new Color(0.34f, 0.78f, 1f, 0.13f);
+            default:
+                return new Color(1f, 1f, 1f, 0.08f);
+        }
+    }
+
+    Color GetButtonIconColor(ControlButtonRole role)
+    {
+        switch (role)
+        {
+            case ControlButtonRole.Interact:
+                return new Color(1f, 0.92f, 0.72f, 0.96f);
+            case ControlButtonRole.Drone:
+                return new Color(0.82f, 0.96f, 1f, 0.96f);
+            default:
+                return new Color(0.96f, 0.99f, 1f, 0.94f);
+        }
+    }
+
+    Color GetButtonLabelColor(ControlButtonRole role)
+    {
+        switch (role)
+        {
+            case ControlButtonRole.Interact:
+                return new Color(1f, 0.88f, 0.66f, 0.96f);
+            case ControlButtonRole.Drone:
+                return new Color(0.78f, 0.95f, 1f, 0.96f);
+            default:
+                return new Color(1f, 1f, 1f, 0.86f);
+        }
+    }
+
+    Color GetJoystickBackgroundColor(bool active)
+    {
+        Color color = ResolveLegacyColor(joystickBackgroundColor, LegacyJoystickBackgroundColor, ModernJoystickBackgroundColor);
+        return SetAlpha(color, Mathf.Clamp01(color.a + (active ? 0.16f : 0f)));
+    }
+
+    Color GetJoystickHandleColor(bool active)
+    {
+        Color color = ResolveLegacyColor(joystickHandleColor, LegacyJoystickHandleColor, ModernJoystickHandleColor);
+        return SetAlpha(color, Mathf.Clamp01(color.a + (active ? 0.12f : 0f)));
+    }
+
+    Color ResolveLegacyColor(Color configuredColor, Color legacyColor, Color modernColor)
+    {
+        return AreColorsClose(configuredColor, legacyColor) ? modernColor : configuredColor;
+    }
+
+    bool AreColorsClose(Color a, Color b)
+    {
+        return Mathf.Abs(a.r - b.r) < 0.005f &&
+               Mathf.Abs(a.g - b.g) < 0.005f &&
+               Mathf.Abs(a.b - b.b) < 0.005f &&
+               Mathf.Abs(a.a - b.a) < 0.005f;
+    }
+
+    Color SetAlpha(Color color, float alpha)
+    {
+        color.a = alpha;
+        return color;
+    }
+
+    void SetButtonVisualPressed(Button button, bool pressed)
+    {
+        if (button == null) return;
+
+        ControlButtonRole role = GetButtonRole(button.gameObject.name);
+        button.transform.localScale = pressed ? Vector3.one * ButtonPressedScale : Vector3.one;
+
+        Graphic targetGraphic = button.targetGraphic;
+        if (targetGraphic != null)
+        {
+            targetGraphic.color = pressed ? GetButtonPressedColor(role) : GetButtonBaseColor(role, false);
+        }
+    }
+
+    void ResetButtonVisuals()
+    {
+        SetButtonVisualPressed(jumpButton, false);
+        SetButtonVisualPressed(runButton, false);
+        SetButtonVisualPressed(interactButton, false);
+        SetButtonVisualPressed(secondaryInteractButton, false);
+        SetButtonVisualPressed(inventoryButton, false);
+        SetButtonVisualPressed(encyclopediaButton, false);
+        SetButtonVisualPressed(toolWheelButton, false);
+        SetButtonVisualPressed(ascendButton, false);
+        SetButtonVisualPressed(descendButton, false);
+    }
+
+    void SetJoystickVisualActive(bool active)
+    {
+        if (joystickBackground != null)
+        {
+            Image backgroundImage = joystickBackground.GetComponent<Image>();
+            if (backgroundImage != null)
+            {
+                backgroundImage.color = GetJoystickBackgroundColor(active);
+            }
+        }
+
+        if (joystickHandle != null)
+        {
+            Image handleImage = joystickHandle.GetComponent<Image>();
+            if (handleImage != null)
+            {
+                handleImage.color = GetJoystickHandleColor(active);
+            }
+        }
+    }
+
+    void ConfigureButtonText(Text buttonText, string text)
+    {
+        RectTransform textRect = buttonText.rectTransform;
+        textRect.anchorMin = new Vector2(0.08f, 0.07f);
+        textRect.anchorMax = new Vector2(0.92f, 0.31f);
+        textRect.offsetMin = Vector2.zero;
+        textRect.offsetMax = Vector2.zero;
+
+        string buttonName = buttonText.transform.parent != null ? buttonText.transform.parent.name : string.Empty;
+        ControlButtonRole role = GetButtonRole(buttonName);
+
+        buttonText.text = text;
+        buttonText.font = UIFontResolver.GetUIFont();
+        buttonText.fontSize = Mathf.RoundToInt(buttonSize * (text.Length <= 2 ? 0.16f : 0.13f));
+        buttonText.resizeTextForBestFit = true;
+        buttonText.resizeTextMinSize = 9;
+        buttonText.resizeTextMaxSize = Mathf.RoundToInt(buttonSize * 0.17f);
+        buttonText.color = GetButtonLabelColor(role);
+        buttonText.alignment = TextAnchor.MiddleCenter;
+        buttonText.horizontalOverflow = HorizontalWrapMode.Wrap;
+        buttonText.verticalOverflow = VerticalWrapMode.Truncate;
+        buttonText.raycastTarget = false;
+    }
+
+    void SubscribeLanguageChanges()
+    {
+        if (isLanguageChangeSubscribed) return;
+
+        LocalizationManager localizationManager = LocalizationManager.Instance;
+        if (localizationManager != null)
+        {
+            localizationManager.OnLanguageChanged += UpdateLocalizedButtonLabels;
+            isLanguageChangeSubscribed = true;
+        }
+    }
+
+    void UnsubscribeLanguageChanges()
+    {
+        if (!isLanguageChangeSubscribed) return;
+
+        LocalizationManager localizationManager = FindFirstObjectByType<LocalizationManager>();
+        if (localizationManager != null)
+        {
+            localizationManager.OnLanguageChanged -= UpdateLocalizedButtonLabels;
+        }
+
+        isLanguageChangeSubscribed = false;
+    }
+
+    void UpdateLocalizedButtonLabels()
+    {
+        LanguageSettings.Language language = LocalizationManager.Instance != null
+            ? LocalizationManager.Instance.CurrentLanguage
+            : LanguageSettings.DefaultLanguage;
+
+        UpdateButtonLabel(jumpButton, GetControlLabel(language, "jump"));
+        UpdateButtonLabel(runButton, GetControlLabel(language, "run"));
+        UpdateButtonLabel(interactButton, GetControlLabel(language, "interact"));
+        UpdateButtonLabel(secondaryInteractButton, GetControlLabel(language, "secondary"));
+        UpdateButtonLabel(inventoryButton, GetControlLabel(language, "inventory"));
+        UpdateButtonLabel(encyclopediaButton, GetControlLabel(language, "encyclopedia"));
+        UpdateButtonLabel(toolWheelButton, GetControlLabel(language, "tools"));
+        UpdateButtonLabel(ascendButton, GetControlLabel(language, "ascend"));
+        UpdateButtonLabel(descendButton, GetControlLabel(language, "descend"));
+    }
+
+    void UpdateButtonLabel(Button button, string text)
+    {
+        if (button == null) return;
+
+        Text buttonText = button.GetComponentInChildren<Text>(true);
+        if (buttonText != null)
+        {
+            ConfigureButtonText(buttonText, text);
+        }
+    }
+
+    string GetControlLabel(LanguageSettings.Language language, string key)
+    {
+        switch (language)
+        {
+            case LanguageSettings.Language.ChineseSimplified:
+                return key switch
+                {
+                    "jump" => "跳跃",
+                    "run" => "奔跑",
+                    "interact" => "交互",
+                    "secondary" => "次操作",
+                    "inventory" => "背包",
+                    "encyclopedia" => "图鉴",
+                    "tools" => "工具",
+                    "ascend" => "上升",
+                    "descend" => "下降",
+                    _ => key
+                };
+
+            case LanguageSettings.Language.English:
+                return key switch
+                {
+                    "jump" => "Jump",
+                    "run" => "Run",
+                    "interact" => "Use",
+                    "secondary" => "Alt",
+                    "inventory" => "Bag",
+                    "encyclopedia" => "Guide",
+                    "tools" => "Tools",
+                    "ascend" => "Up",
+                    "descend" => "Down",
+                    _ => key
+                };
+
+            case LanguageSettings.Language.Japanese:
+            default:
+                return key switch
+                {
+                    "jump" => "ジャンプ",
+                    "run" => "走る",
+                    "interact" => "調べる",
+                    "secondary" => "補助",
+                    "inventory" => "バッグ",
+                    "encyclopedia" => "図鑑",
+                    "tools" => "道具",
+                    "ascend" => "上昇",
+                    "descend" => "下降",
+                    _ => key
+                };
+        }
+    }
+
+    void EnsureEventSystemForTouch()
+    {
+        EventSystem eventSystem = EventSystem.current;
+        if (eventSystem == null)
+        {
+            eventSystem = FindFirstObjectByType<EventSystem>();
+        }
+
+        if (eventSystem == null)
+        {
+            GameObject eventSystemObject = new GameObject("EventSystem");
+            eventSystem = eventSystemObject.AddComponent<EventSystem>();
+        }
+
+        InputSystemUIInputModule inputModule = eventSystem.GetComponent<InputSystemUIInputModule>();
+        if (inputModule == null)
+        {
+            inputModule = eventSystem.gameObject.AddComponent<InputSystemUIInputModule>();
+            inputModule.AssignDefaultActions();
+            Debug.Log("[MobileControlsUI] 已为EventSystem添加InputSystemUIInputModule");
+        }
+        else if (inputModule.actionsAsset == null)
+        {
+            inputModule.AssignDefaultActions();
+            Debug.Log("[MobileControlsUI] 已为InputSystemUIInputModule分配默认UI actions");
+        }
+
+        StandaloneInputModule standaloneInputModule = eventSystem.GetComponent<StandaloneInputModule>();
+        if (standaloneInputModule != null && standaloneInputModule.enabled)
+        {
+            standaloneInputModule.enabled = false;
+            Debug.Log("[MobileControlsUI] 已禁用旧StandaloneInputModule，使用InputSystemUIInputModule处理触控UI");
+        }
+    }
+
+    void ResetControlState()
+    {
+        isJoystickActive = false;
+        joystickInput = Vector2.zero;
+        joystickPointerId = -1;
+        rawJoystickTouchId = NoTouchId;
+        isLookTouchActive = false;
+        lookTouchPointerId = -1;
+        isRunPressed = false;
+        rawJumpTouchId = NoTouchId;
+        rawRunTouchId = NoTouchId;
+        rawInteractTouchId = NoTouchId;
+        rawSecondaryInteractTouchId = NoTouchId;
+        rawInventoryTouchId = NoTouchId;
+        rawEncyclopediaTouchId = NoTouchId;
+        rawToolWheelTouchId = NoTouchId;
+        rawAscendTouchId = NoTouchId;
+        rawDescendTouchId = NoTouchId;
+        hasPublishedJoystickInput = false;
+        ResetButtonVisuals();
+
+        if (joystickHandle != null)
+        {
+            joystickHandle.anchoredPosition = Vector2.zero;
+        }
+        SetJoystickVisualActive(false);
+
+        if (inputManager == null)
+        {
+            inputManager = MobileInputManager.Instance;
+        }
+
+        if (inputManager != null)
+        {
+            inputManager.SetMoveInput(Vector2.zero);
+            inputManager.SetLookInput(Vector2.zero);
+            inputManager.SetJumpInput(false);
+            inputManager.SetRunInput(false);
+            inputManager.SetInteractInput(false);
+            inputManager.SetSecondaryInteractInput(false);
+            inputManager.SetAscendInput(false);
+            inputManager.SetDescendInput(false);
+        }
+    }
+
     /// <summary>
     /// 创建圆形Sprite
     /// </summary>
     Sprite CreateCircleSprite(int size = 128)
     {
-        Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
         Color[] colors = new Color[size * size];
-        
-        Vector2 center = new Vector2(size / 2f, size / 2f);
+
+        Vector2 center = new Vector2((size - 1) / 2f, (size - 1) / 2f);
         float radius = size / 2f - 2f; // 留一点边距
-        
+
         for (int y = 0; y < size; y++)
         {
             for (int x = 0; x < size; x++)
             {
                 Vector2 point = new Vector2(x, y);
                 float distance = Vector2.Distance(point, center);
-                
+
                 if (distance <= radius)
                 {
-                    // 在圆形内，设置为白色
-                    float alpha = 1f - (distance / radius) * 0.2f; // 边缘稍微透明
+                    float edgeFade = Mathf.Clamp01((radius - distance) / 2f);
+                    float alpha = Mathf.Lerp(0.98f, 0.74f, distance / radius) * edgeFade;
                     colors[y * size + x] = new Color(1f, 1f, 1f, alpha);
                 }
                 else
@@ -697,14 +1399,200 @@ public class MobileControlsUI : MonoBehaviour
                 }
             }
         }
-        
+
+        return CreateSpriteFromColors(colors, size);
+    }
+
+    Sprite CreateRingSprite(int size, float innerRadiusRatio, float outerRadiusRatio)
+    {
+        Color[] colors = new Color[size * size];
+        Vector2 center = new Vector2((size - 1) / 2f, (size - 1) / 2f);
+        float radius = size / 2f - 2f;
+        float innerRadius = radius * Mathf.Clamp01(innerRadiusRatio);
+        float outerRadius = radius * Mathf.Clamp01(outerRadiusRatio);
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                float distance = Vector2.Distance(new Vector2(x, y), center);
+                if (distance >= innerRadius && distance <= outerRadius)
+                {
+                    float outerFade = Mathf.Clamp01((outerRadius - distance) / 2f);
+                    float innerFade = Mathf.Clamp01((distance - innerRadius) / 2f);
+                    float alpha = Mathf.Min(outerFade, innerFade);
+                    colors[y * size + x] = new Color(1f, 1f, 1f, alpha);
+                }
+                else
+                {
+                    colors[y * size + x] = Color.clear;
+                }
+            }
+        }
+
+        return CreateSpriteFromColors(colors, size);
+    }
+
+    Sprite CreateIconSprite(ControlButtonIcon icon, int size)
+    {
+        Color[] colors = new Color[size * size];
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                Vector2 point = new Vector2((x + 0.5f) / size, (y + 0.5f) / size);
+                colors[y * size + x] = IsIconPixel(icon, point) ? Color.white : Color.clear;
+            }
+        }
+
+        return CreateSpriteFromColors(colors, size);
+    }
+
+    Sprite CreateSpriteFromColors(Color[] colors, int size)
+    {
+        Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        texture.filterMode = FilterMode.Bilinear;
+        texture.wrapMode = TextureWrapMode.Clamp;
         texture.SetPixels(colors);
         texture.Apply();
         return Sprite.Create(texture, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f));
     }
-    
+
+    bool IsIconPixel(ControlButtonIcon icon, Vector2 point)
+    {
+        switch (icon)
+        {
+            case ControlButtonIcon.Run:
+                return IsChevron(point, 0.24f) || IsChevron(point, 0.54f);
+            case ControlButtonIcon.Interact:
+                return IsTapIcon(point);
+            case ControlButtonIcon.Secondary:
+                return IsCircle(point, new Vector2(0.29f, 0.5f), 0.075f) ||
+                       IsCircle(point, new Vector2(0.5f, 0.5f), 0.075f) ||
+                       IsCircle(point, new Vector2(0.71f, 0.5f), 0.075f);
+            case ControlButtonIcon.Inventory:
+                return IsInventoryIcon(point);
+            case ControlButtonIcon.Encyclopedia:
+                return IsBookIcon(point);
+            case ControlButtonIcon.Tools:
+                return IsToolIcon(point);
+            case ControlButtonIcon.Descend:
+                return IsArrowIcon(point, false);
+            case ControlButtonIcon.Ascend:
+            case ControlButtonIcon.Jump:
+            default:
+                return IsArrowIcon(point, true);
+        }
+    }
+
+    bool IsArrowIcon(Vector2 point, bool up)
+    {
+        Vector2 p = up ? point : new Vector2(point.x, 1f - point.y);
+        return IsTriangle(p, new Vector2(0.5f, 0.84f), new Vector2(0.24f, 0.55f), new Vector2(0.76f, 0.55f)) ||
+               IsRect(p, 0.43f, 0.21f, 0.57f, 0.61f);
+    }
+
+    bool IsChevron(Vector2 point, float xOffset)
+    {
+        return IsLine(point, new Vector2(xOffset, 0.26f), new Vector2(xOffset + 0.24f, 0.5f), 0.055f) ||
+               IsLine(point, new Vector2(xOffset + 0.24f, 0.5f), new Vector2(xOffset, 0.74f), 0.055f);
+    }
+
+    bool IsTapIcon(Vector2 point)
+    {
+        return IsRing(point, new Vector2(0.5f, 0.74f), 0.22f, 0.18f) ||
+               IsRect(point, 0.43f, 0.28f, 0.57f, 0.72f) ||
+               IsCircle(point, new Vector2(0.5f, 0.72f), 0.085f) ||
+               IsLine(point, new Vector2(0.35f, 0.26f), new Vector2(0.65f, 0.26f), 0.055f);
+    }
+
+    bool IsInventoryIcon(Vector2 point)
+    {
+        return IsRect(point, 0.25f, 0.25f, 0.75f, 0.65f) ||
+               IsLine(point, new Vector2(0.36f, 0.64f), new Vector2(0.36f, 0.77f), 0.04f) ||
+               IsLine(point, new Vector2(0.64f, 0.64f), new Vector2(0.64f, 0.77f), 0.04f) ||
+               IsLine(point, new Vector2(0.36f, 0.77f), new Vector2(0.64f, 0.77f), 0.04f);
+    }
+
+    bool IsBookIcon(Vector2 point)
+    {
+        return IsRectBorder(point, 0.18f, 0.23f, 0.48f, 0.76f, 0.045f) ||
+               IsRectBorder(point, 0.52f, 0.23f, 0.82f, 0.76f, 0.045f) ||
+               IsLine(point, new Vector2(0.5f, 0.22f), new Vector2(0.5f, 0.79f), 0.025f) ||
+               IsLine(point, new Vector2(0.27f, 0.61f), new Vector2(0.41f, 0.61f), 0.018f) ||
+               IsLine(point, new Vector2(0.59f, 0.61f), new Vector2(0.73f, 0.61f), 0.018f);
+    }
+
+    bool IsToolIcon(Vector2 point)
+    {
+        return IsLine(point, new Vector2(0.3f, 0.25f), new Vector2(0.7f, 0.65f), 0.065f) ||
+               IsRing(point, new Vector2(0.74f, 0.7f), 0.14f, 0.09f) ||
+               IsLine(point, new Vector2(0.67f, 0.79f), new Vector2(0.84f, 0.62f), 0.04f) ||
+               IsCircle(point, new Vector2(0.28f, 0.23f), 0.065f);
+    }
+
+    bool IsRect(Vector2 point, float minX, float minY, float maxX, float maxY)
+    {
+        return point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY;
+    }
+
+    bool IsRectBorder(Vector2 point, float minX, float minY, float maxX, float maxY, float width)
+    {
+        if (!IsRect(point, minX, minY, maxX, maxY)) return false;
+
+        return point.x <= minX + width ||
+               point.x >= maxX - width ||
+               point.y <= minY + width ||
+               point.y >= maxY - width;
+    }
+
+    bool IsCircle(Vector2 point, Vector2 center, float radius)
+    {
+        return Vector2.Distance(point, center) <= radius;
+    }
+
+    bool IsRing(Vector2 point, Vector2 center, float outerRadius, float innerRadius)
+    {
+        float distance = Vector2.Distance(point, center);
+        return distance <= outerRadius && distance >= innerRadius;
+    }
+
+    bool IsLine(Vector2 point, Vector2 start, Vector2 end, float width)
+    {
+        return DistanceToSegment(point, start, end) <= width;
+    }
+
+    float DistanceToSegment(Vector2 point, Vector2 start, Vector2 end)
+    {
+        Vector2 segment = end - start;
+        float segmentLength = segment.sqrMagnitude;
+        if (segmentLength <= 0.0001f)
+        {
+            return Vector2.Distance(point, start);
+        }
+
+        float t = Mathf.Clamp01(Vector2.Dot(point - start, segment) / segmentLength);
+        return Vector2.Distance(point, start + segment * t);
+    }
+
+    bool IsTriangle(Vector2 point, Vector2 a, Vector2 b, Vector2 c)
+    {
+        float d1 = Sign(point, a, b);
+        float d2 = Sign(point, b, c);
+        float d3 = Sign(point, c, a);
+
+        bool hasNegative = d1 < 0 || d2 < 0 || d3 < 0;
+        bool hasPositive = d1 > 0 || d2 > 0 || d3 > 0;
+        return !(hasNegative && hasPositive);
+    }
+
+    float Sign(Vector2 p1, Vector2 p2, Vector2 p3)
+    {
+        return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+    }
+
     #region 摇杆事件处理
-    
+
     void OnJoystickPointerDown(BaseEventData eventData)
     {
         PointerEventData pointerData = eventData as PointerEventData;
@@ -713,14 +1601,13 @@ public class MobileControlsUI : MonoBehaviour
             isJoystickActive = true;
             joystickPointerId = pointerData.pointerId;
             joystickStartPosition = pointerData.position;
-            
-            // 禁用动态摇杆功能，保持固定位置
-            // 动态摇杆功能已完全禁用以避免位置计算问题
-            
+            SetJoystickVisualActive(true);
+            UpdateJoystickFromPointer(pointerData);
+
             Debug.Log("[MobileControlsUI] 摇杆激活");
         }
     }
-    
+
     void OnJoystickDrag(BaseEventData eventData)
     {
         if (!isJoystickActive) return;
@@ -728,20 +1615,44 @@ public class MobileControlsUI : MonoBehaviour
         PointerEventData pointerData = eventData as PointerEventData;
         if (pointerData != null && pointerData.pointerId == joystickPointerId)
         {
-            // 简化计算：直接使用存储的起始位置
-            Vector2 direction = pointerData.position - joystickStartPosition;
-            float distance = Mathf.Clamp(direction.magnitude, 0, joystickRange);
-
-            joystickInput = direction.normalized * (distance / joystickRange);
-
-            // 更新手柄位置
-            if (joystickHandle != null)
-            {
-                joystickHandle.anchoredPosition = direction.normalized * distance;
-            }
+            UpdateJoystickFromPointer(pointerData);
         }
     }
-    
+
+    void UpdateJoystickFromPointer(PointerEventData pointerData)
+    {
+        if (pointerData == null)
+        {
+            joystickInput = Vector2.zero;
+            return;
+        }
+
+        UpdateJoystickFromScreenPoint(pointerData.position, pointerData.pressEventCamera);
+    }
+
+    void UpdateJoystickFromScreenPoint(Vector2 screenPosition, Camera eventCamera = null)
+    {
+        RectTransform referenceRect = joystickBackground != null ? joystickBackground : GetRectTransform(joystickContainer);
+        if (referenceRect == null || joystickRange <= 0f)
+        {
+            joystickInput = Vector2.zero;
+            return;
+        }
+
+        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(referenceRect, screenPosition, eventCamera, out Vector2 localPoint))
+        {
+            return;
+        }
+
+        Vector2 clampedPoint = Vector2.ClampMagnitude(localPoint, joystickRange);
+        joystickInput = clampedPoint / joystickRange;
+
+        if (joystickHandle != null)
+        {
+            joystickHandle.anchoredPosition = clampedPoint;
+        }
+    }
+
     void OnJoystickPointerUp(BaseEventData eventData)
     {
         PointerEventData pointerData = eventData as PointerEventData;
@@ -750,22 +1661,41 @@ public class MobileControlsUI : MonoBehaviour
             isJoystickActive = false;
             joystickInput = Vector2.zero;
             joystickPointerId = -1;
-            
+            SetJoystickVisualActive(false);
+
             // 重置手柄位置
             if (joystickHandle != null)
             {
                 joystickHandle.anchoredPosition = Vector2.zero;
             }
-            
+
             Debug.Log("[MobileControlsUI] 摇杆释放");
         }
     }
-    
+
     void ProcessJoystickInput()
     {
         // 在Update中已处理，这里为备用
     }
-    
+
+    void PublishJoystickInput()
+    {
+        if (inputManager == null)
+        {
+            return;
+        }
+
+        bool hasActiveJoystickTouch = isJoystickActive || rawJoystickTouchId != NoTouchId || joystickPointerId != -1;
+        bool hasJoystickValue = joystickInput.sqrMagnitude > 0.0001f;
+        if (!hasActiveJoystickTouch && !hasJoystickValue && !hasPublishedJoystickInput)
+        {
+            return;
+        }
+
+        inputManager.SetMoveInput(joystickInput);
+        hasPublishedJoystickInput = hasActiveJoystickTouch || hasJoystickValue;
+    }
+
     /// <summary>
     /// 处理鼠标输入（桌面测试模式）
     /// </summary>
@@ -773,17 +1703,212 @@ public class MobileControlsUI : MonoBehaviour
     {
         // Unity的EventTrigger系统已经自动处理鼠标和触摸输入
         // 这个方法用于额外的鼠标特定逻辑（如果需要）
-        
+
         if (enableDebugVisualization)
         {
             // 可以在这里添加鼠标位置调试信息
         }
     }
-    
+
+    void ProcessRawTouchFallbackInput()
+    {
+        if (!enableRawTouchFallback || Touchscreen.current == null)
+        {
+            return;
+        }
+
+        activeRawTouchIds.Clear();
+        var touches = Touchscreen.current.touches;
+        for (int i = 0; i < touches.Count; i++)
+        {
+            var touch = touches[i];
+            TouchPhase phase = touch.phase.ReadValue();
+            if (phase == TouchPhase.None)
+            {
+                continue;
+            }
+
+            int touchId = touch.touchId.ReadValue();
+            Vector2 position = touch.position.ReadValue();
+            bool isActive = IsActiveTouchPhase(phase);
+            if (isActive)
+            {
+                activeRawTouchIds.Add(touchId);
+            }
+
+            ProcessRawJoystickTouch(touchId, position, phase);
+            ProcessRawHoldButtonTouch(jumpButton, ref rawJumpTouchId, touchId, position, phase, OnJumpButtonDown, OnJumpButtonUp);
+            ProcessRawHoldButtonTouch(runButton, ref rawRunTouchId, touchId, position, phase, OnRunButtonDown, OnRunButtonUp);
+            ProcessRawHoldButtonTouch(interactButton, ref rawInteractTouchId, touchId, position, phase, OnInteractButtonDown, OnInteractButtonUp);
+            ProcessRawHoldButtonTouch(secondaryInteractButton, ref rawSecondaryInteractTouchId, touchId, position, phase, OnSecondaryInteractButtonDown, OnSecondaryInteractButtonUp);
+            ProcessRawHoldButtonTouch(ascendButton, ref rawAscendTouchId, touchId, position, phase, OnAscendButtonDown, OnAscendButtonUp);
+            ProcessRawHoldButtonTouch(descendButton, ref rawDescendTouchId, touchId, position, phase, OnDescendButtonDown, OnDescendButtonUp);
+
+            ProcessRawClickButtonTouch(inventoryButton, ref rawInventoryTouchId, touchId, position, phase, OnInventoryButtonClick);
+            ProcessRawClickButtonTouch(encyclopediaButton, ref rawEncyclopediaTouchId, touchId, position, phase, OnEncyclopediaButtonClick);
+            ProcessRawClickButtonTouch(toolWheelButton, ref rawToolWheelTouchId, touchId, position, phase, OnToolWheelButtonClick);
+        }
+
+        ReleaseMissingRawTouches(activeRawTouchIds);
+    }
+
+    void ProcessRawJoystickTouch(int touchId, Vector2 position, TouchPhase phase)
+    {
+        if (rawJoystickTouchId == touchId)
+        {
+            if (!IsActiveTouchPhase(phase))
+            {
+                ReleaseRawJoystickTouch();
+                return;
+            }
+
+            isJoystickActive = true;
+            SetJoystickVisualActive(true);
+            UpdateJoystickFromScreenPoint(position);
+            return;
+        }
+
+        if (rawJoystickTouchId == NoTouchId &&
+            phase == TouchPhase.Began &&
+            IsScreenPointInRect(GetRectTransform(joystickContainer), position))
+        {
+            rawJoystickTouchId = touchId;
+            isJoystickActive = true;
+            SetJoystickVisualActive(true);
+            UpdateJoystickFromScreenPoint(position);
+        }
+    }
+
+    void ProcessRawHoldButtonTouch(Button button, ref int trackedTouchId, int touchId, Vector2 position, TouchPhase phase, System.Action onDown, System.Action onUp)
+    {
+        if (!IsButtonTouchable(button))
+        {
+            if (trackedTouchId != NoTouchId)
+            {
+                trackedTouchId = NoTouchId;
+                SetButtonVisualPressed(button, false);
+                onUp?.Invoke();
+            }
+            return;
+        }
+
+        bool contains = IsScreenPointInButton(button, position);
+        if (trackedTouchId == touchId)
+        {
+            if (!IsActiveTouchPhase(phase) || !contains)
+            {
+                trackedTouchId = NoTouchId;
+                SetButtonVisualPressed(button, false);
+                onUp?.Invoke();
+            }
+            return;
+        }
+
+        if (trackedTouchId == NoTouchId && phase == TouchPhase.Began && contains)
+        {
+            trackedTouchId = touchId;
+            SetButtonVisualPressed(button, true);
+            onDown?.Invoke();
+        }
+    }
+
+    void ProcessRawClickButtonTouch(Button button, ref int trackedTouchId, int touchId, Vector2 position, TouchPhase phase, System.Action onClick)
+    {
+        if (!IsButtonTouchable(button))
+        {
+            SetButtonVisualPressed(button, false);
+            trackedTouchId = NoTouchId;
+            return;
+        }
+
+        bool contains = IsScreenPointInButton(button, position);
+        if (trackedTouchId == touchId)
+        {
+            if (phase == TouchPhase.Ended)
+            {
+                trackedTouchId = NoTouchId;
+                SetButtonVisualPressed(button, false);
+                if (contains)
+                {
+                    onClick?.Invoke();
+                }
+            }
+            else if (phase == TouchPhase.Canceled || !contains)
+            {
+                trackedTouchId = NoTouchId;
+                SetButtonVisualPressed(button, false);
+            }
+            return;
+        }
+
+        if (trackedTouchId == NoTouchId && phase == TouchPhase.Began && contains)
+        {
+            trackedTouchId = touchId;
+            SetButtonVisualPressed(button, true);
+        }
+    }
+
+    void ReleaseMissingRawTouches(HashSet<int> activeTouchIds)
+    {
+        if (rawJoystickTouchId != NoTouchId && !activeTouchIds.Contains(rawJoystickTouchId))
+        {
+            ReleaseRawJoystickTouch();
+        }
+
+        ReleaseMissingRawHoldTouch(ref rawJumpTouchId, activeTouchIds, OnJumpButtonUp);
+        ReleaseMissingRawHoldTouch(ref rawRunTouchId, activeTouchIds, OnRunButtonUp);
+        ReleaseMissingRawHoldTouch(ref rawInteractTouchId, activeTouchIds, OnInteractButtonUp);
+        ReleaseMissingRawHoldTouch(ref rawSecondaryInteractTouchId, activeTouchIds, OnSecondaryInteractButtonUp);
+        ReleaseMissingRawHoldTouch(ref rawAscendTouchId, activeTouchIds, OnAscendButtonUp);
+        ReleaseMissingRawHoldTouch(ref rawDescendTouchId, activeTouchIds, OnDescendButtonUp);
+
+        ReleaseMissingRawClickTouch(inventoryButton, ref rawInventoryTouchId, activeTouchIds);
+        ReleaseMissingRawClickTouch(encyclopediaButton, ref rawEncyclopediaTouchId, activeTouchIds);
+        ReleaseMissingRawClickTouch(toolWheelButton, ref rawToolWheelTouchId, activeTouchIds);
+    }
+
+    void ReleaseMissingRawHoldTouch(ref int trackedTouchId, HashSet<int> activeTouchIds, System.Action onUp)
+    {
+        if (trackedTouchId != NoTouchId && !activeTouchIds.Contains(trackedTouchId))
+        {
+            trackedTouchId = NoTouchId;
+            onUp?.Invoke();
+        }
+    }
+
+    void ReleaseMissingRawClickTouch(Button button, ref int trackedTouchId, HashSet<int> activeTouchIds)
+    {
+        if (trackedTouchId != NoTouchId && !activeTouchIds.Contains(trackedTouchId))
+        {
+            trackedTouchId = NoTouchId;
+            SetButtonVisualPressed(button, false);
+        }
+    }
+
+    void ReleaseRawJoystickTouch()
+    {
+        rawJoystickTouchId = NoTouchId;
+        isJoystickActive = false;
+        joystickInput = Vector2.zero;
+        SetJoystickVisualActive(false);
+
+        if (joystickHandle != null)
+        {
+            joystickHandle.anchoredPosition = Vector2.zero;
+        }
+    }
+
+    bool IsActiveTouchPhase(TouchPhase phase)
+    {
+        return phase == TouchPhase.Began ||
+               phase == TouchPhase.Moved ||
+               phase == TouchPhase.Stationary;
+    }
+
     #endregion
-    
+
     #region 视角触摸事件处理
-    
+
     void OnLookTouchDown(BaseEventData eventData)
     {
         PointerEventData pointerData = eventData as PointerEventData;
@@ -794,17 +1919,17 @@ public class MobileControlsUI : MonoBehaviour
             lastLookTouchPosition = pointerData.position;
         }
     }
-    
+
     void OnLookTouchDrag(BaseEventData eventData)
     {
         if (!isLookTouchActive) return;
-        
+
         PointerEventData pointerData = eventData as PointerEventData;
         if (pointerData != null && pointerData.pointerId == lookTouchPointerId)
         {
             Vector2 delta = pointerData.position - lastLookTouchPosition;
             lastLookTouchPosition = pointerData.position;
-            
+
             // 发送视角输入给输入管理器
             if (inputManager != null)
             {
@@ -812,7 +1937,7 @@ public class MobileControlsUI : MonoBehaviour
             }
         }
     }
-    
+
     void OnLookTouchUp(BaseEventData eventData)
     {
         PointerEventData pointerData = eventData as PointerEventData;
@@ -820,7 +1945,7 @@ public class MobileControlsUI : MonoBehaviour
         {
             isLookTouchActive = false;
             lookTouchPointerId = -1;
-            
+
             // 停止视角输入
             if (inputManager != null)
             {
@@ -828,31 +1953,34 @@ public class MobileControlsUI : MonoBehaviour
             }
         }
     }
-    
+
     #endregion
-    
+
     #region 按钮事件处理
-    
+
     void OnJumpButtonDown()
     {
+        SetButtonVisualPressed(jumpButton, true);
         if (inputManager != null)
         {
             inputManager.SetJumpInput(true);
         }
         Debug.Log("[MobileControlsUI] 跳跃按钮按下");
     }
-    
+
     void OnJumpButtonUp()
     {
+        SetButtonVisualPressed(jumpButton, false);
         if (inputManager != null)
         {
             inputManager.SetJumpInput(false);
         }
         Debug.Log("[MobileControlsUI] 跳跃按钮释放");
     }
-    
+
     void OnRunButtonDown()
     {
+        SetButtonVisualPressed(runButton, true);
         isRunPressed = true;
         if (inputManager != null)
         {
@@ -860,9 +1988,10 @@ public class MobileControlsUI : MonoBehaviour
         }
         Debug.Log("[MobileControlsUI] 奔跑按钮按下");
     }
-    
+
     void OnRunButtonUp()
     {
+        SetButtonVisualPressed(runButton, false);
         isRunPressed = false;
         if (inputManager != null)
         {
@@ -870,18 +1999,20 @@ public class MobileControlsUI : MonoBehaviour
         }
         Debug.Log("[MobileControlsUI] 奔跑按钮释放");
     }
-    
+
     void OnInteractButtonDown()
     {
+        SetButtonVisualPressed(interactButton, true);
         if (inputManager != null)
         {
             inputManager.SetInteractInput(true);
         }
         Debug.Log("[MobileControlsUI] 交互按钮按下");
     }
-    
+
     void OnInteractButtonUp()
     {
+        SetButtonVisualPressed(interactButton, false);
         if (inputManager != null)
         {
             inputManager.SetInteractInput(false);
@@ -891,6 +2022,7 @@ public class MobileControlsUI : MonoBehaviour
 
     void OnSecondaryInteractButtonDown()
     {
+        SetButtonVisualPressed(secondaryInteractButton, true);
         if (inputManager != null)
         {
             inputManager.SetSecondaryInteractInput(true);
@@ -900,6 +2032,7 @@ public class MobileControlsUI : MonoBehaviour
 
     void OnSecondaryInteractButtonUp()
     {
+        SetButtonVisualPressed(secondaryInteractButton, false);
         if (inputManager != null)
         {
             inputManager.SetSecondaryInteractInput(false);
@@ -924,7 +2057,7 @@ public class MobileControlsUI : MonoBehaviour
         }
         Debug.Log("[MobileControlsUI] 图鉴按钮点击");
     }
-    
+
     // void OnWarehouseButtonClick() - 仓库按钮已移除
     // {
     //     if (inputManager != null)
@@ -933,7 +2066,7 @@ public class MobileControlsUI : MonoBehaviour
     //     }
     //     Debug.Log("[MobileControlsUI] 仓库按钮点击");
     // }
-    
+
     void OnToolWheelButtonClick()
     {
         Debug.Log("[MobileControlsUI] 工具轮盘按钮被点击！");
@@ -947,53 +2080,25 @@ public class MobileControlsUI : MonoBehaviour
             Debug.LogError("[MobileControlsUI] inputManager为null，无法触发工具轮盘");
         }
     }
-    
+
     #endregion
-    
+
     #region 辅助方法
-    
-    /// <summary>
-    /// 创建圆形精灵
-    /// </summary>
-    Sprite CreateCircleSprite()
-    {
-        // 创建简单的圆形纹理
-        int size = 128;
-        Texture2D texture = new Texture2D(size, size, TextureFormat.ARGB32, false);
-        
-        Vector2 center = new Vector2(size / 2f, size / 2f);
-        float radius = size / 2f - 2;
-        
-        for (int x = 0; x < size; x++)
-        {
-            for (int y = 0; y < size; y++)
-            {
-                float distance = Vector2.Distance(new Vector2(x, y), center);
-                if (distance <= radius)
-                {
-                    float alpha = Mathf.SmoothStep(1f, 0f, (distance - radius + 4) / 4f);
-                    texture.SetPixel(x, y, new Color(1f, 1f, 1f, alpha));
-                }
-                else
-                {
-                    texture.SetPixel(x, y, Color.clear);
-                }
-            }
-        }
-        
-        texture.Apply();
-        return Sprite.Create(texture, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f));
-    }
-    
+
     /// <summary>
     /// 显示/隐藏虚拟控制
     /// </summary>
     public void SetVirtualControlsVisible(bool visible)
     {
+        if (!visible)
+        {
+            ResetControlState();
+        }
+
         gameObject.SetActive(visible);
         Debug.Log($"[MobileControlsUI] 虚拟控制: {(visible ? "显示" : "隐藏")}");
     }
-    
+
     /// <summary>
     /// 动态调整控件大小
     /// </summary>
@@ -1001,31 +2106,31 @@ public class MobileControlsUI : MonoBehaviour
     {
         buttonSize *= scale;
         joystickRange *= scale;
-        
+
         // 重新布局控件
         SetupVirtualControls();
     }
-    
+
     #endregion
-    
+
     #region 调试
-    
+
     void OnGUI()
     {
         if (!enableDebugVisualization) return;
-        
+
         GUILayout.BeginArea(new Rect(10, 220, 300, 150));
         GUILayout.Label("=== 虚拟控制调试 ===");
         GUILayout.Label($"摇杆输入: {joystickInput}");
         GUILayout.Label($"摇杆激活: {isJoystickActive}");
         GUILayout.Label($"视角触摸: {isLookTouchActive}");
         GUILayout.Label($"奔跑状态: {isRunPressed}");
-        
+
         if (GUILayout.Button("显示/隐藏控制"))
         {
             SetVirtualControlsVisible(!gameObject.activeSelf);
         }
-        
+
         GUILayout.EndArea();
     }
 
@@ -1070,6 +2175,7 @@ public class MobileControlsUI : MonoBehaviour
     /// </summary>
     void OnAscendButtonDown()
     {
+        SetButtonVisualPressed(ascendButton, true);
         if (inputManager != null)
         {
             inputManager.SetAscendInput(true);
@@ -1082,6 +2188,7 @@ public class MobileControlsUI : MonoBehaviour
     /// </summary>
     void OnAscendButtonUp()
     {
+        SetButtonVisualPressed(ascendButton, false);
         if (inputManager != null)
         {
             inputManager.SetAscendInput(false);
@@ -1094,6 +2201,7 @@ public class MobileControlsUI : MonoBehaviour
     /// </summary>
     void OnDescendButtonDown()
     {
+        SetButtonVisualPressed(descendButton, true);
         if (inputManager != null)
         {
             inputManager.SetDescendInput(true);
@@ -1106,6 +2214,7 @@ public class MobileControlsUI : MonoBehaviour
     /// </summary>
     void OnDescendButtonUp()
     {
+        SetButtonVisualPressed(descendButton, false);
         if (inputManager != null)
         {
             inputManager.SetDescendInput(false);

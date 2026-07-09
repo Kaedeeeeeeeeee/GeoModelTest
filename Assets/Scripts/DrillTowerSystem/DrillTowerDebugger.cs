@@ -34,7 +34,8 @@ public class DrillTowerDebugger : MonoBehaviour
     
     void Update()
     {
-        if (enableDebugMode && Keyboard.current.gKey.wasPressedThisFrame)
+        var keyboard = Keyboard.current;
+        if (enableDebugMode && keyboard != null && keyboard.gKey.wasPressedThisFrame)
         {
             PerformManualRaycastTest();
         }

@@ -22,8 +22,10 @@ public static class ToolUnlockService
         var tools = toolManager.GetComponents<CollectionTool>();
         foreach (var tool in tools)
         {
-            if (tool != null && tool.toolID == toolId)
+            if (tool != null && ToolMatchesId(tool, toolId))
             {
+                ConfigureKnownTool(tool, toolId);
+
                 // 若已存在于可用列表则不重复添加
                 if (IsToolUnlocked(toolManager, toolId))
                 {
@@ -89,6 +91,18 @@ public static class ToolUnlockService
                 return true;
             }
         }
+        else if (toolId == "999") // 场景切换器
+        {
+            var created = ToolUnlockService_Internal.EnsureSceneSwitcherTool(toolManager);
+            if (created != null)
+            {
+                toolManager.AddTool(created);
+                Debug.Log("[ToolUnlockService] 兜底：自动添加并解锁场景切换器(999)");
+                var g = Object.FindFirstObjectByType<PlayerPersistentData>();
+                g?.MarkToolUnlocked(toolId);
+                return true;
+            }
+        }
 
         Debug.LogWarning($"[ToolUnlockService] 未在玩家对象上找到工具组件，且无兜底可用: {toolId}");
         return false;
@@ -102,9 +116,58 @@ public static class ToolUnlockService
         if (toolManager.availableTools == null) return false;
         foreach (var t in toolManager.availableTools)
         {
-            if (t != null && t.toolID == toolId) return true;
+            if (t != null && ToolMatchesId(t, toolId)) return true;
         }
         return false;
+    }
+
+    private static bool ToolMatchesId(CollectionTool tool, string toolId)
+    {
+        if (tool == null || string.IsNullOrEmpty(toolId)) return false;
+        if (tool.toolID == toolId) return true;
+
+        return toolId switch
+        {
+            "1000" => tool is SimpleDrillTool,
+            "1001" => tool is DrillTowerTool,
+            "1002" => tool is HammerTool,
+            "999" => tool is SceneSwitcherTool,
+            "1100" => tool is DroneTool,
+            "1101" => tool is DrillCarTool,
+            _ => false
+        };
+    }
+
+    private static void ConfigureKnownTool(CollectionTool tool, string toolId)
+    {
+        if (tool == null) return;
+
+        tool.toolID = toolId;
+        if (tool is HammerTool)
+        {
+            tool.toolName = "地质锤";
+        }
+        else if (tool is SimpleDrillTool)
+        {
+            tool.toolName = "简易钻探";
+        }
+        else if (tool is DrillTowerTool)
+        {
+            tool.toolName = "钻塔工具";
+        }
+        else if (tool is SceneSwitcherTool &&
+                 (string.IsNullOrEmpty(tool.toolName) || tool.toolName == "Collection Tool"))
+        {
+            tool.toolName = "场景切换器";
+        }
+        else if (tool is DroneTool)
+        {
+            tool.toolName = "无人机";
+        }
+        else if (tool is DrillCarTool)
+        {
+            tool.toolName = "钻探车";
+        }
     }
 }
 
@@ -120,7 +183,12 @@ public static class ToolUnlockService_Internal
 
         // 若已存在组件则返回
         var existing = toolManager.GetComponent<HammerTool>();
-        if (existing != null) return existing;
+        if (existing != null)
+        {
+            existing.toolID = "1002";
+            existing.toolName = "地质锤";
+            return existing;
+        }
 
         // 添加组件到与 ToolManager 相同的对象
         var hammer = toolManager.gameObject.AddComponent<HammerTool>();
@@ -129,6 +197,25 @@ public static class ToolUnlockService_Internal
         // 其余字段使用 HammerTool 内部默认逻辑；无预制体时仍可工作
 
         return hammer;
+    }
+
+    public static SceneSwitcherTool EnsureSceneSwitcherTool(ToolManager toolManager)
+    {
+        if (toolManager == null) return null;
+
+        var switcher = toolManager.GetComponent<SceneSwitcherTool>();
+        if (switcher == null)
+        {
+            switcher = toolManager.gameObject.AddComponent<SceneSwitcherTool>();
+        }
+
+        switcher.toolID = "999";
+        if (string.IsNullOrEmpty(switcher.toolName) || switcher.toolName == "Collection Tool")
+        {
+            switcher.toolName = "场景切换器";
+        }
+
+        return switcher;
     }
 
     public static SimpleDrillTool EnsureSimpleDrillTool(ToolManager toolManager)

@@ -4,8 +4,11 @@ public class SimpleUITest : MonoBehaviour
 {
     void Update()
     {
+        var keyboard = UnityEngine.InputSystem.Keyboard.current;
+        if (keyboard == null) return;
+
         // F3键：简单的UI状态检查
-        if (UnityEngine.InputSystem.Keyboard.current.f3Key.wasPressedThisFrame)
+        if (keyboard.f3Key.wasPressedThisFrame)
         {
             TestUIState();
         }
@@ -13,6 +16,7 @@ public class SimpleUITest : MonoBehaviour
     
     void TestUIState()
     {
+        var keyboard = UnityEngine.InputSystem.Keyboard.current;
         Debug.Log("=== 简单UI测试 ===");
         
         // 查找InventoryUISystem
@@ -28,7 +32,7 @@ public class SimpleUITest : MonoBehaviour
                 Debug.Log($"  wheelUI是否激活: {system.wheelUI.activeInHierarchy}");
                 
                 // 强制显示轮盘测试
-                if (UnityEngine.InputSystem.Keyboard.current.f4Key.wasPressedThisFrame)
+                if (keyboard != null && keyboard.f4Key.wasPressedThisFrame)
                 {
                     system.wheelUI.SetActive(true);
                     Debug.Log("强制显示轮盘UI");

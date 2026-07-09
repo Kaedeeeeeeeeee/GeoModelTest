@@ -57,11 +57,10 @@ public class SimpleLaboratoryMobileUIManager : MonoBehaviour
             return true;
         }
 
-        bool isMobile = Application.isMobilePlatform;
-        bool hasTouch = UnityEngine.InputSystem.Touchscreen.current != null;
+        bool isMobile = MobileInputManager.IsRuntimeMobileDevice();
 
-        Debug.Log($"[SimpleLaboratoryMobileUIManager] 设备检测: 移动设备={isMobile}, 触摸支持={hasTouch}");
-        return isMobile || hasTouch;
+        Debug.Log($"[SimpleLaboratoryMobileUIManager] 设备检测: 移动设备={isMobile}");
+        return isMobile;
     }
 
     /// <summary>

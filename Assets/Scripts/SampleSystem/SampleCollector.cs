@@ -730,7 +730,8 @@ public class SampleCollector : MonoBehaviour
     bool IsEKeyPressed()
     {
         // 键盘E键检测
-        bool keyboardEPressed = Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame;
+        var keyboard = Keyboard.current;
+        bool keyboardEPressed = keyboard != null && keyboard.eKey.wasPressedThisFrame;
 
         // 移动端E键检测
         bool mobileEPressed = false;

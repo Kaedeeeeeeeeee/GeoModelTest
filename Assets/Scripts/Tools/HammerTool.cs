@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using Core;
 
 /// <summary>
 /// 地质锤工具 - 薄片样本采集工具
@@ -63,12 +64,16 @@ public class HammerTool : CollectionTool
     /// </summary>
     void FindPlayerHandPosition()
     {
-        // 直接找到玩家模型（FirstPersonController）作为锤子的父对象
         FirstPersonController player = FindFirstObjectByType<FirstPersonController>();
         if (player != null)
         {
-            playerHand = player.transform; // 直接使用玩家模型作为父对象
-            Debug.Log("找到玩家模型，锤子将作为玩家的子对象");
+            playerHand = player.GetHandAnchor(true);
+            if (playerHand == null)
+            {
+                playerHand = player.transform;
+            }
+
+            Debug.Log($"找到玩家手部位置，锤子父对象: {playerHand.name}");
         }
         else
         {
@@ -81,7 +86,7 @@ public class HammerTool : CollectionTool
         if (!canUse) return;
         
         // 处理鼠标左键敲击
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (WasPrimaryUsePressed())
         {
             if (currentCollection == null)
             {
@@ -94,8 +99,7 @@ public class HammerTool : CollectionTool
         }
         
         // 处理取消操作
-        if (Mouse.current.rightButton.wasPressedThisFrame || 
-            Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (WasCancelPressed())
         {
             CancelCollection();
         }
@@ -103,14 +107,51 @@ public class HammerTool : CollectionTool
         // 检查超时
         CheckCollectionTimeout();
     }
+
+    public override bool RequestPrimaryUse()
+    {
+        if (!isEquipped || !canUse)
+        {
+            return false;
+        }
+
+        if (currentCollection == null)
+        {
+            StartCollection();
+        }
+        else
+        {
+            ContinueCollection();
+        }
+
+        return true;
+    }
+
+    public override bool RequestCancelUse()
+    {
+        if (!isEquipped)
+        {
+            return false;
+        }
+
+        CancelCollection();
+        return true;
+    }
     
     /// <summary>
     /// 开始采集过程
     /// </summary>
     void StartCollection()
     {
+        Camera camera = GetPlayerCamera();
+        if (camera == null)
+        {
+            ShowMessage("未找到玩家摄像机");
+            return;
+        }
+
         // 射线检测确定采集位置
-        Ray ray = playerCamera.ScreenPointToRay(new Vector2(Screen.width / 2f, Screen.height / 2f));
+        Ray ray = camera.ScreenPointToRay(new Vector2(Screen.width / 2f, Screen.height / 2f));
         
         if (Physics.Raycast(ray, out RaycastHit hit, useRange))
         {
@@ -126,7 +167,9 @@ public class HammerTool : CollectionTool
                 targetPosition = hit.point,
                 currentHits = 1, // 第一次敲击
                 requiredHits = requiredHits,
-                lastHitTime = Time.time
+                lastHitTime = Time.time,
+                targetName = hit.collider != null ? hit.collider.gameObject.name : "",
+                targetTag = hit.collider != null ? hit.collider.gameObject.tag : ""
             };
             
             // 显示目标标记
@@ -149,9 +192,16 @@ public class HammerTool : CollectionTool
     void ContinueCollection()
     {
         if (currentCollection == null) return;
+
+        Camera camera = GetPlayerCamera();
+        if (camera == null)
+        {
+            ShowMessage("未找到玩家摄像机");
+            return;
+        }
         
         // 检测敲击位置
-        Ray ray = playerCamera.ScreenPointToRay(new Vector2(Screen.width / 2f, Screen.height / 2f));
+        Ray ray = camera.ScreenPointToRay(new Vector2(Screen.width / 2f, Screen.height / 2f));
         
         if (Physics.Raycast(ray, out RaycastHit hit, useRange))
         {
@@ -210,6 +260,7 @@ public class HammerTool : CollectionTool
 
         // 生成薄片样本
         GenerateSlabSample(collectionPos);
+        GameEventBus.RaiseToolUsed(toolID, toolName, currentCollection.targetName, currentCollection.targetTag);
         
         // 延迟清理采集状态，让动画播放完成
         StartCoroutine(DelayedCleanup());
@@ -391,7 +442,7 @@ public class HammerTool : CollectionTool
         
         if (targetMarkerObject != null)
         {
-            DestroyImmediate(targetMarkerObject);
+            DestroyRuntimeObject(targetMarkerObject);
             targetMarkerObject = null;
             targetMarker = null;
         }
@@ -555,9 +606,7 @@ public class HammerTool : CollectionTool
         Debug.Log("使用备用方法生成薄片样本");
         
         // 创建默认材质
-        Material fallbackMaterial = new Material(Shader.Find("Standard"));
-        fallbackMaterial.color = new Color(0.7f, 0.5f, 0.3f); // 棕色
-        fallbackMaterial.name = "HammerFallbackMaterial";
+        Material fallbackMaterial = CreateFallbackMaterial("HammerFallbackMaterial", new Color(0.7f, 0.5f, 0.3f));
         
         // 直接使用材质生成样本
         GenerateSlabSampleWithMaterial(position, fallbackMaterial, null, null);
@@ -572,7 +621,7 @@ public class HammerTool : CollectionTool
 
         if (reconstructedSample.sampleContainer != null && reconstructedSample.sampleContainer != slabSample)
         {
-            DestroyImmediate(reconstructedSample.sampleContainer);
+            DestroyRuntimeObject(reconstructedSample.sampleContainer);
         }
 
         reconstructedSample.sampleContainer = slabSample;
@@ -673,33 +722,144 @@ public class HammerTool : CollectionTool
     /// </summary>
     void ShowHammerInHand()
     {
-        if (hammerPrefab != null && playerHand != null)
+        if (playerHand == null)
         {
-            // 创建锤子实例
-            equippedHammer = Instantiate(hammerPrefab);
-            equippedHammer.name = "EquippedHammer";
-            
-            // 设置锤子位置和父级
-            equippedHammer.transform.SetParent(playerHand);
-            
-            // 调整锤子位置和旋转（使用调试得到的最佳数值）
-            equippedHammer.transform.localPosition = new Vector3(0.173f, 0.303f, 0.203f);
-            equippedHammer.transform.localRotation = Quaternion.Euler(-35.67f, -4.745f, -79.289f);
-            equippedHammer.transform.localScale = Vector3.one * 20f; // 放大20倍
-            
-            // 移除碰撞器，避免干扰
-            Collider[] colliders = equippedHammer.GetComponentsInChildren<Collider>();
-            foreach (var col in colliders)
-            {
-                col.enabled = false;
-            }
-            
+            FindPlayerHandPosition();
+        }
+
+        if (playerHand == null)
+        {
+            Debug.LogWarning("无法显示锤子：缺少手部位置");
+            return;
+        }
+
+        if (equippedHammer != null)
+        {
+            DestroyRuntimeObject(equippedHammer);
+        }
+
+        bool usingPrefab = hammerPrefab != null;
+        equippedHammer = usingPrefab ? Instantiate(hammerPrefab) : CreateFallbackHammerVisual();
+        equippedHammer.name = usingPrefab ? "EquippedHammer" : "EquippedHammerFallback";
+
+        equippedHammer.transform.SetParent(playerHand, false);
+        ApplyEquippedHammerTransform(usingPrefab);
+
+        Collider[] colliders = equippedHammer.GetComponentsInChildren<Collider>();
+        foreach (var col in colliders)
+        {
+            col.enabled = false;
+        }
+
+        if (usingPrefab)
+        {
             Debug.Log("锤子已装备到手中");
         }
         else
         {
-            Debug.LogWarning("无法显示锤子：缺少预制体或手部位置");
+            Debug.LogWarning("地质锤缺少运行时预制体，已使用备用可见模型");
         }
+    }
+
+    void ApplyEquippedHammerTransform(bool usingPrefab)
+    {
+        if (equippedHammer == null) return;
+
+        if (usingPrefab)
+        {
+            equippedHammer.transform.localPosition = new Vector3(0.12f, -0.05f, 0.18f);
+            equippedHammer.transform.localRotation = Quaternion.Euler(-35.67f, -4.745f, -79.289f);
+            equippedHammer.transform.localScale = Vector3.one * 20f;
+        }
+        else
+        {
+            equippedHammer.transform.localPosition = new Vector3(0.08f, -0.06f, 0.2f);
+            equippedHammer.transform.localRotation = Quaternion.Euler(15f, -15f, -65f);
+            equippedHammer.transform.localScale = Vector3.one;
+        }
+    }
+
+    GameObject CreateFallbackHammerVisual()
+    {
+        GameObject root = new GameObject("RuntimeHammerVisual");
+
+        Material handleMaterial = CreateFallbackMaterial("RuntimeHammerHandle", new Color(0.42f, 0.25f, 0.12f));
+        Material headMaterial = CreateFallbackMaterial("RuntimeHammerHead", new Color(0.55f, 0.56f, 0.58f));
+
+        GameObject handle = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        handle.name = "Handle";
+        handle.transform.SetParent(root.transform, false);
+        handle.transform.localPosition = new Vector3(0f, -0.1f, 0f);
+        handle.transform.localScale = new Vector3(0.035f, 0.28f, 0.035f);
+        SetFallbackMaterial(handle, handleMaterial);
+
+        GameObject head = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        head.name = "Head";
+        head.transform.SetParent(root.transform, false);
+        head.transform.localPosition = new Vector3(0f, 0.06f, 0.01f);
+        head.transform.localScale = new Vector3(0.18f, 0.06f, 0.06f);
+        SetFallbackMaterial(head, headMaterial);
+
+        GameObject pick = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        pick.name = "Pick";
+        pick.transform.SetParent(root.transform, false);
+        pick.transform.localPosition = new Vector3(0.12f, 0.06f, 0.01f);
+        pick.transform.localScale = new Vector3(0.1f, 0.035f, 0.035f);
+        SetFallbackMaterial(pick, headMaterial);
+
+        return root;
+    }
+
+    Material CreateFallbackMaterial(string materialName, Color color)
+    {
+        Shader shader = FindRuntimeShader();
+        if (shader == null)
+        {
+            Debug.LogWarning($"[HammerTool] 未找到可用运行时 shader，跳过备用材质: {materialName}");
+            return null;
+        }
+
+        Material material = new Material(shader);
+        material.name = materialName;
+        material.color = color;
+        return material;
+    }
+
+    void SetFallbackMaterial(GameObject target, Material material)
+    {
+        if (material == null)
+        {
+            return;
+        }
+
+        Renderer renderer = target.GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            renderer.sharedMaterial = material;
+        }
+    }
+
+    Shader FindRuntimeShader()
+    {
+        string[] shaderNames =
+        {
+            "Universal Render Pipeline/Lit",
+            "Universal Render Pipeline/Unlit",
+            "Standard",
+            "Unlit/Color",
+            "Sprites/Default"
+        };
+
+        foreach (string shaderName in shaderNames)
+        {
+            Shader shader = Shader.Find(shaderName);
+            if (shader != null)
+            {
+                return shader;
+            }
+        }
+
+        return null;
     }
     
     /// <summary>
@@ -709,7 +869,7 @@ public class HammerTool : CollectionTool
     {
         if (equippedHammer != null)
         {
-            DestroyImmediate(equippedHammer);
+            DestroyRuntimeObject(equippedHammer);
             equippedHammer = null;
             Debug.Log("锤子已从手中移除");
         }
@@ -729,7 +889,24 @@ public class HammerTool : CollectionTool
         // 清理资源
         if (equippedHammer != null)
         {
-            DestroyImmediate(equippedHammer);
+            DestroyRuntimeObject(equippedHammer);
+        }
+    }
+
+    void DestroyRuntimeObject(GameObject target)
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        if (Application.isPlaying)
+        {
+            Destroy(target);
+        }
+        else
+        {
+            DestroyImmediate(target);
         }
     }
 }
@@ -744,4 +921,6 @@ public class HammerCollectionState
     public int currentHits = 0;        // 当前敲击次数
     public int requiredHits = 3;       // 需要的敲击次数
     public float lastHitTime;          // 上次敲击时间
+    public string targetName;          // 采集目标对象名
+    public string targetTag;           // 采集目标标签
 }

@@ -75,13 +75,11 @@ public class LaboratoryMobileUIInitializer : MonoBehaviour
             return true;
         }
 
-        // 检查是否为移动设备或支持触摸
-        bool isMobile = Application.isMobilePlatform;
-        bool hasTouch = UnityEngine.InputSystem.Touchscreen.current != null;
+        bool isMobile = MobileInputManager.IsRuntimeMobileDevice();
 
-        Debug.Log($"[LaboratoryMobileUIInitializer] 设备检测: 移动设备={isMobile}, 触摸支持={hasTouch}");
+        Debug.Log($"[LaboratoryMobileUIInitializer] 设备检测: 移动设备={isMobile}");
 
-        return isMobile || hasTouch;
+        return isMobile;
     }
 
     /// <summary>

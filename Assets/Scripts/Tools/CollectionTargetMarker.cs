@@ -65,7 +65,12 @@ public class CollectionTargetMarker : MonoBehaviour
     /// </summary>
     void SetupLineRenderer(LineRenderer lr, Color color)
     {
-        lr.material = CreateLineMaterial(color);
+        Material material = CreateLineMaterial(color);
+        if (material != null)
+        {
+            lr.material = material;
+        }
+
         lr.widthMultiplier = ringThickness;
         lr.useWorldSpace = false;
         lr.loop = true;
@@ -79,16 +84,20 @@ public class CollectionTargetMarker : MonoBehaviour
     /// </summary>
     Material CreateLineMaterial(Color color)
     {
-        // 使用支持透明度的着色器
-        Material material = new Material(Shader.Find("Legacy Shaders/Transparent/Diffuse"));
-        if (material.shader == null)
+        Shader shader = FindRuntimeLineShader();
+        if (shader == null)
         {
-            // 备用方案
-            material = new Material(Shader.Find("Sprites/Default"));
+            Debug.LogWarning("[CollectionTargetMarker] 未找到可用线条 shader，使用 LineRenderer 默认材质");
+            return null;
         }
-        
+
+        Material material = new Material(shader);
         material.color = color;
-        material.SetFloat("_ZWrite", 0);
+        if (material.HasProperty("_ZWrite"))
+        {
+            material.SetFloat("_ZWrite", 0);
+        }
+
         material.renderQueue = 3000; // 确保在地面之上渲染
         
         // 启用透明度混合
@@ -98,6 +107,28 @@ public class CollectionTargetMarker : MonoBehaviour
         }
         
         return material;
+    }
+
+    Shader FindRuntimeLineShader()
+    {
+        string[] shaderNames =
+        {
+            "Legacy Shaders/Transparent/Diffuse",
+            "Sprites/Default",
+            "Universal Render Pipeline/Unlit",
+            "Unlit/Color"
+        };
+
+        foreach (string shaderName in shaderNames)
+        {
+            Shader shader = Shader.Find(shaderName);
+            if (shader != null)
+            {
+                return shader;
+            }
+        }
+
+        return null;
     }
     
     /// <summary>

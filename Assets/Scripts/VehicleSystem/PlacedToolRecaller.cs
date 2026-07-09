@@ -67,7 +67,8 @@ public class PlacedToolRecaller : MonoBehaviour
         bool keyPressed = false;
         if (recallKey == KeyCode.G)
         {
-            keyPressed = Keyboard.current.gKey.wasPressedThisFrame;
+            var keyboard = Keyboard.current;
+            keyPressed = keyboard != null && keyboard.gKey.wasPressedThisFrame;
         }
         else
         {

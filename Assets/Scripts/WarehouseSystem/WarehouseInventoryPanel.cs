@@ -390,9 +390,10 @@ public class WarehouseInventoryPanel : MonoBehaviour
                     
                     // 检查是否应该自动进入多选模式（用户友好性改进）
                     // 如果用户按住Ctrl键点击，则自动进入多选模式
-                    bool ctrlPressed = UnityEngine.InputSystem.Keyboard.current != null && 
-                                      (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed || 
-                                       UnityEngine.InputSystem.Keyboard.current.rightCtrlKey.isPressed);
+                    var keyboard = UnityEngine.InputSystem.Keyboard.current;
+                    bool ctrlPressed = keyboard != null &&
+                                       (keyboard.leftCtrlKey.isPressed ||
+                                        keyboard.rightCtrlKey.isPressed);
                     
                     if (ctrlPressed)
                     {

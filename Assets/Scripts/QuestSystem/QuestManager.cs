@@ -38,6 +38,7 @@ namespace QuestSystem
         // 内部等待绑定控制
         private bool _waitingForSampleBind = false;
         private Coroutine _sampleBindRoutine;
+        private SampleInventory _boundSampleInventory;
         private bool _chapter4SampleIntroPlayed = false;
         private bool _chapter4SampleCutscenePending = false;
         private bool _chapter4SampleCutscenePlayed = false;
@@ -488,12 +489,111 @@ namespace QuestSystem
             }
         }
 
+        public void ResetProgressForNewGame()
+        {
+            QuestPersistence.ClearAll();
+
+            if (_completedQuests == null)
+            {
+                _completedQuests = new HashSet<string>();
+            }
+            else
+            {
+                _completedQuests.Clear();
+            }
+
+            if (_completedObjectives == null)
+            {
+                _completedObjectives = new HashSet<string>();
+            }
+            else
+            {
+                _completedObjectives.Clear();
+            }
+
+            foreach (var quest in _quests.Values)
+            {
+                if (quest == null)
+                {
+                    continue;
+                }
+
+                quest.status = QuestStatus.NotStarted;
+                if (quest.objectives == null)
+                {
+                    continue;
+                }
+
+                foreach (var objective in quest.objectives)
+                {
+                    objective.completed = false;
+                }
+            }
+
+            ResetTransientProgressState();
+
+            if (autoStartIntroQuestIfNone && IsAllowedScene(SceneManager.GetActiveScene().name))
+            {
+                StartQuest("q.lab.intro");
+            }
+
+            QuestUI.RefreshAll();
+            GameEventBus.RaiseProgressDirty("new_game_reset");
+
+            if (debugLog) Debug.Log("[QuestManager] 运行时任务进度已重置");
+        }
+
+        private void ResetTransientProgressState()
+        {
+            if (_sampleBindRoutine != null)
+            {
+                StopCoroutine(_sampleBindRoutine);
+                _sampleBindRoutine = null;
+            }
+
+            _waitingForSampleBind = false;
+            _chapter4SampleIntroPlayed = false;
+            _chapter4SampleCutscenePending = false;
+            _chapter4SampleCutscenePlayed = false;
+            _chapter4FieldIntroPending = false;
+            _fieldPhaseSampleCutscenePending = false;
+            _fieldPhaseTargetIndex = 0;
+
+            GuidanceManager.Instance?.ClearTarget();
+
+            if (_chapter4SampleGuidanceTarget != null)
+            {
+                Destroy(_chapter4SampleGuidanceTarget.gameObject);
+                _chapter4SampleGuidanceTarget = null;
+            }
+        }
+
         private void TryBindSampleEvents()
         {
             var inv = SampleInventory.Instance;
             if (inv != null)
             {
+                if (_sampleBindRoutine != null)
+                {
+                    StopCoroutine(_sampleBindRoutine);
+                    _sampleBindRoutine = null;
+                }
+
+                _waitingForSampleBind = false;
+
+                if (_boundSampleInventory == inv)
+                {
+                    return;
+                }
+
+                if (_boundSampleInventory != null)
+                {
+                    _boundSampleInventory.OnSampleAdded -= OnSampleAdded;
+                }
+
+                inv.OnSampleAdded -= OnSampleAdded;
                 inv.OnSampleAdded += OnSampleAdded;
+                _boundSampleInventory = inv;
                 if (debugLog) Debug.Log("[QuestManager] 已绑定 SampleInventory.OnSampleAdded 事件");
                 return;
             }
@@ -515,10 +615,18 @@ namespace QuestSystem
             }
 
             _waitingForSampleBind = false;
+            _sampleBindRoutine = null;
             var inv = SampleInventory.Instance;
             if (inv != null)
             {
+                if (_boundSampleInventory != null && _boundSampleInventory != inv)
+                {
+                    _boundSampleInventory.OnSampleAdded -= OnSampleAdded;
+                }
+
+                inv.OnSampleAdded -= OnSampleAdded;
                 inv.OnSampleAdded += OnSampleAdded;
+                _boundSampleInventory = inv;
                 if (debugLog) Debug.Log("[QuestManager] 已绑定 SampleInventory.OnSampleAdded 事件 (延迟)");
             }
             else if (debugLog)
@@ -529,8 +637,11 @@ namespace QuestSystem
 
         private void UnbindSampleEvents()
         {
-            var inv = SampleInventory.Instance;
-            if (inv != null) inv.OnSampleAdded -= OnSampleAdded;
+            if (_boundSampleInventory != null)
+            {
+                _boundSampleInventory.OnSampleAdded -= OnSampleAdded;
+                _boundSampleInventory = null;
+            }
         }
 
         // 公开API --------------------------------------------------------------
@@ -541,6 +652,7 @@ namespace QuestSystem
             {
                 q.status = QuestStatus.InProgress;
                 if (debugLog) Debug.Log($"[QuestManager] 任务开始: {questId}");
+                GameEventBus.RaiseQuestStarted(q.id);
                 OnQuestStarted?.Invoke(q);
 
                 if (questId == "q.field.phase")
@@ -567,6 +679,7 @@ namespace QuestSystem
                     _completedObjectives.Add(objectiveId);
                     QuestPersistence.SaveCompleted(_completedQuests, _completedObjectives);
                     if (debugLog) Debug.Log($"[QuestManager] 目标完成: {objectiveId}");
+                    GameEventBus.RaiseObjectiveCompleted(obj.id);
                     OnObjectiveCompleted?.Invoke(obj);
 
                     if (objectiveId == "q.field.phase.enter_field")
@@ -586,6 +699,7 @@ namespace QuestSystem
                     _completedQuests.Add(q.id);
                     QuestPersistence.SaveCompleted(_completedQuests, _completedObjectives);
                     if (debugLog) Debug.Log($"[QuestManager] 任务完成: {q.id}");
+                    GameEventBus.RaiseQuestCompleted(q.id);
                     OnQuestCompleted?.Invoke(q);
                     GrantRewards(q.id);
                 }
@@ -600,6 +714,7 @@ namespace QuestSystem
         {
             // 可用于后续任务的“返回实验室”判断
             if (debugLog) Debug.Log($"[QuestManager] OnSceneLoaded: {sceneName}");
+            TryBindSampleEvents();
 
             // 切换到允许场景且当前无任务时兜底启动
             if (autoStartIntroQuestIfNone && IsAllowedScene(sceneName))

@@ -30,14 +30,17 @@ public class InventorySystemDebugger : MonoBehaviour
     
     void Update()
     {
+        var keyboard = Keyboard.current;
+        if (keyboard == null) return;
+
         // 按下 F11 键进行全面诊断
-        if (Keyboard.current.f11Key.wasPressedThisFrame)
+        if (keyboard.f11Key.wasPressedThisFrame)
         {
             RunComprehensiveDiagnosis();
         }
         
         // 按下 F12 键进行I键测试
-        if (Keyboard.current.f12Key.wasPressedThisFrame)
+        if (keyboard.f12Key.wasPressedThisFrame)
         {
             TestIKeyBehavior();
         }

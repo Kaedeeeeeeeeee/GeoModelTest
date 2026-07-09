@@ -82,7 +82,8 @@ public class DrillCarController : MonoBehaviour
     bool IsFKeyPressed()
     {
         // 键盘F键检测
-        bool keyboardFPressed = UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.fKey.wasPressedThisFrame;
+        var keyboard = UnityEngine.InputSystem.Keyboard.current;
+        bool keyboardFPressed = keyboard != null && keyboard.fKey.wasPressedThisFrame;
 
         // 移动端F键检测
         bool mobileFPressed = false;
@@ -273,10 +274,14 @@ public class DrillCarController : MonoBehaviour
         Vector2 moveInput = Vector2.zero;
 
         // 键盘输入
-        if (UnityEngine.InputSystem.Keyboard.current.wKey.isPressed) moveInput.y = 1;
-        if (UnityEngine.InputSystem.Keyboard.current.sKey.isPressed) moveInput.y = -1;
-        if (UnityEngine.InputSystem.Keyboard.current.aKey.isPressed) moveInput.x = -1;
-        if (UnityEngine.InputSystem.Keyboard.current.dKey.isPressed) moveInput.x = 1;
+        var keyboard = UnityEngine.InputSystem.Keyboard.current;
+        if (keyboard != null)
+        {
+            if (keyboard.wKey.isPressed) moveInput.y = 1;
+            if (keyboard.sKey.isPressed) moveInput.y = -1;
+            if (keyboard.aKey.isPressed) moveInput.x = -1;
+            if (keyboard.dKey.isPressed) moveInput.x = 1;
+        }
 
         // 移动端输入（优先级高于键盘）
         if (mobileInputManager != null && mobileInputManager.MoveInput.magnitude > 0.1f)

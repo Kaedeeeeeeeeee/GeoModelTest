@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Core;
 
 public abstract class CollectionTool : MonoBehaviour
 {
@@ -40,6 +41,7 @@ public abstract class CollectionTool : MonoBehaviour
     {
         if (isEquipped)
         {
+            if (GetPlayerCamera() == null) return;
             HandleInput();
             CheckCooldown();
         }
@@ -47,10 +49,32 @@ public abstract class CollectionTool : MonoBehaviour
     
     protected virtual void HandleInput()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame && canUse)
+        if (WasPrimaryUsePressed() && canUse)
         {
-            TryUseTool();
+            RequestPrimaryUse();
         }
+    }
+
+    protected bool WasPrimaryUsePressed()
+    {
+        var mouse = Mouse.current;
+        bool pressed = mouse != null && mouse.leftButton.wasPressedThisFrame;
+#if ENABLE_LEGACY_INPUT_MANAGER
+        pressed |= Input.GetMouseButtonDown(0);
+#endif
+        return pressed;
+    }
+
+    protected bool WasCancelPressed()
+    {
+        var keyboard = Keyboard.current;
+        var mouse = Mouse.current;
+        bool pressed = keyboard != null && keyboard.escapeKey.wasPressedThisFrame;
+        pressed |= mouse != null && mouse.rightButton.wasPressedThisFrame;
+#if ENABLE_LEGACY_INPUT_MANAGER
+        pressed |= Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape);
+#endif
+        return pressed;
     }
     
     protected virtual void CheckCooldown()
@@ -64,19 +88,44 @@ public abstract class CollectionTool : MonoBehaviour
     protected virtual void TryUseTool()
     {
         RaycastHit hit;
-        Ray ray = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        Camera camera = GetPlayerCamera();
+        if (camera == null) return;
+
+        Ray ray = camera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         
         if (Physics.Raycast(ray, out hit, useRange))
         {
             if (CanUseOnTarget(hit))
             {
                 UseTool(hit);
+                var target = hit.collider != null ? hit.collider.gameObject : null;
+                GameEventBus.RaiseToolUsed(
+                    toolID,
+                    toolName,
+                    target != null ? target.name : "",
+                    target != null ? target.tag : "");
                 lastUseTime = Time.time;
                 canUse = false;
                 
                 PlayUseSound();
             }
         }
+    }
+
+    public virtual bool RequestPrimaryUse()
+    {
+        if (!isEquipped || !canUse)
+        {
+            return false;
+        }
+
+        TryUseTool();
+        return true;
+    }
+
+    public virtual bool RequestCancelUse()
+    {
+        return false;
     }
     
     protected virtual bool CanUseOnTarget(RaycastHit hit)
@@ -85,6 +134,25 @@ public abstract class CollectionTool : MonoBehaviour
     }
     
     protected abstract void UseTool(RaycastHit hit);
+
+    protected Camera GetPlayerCamera()
+    {
+        if (playerCamera == null)
+        {
+            playerCamera = Camera.main;
+        }
+
+        if (playerCamera == null)
+        {
+            FirstPersonController player = FindFirstObjectByType<FirstPersonController>();
+            if (player != null)
+            {
+                playerCamera = player.GetComponentInChildren<Camera>();
+            }
+        }
+
+        return playerCamera;
+    }
     
     protected virtual void PlayUseSound()
     {
