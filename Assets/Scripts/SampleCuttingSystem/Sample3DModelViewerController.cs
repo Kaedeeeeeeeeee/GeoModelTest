@@ -225,7 +225,7 @@ namespace SampleCuttingSystem
         {
             if (rotationButtonText != null && modelViewer != null)
             {
-                rotationButtonText.text = modelViewer.IsAutoRotating ? "自动\n旋转" : "手动\n模式";
+                rotationButtonText.text = modelViewer.IsAutoRotating ? "自動\n回転" : "手動\n操作";
                 
                 // 更新按钮颜色
                 if (rotationToggleButton != null)

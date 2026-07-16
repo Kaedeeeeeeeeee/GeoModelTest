@@ -350,7 +350,7 @@ public class SettingsManager : MonoBehaviour
         titleRect.offsetMax = Vector2.zero;
         
         titleText = titleObj.AddComponent<Text>();
-        titleText.text = "设置";
+        titleText.text = "設定";
         titleText.font = UIFontResolver.GetUIFont();
         titleText.fontSize = 36;
         titleText.color = Color.white;
@@ -377,7 +377,7 @@ public class SettingsManager : MonoBehaviour
         labelRect.offsetMax = Vector2.zero;
         
         languageLabel = labelObj.AddComponent<Text>();
-        languageLabel.text = "语言 / Language / 言語";
+        languageLabel.text = "言語";
         languageLabel.font = UIFontResolver.GetUIFont();
         languageLabel.fontSize = 24;
         languageLabel.color = Color.white;
@@ -476,7 +476,7 @@ public class SettingsManager : MonoBehaviour
         headerRect.offsetMax = Vector2.zero;
 
         audioSectionLabel = headerObj.AddComponent<Text>();
-        audioSectionLabel.text = "音频";
+        audioSectionLabel.text = "音量";
         audioSectionLabel.font = UIFontResolver.GetUIFont();
         audioSectionLabel.fontSize = 22;
         audioSectionLabel.color = new Color(0.85f, 0.85f, 0.85f, 1f);
@@ -488,16 +488,16 @@ public class SettingsManager : MonoBehaviour
 
         // 4 个滑条（顶部到底部）
         masterVolumeSlider = CreateVolumeSliderRow(parent, "MasterVolume",
-            "ui.settings.master_volume", "主音量",
+            "ui.settings.master_volume", "全体の音量",
             0.60f, 0.66f, out masterVolumeLabel);
         bgmVolumeSlider = CreateVolumeSliderRow(parent, "BGMVolume",
-            "ui.settings.bgm_volume", "音乐音量",
+            "ui.settings.bgm_volume", "音楽の音量",
             0.52f, 0.58f, out bgmVolumeLabel);
         sfxVolumeSlider = CreateVolumeSliderRow(parent, "SFXVolume",
-            "ui.settings.sfx_volume", "音效音量",
+            "ui.settings.sfx_volume", "効果音の音量",
             0.44f, 0.50f, out sfxVolumeLabel);
         uiVolumeSlider = CreateVolumeSliderRow(parent, "UIVolume",
-            "ui.settings.ui_volume", "界面音量",
+            "ui.settings.ui_volume", "ボタン・メニューの音量",
             0.36f, 0.42f, out uiVolumeLabel);
     }
 
@@ -610,7 +610,7 @@ public class SettingsManager : MonoBehaviour
         headerRect.offsetMax = Vector2.zero;
 
         gameplaySectionLabel = headerObj.AddComponent<Text>();
-        gameplaySectionLabel.text = "游戏";
+        gameplaySectionLabel.text = "ゲーム";
         gameplaySectionLabel.font = UIFontResolver.GetUIFont();
         gameplaySectionLabel.fontSize = 22;
         gameplaySectionLabel.color = new Color(0.85f, 0.85f, 0.85f, 1f);
@@ -620,16 +620,16 @@ public class SettingsManager : MonoBehaviour
         LocalizedText loc = headerObj.AddComponent<LocalizedText>();
         loc.TextKey = "ui.settings.gameplay";
 
-        lookSensitivitySlider = CreateSettingsSliderRow(parent, "LookSensitivity", "镜头灵敏度",
+        lookSensitivitySlider = CreateSettingsSliderRow(parent, "LookSensitivity", "カメラの動く速さ",
             0.21f, 0.27f, GamePerformanceSettings.MinLookSensitivity, GamePerformanceSettings.MaxLookSensitivity,
             false, out lookSensitivityLabel);
 
         int maxQuality = Mathf.Max(0, QualitySettings.names.Length - 1);
-        qualitySlider = CreateSettingsSliderRow(parent, "Quality", "画质",
+        qualitySlider = CreateSettingsSliderRow(parent, "Quality", "画質",
             0.13f, 0.19f, 0f, maxQuality,
             true, out qualityLabel);
 
-        autoQualityButton = CreateLanguageButton(parent, "AutoQualityButton", "自动画质",
+        autoQualityButton = CreateLanguageButton(parent, "AutoQualityButton", "画質を自動で調整",
             new Vector2(0.08f, 0.04f), new Vector2(0.34f, 0.10f));
         autoQualityText = autoQualityButton.GetComponentInChildren<Text>();
     }
@@ -758,7 +758,7 @@ public class SettingsManager : MonoBehaviour
         textRect.offsetMax = Vector2.zero;
         
         closeText = textObj.AddComponent<Text>();
-        closeText.text = "关闭";
+        closeText.text = "閉じる";
         closeText.font = UIFontResolver.GetUIFont();
         closeText.fontSize = 24;
         closeText.resizeTextForBestFit = true;
@@ -920,21 +920,21 @@ public class SettingsManager : MonoBehaviour
             float value = lookSensitivitySlider != null
                 ? lookSensitivitySlider.value
                 : GamePerformanceSettings.LoadLookSensitivity(GamePerformanceSettings.DefaultLookSensitivity);
-            lookSensitivityLabel.text = $"{GetLocalizedText("ui.settings.look_sensitivity", "镜头灵敏度")}: {value:0.0}";
+            lookSensitivityLabel.text = $"{GetLocalizedText("ui.settings.look_sensitivity", "カメラの動く速さ")}: {value:0.0}";
         }
 
         if (qualityLabel != null)
         {
             int qualityLevel = qualitySlider != null ? Mathf.RoundToInt(qualitySlider.value) : GetDisplayedQualityLevel();
             string modeLabel = performanceSettings.IsManualQualityEnabled
-                ? GetLocalizedText("ui.settings.manual", "手动")
-                : GetLocalizedText("ui.settings.auto", "自动");
-            qualityLabel.text = $"{GetLocalizedText("ui.settings.quality", "画质")}: {performanceSettings.GetQualityDisplayName(qualityLevel)} ({modeLabel})";
+                ? GetLocalizedText("ui.settings.manual", "手動")
+                : GetLocalizedText("ui.settings.auto", "自動");
+            qualityLabel.text = $"{GetLocalizedText("ui.settings.quality", "画質")}: {performanceSettings.GetQualityDisplayName(qualityLevel)} ({modeLabel})";
         }
 
         if (autoQualityText != null)
         {
-            autoQualityText.text = GetLocalizedText("ui.settings.auto_quality", "自动画质");
+            autoQualityText.text = GetLocalizedText("ui.settings.auto_quality", "画質を自動で調整");
         }
 
         if (autoQualityButton != null)

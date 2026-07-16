@@ -429,13 +429,13 @@ public class PlayerPersistentData : MonoBehaviour
                         float start = perLayerDepth * i;
                         s.geologicalLayers.Add(new SampleItem.LayerInfo
                         {
-                            layerName = "未知地层",
+                            layerName = "不明な地層",
                             thickness = perLayerDepth,
                             depthStart = start,
                             depthEnd = start + perLayerDepth,
                             layerColor = new Color(0.6f, 0.4f, 0.2f, 1f),
                             materialName = "Unknown",
-                            layerDescription = "存档中未记录地层信息"
+                            layerDescription = "保存データに地層の情報がありません"
                         });
                     }
                 }

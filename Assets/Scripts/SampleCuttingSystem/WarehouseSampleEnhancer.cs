@@ -145,7 +145,7 @@ namespace SampleCuttingSystem
         private static SampleData ExtractSampleData(GameObject item)
         {
             // 尝试从文本组件获取名称
-            string sampleName = "未知样本";
+            string sampleName = "不明な試料";
             string description = "";
             int layerCount = 1;
             
@@ -163,18 +163,18 @@ namespace SampleCuttingSystem
             if (sampleName.Contains("多层") || sampleName.Contains("钻孔"))
             {
                 layerCount = EstimateLayerCount(sampleName);
-                description = "可进行切割的多层地质样本";
+                description = "地層ごとに分けられる、複数の地層を含む試料";
             }
             else if (sampleName.Contains("单层"))
             {
                 layerCount = 1;
-                description = "单层样本，无需切割";
+                description = "地層が一つの試料。切断せずに観察できます。";
             }
             else
             {
                 // 默认假设为多层样本
                 layerCount = 2;
-                description = "地质样本，可尝试切割";
+                description = "地質試料。地層の数を確認してください。";
             }
             
             return new SampleData(sampleName, description, layerCount);

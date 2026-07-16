@@ -378,7 +378,9 @@ public class SamplePlacer : MonoBehaviour
             }
             else
             {
-                ShowMessage("无法在此位置放置样本");
+                ShowMessage(LocalizationManager.Resolve(
+                    "sample.message.place_invalid",
+                    "ここには試料を置けません。平らな場所を選んでください。"));
             }
         }
         
@@ -420,7 +422,10 @@ public class SamplePlacer : MonoBehaviour
                 SampleInventory.Instance.RemoveSampleFromUI(itemToPlace);
             }
             
-            ShowMessage($"已放置样本: {itemToPlace.displayName}");
+            ShowMessage(LocalizationManager.Resolve(
+                "sample.message.placed",
+                "試料を置きました：{0}",
+                itemToPlace.displayName));
             Debug.Log($"样本已放置: {itemToPlace.displayName} 位置: {placePosition}");
         }
         
@@ -432,7 +437,9 @@ public class SamplePlacer : MonoBehaviour
     /// </summary>
     void CancelPlacement()
     {
-        ShowMessage("取消放置样本");
+        ShowMessage(LocalizationManager.Resolve(
+            "sample.message.place_cancelled",
+            "試料を置く操作を取り消しました。"));
         EndPlacingMode();
     }
     

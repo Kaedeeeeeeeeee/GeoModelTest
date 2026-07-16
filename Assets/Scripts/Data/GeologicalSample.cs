@@ -3,8 +3,8 @@ using UnityEngine;
 public class GeologicalSample : MonoBehaviour
 {
     [Header("Sample Properties")]
-    public string sampleName = "地层样本";
-    public string sampleType = "未知";
+    public string sampleName = "地層試料";
+    public string sampleType = "不明";
     public Vector3 extractionPosition;
     public Quaternion extractionRotation;
     public Material originalMaterial;
@@ -58,7 +58,7 @@ public class GeologicalSample : MonoBehaviour
         extractionRotation = rotation;
         originalMaterial = material;
         sampleType = type;
-        sampleName = $"{type} 样本";
+        sampleName = $"{type}試料";
         
         transform.position = position;
         transform.rotation = rotation;

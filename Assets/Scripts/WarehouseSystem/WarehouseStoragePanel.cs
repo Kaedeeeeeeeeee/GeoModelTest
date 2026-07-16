@@ -279,7 +279,11 @@ public class WarehouseStoragePanel : MonoBehaviour
             textRect.sizeDelta = new Vector2(200, 30);
             
             pageInfoText = textObj.AddComponent<Text>();
-            pageInfoText.text = "第1页 / 共1页";
+            pageInfoText.text = LocalizationManager.Resolve(
+                "warehouse.pagination",
+                "{0}/{1}ページ",
+                1,
+                1);
             pageInfoText.font = UIFontResolver.GetUIFont();
             pageInfoText.fontSize = 16;
             pageInfoText.color = Color.white;
@@ -434,11 +438,19 @@ public class WarehouseStoragePanel : MonoBehaviour
         {
             if (totalPages > 0)
             {
-                pageInfoText.text = $"第{currentPage + 1}页 / 共{totalPages}页";
+                pageInfoText.text = LocalizationManager.Resolve(
+                    "warehouse.pagination",
+                    "{0}/{1}ページ",
+                    currentPage + 1,
+                    totalPages);
             }
             else
             {
-                pageInfoText.text = "第1页 / 共1页";
+                pageInfoText.text = LocalizationManager.Resolve(
+                    "warehouse.pagination",
+                    "{0}/{1}ページ",
+                    1,
+                    1);
             }
         }
     }

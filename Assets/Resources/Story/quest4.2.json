@@ -11,7 +11,7 @@
         },
         {
             "speaker": "narration",
-            "text": "主人公が立つ場所は、かつて崩れた崖の少し北。そこには地震で割れた地面が乾き、まだうっすらと焦げたような色をしていた。",
+            "text": "主人公が立つ場所は、前回調べた露頭の少し北。地面には、ゆれでできた小さな割れ目が残っていた。",
             "speakerKey": "story.speaker.narration",
             "textKey": "story.quest4_2.line02"
         },

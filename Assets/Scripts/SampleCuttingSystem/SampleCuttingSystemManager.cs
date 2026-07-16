@@ -243,18 +243,12 @@ namespace SampleCuttingSystem
         /// </summary>
         public void HandleCuttingFailure(GeometricSampleReconstructor.ReconstructedSample originalSample)
         {
-            LogError("切割失败，样本已损坏");
+            Log("切断位置がずれました。元の試料を残して再試行できます。");
             
             // 记录失败历史
             RecordCuttingHistory(originalSample, new SingleLayerSample[0], false);
             
-            // 清理失败的样本
-            if (originalSample?.sampleContainer != null)
-            {
-                Destroy(originalSample.sampleContainer);
-            }
-            
-            // 重置系统
+            // 学習中の試行錯誤を過度に罰しないため、失敗時も元の試料は破棄しない。
             ResetSystem();
         }
         
@@ -320,19 +314,25 @@ namespace SampleCuttingSystem
                 case DropZoneState.Normal:
                     dropZoneImage.color = normalColor;
                     if (dropZoneText != null)
-                        dropZoneText.text = "将多层样本拖拽到此处";
+                        dropZoneText.text = LocalizationManager.Resolve(
+                            "cutting_system.instruction.drag_sample",
+                            "複数の地層を含む試料を左側からここへ移動してください。");
                     break;
                     
                 case DropZoneState.Highlight:
                     dropZoneImage.color = highlightColor;
                     if (dropZoneText != null)
-                        dropZoneText.text = "松开鼠标放置样本";
+                        dropZoneText.text = LocalizationManager.Resolve(
+                            "cutting_system.drop_ready",
+                            "ここで指を離すと切断を始めます。");
                     break;
                     
                 case DropZoneState.Error:
                     dropZoneImage.color = errorColor;
                     if (dropZoneText != null)
-                        dropZoneText.text = "无效样本或系统忙碌";
+                        dropZoneText.text = LocalizationManager.Resolve(
+                            "cutting_system.drop_invalid",
+                            "複数の地層を含む試料を選んでください。");
                     break;
             }
         }

@@ -13,9 +13,9 @@ public class DrillTowerInteractionUI : MonoBehaviour
     public float promptDistance = 3f;
     
     [Header("提示文本")]
-    public string basePromptText = "按 F 键进行钻探";
-    public string drillingText = "钻探中...";
-    public string maxDepthText = "已达最大钻探深度";
+    public string basePromptText = "［F］コアを採取する";
+    public string drillingText = "コアを採取しています…";
+    public string maxDepthText = "調査できる最大の深さに達しました";
     
     private DrillTower currentTower;
     private Camera playerCamera;
@@ -208,13 +208,21 @@ public class DrillTowerInteractionUI : MonoBehaviour
 
         if (tower.isDrilling)
         {
-            promptText.text = LocalizationManager.Instance?.GetText("drill_tower.drilling") ?? "钻探中...";
+            promptText.text = LocalizationManager.Resolve(
+                "drill_tower.drilling",
+                "ボーリング調査中…");
             promptText.color = Color.yellow;
         }
         else if (tower.currentDrillCount >= 5) // 假设最大5次钻探
         {
-            string maxDepthText = LocalizationManager.Instance?.GetText("drill_tower.max_depth") ?? "已达最大钻探深度";
-            string recallText = LocalizationManager.Instance?.GetText("drill_tower.recall_prompt") ?? "按 G 键收回钻塔";
+            string maxDepthText = LocalizationManager.Resolve(
+                "drill_tower.max_depth",
+                "調査できる最大の深さに達しました");
+            string recallText = LocalizationManager.ResolveForCurrentInput(
+                "drill_tower.recall_prompt",
+                "drill_tower.recall_prompt_mobile",
+                "［G］ボーリング装置を回収する",
+                "ボーリング装置を回収する");
             promptText.text = $"{maxDepthText}\n{recallText}";
             promptText.color = Color.red;
         }
@@ -224,8 +232,19 @@ public class DrillTowerInteractionUI : MonoBehaviour
             float startDepth = tower.currentDrillCount * 2f;
             float endDepth = startDepth + 2f;
 
-            string drillPrompt = LocalizationManager.Instance?.GetText("drill_tower.drill_prompt", nextDrillNumber, startDepth, endDepth) ?? $"按 F 键进行第{nextDrillNumber}次钻探\n({startDepth:F0}m-{endDepth:F0}m)";
-            string recallText = LocalizationManager.Instance?.GetText("drill_tower.recall_prompt") ?? "按 G 键收回钻塔";
+            string drillPrompt = LocalizationManager.ResolveForCurrentInput(
+                "drill_tower.drill_prompt",
+                "drill_tower.drill_prompt_mobile",
+                "［F］{1:F0}～{2:F0}mのコアを採取する",
+                "{1:F0}～{2:F0}mのコアを採取する",
+                nextDrillNumber,
+                startDepth,
+                endDepth);
+            string recallText = LocalizationManager.ResolveForCurrentInput(
+                "drill_tower.recall_prompt",
+                "drill_tower.recall_prompt_mobile",
+                "［G］ボーリング装置を回収する",
+                "ボーリング装置を回収する");
             promptText.text = $"{drillPrompt}\n{recallText}";
             promptText.color = Color.white;
         }

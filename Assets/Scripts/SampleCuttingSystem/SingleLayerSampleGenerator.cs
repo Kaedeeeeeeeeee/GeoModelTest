@@ -154,7 +154,7 @@ namespace SampleCuttingSystem
                 // 创建单层样本数据
                 var singleSample = new SingleLayerSample
                 {
-                    layerName = layerSegment.sourceLayer.layerName ?? $"地层 {layerIndex + 1}",
+                    layerName = layerSegment.sourceLayer.layerName ?? $"地層 {layerIndex + 1}",
                     originalSampleID = originalSample.sampleID,
                     isCutFromMultiLayer = true,
                     cuttingTime = System.DateTime.Now,
@@ -407,7 +407,7 @@ namespace SampleCuttingSystem
                 {
                     // 设置切割系统特有的属性
                     sampleItem.displayName = $"{sampleData.layerName}（已切割）";
-                    sampleItem.description = $"从多层样本切割得到的单层{sampleData.layerName}样本";
+                    sampleItem.description = $"複数の地層を含む試料から分けた、{sampleData.layerName}の試料";
                     
                     Debug.Log($"✅ 成功创建样本数据: {sampleItem.displayName}");
                     return sampleItem;

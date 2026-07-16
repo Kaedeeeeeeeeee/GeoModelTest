@@ -49,13 +49,21 @@ namespace WorkbenchSystem
         private float nextColliderRefreshTime;
         private const float colliderRefreshInterval = 1.5f;
         private CharacterController playerCharacterController;
+        private MobileInputManager mobileInputManager;
+        private bool previousMobileInteractState;
         private int playerFindAttempts = 0;
         private const int maxPlayerFindAttempts = 100; // 最大尝试次数后放弃频繁查找
 
         private void Start()
         {
             ResolveReferences(true);
+            mobileInputManager = MobileInputManager.Instance;
+            if (mobileInputManager == null)
+            {
+                mobileInputManager = FindFirstObjectByType<MobileInputManager>();
+            }
             EnsureInteractionPrompt();
+            UpdateInteractionPromptText();
 
             // Ensure workbench camera is disabled at start
             if (workbenchCamera != null)
@@ -247,8 +255,19 @@ namespace WorkbenchSystem
                 interactionHintUI.SetActive(isPlayerInRange && !isInteracting);
             }
 
-            // 没有键盘输入时不处理交互，但仍保持提示刷新
-            if (Keyboard.current == null) return;
+            bool mobileInteractionPressed = false;
+            if (mobileInputManager != null)
+            {
+                bool currentMobileInteractState = mobileInputManager.IsInteracting;
+                mobileInteractionPressed = currentMobileInteractState && !previousMobileInteractState;
+                previousMobileInteractState = currentMobileInteractState;
+            }
+            else
+            {
+                previousMobileInteractState = false;
+            }
+
+            UpdateInteractionPromptText();
 
             // 工作台内的鼠标点击交互（显微镜）
             if (isInteracting)
@@ -260,8 +279,9 @@ namespace WorkbenchSystem
             // Handle Input
             if (isPlayerInRange && !isInteracting)
             {
-                var keyControl = Keyboard.current[interactionKey];
-                if (keyControl != null && keyControl.wasPressedThisFrame)
+                var keyControl = Keyboard.current != null ? Keyboard.current[interactionKey] : null;
+                bool keyboardInteractionPressed = keyControl != null && keyControl.wasPressedThisFrame;
+                if (keyboardInteractionPressed || mobileInteractionPressed)
                 {
                     EnterWorkbench();
                 }
@@ -270,10 +290,12 @@ namespace WorkbenchSystem
             {
                 // Press Escape or E to exit? usually Escape or same key.
                 // User didn't specify exit key, but E or Esc is standard.
-                bool escapePressed = Keyboard.current[Key.Escape] != null && Keyboard.current[Key.Escape].wasPressedThisFrame;
-                var keyControl = Keyboard.current[interactionKey];
+                bool escapePressed = Keyboard.current != null &&
+                    Keyboard.current[Key.Escape] != null &&
+                    Keyboard.current[Key.Escape].wasPressedThisFrame;
+                var keyControl = Keyboard.current != null ? Keyboard.current[interactionKey] : null;
                 bool interactionPressed = keyControl != null && keyControl.wasPressedThisFrame;
-                if (escapePressed || interactionPressed)
+                if (escapePressed || interactionPressed || mobileInteractionPressed)
                 {
                     ExitWorkbench();
                 }
@@ -735,7 +757,7 @@ namespace WorkbenchSystem
             textRect.offsetMax = Vector2.zero;
 
             Text text = textObj.AddComponent<Text>();
-            text.text = $"按 {interactionKey} 键 进入工作台";
+            text.text = GetInteractionPromptText();
             text.font = UIFontResolver.GetUIFont();
             text.fontSize = 24;
             text.alignment = TextAnchor.MiddleCenter;
@@ -743,6 +765,29 @@ namespace WorkbenchSystem
 
             interactionHintUI = panelObj;
             interactionHintUI.SetActive(false);
+        }
+
+        private void UpdateInteractionPromptText()
+        {
+            if (interactionHintUI == null)
+            {
+                return;
+            }
+
+            Text prompt = interactionHintUI.GetComponentInChildren<Text>(true);
+            if (prompt != null)
+            {
+                prompt.text = GetInteractionPromptText();
+            }
+        }
+
+        private string GetInteractionPromptText()
+        {
+            return LocalizationManager.ResolveForCurrentInput(
+                "workbench.interaction.prompt",
+                "workbench.interaction.mobile",
+                $"［{interactionKey}］作業台を使う",
+                "作業台を使う");
         }
 
         // Simple GUI for debugging if no UI assigned
@@ -753,7 +798,7 @@ namespace WorkbenchSystem
                 GUIStyle style = new GUIStyle();
                 style.fontSize = 24;
                 style.normal.textColor = Color.white;
-                GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height / 2 + 50, 200, 50), $"Press {interactionKey} to Interact", style);
+                GUI.Label(new Rect(Screen.width / 2 - 160, Screen.height / 2 + 50, 320, 50), GetInteractionPromptText(), style);
             }
         }
     }

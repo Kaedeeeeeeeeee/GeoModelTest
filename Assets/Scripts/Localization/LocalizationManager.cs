@@ -349,6 +349,69 @@ public class LocalizationManager : MonoBehaviour
         
         return text;
     }
+
+    /// <summary>
+    /// 获取本地化文本；键不存在或系统尚未初始化时使用明确的本地回退文案。
+    /// 与 GetText 不同，本方法不会把 [missing.key] 暴露给玩家。
+    /// </summary>
+    public string GetTextOrFallback(string key, string fallback, params object[] args)
+    {
+        string template = fallback ?? string.Empty;
+        if (!string.IsNullOrEmpty(key) && currentLanguageDict.TryGetValue(key, out string localized))
+        {
+            template = localized ?? template;
+        }
+
+        return FormatText(template, args);
+    }
+
+    /// <summary>
+    /// 可在运行时 UI 构造代码中安全使用的静态入口。
+    /// </summary>
+    public static string Resolve(string key, string fallback, params object[] args)
+    {
+        LocalizationManager manager = Instance;
+        return manager != null && manager.IsInitialized
+            ? manager.GetTextOrFallback(key, fallback, args)
+            : FormatText(fallback ?? string.Empty, args);
+    }
+
+    /// <summary>
+    /// 根据当前输入方式选择桌面或触摸端文案，避免在手机上显示键盘按键。
+    /// </summary>
+    public static string ResolveForCurrentInput(
+        string desktopKey,
+        string mobileKey,
+        string desktopFallback,
+        string mobileFallback,
+        params object[] args)
+    {
+        MobileInputManager mobileManager = MobileInputManager.Instance;
+        bool useTouchPrompt = mobileManager != null
+            ? mobileManager.ShouldShowVirtualControls()
+            : MobileInputManager.IsRuntimeMobileDevice();
+
+        return useTouchPrompt
+            ? Resolve(mobileKey, mobileFallback, args)
+            : Resolve(desktopKey, desktopFallback, args);
+    }
+
+    private static string FormatText(string template, object[] args)
+    {
+        if (args == null || args.Length == 0)
+        {
+            return template ?? string.Empty;
+        }
+
+        try
+        {
+            return string.Format(template ?? string.Empty, args);
+        }
+        catch (System.FormatException)
+        {
+            return template ?? string.Empty;
+        }
+    }
     
     /// <summary>
     /// 检查是否存在指定键的文本

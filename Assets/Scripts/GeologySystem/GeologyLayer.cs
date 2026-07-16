@@ -4,10 +4,10 @@ using UnityEngine;
 public class GeologyLayer : MonoBehaviour
 {
     [Header("地层基本信息")]
-    public string layerName = "未命名地层";
+    public string layerName = "名称未設定の地層";
     public LayerType layerType = LayerType.Sedimentary;
-    public string geologicalAge = "未知年代";
-    public string formation = "未知组";
+    public string geologicalAge = "年代不明";
+    public string formation = "地層群不明";
     
     [Header("地层物理属性")]
     public Material layerMaterial;
@@ -22,8 +22,8 @@ public class GeologyLayer : MonoBehaviour
     
     [Header("教学信息")]
     [TextArea(3, 5)]
-    public string description = "地层描述信息";
-    public string formationEnvironment = "沉积环境";
+    public string description = "地層の説明";
+    public string formationEnvironment = "堆積した環境";
     
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;

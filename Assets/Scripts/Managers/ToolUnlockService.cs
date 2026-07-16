@@ -145,28 +145,28 @@ public static class ToolUnlockService
         tool.toolID = toolId;
         if (tool is HammerTool)
         {
-            tool.toolName = "地质锤";
+            tool.toolName = "地質ハンマー";
         }
         else if (tool is SimpleDrillTool)
         {
-            tool.toolName = "简易钻探";
+            tool.toolName = "簡易ボーリング装置";
         }
         else if (tool is DrillTowerTool)
         {
-            tool.toolName = "钻塔工具";
+            tool.toolName = "ボーリング装置（ドリルタワー）";
         }
         else if (tool is SceneSwitcherTool &&
                  (string.IsNullOrEmpty(tool.toolName) || tool.toolName == "Collection Tool"))
         {
-            tool.toolName = "场景切换器";
+            tool.toolName = "フェーズシフター";
         }
         else if (tool is DroneTool)
         {
-            tool.toolName = "无人机";
+            tool.toolName = "調査用ドローン";
         }
         else if (tool is DrillCarTool)
         {
-            tool.toolName = "钻探车";
+            tool.toolName = "ボーリング調査車";
         }
     }
 }
@@ -186,14 +186,14 @@ public static class ToolUnlockService_Internal
         if (existing != null)
         {
             existing.toolID = "1002";
-            existing.toolName = "地质锤";
+            existing.toolName = "地質ハンマー";
             return existing;
         }
 
         // 添加组件到与 ToolManager 相同的对象
         var hammer = toolManager.gameObject.AddComponent<HammerTool>();
         hammer.toolID = "1002";
-        hammer.toolName = "地质锤";
+        hammer.toolName = "地質ハンマー";
         // 其余字段使用 HammerTool 内部默认逻辑；无预制体时仍可工作
 
         return hammer;
@@ -212,7 +212,7 @@ public static class ToolUnlockService_Internal
         switcher.toolID = "999";
         if (string.IsNullOrEmpty(switcher.toolName) || switcher.toolName == "Collection Tool")
         {
-            switcher.toolName = "场景切换器";
+            switcher.toolName = "フェーズシフター";
         }
 
         return switcher;
@@ -227,7 +227,7 @@ public static class ToolUnlockService_Internal
 
         simple = toolManager.gameObject.AddComponent<SimpleDrillTool>();
         simple.toolID = "1000";
-        simple.toolName = "简易钻探";
+        simple.toolName = "簡易ボーリング装置";
         return simple;
     }
 
@@ -240,7 +240,7 @@ public static class ToolUnlockService_Internal
         {
             drillTower = toolManager.gameObject.AddComponent<DrillTowerTool>();
             drillTower.toolID = "1001";
-            drillTower.toolName = "钻塔工具";
+            drillTower.toolName = "ボーリング装置（ドリルタワー）";
             drillTower.interactionRange = Mathf.Approximately(drillTower.interactionRange, 0f) ? 3f : drillTower.interactionRange;
             drillTower.maxDrillDepths = drillTower.maxDrillDepths <= 0 ? 5 : drillTower.maxDrillDepths;
             drillTower.depthPerDrill = Mathf.Approximately(drillTower.depthPerDrill, 0f) ? 2f : drillTower.depthPerDrill;
@@ -355,7 +355,7 @@ public static class ToolUnlockService_Internal
         {
             droneTool = toolManager.gameObject.AddComponent<DroneTool>();
             droneTool.toolID = "1100";
-            droneTool.toolName = "无人机";
+            droneTool.toolName = "調査用ドローン";
             droneTool.useRange = Mathf.Approximately(droneTool.useRange, 0f) ? 100f : droneTool.useRange;
             droneTool.useCooldown = Mathf.Approximately(droneTool.useCooldown, 0f) ? 2f : droneTool.useCooldown;
             droneTool.placementOffset = Mathf.Approximately(droneTool.placementOffset, 0f) ? 1f : droneTool.placementOffset;
@@ -428,7 +428,7 @@ public static class ToolUnlockService_Internal
         if (recaller == null)
         {
             recaller = prefab.AddComponent<PlacedToolRecaller>();
-            recaller.toolName = "无人机";
+            recaller.toolName = "調査用ドローン";
             recaller.interactionRange = 5f;
             recaller.recallKey = KeyCode.G;
         }

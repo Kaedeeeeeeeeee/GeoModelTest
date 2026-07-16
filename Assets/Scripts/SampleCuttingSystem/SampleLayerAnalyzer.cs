@@ -77,7 +77,7 @@ namespace SampleCuttingSystem
                 {
                     position = normalizedPosition,
                     successZoneSize = successZoneSize / 200f, // 转换为标准化值 (200cm = 2m)
-                    layerName = sortedLayers[i].sourceLayer.layerName ?? $"地层 {i + 1}",
+                    layerName = sortedLayers[i].sourceLayer.layerName ?? $"地層 {i + 1}",
                     layerColor = GetLayerColor(sortedLayers[i])
                 };
                 
@@ -233,7 +233,7 @@ namespace SampleCuttingSystem
             {
                 info.layers[i] = new LayerInfo
                 {
-                    name = sortedLayers[i].sourceLayer.layerName ?? $"地层 {i + 1}",
+                    name = sortedLayers[i].sourceLayer.layerName ?? $"地層 {i + 1}",
                     thickness = thicknesses[i],
                     startDepth = sortedLayers[i].relativeDepth,
                     endDepth = sortedLayers[i].relativeDepth + thicknesses[i],

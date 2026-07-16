@@ -101,7 +101,7 @@
         },
         {
             "speaker": "narration",
-            "text": "言い終わる前に、大地が激しく震え出した。地鳴りが耳をつんざき、足元の岩が崩れる。",
+            "text": "言い終わる前に、大地が大きくゆれ、足元の小石が転がった。",
             "shake": true,
             "shakeAmplitude": 0.6,
             "speakerKey": "story.speaker.narration",
@@ -151,7 +151,7 @@
         },
         {
             "speaker": "narration",
-            "text": "白い閃光が主人公を包み込む。次の瞬間、耳をつんざく地鳴りの音が消え、静寂と機械音が戻った。",
+            "text": "白い光が主人公を包み込む。次の瞬間、周囲は静かになり、研究所の機械音が聞こえた。",
             "speakerKey": "story.speaker.narration",
             "textKey": "story.quest3_3.line25"
         }

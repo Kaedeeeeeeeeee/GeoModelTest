@@ -49,9 +49,9 @@ namespace StorySystem
 
         private static readonly List<SubtitleUI.SubtitleLine> DefaultMainRescueLines = new List<SubtitleUI.SubtitleLine>
         {
-            new SubtitleUI.SubtitleLine("这是哪里…？地面在震动！"),
-            new SubtitleUI.SubtitleLine("糟了！滑坡？震源很近…"),
-            new SubtitleUI.SubtitleLine("有人吗！……救命！", triggerCameraShake: true)
+            new SubtitleUI.SubtitleLine("大きな揺れだ。まず机の下で身を守ろう。"),
+            new SubtitleUI.SubtitleLine("揺れが強くなり、視界が白い光に包まれた。"),
+            new SubtitleUI.SubtitleLine("目を開けると、見たことのない場所にいた。", triggerCameraShake: true)
         };
 
         private static readonly List<SubtitleUI.SubtitleLine> DefaultLabIntroLines = new List<SubtitleUI.SubtitleLine>
@@ -262,6 +262,25 @@ namespace StorySystem
             _isRunningCinematic = true;
             QuizScoreManager.Instance.Reset(); // 新一轮游玩开始，清空测验成绩
             if (enableDebugLog) Debug.Log("[StoryDirector] Run_MainScene_Rescue 开始");
+
+            bool playDisasterScene = true;
+            yield return ShowDisasterContentNotice(value => playDisasterScene = value);
+            Backend.TelemetryClient.Instance?.Track("story_content_notice_decision", new Dictionary<string, object>
+            {
+                ["decision"] = playDisasterScene ? "continue" : "skip"
+            });
+
+            if (!playDisasterScene)
+            {
+                SetFlag("story.main.rescue.skipped");
+                SetFlag("story.main.rescue");
+                yield return new WaitForSeconds(0.1f);
+                SwitchToLaboratoryScene();
+                _isRunningCinematic = false;
+                if (enableDebugLog) Debug.Log("[StoryDirector] 災害場面をスキップして研究室へ移動");
+                yield break;
+            }
+
             // 进入场景即切第三人称，正面朝向角色，并在期间保持震动与字幕推进
             var lines = LoadStoryLines(mainRescueSequenceResource, DefaultMainRescueLines);
             yield return StartCoroutine(ThirdPersonCinematicAction.ExecuteWithShakeFacingFront(lines, 0.6f));
@@ -270,6 +289,169 @@ namespace StorySystem
             // 演出结束后，自动切换到实验室，触发第二段剧情
             yield return new WaitForSeconds(0.35f);
             if (enableDebugLog) Debug.Log("[StoryDirector] 切换到 Laboratory Scene 以进入第二段剧情");
+            SwitchToLaboratoryScene();
+
+            _isRunningCinematic = false;
+            if (enableDebugLog) Debug.Log("[StoryDirector] Run_MainScene_Rescue 结束");
+        }
+
+        private IEnumerator ShowDisasterContentNotice(Action<bool> onComplete)
+        {
+            bool? shouldPlay = null;
+            CursorLockMode previousLockMode = Cursor.lockState;
+            bool previousCursorVisible = Cursor.visible;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
+            if (EventSystem.current == null)
+            {
+                GameObject eventSystemObject = new GameObject("DisasterNoticeEventSystem");
+                eventSystemObject.AddComponent<EventSystem>();
+                var inputModule = eventSystemObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+                inputModule.AssignDefaultActions();
+            }
+
+            GameObject overlay = new GameObject("DisasterContentNotice", typeof(RectTransform));
+            Canvas canvas = overlay.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 32760;
+            CanvasScaler scaler = overlay.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            scaler.matchWidthOrHeight = 0.5f;
+            overlay.AddComponent<GraphicRaycaster>();
+
+            Image overlayImage = overlay.AddComponent<Image>();
+            overlayImage.color = new Color(0.025f, 0.035f, 0.045f, 0.96f);
+
+            GameObject panelObject = new GameObject("Panel", typeof(RectTransform), typeof(Image));
+            panelObject.transform.SetParent(overlay.transform, false);
+            RectTransform panelRect = panelObject.GetComponent<RectTransform>();
+            panelRect.anchorMin = new Vector2(0.5f, 0.5f);
+            panelRect.anchorMax = new Vector2(0.5f, 0.5f);
+            panelRect.pivot = new Vector2(0.5f, 0.5f);
+            panelRect.sizeDelta = new Vector2(900f, 530f);
+            panelObject.GetComponent<Image>().color = new Color(0.08f, 0.12f, 0.15f, 1f);
+
+            Text title = CreateNoticeText(
+                panelObject.transform,
+                "Title",
+                LocalizationManager.Resolve("story.content_notice.title", "災害場面について"),
+                38,
+                FontStyle.Bold);
+            RectTransform titleRect = title.rectTransform;
+            titleRect.anchorMin = new Vector2(0f, 1f);
+            titleRect.anchorMax = new Vector2(1f, 1f);
+            titleRect.pivot = new Vector2(0.5f, 1f);
+            titleRect.anchoredPosition = new Vector2(0f, -44f);
+            titleRect.sizeDelta = new Vector2(-80f, 64f);
+
+            Text message = CreateNoticeText(
+                panelObject.transform,
+                "Message",
+                LocalizationManager.Resolve(
+                    "story.content_notice.message",
+                    "このあと、地震の揺れと音を表す場面があります。\n不安を感じる場合は、この場面をスキップできます。"),
+                28,
+                FontStyle.Normal);
+            message.alignment = TextAnchor.MiddleLeft;
+            message.horizontalOverflow = HorizontalWrapMode.Wrap;
+            message.verticalOverflow = VerticalWrapMode.Overflow;
+            RectTransform messageRect = message.rectTransform;
+            messageRect.anchorMin = new Vector2(0f, 0.5f);
+            messageRect.anchorMax = new Vector2(1f, 1f);
+            messageRect.offsetMin = new Vector2(70f, -30f);
+            messageRect.offsetMax = new Vector2(-70f, -125f);
+
+            Button continueButton = CreateNoticeButton(
+                panelObject.transform,
+                "ContinueButton",
+                LocalizationManager.Resolve("story.content_notice.continue", "この場面を見る"),
+                new Color(0.12f, 0.42f, 0.53f, 1f));
+            RectTransform continueRect = continueButton.GetComponent<RectTransform>();
+            continueRect.anchorMin = new Vector2(0.5f, 0f);
+            continueRect.anchorMax = new Vector2(0.5f, 0f);
+            continueRect.pivot = new Vector2(0.5f, 0f);
+            continueRect.anchoredPosition = new Vector2(-205f, 58f);
+            continueRect.sizeDelta = new Vector2(360f, 82f);
+            continueButton.onClick.AddListener(() => shouldPlay = true);
+
+            Button skipButton = CreateNoticeButton(
+                panelObject.transform,
+                "SkipButton",
+                LocalizationManager.Resolve("story.content_notice.skip", "この場面をスキップ"),
+                new Color(0.32f, 0.36f, 0.39f, 1f));
+            RectTransform skipRect = skipButton.GetComponent<RectTransform>();
+            skipRect.anchorMin = new Vector2(0.5f, 0f);
+            skipRect.anchorMax = new Vector2(0.5f, 0f);
+            skipRect.pivot = new Vector2(0.5f, 0f);
+            skipRect.anchoredPosition = new Vector2(205f, 58f);
+            skipRect.sizeDelta = new Vector2(360f, 82f);
+            skipButton.onClick.AddListener(() => shouldPlay = false);
+
+            while (!shouldPlay.HasValue)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    shouldPlay = false;
+                }
+                yield return null;
+            }
+
+            Destroy(overlay);
+            Cursor.lockState = previousLockMode;
+            Cursor.visible = previousCursorVisible;
+            onComplete?.Invoke(shouldPlay.Value);
+            yield return null;
+        }
+
+        private static Text CreateNoticeText(
+            Transform parent,
+            string objectName,
+            string content,
+            int fontSize,
+            FontStyle fontStyle)
+        {
+            GameObject textObject = new GameObject(objectName, typeof(RectTransform), typeof(Text));
+            textObject.transform.SetParent(parent, false);
+            Text text = textObject.GetComponent<Text>();
+            text.font = UIFontResolver.GetUIFont();
+            text.text = content;
+            text.fontSize = fontSize;
+            text.fontStyle = fontStyle;
+            text.color = Color.white;
+            text.alignment = TextAnchor.MiddleCenter;
+            return text;
+        }
+
+        private static Button CreateNoticeButton(
+            Transform parent,
+            string objectName,
+            string label,
+            Color color)
+        {
+            GameObject buttonObject = new GameObject(objectName, typeof(RectTransform), typeof(Image), typeof(Button));
+            buttonObject.transform.SetParent(parent, false);
+            Image image = buttonObject.GetComponent<Image>();
+            image.color = color;
+            Button button = buttonObject.GetComponent<Button>();
+            button.targetGraphic = image;
+
+            Text buttonText = CreateNoticeText(buttonObject.transform, "Text", label, 26, FontStyle.Bold);
+            RectTransform textRect = buttonText.rectTransform;
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = new Vector2(14f, 6f);
+            textRect.offsetMax = new Vector2(-14f, -6f);
+            buttonText.resizeTextForBestFit = true;
+            buttonText.resizeTextMinSize = 18;
+            buttonText.resizeTextMaxSize = 28;
+            buttonText.raycastTarget = false;
+            return button;
+        }
+
+        private static void SwitchToLaboratoryScene()
+        {
             var gsm = GameSceneManager.Instance;
             if (gsm != null)
             {
@@ -279,9 +461,6 @@ namespace StorySystem
             {
                 UnityEngine.SceneManagement.SceneManager.LoadScene("Laboratory Scene");
             }
-
-            _isRunningCinematic = false;
-            if (enableDebugLog) Debug.Log("[StoryDirector] Run_MainScene_Rescue 结束");
         }
 
         private IEnumerator Run_Laboratory_Intro()

@@ -245,7 +245,7 @@ public class GameInitializer : MonoBehaviour
             {
                 droneTool = lily.AddComponent<DroneTool>();
                 droneTool.toolID = "1100";
-                droneTool.toolName = "无人机";
+                droneTool.toolName = "調査用ドローン";
                 if (enableDebugMode) Debug.Log("已添加无人机工具");
             }
             
@@ -255,7 +255,7 @@ public class GameInitializer : MonoBehaviour
             {
                 simpleDrillTool = lily.AddComponent<SimpleDrillTool>();
                 simpleDrillTool.toolID = "1000";
-                simpleDrillTool.toolName = "简易钻探";
+                simpleDrillTool.toolName = "簡易ボーリング装置";
                 if (enableDebugMode) Debug.Log("已添加简易钻探工具");
             }
             
@@ -265,7 +265,7 @@ public class GameInitializer : MonoBehaviour
             {
                 drillCarTool = lily.AddComponent<DrillCarTool>();
                 drillCarTool.toolID = "1101";
-                drillCarTool.toolName = "钻探车";
+                drillCarTool.toolName = "ボーリング調査車";
                 
                 // 尝试找到DrillCar预制体
                 #if UNITY_EDITOR
@@ -314,7 +314,7 @@ public class GameInitializer : MonoBehaviour
             {
                 hammerTool = lily.AddComponent<HammerTool>();
                 hammerTool.toolID = "1002";
-                hammerTool.toolName = "地质锤";
+                hammerTool.toolName = "地質ハンマー";
                 
                 // 尝试找到Hammer预制体
                 #if UNITY_EDITOR

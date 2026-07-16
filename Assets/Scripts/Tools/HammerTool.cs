@@ -42,7 +42,7 @@ public class HammerTool : CollectionTool
         
         // 配置工具基础属性
         toolID = "1002";
-        toolName = "地质锤";
+        toolName = LocalizationManager.Resolve("tool.hammer.name", "地質ハンマー");
         useRange = collectionRange;
         useCooldown = 0.5f; // 短冷却时间，允许快速敲击
         
@@ -146,7 +146,7 @@ public class HammerTool : CollectionTool
         Camera camera = GetPlayerCamera();
         if (camera == null)
         {
-            ShowMessage("未找到玩家摄像机");
+            ShowMessage(LocalizationManager.Resolve("hammer.message.camera_missing", "カメラが見つかりません。"));
             return;
         }
 
@@ -182,7 +182,7 @@ public class HammerTool : CollectionTool
         }
         else
         {
-            ShowMessage("无有效采集目标");
+            ShowMessage(LocalizationManager.Resolve("hammer.message.no_target", "採取できる岩石に照準を合わせてください。"));
         }
     }
     
@@ -196,7 +196,7 @@ public class HammerTool : CollectionTool
         Camera camera = GetPlayerCamera();
         if (camera == null)
         {
-            ShowMessage("未找到玩家摄像机");
+            ShowMessage(LocalizationManager.Resolve("hammer.message.camera_missing", "カメラが見つかりません。"));
             return;
         }
         
@@ -230,7 +230,7 @@ public class HammerTool : CollectionTool
             }
             else
             {
-                ShowMessage($"敲击位置偏差过大！请在目标标记范围内敲击");
+                ShowMessage(LocalizationManager.Resolve("hammer.message.aim_at_marker", "目印の範囲をたたいてください。"));
             }
         }
     }
@@ -270,7 +270,7 @@ public class HammerTool : CollectionTool
         canUse = false;
         
         Debug.Log("采集完成！生成薄片样本");
-        ShowMessage("采集成功！获得地质薄片样本");
+        ShowMessage(LocalizationManager.Resolve("hammer.message.collected", "岩石試料を採取しました。"));
     }
     
     /// <summary>
@@ -306,7 +306,7 @@ public class HammerTool : CollectionTool
         {
             if (Time.time - currentCollection.lastHitTime > hitTimeout)
             {
-                ShowMessage("采集超时，请重新开始");
+                ShowMessage(LocalizationManager.Resolve("hammer.message.timeout", "時間が空いたため、採取を最初からやり直してください。"));
                 CancelCollection();
             }
         }
@@ -656,7 +656,9 @@ public class HammerTool : CollectionTool
         // 标记为薄片样本
         if (collector.sampleData != null)
         {
-            collector.sampleData.description = "使用地质锤采集的薄片样本";
+            collector.sampleData.description = LocalizationManager.Resolve(
+                "sample.description.hammer",
+                "露頭から採取した岩石試料");
             collector.sampleData.depthStart = 0f; // 表面采集
             collector.sampleData.depthEnd = 0.06f; // 薄片厚度
             collector.sampleData.totalDepth = 0.06f; // 更新总深度为薄片厚度
@@ -678,7 +680,11 @@ public class HammerTool : CollectionTool
         float distance = Vector3.Distance(transform.position, hit.point);
         if (distance > collectionRange)
         {
-            ShowMessage($"目标距离过远！当前距离: {distance:F1}m，最大范围: {collectionRange}m");
+            ShowMessage(LocalizationManager.Resolve(
+                "hammer.message.too_far",
+                "岩石から離れすぎています。現在：{0:F1}m、採取できる距離：{1:F1}m",
+                distance,
+                collectionRange));
             return false;
         }
         

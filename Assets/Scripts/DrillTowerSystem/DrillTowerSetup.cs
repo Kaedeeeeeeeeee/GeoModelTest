@@ -47,7 +47,7 @@ public class DrillTowerSetup : MonoBehaviour
         
         // 配置基础工具属性
         drillTool.toolID = "1001";
-        drillTool.toolName = "钻塔工具";
+        drillTool.toolName = "ボーリング装置（ドリルタワー）";
         drillTool.toolIcon = drillTowerIcon;
         drillTool.useRange = 50f;
         drillTool.useCooldown = 1f;

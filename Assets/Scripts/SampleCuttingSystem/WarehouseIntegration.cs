@@ -91,7 +91,9 @@ namespace SampleCuttingSystem
             if (dropZoneBackground != null)
                 dropZoneBackground.color = normalColor;
                 
-            UpdateInstructionText("将多层样本从仓库拖拽到此处");
+            UpdateInstructionText(LocalizationManager.Resolve(
+                "cutting_system.instruction.drag_sample",
+                "複数の地層を含む試料を左側からここへ移動してください。"));
         }
         
         /// <summary>
@@ -121,7 +123,9 @@ namespace SampleCuttingSystem
             if (draggedObject == null)
             {
                 Debug.LogWarning("拖拽对象为空");
-                HandleDropResult(false, "拖拽对象无效");
+                HandleDropResult(false, LocalizationManager.Resolve(
+                    "cutting_system.drop_invalid",
+                    "複数の地層を含む試料を選んでください。"));
                 return;
             }
             
@@ -129,13 +133,19 @@ namespace SampleCuttingSystem
             var sampleData = ValidateDraggedObject(draggedObject);
             if (sampleData == null)
             {
-                HandleDropResult(false, "无效的样本对象");
+                HandleDropResult(false, LocalizationManager.Resolve(
+                    "cutting_system.drop_invalid",
+                    "複数の地層を含む試料を選んでください。"));
                 return;
             }
             
             // 尝试开始切割
             bool success = StartCuttingProcess(sampleData);
-            HandleDropResult(success, success ? "样本加载成功" : "无法开始切割");
+            HandleDropResult(
+                success,
+                success
+                    ? LocalizationManager.Resolve("cutting_system.sample_loaded", "試料を読み込みました。切断を始められます。")
+                    : LocalizationManager.Resolve("cutting_system.initialization_failed", "試料切断台を読み込めませんでした。いったん閉じて、もう一度試してください。"));
         }
         
         /// <summary>
@@ -253,7 +263,9 @@ namespace SampleCuttingSystem
             if (success)
             {
                 targetColor = highlightColor;
-                UpdateInstructionText("样本加载成功，准备切割");
+                UpdateInstructionText(LocalizationManager.Resolve(
+                    "cutting_system.sample_loaded",
+                    "試料を読み込みました。切断を始められます。"));
                 
                 // 延迟恢复正常状态
                 Invoke(nameof(ResetToNormalState), 2f);
@@ -280,7 +292,9 @@ namespace SampleCuttingSystem
         private void ResetToNormalState()
         {
             targetColor = normalColor;
-            UpdateInstructionText("将多层样本从仓库拖拽到此处");
+            UpdateInstructionText(LocalizationManager.Resolve(
+                "cutting_system.instruction.drag_sample",
+                "複数の地層を含む試料を左側からここへ移動してください。"));
         }
         
         /// <summary>
@@ -308,7 +322,9 @@ namespace SampleCuttingSystem
                 if (isValidDrag)
                 {
                     targetColor = highlightColor;
-                    UpdateInstructionText("松开鼠标放置样本");
+                    UpdateInstructionText(LocalizationManager.Resolve(
+                        "cutting_system.drop_ready",
+                        "ここで指を離すと切断を始めます。"));
                     
                     // 显示样本信息预览
                     ShowSamplePreview(sampleData);
@@ -316,7 +332,9 @@ namespace SampleCuttingSystem
                 else
                 {
                     targetColor = invalidColor;
-                    UpdateInstructionText("无效样本：需要多层地质样本");
+                    UpdateInstructionText(LocalizationManager.Resolve(
+                        "cutting_system.drop_invalid",
+                        "複数の地層を含む試料を選んでください。"));
                 }
             }
         }
@@ -331,7 +349,9 @@ namespace SampleCuttingSystem
                 isDragOver = false;
                 isValidDrag = false;
                 targetColor = normalColor;
-                UpdateInstructionText("将多层样本从仓库拖拽到此处");
+                UpdateInstructionText(LocalizationManager.Resolve(
+                    "cutting_system.instruction.drag_sample",
+                    "複数の地層を含む試料を左側からここへ移動してください。"));
                 
                 // 隐藏预览
                 HideSamplePreview();
@@ -356,7 +376,11 @@ namespace SampleCuttingSystem
                 var sampleInfo = layerAnalyzer.GetSampleInfo(sampleData);
                 if (sampleInfo != null)
                 {
-                    string previewText = $"样本预览:\n地层数: {sampleInfo.layerCount}\n需要切割: {sampleInfo.estimatedCuts} 次";
+                    string previewText = LocalizationManager.Resolve(
+                        "cutting_system.sample_preview",
+                        "試料の確認\n地層：{0}層\n必要な切断：{1}回",
+                        sampleInfo.layerCount,
+                        sampleInfo.estimatedCuts);
                     UpdateInstructionText(previewText);
                 }
             }

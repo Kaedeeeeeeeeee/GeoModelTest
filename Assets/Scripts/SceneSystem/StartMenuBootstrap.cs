@@ -265,10 +265,18 @@ namespace SceneSystem
         {
             Debug.Log("[StartMenu] New Game clicked, showing confirm dialog");
             ShowConfirmDialog(
-                title: "New Game",
-                message: "覆盖现有进度？\nThis will erase your current save (story progress, quests, inventory).",
-                confirmLabel: "确认开始 / Start Fresh",
-                cancelLabel: "取消 / Cancel",
+                title: LocalizationManager.Resolve(
+                    "ui.start.new_game.title",
+                    "最初から始めますか？"),
+                message: LocalizationManager.Resolve(
+                    "ui.start.new_game.message",
+                    "現在の進行状況を消して、最初から始めます。\nストーリー、調査ミッション、持っている試料の記録が消えます。"),
+                confirmLabel: LocalizationManager.Resolve(
+                    "ui.start.new_game.confirm",
+                    "最初から始める"),
+                cancelLabel: LocalizationManager.Resolve(
+                    "ui.start.new_game.cancel",
+                    "戻る"),
                 onConfirm: () =>
                 {
                     Debug.Log("[StartMenu] Resetting all progress and starting new game");

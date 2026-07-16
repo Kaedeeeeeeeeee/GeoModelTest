@@ -122,6 +122,11 @@ namespace Backend
                 return;
             }
 
+            props ??= new Dictionary<string, object>();
+            props["contentVersion"] = ResearchContentVersion.ContentVersion;
+            props["storyRoute"] = ResearchContentVersion.StoryRoute;
+            props["copyChecklistVersion"] = ResearchContentVersion.CopyChecklistVersion;
+
             var evt = TelemetryQueue.Create(eventName, SceneManager.GetActiveScene().name, props);
             evt.sessionId = _sessionId;
             _queue.Enqueue(evt);

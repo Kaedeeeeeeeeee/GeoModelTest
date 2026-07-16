@@ -88,7 +88,7 @@ public class PlacedSampleCollector : MonoBehaviour
         
         if (promptText != null && originalSampleData != null)
         {
-            promptText.text = $"[E] 收回 {originalSampleData.displayName}";
+            promptText.text = GetRetrievePrompt();
         }
         
         #if UNITY_EDITOR
@@ -204,7 +204,7 @@ public class PlacedSampleCollector : MonoBehaviour
         textRect.offsetMax = Vector2.zero;
         
         promptText = textObj.AddComponent<Text>();
-        promptText.text = $"[E] 收回 {originalSampleData?.displayName ?? "样本"}";
+        promptText.text = GetRetrievePrompt();
         promptText.font = UIFontResolver.GetUIFont();
         promptText.fontSize = 20; // 和钻塔UI类似的字体大小
         promptText.color = Color.white;
@@ -325,7 +325,7 @@ public class PlacedSampleCollector : MonoBehaviour
             interactionPrompt.SetActive(true);
             if (promptText != null && originalSampleData != null)
             {
-                promptText.text = $"[E] 收回 {originalSampleData.displayName}";
+                promptText.text = GetRetrievePrompt();
             }
         }
     }
@@ -402,8 +402,19 @@ public class PlacedSampleCollector : MonoBehaviour
         // 只需要更新文本内容
         if (interactionPrompt != null && promptText != null && originalSampleData != null)
         {
-            promptText.text = $"[E] 收回 {originalSampleData.displayName}";
+            promptText.text = GetRetrievePrompt();
         }
+    }
+
+    private string GetRetrievePrompt()
+    {
+        string sampleName = originalSampleData?.displayName ?? "試料";
+        return LocalizationManager.ResolveForCurrentInput(
+            "sample.collection.retrieve",
+            "sample.retrieve.mobile",
+            "［E］{0}を回収する",
+            "試料を回収する",
+            sampleName);
     }
     
     /// <summary>
@@ -482,7 +493,9 @@ public class PlacedSampleCollector : MonoBehaviour
         
         if (originalSampleData == null)
         {
-            ShowMessage("样本数据丢失，无法收回！");
+            ShowMessage(LocalizationManager.Resolve(
+                "sample.message.retrieve_missing",
+                "試料の情報を読み込めないため、回収できませんでした。"));
             Debug.LogError("originalSampleData为null");
             return;
         }
@@ -492,7 +505,9 @@ public class PlacedSampleCollector : MonoBehaviour
         var inventory = SampleInventory.Instance;
         if (inventory == null)
         {
-            ShowMessage("未找到样本背包系统！");
+            ShowMessage(LocalizationManager.Resolve(
+                "sample.message.no_inventory",
+                "調査バッグを読み込めませんでした。メニューからやり直してください。"));
             Debug.LogError("SampleInventory.Instance为null");
             return;
         }
@@ -501,7 +516,9 @@ public class PlacedSampleCollector : MonoBehaviour
         // 检查背包是否还有空间
         if (!inventory.CanAddSample())
         {
-            ShowMessage("背包已满，无法收回样本！");
+            ShowMessage(LocalizationManager.Resolve(
+                "sample.message.inventory_full",
+                "調査バッグがいっぱいです。試料を整理してから、もう一度試してください。"));
             return;
         }
         
@@ -519,7 +536,9 @@ public class PlacedSampleCollector : MonoBehaviour
         }
         else
         {
-            ShowMessage("无法收回样本到背包！");
+            ShowMessage(LocalizationManager.Resolve(
+                "sample.message.retrieve_failed",
+                "試料を回収できませんでした。もう一度試してください。"));
             Debug.LogError("AddSampleBackToInventory失败");
         }
     }
@@ -529,7 +548,10 @@ public class PlacedSampleCollector : MonoBehaviour
     /// </summary>
     void ShowCollectionFeedback()
     {
-        ShowMessage($"已收回样本: {originalSampleData.displayName}");
+        ShowMessage(LocalizationManager.Resolve(
+            "sample.message.retrieved",
+            "試料を回収しました：{0}",
+            originalSampleData.displayName));
         
         // 播放收回音效（如果有）
         AudioSource audioSource = GetComponent<AudioSource>();
@@ -556,9 +578,9 @@ public class PlacedSampleCollector : MonoBehaviour
     {
         if (originalSampleData != null)
         {
-            return $"放置的样本: {originalSampleData.displayName} (ID: {originalSampleData.sampleID})";
+            return $"配置した試料：{originalSampleData.displayName}（ID：{originalSampleData.sampleID}）";
         }
-        return "无样本数据";
+        return "試料データなし";
     }
     
     /// <summary>

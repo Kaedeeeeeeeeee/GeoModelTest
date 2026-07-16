@@ -90,7 +90,9 @@ namespace SampleCuttingSystem
             if (sampleData == null)
             {
                 Debug.LogError("样本数据为空");
-                ShowError("无效的样本数据");
+                ShowError(LocalizationManager.Resolve(
+                    "cutting_system.drop_invalid",
+                    "複数の地層を含む試料を選んでください。"));
                 return false;
             }
             
@@ -117,10 +119,10 @@ namespace SampleCuttingSystem
             Debug.Log($"分析单层样本: {sampleData.name}");
 
             // 显示分析信息
-            string analysisInfo = $"样本名称: {sampleData.name}\n" +
-                                $"层数: {sampleData.layerCount} (单层)\n" +
-                                $"说明: {sampleData.description}\n\n" +
-                                "单层样本无需切割，可直接进行地质分析。";
+            string analysisInfo = $"試料：{sampleData.name}\n" +
+                                $"地層：{sampleData.layerCount}層\n" +
+                                $"説明：{sampleData.description}\n\n" +
+                                "この試料は地層が一つなので、切断せずに観察できます。";
 
             ShowAnalysisInfo(analysisInfo);
 
@@ -332,7 +334,9 @@ namespace SampleCuttingSystem
             else
             {
                 Debug.LogError("无法创建切割游戏组件");
-                ShowError(LocalizationManager.Instance?.GetText("cutting_system.initialization_failed") ?? "切割系统初始化失败");
+                ShowError(LocalizationManager.Resolve(
+                    "cutting_system.initialization_failed",
+                    "試料切断台を読み込めませんでした。いったん閉じて、もう一度試してください。"));
             }
         }
         
@@ -552,7 +556,7 @@ namespace SampleCuttingSystem
             var geologyLayer = layerObj.AddComponent<GeologyLayer>();
             
             geologyLayer.layerName = layerInfo.layerName;
-            geologyLayer.description = $"真实地层: {layerInfo.layerName}, 厚度: {layerInfo.thickness:F2}m";
+            geologyLayer.description = $"実際の地層：{layerInfo.layerName}、厚さ：{layerInfo.thickness:F2}m";
             geologyLayer.averageThickness = layerInfo.thickness;
             
             // 根据层级名称设置合适的颜色
@@ -650,7 +654,7 @@ namespace SampleCuttingSystem
             var geologyLayer = layerObj.AddComponent<GeologyLayer>();
             
             geologyLayer.layerName = $"Layer_{index + 1}";
-            geologyLayer.description = $"默认地层 {index + 1}";
+            geologyLayer.description = $"地層 {index + 1}";
             geologyLayer.averageThickness = 1f;
             geologyLayer.layerColor = GetLayerColor(index);
             
@@ -728,7 +732,7 @@ namespace SampleCuttingSystem
             geologyLayer.layerName = $"Layer_{layerIndex + 1}";
             geologyLayer.layerColor = GetLayerColor(layerIndex);
             geologyLayer.averageThickness = 2f / totalLayerCount; // 根据总高度计算平均厚度
-            geologyLayer.description = $"模拟地层 {layerIndex + 1}，来自样本 {sampleName}";
+            geologyLayer.description = $"地層 {layerIndex + 1}（元の試料：{sampleName}）";
             
             // 防止被场景清理系统删除
             DontDestroyOnLoad(layerObj);
@@ -832,12 +836,16 @@ namespace SampleCuttingSystem
             {
                 if (canAccept)
                 {
-                    instructionText.text = "✅ 松开鼠标开始切割";
+                    instructionText.text = LocalizationManager.Resolve(
+                        "cutting_system.drop_ready",
+                        "ここで指を離すと切断を始めます。");
                     instructionText.color = Color.green;
                 }
                 else
                 {
-                    instructionText.text = "❌ 只能切割多层样本";
+                    instructionText.text = LocalizationManager.Resolve(
+                        "cutting_system.drop_invalid",
+                        "複数の地層を含む試料を選んでください。");
                     instructionText.color = Color.red;
                 }
                 instructionText.fontSize = 24;
@@ -1082,12 +1090,16 @@ namespace SampleCuttingSystem
                 
                 if (success)
                 {
-                    instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.success_message") ?? "✅ 切割成功！\n\n单层样本已添加到背包\n可以继续切割其他样本";
+                    instructionText.text = LocalizationManager.Resolve(
+                        "cutting_system.success_message",
+                        "試料を地層ごとに分け、調査バッグに入れました。\n続けて別の試料を切断できます。");
                     instructionText.color = Color.green;
                 }
                 else
                 {
-                    instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.failure_message") ?? "❌ 切割失败\n\n样本已被销毁\n请重新选择样本进行切割";
+                    instructionText.text = LocalizationManager.Resolve(
+                        "cutting_system.failure_message",
+                        "切断位置がずれました。\nもう一度試せます。");
                     instructionText.color = Color.red;
                 }
             }
@@ -1242,12 +1254,9 @@ namespace SampleCuttingSystem
         /// </summary>
         private string GetLocalizedDropZoneText()
         {
-            var localizationManager = LocalizationManager.Instance;
-            if (localizationManager != null)
-            {
-                return localizationManager.GetText("ui.cutting.dropzone.instruction");
-            }
-            return "将多层样本拖拽到此处进行切割"; // 默认文本
+            return LocalizationManager.Resolve(
+                "cutting_system.instruction.drag_sample",
+                "複数の地層を含む試料を左側からここへ移動してください。");
         }
         
         /// <summary>

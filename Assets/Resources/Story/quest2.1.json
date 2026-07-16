@@ -17,7 +17,7 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "移動（いどう）にはフェーズシフターを使（つか）うの。Tabキーで道具（どうぐ）を切（き）り替（か）えてね。",
+            "text": "移動（いどう）にはフェーズシフターを使（つか）うの。道具（どうぐ）の一覧（いちらん）から選（えら）んでね。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.bridge.q21.l03"
         }

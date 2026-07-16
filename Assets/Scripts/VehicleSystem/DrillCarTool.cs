@@ -12,7 +12,7 @@ public class DrillCarTool : PlaceableTool
     {
         base.Start();
         
-        toolName = "钻探车";
+        toolName = "ボーリング調査車";
         useRange = 100f;
         useCooldown = 2f;
         placementOffset = 1.0f;
@@ -145,7 +145,7 @@ public class DrillCarTool : PlaceableTool
         if (recaller == null)
         {
             recaller = placedObject.AddComponent<PlacedToolRecaller>();
-            recaller.toolName = "钻探车";
+            recaller.toolName = "ボーリング調査車";
             recaller.interactionRange = 5f;
             recaller.recallKey = KeyCode.G;
             Debug.Log("已为钻探车添加收回功能 (按G键收回)");

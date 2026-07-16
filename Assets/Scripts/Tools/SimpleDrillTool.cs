@@ -19,7 +19,7 @@ public class SimpleDrillTool : CollectionTool
     {
         base.Start();
         toolID = "1000";
-        toolName = "简易钻探";
+        toolName = "簡易ボーリング装置";
     }
     
     protected override void Update()

@@ -216,15 +216,11 @@ public class WarehouseTrigger : MonoBehaviour
         textRect.offsetMax = Vector2.zero;
         
         promptText = textObj.AddComponent<Text>();
-        promptText.text = "[F] 打开仓库";
+        promptText.text = GetInteractionPrompt();
         promptText.font = UIFontResolver.GetUIFont();
         promptText.fontSize = 22;
         promptText.color = Color.white;
         promptText.alignment = TextAnchor.MiddleCenter;
-        
-        // 添加本地化组件
-        LocalizedText localizedPrompt = textObj.AddComponent<LocalizedText>();
-        localizedPrompt.TextKey = "warehouse.interaction.prompt";
         
         // 初始隐藏
         promptObj.SetActive(false);
@@ -437,7 +433,20 @@ public class WarehouseTrigger : MonoBehaviour
     /// </summary>
     void UpdatePromptPosition()
     {
-        // UI固定显示在屏幕下方，不需要位置计算
+        // UI固定显示在屏幕下方；文案根据当前输入方式动态切换。
+        if (promptText != null)
+        {
+            promptText.text = GetInteractionPrompt();
+        }
+    }
+
+    private string GetInteractionPrompt()
+    {
+        return LocalizationManager.ResolveForCurrentInput(
+            "warehouse.interaction.prompt",
+            "warehouse.interaction.mobile",
+            "［F］試料保管庫を開く",
+            "試料保管庫を開く");
     }
     
     /// <summary>

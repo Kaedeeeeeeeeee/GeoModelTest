@@ -172,7 +172,11 @@ namespace SampleCuttingSystem
             
             // 添加3D文本
             TextMesh textMesh = promptObj.AddComponent<TextMesh>();
-            textMesh.text = "按 F 键进入样本切割台";
+            textMesh.text = LocalizationManager.ResolveForCurrentInput(
+                "cutting_station.interaction.prompt",
+                "cutting_station.interaction.mobile",
+                "［F］試料切断台を使う",
+                "試料切断台を使う");
             textMesh.characterSize = 0.1f;
             textMesh.fontSize = 20;
             textMesh.color = Color.white;

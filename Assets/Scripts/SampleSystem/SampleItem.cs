@@ -117,12 +117,14 @@ public class SampleItem : IInventoryItem
         var item = new SampleItem();
         item.sampleID = GenerateUniqueSampleID();
         // 使用本地化的样本名称
-        string samplePrefix = LocalizationManager.Instance?.GetText("sample.item.prefix") ?? "地质样本_";
+        string samplePrefix = LocalizationManager.Resolve("sample.item.prefix", "地質試料_");
         item.displayName = $"{samplePrefix}{item.sampleID[^8..]}";
         
         // 使用本地化的描述
         string toolName = GetLocalizedToolName(sourceToolID);
-        string descriptionTemplate = LocalizationManager.Instance?.GetText("sample.description.template") ?? "使用{0}采集的地质样本";
+        string descriptionTemplate = LocalizationManager.Resolve(
+            "sample.description.template",
+            "{0}を使って採取した地質試料");
         item.description = string.Format(descriptionTemplate, toolName);
         item.collectionTime = DateTime.Now;
         item.originalCollectionPosition = geologicalSample.transform.position;
@@ -162,10 +164,10 @@ public class SampleItem : IInventoryItem
     {
         return toolID switch
         {
-            "1000" => "简易钻探工具",
-            "1001" => "钻塔工具",
-            "1002" => "地质锤",
-            _ => "未知工具"
+            "1000" => "簡易ボーリング装置",
+            "1001" => "ボーリング装置（ドリルタワー）",
+            "1002" => "地質ハンマー",
+            _ => "不明な道具"
         };
     }
     
@@ -233,13 +235,13 @@ public class SampleItem : IInventoryItem
                 {
                     var layerInfo = new LayerInfo
                     {
-                        layerName = segment.sourceLayer.layerName ?? "未知层",
+                        layerName = segment.sourceLayer.layerName ?? "不明な地層",
                         thickness = CalculateLayerThickness(segment),
                         depthStart = segment.relativeDepth,
                         depthEnd = segment.relativeDepth + CalculateLayerThickness(segment),
                         layerColor = GetLayerColor(segment),
                         materialName = GetMaterialName(segment),
-                        layerDescription = $"深度 {segment.relativeDepth:F2}m 的地质层"
+                        layerDescription = $"地表から深さ{segment.relativeDepth:F2}mの地層"
                     };
                     geologicalLayers.Add(layerInfo);
                 }
@@ -260,13 +262,13 @@ public class SampleItem : IInventoryItem
         layerCount = 1;
         var defaultLayer = new LayerInfo
         {
-            layerName = "未命名地层",
+            layerName = "名称未設定の地層",
             thickness = totalDepth,
             depthStart = 0f,
             depthEnd = totalDepth,
             layerColor = extractedColor,
             materialName = "Default",
-            layerDescription = "从样本外观提取的默认地质层数据"
+            layerDescription = "試料の見た目から作成した地層データ"
         };
         geologicalLayers.Add(defaultLayer);
         
@@ -449,8 +451,9 @@ public class SampleItem : IInventoryItem
         var localizationManager = LocalizationManager.Instance;
         
         // 检查是否为切割样本（工具ID为"9999"或显示名称包含"切割样本"）
-        bool isCuttingSample = sourceToolID == "9999" || 
-                               (!string.IsNullOrEmpty(displayName) && displayName.Contains("切割样本"));
+        bool isCuttingSample = sourceToolID == "9999" ||
+                               (!string.IsNullOrEmpty(displayName) &&
+                                (displayName.Contains("切割样本") || displayName.Contains("切断した試料")));
         
         string info = "";
         if (localizationManager != null)
@@ -481,12 +484,15 @@ public class SampleItem : IInventoryItem
                 info += localizationManager.GetText("sample.info.id", sampleID) + "\n";
                 info += localizationManager.GetText("sample.info.name", displayName) + "\n";
                 info += localizationManager.GetText("sample.info.collection_time", collectionTime.ToString("yyyy-MM-dd HH:mm:ss")) + "\n";
-                info += localizationManager.GetText("sample.info.collection_position", 
-                    originalCollectionPosition.x.ToString("F2"), 
-                    originalCollectionPosition.y.ToString("F2"), 
-                    originalCollectionPosition.z.ToString("F2")) + "\n";
+                string collectionArea = localizationManager.GetTextOrFallback(
+                    "scene.main.name",
+                    "野外調査エリア");
+                info += localizationManager.GetTextOrFallback(
+                    "sample.info.collection_position",
+                    "採取地点：{0}",
+                    collectionArea) + "\n";
                 info += localizationManager.GetText("sample.info.collection_tool", GetLocalizedToolName(sourceToolID)) + "\n";
-                // 使用世界坐标深度计算系统
+                // 生徒向け画面には内部の世界座標を出さず、地表からの深さだけを表示する。
                 string depthInfo = WorldDepthCalculator.GetLocalizedDepthDescription(
                     originalCollectionPosition, depthStart, depthEnd, true);
                 info += depthInfo + "\n";
@@ -515,43 +521,39 @@ public class SampleItem : IInventoryItem
         {
             if (isCuttingSample)
             {
-                // 切割样本只显示地层详情（中文版本）
+                // 本地化系统不可用时也日本語の安全な表示を維持する。
                 if (geologicalLayers.Count > 0)
                 {
-                    info = "地质层详情:\n";
+                    info = "地層の詳細：\n";
                     for (int i = 0; i < geologicalLayers.Count; i++)
                     {
                         var layer = geologicalLayers[i];
-                        info += $"  {i + 1}. {layer.layerName} - 厚度: {layer.thickness:F2}m\n";
+                        info += $"  {i + 1}. {layer.layerName} ― 厚さ：{layer.thickness:F2}m\n";
                     }
                 }
                 else
                 {
-                    info = "无地层数据";
+                    info = "地層のデータはありません";
                 }
             }
             else
             {
-                // 普通样本显示完整信息（中文版本）
-                info = $"样本ID: {sampleID}\n";
-                info += $"名称: {displayName}\n";
-                info += $"采集时间: {collectionTime:yyyy-MM-dd HH:mm:ss}\n";
-                info += $"采集位置: ({originalCollectionPosition.x:F2}, {originalCollectionPosition.y:F2}, {originalCollectionPosition.z:F2})\n";
-                info += $"采集工具: {GetToolName(sourceToolID)}\n";
-                // 使用世界坐标深度计算系统（默认版本）
-                var (worldDepthStart, worldDepthEnd) = WorldDepthCalculator.CalculateWorldDepthRange(
-                    originalCollectionPosition, depthStart, depthEnd);
-                info += $"采集深度: {worldDepthStart:F1}m - {worldDepthEnd:F1}m (相对: {depthStart:F1}m - {depthEnd:F1}m)\n";
-                info += $"地质层数: {layerCount}\n";
-                info += $"当前状态: {(currentLocation == SampleLocation.InInventory ? "背包中" : "世界中")}\n";
+                info = $"試料ID：{sampleID}\n";
+                info += $"名前：{displayName}\n";
+                info += $"採取時刻：{collectionTime:yyyy-MM-dd HH:mm:ss}\n";
+                info += "採取地点：野外調査エリア\n";
+                info += $"採取に使った道具：{GetToolName(sourceToolID)}\n";
+                info += $"地表からの深さ：{depthStart:F1}m～{depthEnd:F1}m\n";
+                info += $"含まれる地層：{layerCount}層\n";
+                info += $"現在の状態：{(currentLocation == SampleLocation.InInventory ? "調査バッグの中" : "野外に配置")}\n";
                 
                 if (geologicalLayers.Count > 0)
                 {
-                    info += "\n地质层详情:\n";
+                    info += "\n地層の詳細：\n";
                     for (int i = 0; i < geologicalLayers.Count; i++)
                     {
                         var layer = geologicalLayers[i];
-                        info += $"  {i + 1}. {layer.layerName} - 厚度: {layer.thickness:F2}m\n";
+                        info += $"  {i + 1}. {layer.layerName} ― 厚さ：{layer.thickness:F2}m\n";
                     }
                 }
             }

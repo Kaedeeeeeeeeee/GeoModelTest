@@ -328,7 +328,9 @@ namespace SampleCuttingSystem
             titleText.fontStyle = FontStyle.Bold;
             titleText.color = new Color(0.8f, 0.9f, 1f, 1f);
             titleText.alignment = TextAnchor.MiddleCenter;
-            titleText.text = "样本剖面图";
+            titleText.text = LocalizationManager.Resolve(
+                "cutting_system.profile_title",
+                "試料の断面");
         }
         
         /// <summary>
@@ -493,7 +495,9 @@ namespace SampleCuttingSystem
             instructionText.fontStyle = FontStyle.Bold;
             instructionText.color = new Color(0.9f, 0.9f, 1f, 1f);
             instructionText.alignment = TextAnchor.MiddleCenter;
-            instructionText.text = "初始化切割系统...";
+            instructionText.text = LocalizationManager.Resolve(
+                "cutting_system.analyzing_sample",
+                "試料を調べています…");
             
             Debug.Log("创建指令文本");
         }
@@ -633,7 +637,7 @@ namespace SampleCuttingSystem
             textRect.offsetMax = Vector2.zero;
             
             Text text = btnText.AddComponent<Text>();
-            text.text = LocalizationManager.Instance?.GetText("cutting_system.button.close") ?? "关闭";
+            text.text = LocalizationManager.Resolve("cutting_system.button.close", "閉じる");
             text.font = UIFontResolver.GetUIFont();
             text.fontSize = 14; // 稍小的字体适应更小的按钮
             text.color = Color.white;
@@ -795,22 +799,36 @@ namespace SampleCuttingSystem
                 switch (currentState)
                 {
                     case CuttingState.WaitingForSample:
-                        instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.instruction.drag_sample") ?? "将多层样本拖拽到切割台";
+                        instructionText.text = LocalizationManager.Resolve(
+                            "cutting_system.instruction.drag_sample",
+                            "複数の地層を含む試料を左側からここへ移動してください。");
                         break;
                     case CuttingState.Preparing:
-                        instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.analyzing_sample") ?? "分析样本中...";
+                        instructionText.text = LocalizationManager.Resolve(
+                            "cutting_system.analyzing_sample",
+                            "試料を調べています…");
                         break;
                     case CuttingState.Cutting:
-                        instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.cutting_progress", currentCuttingIndex + 1, layerBoundaries.Length) ?? $"切割进度: {currentCuttingIndex + 1}/{layerBoundaries.Length}";
+                        instructionText.text = LocalizationManager.Resolve(
+                            "cutting_system.cutting_progress",
+                            "切断の進み具合：{0}/{1}",
+                            currentCuttingIndex + 1,
+                            layerBoundaries.Length);
                         break;
                     case CuttingState.Success:
-                        instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.cutting_complete") ?? "切割成功！";
+                        instructionText.text = LocalizationManager.Resolve(
+                            "cutting_system.cutting_complete",
+                            "切断できました");
                         break;
                     case CuttingState.Failed:
-                        instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.cutting_failed") ?? "切割失败，样本损坏";
+                        instructionText.text = LocalizationManager.Resolve(
+                            "cutting_system.cutting_failed",
+                            "切断位置がずれました。もう一度試せます。");
                         break;
                     case CuttingState.Completed:
-                        instructionText.text = LocalizationManager.Instance?.GetText("cutting_system.all_cuts_complete") ?? "所有切割完成！";
+                        instructionText.text = LocalizationManager.Resolve(
+                            "cutting_system.all_cuts_complete",
+                            "すべての切断が完了しました");
                         break;
                 }
             }
@@ -1129,17 +1147,11 @@ namespace SampleCuttingSystem
         }
         
         /// <summary>
-        /// 处理样本销毁
+        /// 处理切断失败。元の試料は残し、再試行できる状態へ戻す。
         /// </summary>
         private IEnumerator HandleSampleDestruction()
         {
             yield return new WaitForSeconds(2f);
-            
-            // 销毁原始样本
-            if (currentSample?.sampleContainer != null)
-            {
-                Destroy(currentSample.sampleContainer);
-            }
             
             // 通知投放区域切割失败
             NotifyDropZone(false);
@@ -1590,7 +1602,7 @@ namespace SampleCuttingSystem
             
             // 基础信息
             cutSample.sampleID = System.Guid.NewGuid().ToString();
-            cutSample.displayName = $"切割样本 {segmentIndex + 1:D2} - {layerSegment.sourceLayer.layerName}";
+            cutSample.displayName = $"切断した試料 {segmentIndex + 1:D2} ― {layerSegment.sourceLayer.layerName}";
             cutSample.sourceToolID = "9999"; // 特殊工具ID标识切割样本
             
             // 位置和尺寸信息
@@ -1610,7 +1622,7 @@ namespace SampleCuttingSystem
                     depthEnd = segmentThickness,
                     thickness = segmentThickness,
                     materialName = layerSegment.sourceLayer.layerMaterial != null ? layerSegment.sourceLayer.layerMaterial.name : "Unknown",
-                    layerDescription = $"切割样本段 - 厚度 {segmentThickness:F2}m"
+                    layerDescription = $"切断した試料 ― 厚さ {segmentThickness:F2}m"
                 }
             };
             

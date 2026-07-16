@@ -10,7 +10,7 @@ public class DroneTool : PlaceableTool
     {
         base.Start();
         
-        toolName = "无人机";
+        toolName = "調査用ドローン";
         useRange = 100f;
         useCooldown = 2f;
         placementOffset = 1.0f;
@@ -64,7 +64,7 @@ public class DroneTool : PlaceableTool
         if (recaller == null)
         {
             recaller = placedObject.AddComponent<PlacedToolRecaller>();
-            recaller.toolName = "无人机";
+            recaller.toolName = "調査用ドローン";
             recaller.interactionRange = 5f;
             recaller.recallKey = KeyCode.G;
             Debug.Log("已为无人机添加收回功能 (按G键收回)");

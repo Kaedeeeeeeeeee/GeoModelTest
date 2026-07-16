@@ -457,29 +457,29 @@ public class MobileControlsUI : MonoBehaviour
         float upperY = bottomY + buttonSize + staggerSpacing;
 
         // 右下角动作区：主按钮靠右，辅助按钮错位展开，减少4键挤在一起造成的误触。
-        jumpButton = CreateButton("JumpButton", "跳跃", new Vector2(primaryX, bottomY),
+        jumpButton = CreateButton("JumpButton", "ジャンプ", new Vector2(primaryX, bottomY),
                                   new Vector2(1, 0), OnJumpButtonDown, OnJumpButtonUp);
 
         // 奔跑按钮
-        runButton = CreateButton("RunButton", "奔跑", new Vector2(runX, bottomY),
+        runButton = CreateButton("RunButton", "走る", new Vector2(runX, bottomY),
                                  new Vector2(1, 0), OnRunButtonDown, OnRunButtonUp);
 
         // 主交互按钮 - 右下角
-        interactButton = CreateButton("InteractButton", "交互", new Vector2(primaryX, upperY),
+        interactButton = CreateButton("InteractButton", "調べる", new Vector2(primaryX, upperY),
                                       new Vector2(1, 0), OnInteractButtonDown, OnInteractButtonUp);
 
         // 次操作按钮 - 主交互左侧
-        secondaryInteractButton = CreateButton("SecondaryInteractButton", "次操作", new Vector2(secondaryX, middleY),
+        secondaryInteractButton = CreateButton("SecondaryInteractButton", "使う", new Vector2(secondaryX, middleY),
                                                new Vector2(1, 0), OnSecondaryInteractButtonDown, OnSecondaryInteractButtonUp);
 
         // 顶部低频入口
-        inventoryButton = CreateButton("InventoryButton", "背包", new Vector2(edgeMargin + buttonSize/2, -edgeMargin - buttonSize/2),
+        inventoryButton = CreateButton("InventoryButton", "バッグ", new Vector2(edgeMargin + buttonSize/2, -edgeMargin - buttonSize/2),
                                        new Vector2(0, 1), OnInventoryButtonClick, null);
 
-        encyclopediaButton = CreateButton("EncyclopediaButton", "图鉴", new Vector2(edgeMargin + buttonSize * 1.5f + buttonSpacing, -edgeMargin - buttonSize/2),
+        encyclopediaButton = CreateButton("EncyclopediaButton", "図鑑", new Vector2(edgeMargin + buttonSize * 1.5f + buttonSpacing, -edgeMargin - buttonSize/2),
                                           new Vector2(0, 1), OnEncyclopediaButtonClick, null);
 
-        toolWheelButton = CreateButton("ToolWheelButton", "工具", new Vector2(edgeMargin + buttonSize * 2.5f + buttonSpacing * 2, -edgeMargin - buttonSize/2),
+        toolWheelButton = CreateButton("ToolWheelButton", "道具", new Vector2(edgeMargin + buttonSize * 2.5f + buttonSpacing * 2, -edgeMargin - buttonSize/2),
                                        new Vector2(0, 1), OnToolWheelButtonClick, null);
 
         CreateMobileMenuButton();
@@ -492,7 +492,7 @@ public class MobileControlsUI : MonoBehaviour
 
     void CreateMobileMenuButton()
     {
-        menuButton = CreateButton("MenuButton", "菜单", new Vector2(-edgeMargin - buttonSize/2, -edgeMargin - buttonSize/2),
+        menuButton = CreateButton("MenuButton", "メニュー", new Vector2(-edgeMargin - buttonSize/2, -edgeMargin - buttonSize/2),
                                   new Vector2(1, 1), OnMenuButtonClick, null);
     }
 
@@ -525,16 +525,16 @@ public class MobileControlsUI : MonoBehaviour
         panelImage.raycastTarget = true;
         panel.AddComponent<RectMask2D>();
 
-        CreateMenuText(panel.transform, "Title", "ui.mobile_menu.title", "菜单", 34,
+        CreateMenuText(panel.transform, "Title", "ui.mobile_menu.title", "メニュー", 34,
             new Vector2(0.08f, 0.80f), new Vector2(0.92f, 0.94f), FontStyle.Bold);
 
-        resumeMenuButton = CreateMenuOptionButton(panel.transform, "ResumeButton", "ui.mobile_menu.resume", "继续游戏",
+        resumeMenuButton = CreateMenuOptionButton(panel.transform, "ResumeButton", "ui.mobile_menu.resume", "ゲームに戻る",
             new Vector2(0.12f, 0.59f), new Vector2(0.88f, 0.73f), CloseMobileMenu);
 
-        settingsMenuButton = CreateMenuOptionButton(panel.transform, "SettingsButton", "ui.button.settings", "设置",
+        settingsMenuButton = CreateMenuOptionButton(panel.transform, "SettingsButton", "ui.button.settings", "設定",
             new Vector2(0.12f, 0.40f), new Vector2(0.88f, 0.54f), OpenSettingsFromMobileMenu);
 
-        quitMenuButton = CreateMenuOptionButton(panel.transform, "QuitButton", "ui.mobile_menu.quit", "退出游戏",
+        quitMenuButton = CreateMenuOptionButton(panel.transform, "QuitButton", "ui.mobile_menu.quit", "ゲーム終了",
             new Vector2(0.12f, 0.21f), new Vector2(0.88f, 0.35f), QuitGameFromMobileMenu);
 
         mobileMenuPanel = overlay;
@@ -711,7 +711,7 @@ public class MobileControlsUI : MonoBehaviour
         droneControlsContainer = droneContainer;
 
         // 创建上升按钮（右下角上方位置，对应F键位置）
-        ascendButton = CreateButton("AscendButton", "上升", new Vector2(0, buttonSize * 1.5f + buttonSpacing),
+        ascendButton = CreateButton("AscendButton", "上昇", new Vector2(0, buttonSize * 1.5f + buttonSpacing),
                                    new Vector2(0.5f, 0f), OnAscendButtonDown, OnAscendButtonUp, droneContainer.transform);
 
         // 创建下降按钮（右下角下方位置，对应E键位置）
@@ -1426,10 +1426,11 @@ public class MobileControlsUI : MonoBehaviour
 
     string GetControlLabel(LanguageSettings.Language language, string key)
     {
+        string fallback;
         switch (language)
         {
             case LanguageSettings.Language.ChineseSimplified:
-                return key switch
+                fallback = key switch
                 {
                     "jump" => "跳跃",
                     "run" => "奔跑",
@@ -1443,9 +1444,10 @@ public class MobileControlsUI : MonoBehaviour
                     "descend" => "下降",
                     _ => key
                 };
+                break;
 
             case LanguageSettings.Language.English:
-                return key switch
+                fallback = key switch
                 {
                     "jump" => "Jump",
                     "run" => "Run",
@@ -1459,15 +1461,16 @@ public class MobileControlsUI : MonoBehaviour
                     "descend" => "Down",
                     _ => key
                 };
+                break;
 
             case LanguageSettings.Language.Japanese:
             default:
-                return key switch
+                fallback = key switch
                 {
                     "jump" => "ジャンプ",
                     "run" => "走る",
                     "interact" => "調べる",
-                    "secondary" => "補助",
+                    "secondary" => "使う",
                     "inventory" => "バッグ",
                     "encyclopedia" => "図鑑",
                     "tools" => "道具",
@@ -1476,7 +1479,14 @@ public class MobileControlsUI : MonoBehaviour
                     "descend" => "下降",
                     _ => key
                 };
+                break;
         }
+
+        string localizationKey = $"ui.mobile_controls.{key}";
+        LocalizationManager localizationManager = LocalizationManager.Instance;
+        return localizationManager != null && localizationManager.IsInitialized
+            ? localizationManager.GetTextOrFallback(localizationKey, fallback)
+            : fallback;
     }
 
     void EnsureEventSystemForTouch()

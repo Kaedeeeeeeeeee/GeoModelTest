@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core;
 using Encyclopedia;
 using Newtonsoft.Json.Linq;
 using QuestSystem;
@@ -43,6 +44,9 @@ namespace Backend
             snapshot.payload["platform"] = Application.platform.ToString();
             snapshot.payload["buildTarget"] = GetBuildTarget();
             snapshot.payload["language"] = Application.systemLanguage.ToString();
+            snapshot.payload["contentVersion"] = ResearchContentVersion.ContentVersion;
+            snapshot.payload["storyRoute"] = ResearchContentVersion.StoryRoute;
+            snapshot.payload["copyChecklistVersion"] = ResearchContentVersion.CopyChecklistVersion;
             snapshot.payload["inventoryMax"] = inventoryCounts.max;
             snapshot.payload["warehouseMax"] = warehouseCounts.max;
             snapshot.payload["encyclopedia"] = encyclopediaCounts.payload;

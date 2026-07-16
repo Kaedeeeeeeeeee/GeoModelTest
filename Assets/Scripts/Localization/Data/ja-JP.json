@@ -14,7 +14,7 @@
     },
     {
       "key": "ui.button.confirm",
-      "value": "確定"
+      "value": "決定"
     },
     {
       "key": "ui.button.cancel",
@@ -34,15 +34,15 @@
     },
     {
       "key": "warehouse.title",
-      "value": "倉庫システム"
+      "value": "試料保管庫"
     },
     {
       "key": "warehouse.inventory.title",
-      "value": "インベントリ (20スロット)"
+      "value": "調査バッグ（20個まで）"
     },
     {
       "key": "warehouse.storage.title",
-      "value": "倉庫 (100スロット)"
+      "value": "試料保管庫（100個まで）"
     },
     {
       "key": "warehouse.button.multi_select",
@@ -50,55 +50,55 @@
     },
     {
       "key": "warehouse.button.exit_multi_select",
-      "value": "選択終了"
+      "value": "選択を終える"
     },
     {
       "key": "warehouse.button.batch_transfer",
-      "value": "全て移動"
+      "value": "選んだ試料を移動"
     },
     {
       "key": "warehouse.button.batch_discard",
-      "value": "全て破棄"
+      "value": "選んだ試料を捨てる"
     },
     {
       "key": "warehouse.button.select_items",
-      "value": "アイテム選択"
+      "value": "試料を選ぶ"
     },
     {
       "key": "warehouse.button.transfer_to_storage",
-      "value": "倉庫へ ({0})"
+      "value": "保管庫へ（{0}）"
     },
     {
       "key": "warehouse.button.transfer_to_inventory",
-      "value": "インベントリへ ({0})"
+      "value": "調査バッグへ（{0}）"
     },
     {
       "key": "warehouse.dialog.discard_title",
-      "value": "破棄確認"
+      "value": "試料を捨てますか？"
     },
     {
       "key": "warehouse.dialog.discard_message",
-      "value": "選択した {0} 個のサンプルを破棄しますか？\nこの操作は元に戻せません！"
+      "value": "選んだ試料{0}個を捨てますか？\nこの操作は取り消せません。"
     },
     {
       "key": "warehouse.dialog.discard_all_message",
-      "value": "選択したすべてのサンプルを破棄しますか？\nこの操作は元に戻せません！"
+      "value": "選んだ試料をすべて捨てますか？\nこの操作は取り消せません。"
     },
     {
       "key": "warehouse.interaction.prompt",
-      "value": "[F] 倉庫を開く"
+      "value": "［F］試料保管庫を開く"
     },
     {
       "key": "tool.drill.name",
-      "value": "ドリルツール"
+      "value": "ボーリング装置"
     },
     {
       "key": "tool.drill.simple.name",
-      "value": "簡易ドリルツール"
+      "value": "簡易ボーリング装置"
     },
     {
       "key": "tool.drill_tower.name",
-      "value": "ドリルタワー"
+      "value": "ボーリング装置（ドリルタワー）"
     },
     {
       "key": "tool.hammer.name",
@@ -106,23 +106,23 @@
     },
     {
       "key": "tool.drone.name",
-      "value": "ドローン"
+      "value": "調査用ドローン"
     },
     {
       "key": "tool.drill_car.name",
-      "value": "ドリルカー"
+      "value": "ボーリング調査車"
     },
     {
       "key": "sample.collection.prompt",
-      "value": "[E] サンプル採取"
+      "value": "［E］試料を採取する"
     },
     {
       "key": "sample.retrieve.prompt",
-      "value": "[E] サンプル回収"
+      "value": "［E］試料を回収する"
     },
     {
       "key": "sample.item.prefix",
-      "value": "地質サンプル_"
+      "value": "地質試料_"
     },
     {
       "key": "sample.description.simple_drill",
@@ -130,11 +130,11 @@
     },
     {
       "key": "sample.description.drill_tower",
-      "value": "ドリルタワーツールで採取した地質サンプル"
+      "value": "ボーリング調査で採取したコア試料"
     },
     {
       "key": "sample.description.hammer",
-      "value": "地質ハンマーで採取した地質サンプル"
+      "value": "露頭から採取した岩石試料"
     },
     {
       "key": "sample.description.unknown",
@@ -142,7 +142,7 @@
     },
     {
       "key": "sample.layer.default",
-      "value": "混合地質層"
+      "value": "複数の地層を含む試料"
     },
     {
       "key": "sample.layer.description.default",
@@ -154,31 +154,31 @@
     },
     {
       "key": "sample.depth.range",
-      "value": "深度 {0:F2}m の地質層"
+      "value": "地表から深さ{0:F2}mの地層"
     },
     {
       "key": "inventory.title",
-      "value": "インベントリ"
+      "value": "調査バッグ"
     },
     {
       "key": "inventory.capacity",
-      "value": "容量: {0}/{1}"
+      "value": "試料：{0}/{1}個"
     },
     {
       "key": "inventory.empty",
-      "value": "インベントリが空です"
+      "value": "まだ試料を持っていません"
     },
     {
       "key": "inventory.full",
-      "value": "インベントリが満杯です"
+      "value": "調査バッグがいっぱいです"
     },
     {
       "key": "ui.interaction.press_f",
-      "value": "[F] 操作"
+      "value": "［F］調べる"
     },
     {
       "key": "ui.interaction.press_e",
-      "value": "[E] アクション"
+      "value": "［E］調べる"
     },
     {
       "key": "ui.interaction.press_esc",
@@ -186,11 +186,11 @@
     },
     {
       "key": "ui.interaction.press_tab",
-      "value": "[Tab] ツールホイール"
+      "value": "［Tab］道具を選ぶ"
     },
     {
       "key": "ui.interaction.press_i",
-      "value": "[I] インベントリ"
+      "value": "［I］調査バッグ"
     },
     {
       "key": "geology.layer.name_format",
@@ -254,19 +254,19 @@
     },
     {
       "key": "tool.scene_switcher.name",
-      "value": "シーンスイッチ"
+      "value": "フェーズシフター"
     },
     {
       "key": "quest.ui.completed",
-      "value": "完了"
+      "value": "調査ミッション完了"
     },
     {
       "key": "quest.lab.intro.title",
-      "value": "ラボ案内"
+      "value": "研究室を見て回ろう"
     },
     {
       "key": "quest.lab.intro.desc",
-      "value": "案内に従い、基本ツールを受け取る。"
+      "value": "カエデ研究員の案内を聞き、調査道具を受け取ろう"
     },
     {
       "key": "quest.lab.intro.obj1",

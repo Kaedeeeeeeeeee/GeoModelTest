@@ -87,10 +87,10 @@ namespace SampleCuttingSystem
         public string GetDescription()
         {
             if (minerals == null || minerals.Length == 0)
-                return $"{layerName}样本";
+                return $"{layerName}の試料";
                 
             var primary = GetPrimaryMineral();
-            return $"{layerName}样本 (主要矿物: {primary.mineralName} {primary.percentage:P0})";
+            return $"{layerName}の試料（主な鉱物：{primary.mineralName} {primary.percentage:P0}）";
         }
     }
     

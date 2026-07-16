@@ -42,6 +42,10 @@ namespace Encyclopedia
         [SerializeField] private Text detailProperties;
         [SerializeField] private Sample3DModelViewer model3DViewer;
 
+        private Button advancedDetailsButton;
+        private Text advancedDetailsButtonText;
+        private bool showAdvancedProperties;
+
         [Header("设置")]
         [SerializeField] private Key toggleKey = Key.O;
         [SerializeField] private bool startClosed = true;
@@ -693,6 +697,10 @@ namespace Encyclopedia
                 return;
             }
 
+            if (selectedEntry == null || selectedEntry.id != entry.id)
+            {
+                showAdvancedProperties = false;
+            }
             selectedEntry = entry;
             currentFilteredEntries = GetFilteredEntries();
             currentEntryIndex = currentFilteredEntries.FindIndex(e => e.id == entry.id);
@@ -1086,6 +1094,9 @@ namespace Encyclopedia
         /// </summary>
         private void SetDetailContent(EncyclopediaEntry entry)
         {
+            selectedEntry = entry;
+            EnsureAdvancedDetailsButton();
+
             if (detailTitle != null)
             {
                 detailTitle.text = GetLocalizedEntryName(entry);
@@ -1107,6 +1118,8 @@ namespace Encyclopedia
                 detailProperties.text = GeneratePropertiesText(entry);
                 detailProperties.fontSize = 20;  // 更大的属性字体大小
             }
+
+            UpdateAdvancedDetailsButton(entry);
 
             // 确保3D查看器存在
             Ensure3DViewerExists();
@@ -1158,6 +1171,10 @@ namespace Encyclopedia
         /// </summary>
         private void ShowEntryDetails(EncyclopediaEntry entry)
         {
+            if (entry != null && (selectedEntry == null || selectedEntry.id != entry.id))
+            {
+                showAdvancedProperties = false;
+            }
             Debug.Log($"[EncyclopediaUI] ShowEntryDetails被调用: {entry?.GetFormattedDisplayName() ?? "null"}");
             Debug.Log($"[EncyclopediaUI] 所有详情面板组件状态检查:");
             Debug.Log($"[EncyclopediaUI] - detailPanel: {(detailPanel != null ? detailPanel.name : "null")}");
@@ -1240,10 +1257,13 @@ namespace Encyclopedia
             }
 
             // 设置属性信息
+            selectedEntry = entry;
+            EnsureAdvancedDetailsButton();
             if (detailProperties != null)
             {
                 detailProperties.text = GeneratePropertiesText(entry);
             }
+            UpdateAdvancedDetailsButton(entry);
 
             // 显示3D模型
             Debug.Log($"[EncyclopediaUI] 3D模型检查 - model3DViewer: {model3DViewer != null}, isDiscovered: {entry.isDiscovered}, model3D: {entry.model3D != null}");
@@ -1278,6 +1298,7 @@ namespace Encyclopedia
             }
 
             var properties = new List<string>();
+            var advancedProperties = new List<string>();
 
             properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.type")}: {entry.GetEntryTypeText()}");
             properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.layer")}: {GetLocalizedLayerName(entry.layerName)}");
@@ -1288,11 +1309,11 @@ namespace Encyclopedia
                 properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.content")}: {entry.percentage:P1}");
 
                 if (!string.IsNullOrEmpty(entry.mohsHardness))
-                    properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.mohs_hardness")}: {entry.mohsHardness}");
+                    advancedProperties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.mohs_hardness")}: {entry.mohsHardness}");
                 if (!string.IsNullOrEmpty(entry.density))
-                    properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.density")}: {entry.density}");
+                    advancedProperties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.density")}: {entry.density}");
                 if (!string.IsNullOrEmpty(entry.magnetism))
-                    properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.magnetism")}: {GetLocalizedPropertyValue(entry.magnetism)}");
+                    advancedProperties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.magnetism")}: {GetLocalizedPropertyValue(entry.magnetism)}");
             }
             else
             {
@@ -1306,7 +1327,95 @@ namespace Encyclopedia
                 properties.Add($"{LocalizationManager.Instance.GetText("encyclopedia.detail.first_discovered")}: {entry.firstDiscoveredTime:yyyy-MM-dd}");
             }
 
+            if (showAdvancedProperties && advancedProperties.Count > 0)
+            {
+                properties.Add(string.Empty);
+                properties.Add(LocalizationManager.Resolve(
+                    "encyclopedia.ui.more_details",
+                    "もっと詳しく"));
+                properties.AddRange(advancedProperties);
+            }
+
             return string.Join("\n", properties);
+        }
+
+        private void EnsureAdvancedDetailsButton()
+        {
+            if (detailPanel == null || advancedDetailsButton != null)
+            {
+                return;
+            }
+
+            GameObject buttonObject = new GameObject("AdvancedDetailsButton");
+            buttonObject.transform.SetParent(detailPanel.transform, false);
+
+            RectTransform rect = buttonObject.AddComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.5f, 0f);
+            rect.anchorMax = new Vector2(0.5f, 0f);
+            rect.pivot = new Vector2(0.5f, 0f);
+            rect.anchoredPosition = new Vector2(0f, 38f);
+            rect.sizeDelta = new Vector2(340f, 58f);
+
+            Image image = buttonObject.AddComponent<Image>();
+            image.color = new Color(0.16f, 0.32f, 0.38f, 0.92f);
+
+            advancedDetailsButton = buttonObject.AddComponent<Button>();
+            advancedDetailsButton.targetGraphic = image;
+            advancedDetailsButton.onClick.AddListener(() =>
+            {
+                showAdvancedProperties = !showAdvancedProperties;
+                if (selectedEntry != null && detailProperties != null)
+                {
+                    detailProperties.text = GeneratePropertiesText(selectedEntry);
+                    UpdateAdvancedDetailsButton(selectedEntry);
+                }
+            });
+
+            GameObject textObject = new GameObject("Text");
+            textObject.transform.SetParent(buttonObject.transform, false);
+            RectTransform textRect = textObject.AddComponent<RectTransform>();
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = new Vector2(12f, 4f);
+            textRect.offsetMax = new Vector2(-12f, -4f);
+
+            advancedDetailsButtonText = textObject.AddComponent<Text>();
+            advancedDetailsButtonText.font = UIFontResolver.GetUIFont();
+            advancedDetailsButtonText.fontSize = 18;
+            advancedDetailsButtonText.resizeTextForBestFit = true;
+            advancedDetailsButtonText.resizeTextMinSize = 14;
+            advancedDetailsButtonText.resizeTextMaxSize = 20;
+            advancedDetailsButtonText.color = Color.white;
+            advancedDetailsButtonText.alignment = TextAnchor.MiddleCenter;
+            advancedDetailsButtonText.raycastTarget = false;
+        }
+
+        private void UpdateAdvancedDetailsButton(EncyclopediaEntry entry)
+        {
+            if (advancedDetailsButton == null)
+            {
+                return;
+            }
+
+            bool hasAdvancedProperties = entry != null &&
+                entry.entryType == EntryType.Mineral &&
+                (!string.IsNullOrEmpty(entry.mohsHardness) ||
+                 !string.IsNullOrEmpty(entry.density) ||
+                 !string.IsNullOrEmpty(entry.magnetism));
+
+            advancedDetailsButton.gameObject.SetActive(hasAdvancedProperties);
+            if (!hasAdvancedProperties)
+            {
+                showAdvancedProperties = false;
+                return;
+            }
+
+            if (advancedDetailsButtonText != null)
+            {
+                advancedDetailsButtonText.text = showAdvancedProperties
+                    ? LocalizationManager.Resolve("encyclopedia.ui.show_less", "基本情報に戻る")
+                    : LocalizationManager.Resolve("encyclopedia.ui.show_more", "専門的な情報を見る");
+            }
         }
 
         /// <summary>

@@ -42,7 +42,7 @@ namespace QuestSystem
         private Material[] cachedMaterials;
         private Color[] originalColors;
         private MobileInputManager mobileInput;
-        private LocalizedText promptLocalized;
+        private Text promptText;
         private QuestInteractionStage currentStage;
         private QuestStatus currentStageStatus;
         private int currentStageIndex = -1;
@@ -255,13 +255,11 @@ namespace QuestSystem
             textRect.offsetMin = new Vector2(16f, 12f);
             textRect.offsetMax = new Vector2(-16f, -12f);
 
-            var text = textObj.AddComponent<Text>();
-            text.font = UIFontResolver.GetUIFont();
-            text.fontSize = promptFontSize;
-            text.color = Color.white;
-            text.alignment = TextAnchor.MiddleCenter;
-
-            promptLocalized = textObj.AddComponent<LocalizedText>();
+            promptText = textObj.AddComponent<Text>();
+            promptText.font = UIFontResolver.GetUIFont();
+            promptText.fontSize = promptFontSize;
+            promptText.color = Color.white;
+            promptText.alignment = TextAnchor.MiddleCenter;
 
             promptCanvasGO.SetActive(false);
         }
@@ -439,21 +437,19 @@ namespace QuestSystem
 
         private void UpdatePromptLocalization()
         {
-            if (promptLocalized == null) return;
+            if (promptText == null) return;
             string targetKey = currentStage != null ? currentStage.promptLocalizationKey : string.Empty;
             if (string.IsNullOrEmpty(targetKey))
             {
-                if (!string.IsNullOrEmpty(promptLocalized.TextKey))
-                {
-                    promptLocalized.TextKey = string.Empty;
-                }
+                promptText.text = string.Empty;
                 return;
             }
 
-            if (promptLocalized.TextKey != targetKey)
-            {
-                promptLocalized.TextKey = targetKey;
-            }
+            promptText.text = LocalizationManager.ResolveForCurrentInput(
+                targetKey,
+                "quest.npc.prompt.mobile",
+                "［E］カエデ研究員に話を聞く",
+                "カエデ研究員に話を聞く");
         }
     }
 }

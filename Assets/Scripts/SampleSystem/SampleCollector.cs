@@ -203,11 +203,8 @@ public class SampleCollector : MonoBehaviour
         promptText.color = Color.white;
         promptText.alignment = TextAnchor.MiddleCenter;
         
-        // 添加本地化组件
-        LocalizedText localizedPrompt = textObj.AddComponent<LocalizedText>();
-        string sampleName = sampleData?.displayName ?? "地质样本";
-        Debug.Log($"[SampleCollector] 设置交互提示，样本名称: '{sampleName}'");
-        localizedPrompt.SetTextKey("sample.collection.interact", sampleName);
+        // 提示需要根据桌面/触摸输入动态切换，因此在 Update 中直接刷新，
+        // 不挂载只支持单一键值的 LocalizedText。
         
         // 初始隐藏
         promptObj.SetActive(false);
@@ -399,17 +396,12 @@ public class SampleCollector : MonoBehaviour
             interactionPrompt.SetActive(true);
             if (promptText != null && sampleData != null)
             {
-                // 更新本地化组件的参数
                 LocalizedText localizedText = promptText.GetComponent<LocalizedText>();
                 if (localizedText != null)
                 {
-                    localizedText.SetTextKey("sample.collection.interact", sampleData.displayName);
+                    localizedText.enabled = false;
                 }
-                else
-                {
-                    // 如果没有本地化组件，使用默认文本
-                    promptText.text = GetLocalizedCollectionText();
-                }
+                promptText.text = GetLocalizedCollectionText();
             }
         }
     }
@@ -468,16 +460,12 @@ public class SampleCollector : MonoBehaviour
         // 只需要更新文本内容
         if (interactionPrompt != null && promptText != null && sampleData != null)
         {
-            // 更新本地化文本
             LocalizedText localizedText = promptText.GetComponent<LocalizedText>();
             if (localizedText != null)
             {
-                localizedText.SetTextKey("sample.collection.interact", sampleData.displayName);
+                localizedText.enabled = false;
             }
-            else
-            {
-                promptText.text = GetLocalizedCollectionText();
-            }
+            promptText.text = GetLocalizedCollectionText();
         }
     }
     
@@ -641,12 +629,13 @@ public class SampleCollector : MonoBehaviour
     /// </summary>
     private string GetLocalizedCollectionText()
     {
-        var localizationManager = LocalizationManager.Instance;
-        if (localizationManager != null && sampleData != null)
-        {
-            return localizationManager.GetText("sample.collection.interact", sampleData.displayName);
-        }
-        return $"[E] 采集 {sampleData?.displayName ?? "地质样本"}"; // 默认文本
+        string sampleName = sampleData?.displayName ?? "試料";
+        return LocalizationManager.ResolveForCurrentInput(
+            "sample.collection.interact",
+            "sample.collection.mobile",
+            "［E］{0}を採取する",
+            "試料を採取する",
+            sampleName);
     }
     
     /// <summary>
@@ -705,23 +694,14 @@ public class SampleCollector : MonoBehaviour
     /// </summary>
     private string GetLocalizedMessage(string key, params object[] args)
     {
-        var localizationManager = LocalizationManager.Instance;
-        if (localizationManager != null)
+        string fallback = key switch
         {
-            return localizationManager.GetText(key, args);
-        }
-        // 如果没有本地化系统，返回默认文本
-        switch (key)
-        {
-            case "sample.message.collected":
-                return $"已采集样本: {args[0]}";
-            case "sample.message.inventory_full":
-                return "背包已满或无法添加样本！";
-            case "sample.message.no_inventory":
-                return "未找到样本背包系统！";
-            default:
-                return key;
-        }
+            "sample.message.collected" => "試料を採取しました：{0}",
+            "sample.message.inventory_full" => "調査バッグがいっぱいです。試料を整理してから、もう一度試してください。",
+            "sample.message.no_inventory" => "調査バッグを読み込めませんでした。メニューからやり直してください。",
+            _ => key
+        };
+        return LocalizationManager.Resolve(key, fallback, args);
     }
 
     /// <summary>

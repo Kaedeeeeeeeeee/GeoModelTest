@@ -10,8 +10,8 @@ public class GameSceneManager : MonoBehaviour
 {
     [Header("场景配置")]
     public SceneConfig[] availableScenes = {
-        new SceneConfig("MainScene", "野外", "主要的地质勘探场景"),
-        new SceneConfig("Laboratory Scene", "研究室", "样本分析和研究场景")
+        new SceneConfig("MainScene", "野外調査エリア", "地層や岩石を調べる野外調査エリア"),
+        new SceneConfig("Laboratory Scene", "G-Lab研究室", "試料を整理して観察する研究室")
     };
     
     [Header("UI引用")]

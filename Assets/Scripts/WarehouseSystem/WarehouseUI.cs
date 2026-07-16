@@ -392,7 +392,9 @@ public class WarehouseUI : MonoBehaviour
         titleRect.offsetMax = Vector2.zero;
         
         Text titleText = titleObj.AddComponent<Text>();
-        titleText.text = "确认丢弃";
+        titleText.text = LocalizationManager.Resolve(
+            "warehouse.dialog.discard_title",
+            "試料を捨てますか？");
         titleText.font = UIFontResolver.GetUIFont();
         titleText.fontSize = 24;
         titleText.color = Color.white;
@@ -410,18 +412,30 @@ public class WarehouseUI : MonoBehaviour
         textRect.offsetMax = Vector2.zero;
         
         confirmDialogText = textObj.AddComponent<Text>();
-        confirmDialogText.text = "确定要丢弃所有选中的样本吗？\n此操作不可撤销！";
+        confirmDialogText.text = LocalizationManager.Resolve(
+            "warehouse.dialog.discard_all_message",
+            "選んだ試料をすべて捨てますか？\nこの操作は取り消せません。");
         confirmDialogText.font = UIFontResolver.GetUIFont();
         confirmDialogText.fontSize = 18;
         confirmDialogText.color = Color.white;
         confirmDialogText.alignment = TextAnchor.MiddleCenter;
         
         // 创建确认按钮
-        confirmYesButton = CreateDialogButton(dialogContent, "确定", new Vector2(0.3f, 0.15f), new Vector2(120, 50), Color.red);
+        confirmYesButton = CreateDialogButton(
+            dialogContent,
+            LocalizationManager.Resolve("warehouse.button.confirm_discard", "捨てる"),
+            new Vector2(0.3f, 0.15f),
+            new Vector2(120, 50),
+            Color.red);
         confirmYesButton.onClick.AddListener(OnConfirmDiscard);
         
         // 创建取消按钮
-        confirmNoButton = CreateDialogButton(dialogContent, "取消", new Vector2(0.7f, 0.15f), new Vector2(120, 50), Color.gray);
+        confirmNoButton = CreateDialogButton(
+            dialogContent,
+            LocalizationManager.Resolve("ui.button.cancel", "キャンセル"),
+            new Vector2(0.7f, 0.15f),
+            new Vector2(120, 50),
+            Color.gray);
         confirmNoButton.onClick.AddListener(OnCancelDiscard);
         
         // 初始隐藏对话框
@@ -819,7 +833,10 @@ public class WarehouseUI : MonoBehaviour
         // 更新确认对话框文本
         if (confirmDialogText != null)
         {
-            confirmDialogText.text = $"确定要丢弃选中的 {warehouseItems.Count} 个样本吗？\n此操作不可撤销！";
+            confirmDialogText.text = LocalizationManager.Resolve(
+                "warehouse.dialog.discard_message",
+                "選んだ試料{0}個を捨てますか？\nこの操作は取り消せません。",
+                warehouseItems.Count);
         }
         
         // 显示确认对话框
@@ -968,7 +985,9 @@ public class WarehouseUI : MonoBehaviour
         
         // 更新多选按钮
         multiSelectButton.image.color = isMultiSelectActive ? multiSelectActiveColor : normalButtonColor;
-        multiSelectButtonText.text = isMultiSelectActive ? "退出多选" : "多选";
+        multiSelectButtonText.text = isMultiSelectActive
+            ? LocalizationManager.Resolve("warehouse.button.exit_multi_select", "選択を終える")
+            : LocalizationManager.Resolve("warehouse.button.multi_select", "複数選択");
         
         // 显示/隐藏批量传输按钮
         if (batchTransferButton != null && batchTransferButtonText != null)
@@ -983,7 +1002,9 @@ public class WarehouseUI : MonoBehaviour
             {
                 if (mode == SelectionMode.Ready)
                 {
-                    batchTransferButtonText.text = "选择物品";
+                    batchTransferButtonText.text = LocalizationManager.Resolve(
+                        "warehouse.button.select_items",
+                        "試料を選ぶ");
                     batchTransferButton.interactable = false;
                     batchTransferButton.image.color = normalButtonColor;
                 }
@@ -994,11 +1015,17 @@ public class WarehouseUI : MonoBehaviour
                     
                     if (mode == SelectionMode.BackpackSelection)
                     {
-                        batchTransferButtonText.text = $"放入仓库 ({selectedCount})";
+                        batchTransferButtonText.text = LocalizationManager.Resolve(
+                            "warehouse.button.transfer_to_storage",
+                            "保管庫へ（{0}）",
+                            selectedCount);
                     }
                     else
                     {
-                        batchTransferButtonText.text = $"放入背包 ({selectedCount})";
+                        batchTransferButtonText.text = LocalizationManager.Resolve(
+                            "warehouse.button.transfer_to_inventory",
+                            "調査バッグへ（{0}）",
+                            selectedCount);
                     }
                     
                     batchTransferButton.interactable = selectedCount > 0;
@@ -1025,13 +1052,19 @@ public class WarehouseUI : MonoBehaviour
                 
                 if (mode == SelectionMode.Ready)
                 {
-                    batchDiscardButtonText.text = "全部丢弃 (0)";
+                    batchDiscardButtonText.text = LocalizationManager.Resolve(
+                        "warehouse.button.batch_discard_count",
+                        "選んだ試料を捨てる（{0}）",
+                        0);
                     batchDiscardButton.interactable = false;
                     batchDiscardButton.image.color = normalButtonColor;
                 }
                 else if (mode == SelectionMode.WarehouseSelection)
                 {
-                    batchDiscardButtonText.text = $"全部丢弃 ({selectedCount})";
+                    batchDiscardButtonText.text = LocalizationManager.Resolve(
+                        "warehouse.button.batch_discard_count",
+                        "選んだ試料を捨てる（{0}）",
+                        selectedCount);
                     batchDiscardButton.interactable = selectedCount > 0;
                     batchDiscardButton.image.color = selectedCount > 0 ? batchDiscardActiveColor : normalButtonColor;
                 }
@@ -1054,33 +1087,46 @@ public class WarehouseUI : MonoBehaviour
         
         if (mode == SelectionMode.BackpackSelection)
         {
-            batchTransferButtonText.text = $"放入仓库 ({count})";
+            batchTransferButtonText.text = LocalizationManager.Resolve(
+                "warehouse.button.transfer_to_storage",
+                "保管庫へ（{0}）",
+                count);
             batchTransferButton.interactable = count > 0;
             batchTransferButton.image.color = count > 0 ? batchTransferActiveColor : normalButtonColor;
         }
         else if (mode == SelectionMode.WarehouseSelection)
         {
-            batchTransferButtonText.text = $"放入背包 ({count})";
+            batchTransferButtonText.text = LocalizationManager.Resolve(
+                "warehouse.button.transfer_to_inventory",
+                "調査バッグへ（{0}）",
+                count);
             batchTransferButton.interactable = count > 0;
             batchTransferButton.image.color = count > 0 ? batchTransferActiveColor : normalButtonColor;
             
             // 同时更新批量丢弃按钮
             if (batchDiscardButton != null && batchDiscardButtonText != null)
             {
-                batchDiscardButtonText.text = $"全部丢弃 ({count})";
+                batchDiscardButtonText.text = LocalizationManager.Resolve(
+                    "warehouse.button.batch_discard_count",
+                    "選んだ試料を捨てる（{0}）",
+                    count);
                 batchDiscardButton.interactable = count > 0;
                 batchDiscardButton.image.color = count > 0 ? batchDiscardActiveColor : normalButtonColor;
             }
         }
         else if (mode == SelectionMode.Ready)
         {
-            batchTransferButtonText.text = "选择物品";
+            batchTransferButtonText.text = LocalizationManager.Resolve(
+                "warehouse.button.select_items",
+                "試料を選ぶ");
             batchTransferButton.interactable = false;
             batchTransferButton.image.color = normalButtonColor;
         }
         else
         {
-            batchTransferButtonText.text = "选择物品";
+            batchTransferButtonText.text = LocalizationManager.Resolve(
+                "warehouse.button.select_items",
+                "試料を選ぶ");
             batchTransferButton.interactable = false;
             batchTransferButton.image.color = normalButtonColor;
         }

@@ -54,7 +54,9 @@ public class DrillTowerTool : PlaceableTool
     protected override void Start()
     {
         base.Start();
-        toolName = "钻塔工具";
+        toolName = LocalizationManager.Resolve(
+            "tool.drill_tower.name",
+            "ボーリング装置（ドリルタワー）");
 
         // 设置预制件
         if (drillTowerPrefab != null)
@@ -844,17 +846,12 @@ public class DepthSampleMarker : MonoBehaviour
                 return localizationManager.GetText("sample.drill_tower.description", 
                     (drillIndex + 1).ToString(), depthInfo, thickness.ToString("F1"));
             }
-            else
-            {
-                var (worldDepthStart, worldDepthEnd) = WorldDepthCalculator.CalculateWorldDepthRange(
-                    collectionPosition, depthStart, depthEnd);
-                return $"钻塔样本 #{drillIndex + 1}\n深度: {worldDepthStart:F1}m - {worldDepthEnd:F1}m (相对: {depthStart:F1}m - {depthEnd:F1}m)\n厚度: {thickness:F1}m";
-            }
+            return $"ボーリングコア #{drillIndex + 1}\n地表からの深さ：{depthStart:F1}m～{depthEnd:F1}m\n厚さ：{thickness:F1}m";
         }
         else
         {
             // 如果没有位置信息，使用相对深度
-            return $"钻塔样本 #{drillIndex + 1}\n深度: {depthStart:F1}m - {depthEnd:F1}m\n厚度: {thickness:F1}m";
+            return $"ボーリングコア #{drillIndex + 1}\n地表からの深さ：{depthStart:F1}m～{depthEnd:F1}m\n厚さ：{thickness:F1}m";
         }
     }
     

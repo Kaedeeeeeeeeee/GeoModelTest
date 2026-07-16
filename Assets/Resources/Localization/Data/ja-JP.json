@@ -26,7 +26,7 @@
     },
     {
       "key": "ui.settings.ui_volume",
-      "value": "UI音量"
+      "value": "ボタン・メニューの音量"
     },
     {
       "key": "ui.settings.gameplay",
@@ -34,7 +34,7 @@
     },
     {
       "key": "ui.settings.look_sensitivity",
-      "value": "視点感度"
+      "value": "カメラの動く速さ"
     },
     {
       "key": "ui.settings.quality",
@@ -42,7 +42,7 @@
     },
     {
       "key": "ui.settings.auto_quality",
-      "value": "自動画質"
+      "value": "画質を自動で調整"
     },
     {
       "key": "ui.settings.auto",
@@ -58,7 +58,7 @@
     },
     {
       "key": "ui.button.confirm",
-      "value": "確定"
+      "value": "決定"
     },
     {
       "key": "ui.button.cancel",
@@ -90,15 +90,15 @@
     },
     {
       "key": "warehouse.title",
-      "value": "倉庫システム"
+      "value": "試料保管庫"
     },
     {
       "key": "warehouse.inventory.title",
-      "value": "インベントリ (20スロット)"
+      "value": "調査バッグ（20個まで）"
     },
     {
       "key": "warehouse.storage.title",
-      "value": "倉庫 (100スロット)"
+      "value": "試料保管庫（100個まで）"
     },
     {
       "key": "warehouse.button.multi_select",
@@ -106,59 +106,63 @@
     },
     {
       "key": "warehouse.button.exit_multi_select",
-      "value": "選択終了"
+      "value": "選択を終える"
     },
     {
       "key": "warehouse.button.batch_transfer",
-      "value": "全て移動"
+      "value": "選んだ試料を移動"
     },
     {
       "key": "warehouse.button.batch_discard",
-      "value": "全て破棄"
+      "value": "選んだ試料を捨てる"
+    },
+    {
+      "key": "warehouse.button.confirm_discard",
+      "value": "捨てる"
     },
     {
       "key": "warehouse.button.select_items",
-      "value": "アイテム選択"
+      "value": "試料を選ぶ"
     },
     {
       "key": "warehouse.button.transfer_to_storage",
-      "value": "倉庫へ ({0})"
+      "value": "保管庫へ（{0}）"
     },
     {
       "key": "warehouse.button.transfer_to_inventory",
-      "value": "インベントリへ ({0})"
+      "value": "調査バッグへ（{0}）"
     },
     {
       "key": "warehouse.dialog.discard_title",
-      "value": "破棄確認"
+      "value": "試料を捨てますか？"
     },
     {
       "key": "warehouse.dialog.discard_message",
-      "value": "選択した {0} 個のサンプルを破棄しますか？\nこの操作は元に戻せません！"
+      "value": "選んだ試料{0}個を捨てますか？\nこの操作は取り消せません。"
     },
     {
       "key": "warehouse.dialog.discard_all_message",
-      "value": "選択したすべてのサンプルを破棄しますか？\nこの操作は元に戻せません！"
+      "value": "選んだ試料をすべて捨てますか？\nこの操作は取り消せません。"
     },
     {
       "key": "warehouse.interaction.prompt",
-      "value": "[F] 倉庫を開く"
+      "value": "［F］試料保管庫を開く"
     },
     {
       "key": "cutting_station.interaction.prompt",
-      "value": "[F] サンプル切断台を使用"
+      "value": "［F］試料切断台を使う"
     },
     {
       "key": "tool.drill.name",
-      "value": "ドリルツール"
+      "value": "ボーリング装置"
     },
     {
       "key": "tool.drill.simple.name",
-      "value": "簡易ドリルツール"
+      "value": "簡易ボーリング装置"
     },
     {
       "key": "tool.drill_tower.name",
-      "value": "ドリルタワー"
+      "value": "ボーリング装置（ドリルタワー）"
     },
     {
       "key": "tool.hammer.name",
@@ -166,23 +170,23 @@
     },
     {
       "key": "tool.drone.name",
-      "value": "ドローン"
+      "value": "調査用ドローン"
     },
     {
       "key": "tool.drill_car.name",
-      "value": "ドリルカー"
+      "value": "ボーリング調査車"
     },
     {
       "key": "sample.collection.prompt",
-      "value": "[E] サンプル採取"
+      "value": "［E］試料を採取する"
     },
     {
       "key": "sample.retrieve.prompt",
-      "value": "[E] サンプル回収"
+      "value": "［E］試料を回収する"
     },
     {
       "key": "sample.item.prefix",
-      "value": "地質サンプル_"
+      "value": "地質試料_"
     },
     {
       "key": "sample.description.simple_drill",
@@ -190,11 +194,11 @@
     },
     {
       "key": "sample.description.drill_tower",
-      "value": "ドリルタワーツールで採取した地質サンプル"
+      "value": "ボーリング調査で採取したコア試料"
     },
     {
       "key": "sample.description.hammer",
-      "value": "地質ハンマーで採取した地質サンプル"
+      "value": "露頭から採取した岩石試料"
     },
     {
       "key": "sample.description.unknown",
@@ -202,7 +206,7 @@
     },
     {
       "key": "sample.layer.default",
-      "value": "混合地質層"
+      "value": "複数の地層を含む試料"
     },
     {
       "key": "sample.layer.description.default",
@@ -214,31 +218,31 @@
     },
     {
       "key": "sample.depth.range",
-      "value": "深度 {0:F2}m の地質層"
+      "value": "地表から深さ{0:F2}mの地層"
     },
     {
       "key": "inventory.title",
-      "value": "インベントリ"
+      "value": "調査バッグ"
     },
     {
       "key": "inventory.capacity",
-      "value": "容量: {0}/{1}"
+      "value": "試料：{0}/{1}個"
     },
     {
       "key": "inventory.empty",
-      "value": "インベントリが空です"
+      "value": "まだ試料を持っていません"
     },
     {
       "key": "inventory.full",
-      "value": "インベントリが満杯です"
+      "value": "調査バッグがいっぱいです"
     },
     {
       "key": "ui.interaction.press_f",
-      "value": "[F] 操作"
+      "value": "［F］調べる"
     },
     {
       "key": "ui.interaction.press_e",
-      "value": "[E] アクション"
+      "value": "［E］調べる"
     },
     {
       "key": "ui.interaction.press_esc",
@@ -246,11 +250,11 @@
     },
     {
       "key": "ui.interaction.press_tab",
-      "value": "[Tab] ツールホイール"
+      "value": "［Tab］道具を選ぶ"
     },
     {
       "key": "ui.interaction.press_i",
-      "value": "[I] インベントリ"
+      "value": "［I］調査バッグ"
     },
     {
       "key": "geology.layer.name_format",
@@ -270,19 +274,19 @@
     },
     {
       "key": "vehicle.drone.enter",
-      "value": "[F] ドローンに乗る"
+      "value": "［F］調査用ドローンを操作する"
     },
     {
       "key": "vehicle.drone.exit",
-      "value": "[F] ドローンから降りる"
+      "value": "［F］調査用ドローンの操作を終える"
     },
     {
       "key": "vehicle.drill_car.enter",
-      "value": "[F] ドリルカーに乗る"
+      "value": "［F］ボーリング調査車に乗る"
     },
     {
       "key": "vehicle.drill_car.exit",
-      "value": "[F] ドリルカーから降りる"
+      "value": "［F］ボーリング調査車から降りる"
     },
     {
       "key": "system.loading",
@@ -334,83 +338,83 @@
     },
     {
       "key": "tool.scene_switcher.name",
-      "value": "シーンスイッチャー"
+      "value": "フェーズシフター"
     },
     {
       "key": "sample.collection.interact",
-      "value": "[E] {0}を採取"
+      "value": "［E］{0}を採取する"
     },
     {
       "key": "sample.collection.retrieve",
-      "value": "[E] {0}を回収"
+      "value": "［E］{0}を回収する"
     },
     {
       "key": "sample.info.id",
-      "value": "サンプルID: {0}"
+      "value": "試料ID：{0}"
     },
     {
       "key": "sample.info.name",
-      "value": "名前: {0}"
+      "value": "名前：{0}"
     },
     {
       "key": "sample.info.collection_time",
-      "value": "採取時刻: {0}"
+      "value": "採取時刻：{0}"
     },
     {
       "key": "sample.info.collection_position",
-      "value": "採取位置: ({0}, {1}, {2})"
+      "value": "採取地点：{0}"
     },
     {
       "key": "sample.info.collection_tool",
-      "value": "採取ツール: {0}"
+      "value": "採取に使った道具：{0}"
     },
     {
       "key": "sample.info.collection_depth",
-      "value": "採取深度: {0}m - {1}m"
+      "value": "採取した深さ：{0}m～{1}m"
     },
     {
       "key": "sample.info.layer_count",
-      "value": "地質層数: {0}"
+      "value": "含まれる地層：{0}層"
     },
     {
       "key": "sample.info.current_status",
-      "value": "現在の状態: {0}"
+      "value": "現在の状態：{0}"
     },
     {
       "key": "sample.info.layer_details",
-      "value": "層詳細:"
+      "value": "地層の詳細："
     },
     {
       "key": "sample.info.no_layer_data",
-      "value": "層データなし"
+      "value": "地層のデータはありません"
     },
     {
       "key": "sample.info.layer_item",
-      "value": "  {0}. {1} - 厚さ: {2}m"
+      "value": "  {0}. {1} ― 厚さ：{2}m"
     },
     {
       "key": "sample.status.inventory",
-      "value": "インベントリ内"
+      "value": "調査バッグの中"
     },
     {
       "key": "sample.status.world",
-      "value": "ワールド内"
+      "value": "野外に配置"
     },
     {
       "key": "sample.message.collected",
-      "value": "サンプルを採取しました: {0}"
+      "value": "試料を採取しました：{0}"
     },
     {
       "key": "sample.message.inventory_full",
-      "value": "インベントリが満杯かサンプルを追加できません！"
+      "value": "調査バッグがいっぱいです。試料を整理してから、もう一度試してください。"
     },
     {
       "key": "sample.message.no_inventory",
-      "value": "サンプルインベントリシステムが見つかりません！"
+      "value": "調査バッグを読み込めませんでした。メニューからやり直してください。"
     },
     {
       "key": "sample.description.template",
-      "value": "{0}を使用して採取した地質サンプル"
+      "value": "{0}を使って採取した地質試料"
     },
     {
       "key": "tool.unknown.name",
@@ -418,39 +422,39 @@
     },
     {
       "key": "scene.selection.title",
-      "value": "シーン選択"
+      "value": "移動先を選ぶ"
     },
     {
       "key": "scene.main.name",
-      "value": "野外"
+      "value": "野外調査エリア"
     },
     {
       "key": "scene.laboratory.name",
-      "value": "研究室"
+      "value": "G-Lab研究室"
     },
     {
       "key": "scene.unknown.name",
-      "value": "不明なシーン"
+      "value": "移動先不明"
     },
     {
       "key": "scene.button.current",
-      "value": "{0} (現在)"
+      "value": "{0}（現在地）"
     },
     {
       "key": "sample.info.depth_world",
-      "value": "採取深度: {0}m - {1}m (世界座標)"
+      "value": "地表からの深さ：{0}m～{1}m"
     },
     {
       "key": "sample.info.depth_world_relative",
-      "value": "採取深度: {0}m - {1}m (相対: {2}m - {3}m)"
+      "value": "地表からの深さ：{2}m～{3}m"
     },
     {
       "key": "sample.drill_tower.description",
-      "value": "ドリルタワーサンプル #{0}\n{1}\n厚さ: {2}m"
+      "value": "ボーリングコア #{0}\n{1}\n厚さ：{2}m"
     },
     {
       "key": "encyclopedia.system_status.title",
-      "value": "システム状態"
+      "value": "読み込み状況"
     },
     {
       "key": "encyclopedia.data_system.label",
@@ -498,7 +502,7 @@
     },
     {
       "key": "encyclopedia.current_layer.total_entries",
-      "value": "全エントリー"
+      "value": "見つけた項目"
     },
     {
       "key": "encyclopedia.current_layer.minerals",
@@ -510,7 +514,7 @@
     },
     {
       "key": "encyclopedia.detail.title",
-      "value": "エントリー詳細"
+      "value": "詳しい情報"
     },
     {
       "key": "encyclopedia.detail.basic_info",
@@ -530,19 +534,19 @@
     },
     {
       "key": "encyclopedia.detail.rock_type",
-      "value": "岩石種類"
+      "value": "岩石の種類"
     },
     {
       "key": "encyclopedia.detail.percentage",
-      "value": "含有比率"
+      "value": "含まれる割合"
     },
     {
       "key": "encyclopedia.detail.discovery_probability",
-      "value": "発見確率"
+      "value": "見つかる確率"
     },
     {
       "key": "encyclopedia.detail.rarity",
-      "value": "希少度"
+      "value": "見つけやすさ"
     },
     {
       "key": "encyclopedia.detail.discovery_status",
@@ -562,11 +566,11 @@
     },
     {
       "key": "encyclopedia.detail.appearance",
-      "value": "外観特徴"
+      "value": "見た目の特徴"
     },
     {
       "key": "encyclopedia.detail.physical_properties",
-      "value": "物理特性"
+      "value": "性質"
     },
     {
       "key": "encyclopedia.detail.mohs_hardness",
@@ -590,7 +594,7 @@
     },
     {
       "key": "encyclopedia.detail.acid_reaction",
-      "value": "酸反応"
+      "value": "うすい塩酸への反応"
     },
     {
       "key": "encyclopedia.detail.acid_reaction_yes",
@@ -642,7 +646,7 @@
     },
     {
       "key": "encyclopedia.entry_list.title",
-      "value": "エントリーリスト"
+      "value": "見つけた岩石・鉱物・化石"
     },
     {
       "key": "rock.conglomerate",
@@ -682,15 +686,15 @@
     },
     {
       "key": "encyclopedia.system.title",
-      "value": "地質図鑑システム"
+      "value": "地質図鑑"
     },
     {
       "key": "quest.lab.intro.title",
-      "value": "研究室イントロ"
+      "value": "研究室を見て回ろう"
     },
     {
       "key": "quest.lab.intro.desc",
-      "value": "研究室に慣れるためのガイドに従い、基本ツールを受け取る"
+      "value": "カエデ研究員の案内を聞き、調査道具を受け取ろう"
     },
     {
       "key": "quest.lab.intro.obj1",
@@ -698,7 +702,7 @@
     },
     {
       "key": "quest.lab.drkaede.title",
-      "value": "クエスト2: Dr.Kaedeと会話する"
+      "value": "調査ミッション2：カエデ研究員に話を聞こう"
     },
     {
       "key": "quest.lab.drkaede.desc",
@@ -710,11 +714,11 @@
     },
     {
       "key": "quest.lab.drkaede.prompt",
-      "value": "[E] Dr.Kaedeと話す"
+      "value": "［E］カエデ研究員に話を聞く"
     },
     {
       "key": "quest.lab.anomaly.title",
-      "value": "quest3:異常サンプル"
+      "value": "調査ミッション3：気になる試料を調べよう"
     },
     {
       "key": "quest.lab.anomaly.desc",
@@ -726,11 +730,11 @@
     },
     {
       "key": "quest.lab.anomaly.prompt",
-      "value": "[E] 異常サンプルについて聞く"
+      "value": "［E］気になる試料について聞く"
     },
     {
       "key": "quest.field.phase.title",
-      "value": "3.2 フェーズシフターを使ってみよう"
+      "value": "フェーズシフターで野外へ移動しよう"
     },
     {
       "key": "quest.field.phase.desc",
@@ -770,7 +774,7 @@
     },
     {
       "key": "quest.chapter4.kaede.prompt",
-      "value": "[E] Dr.Kaedeと話す"
+      "value": "［E］カエデ研究員に話を聞く"
     },
     {
       "key": "quest.chapter4.field.title",
@@ -786,11 +790,11 @@
     },
     {
       "key": "quest.chapter4.sample.title",
-      "value": "quest4.3 サンプルを採集する"
+      "value": "調査ミッション：ボーリングコアを採取しよう"
     },
     {
       "key": "quest.chapter4.sample.desc",
-      "value": "指示された地点で推奨採取装置またはドリルタワーを使ってボーリングサンプルを採取する"
+      "value": "指定された地点でボーリング装置を使い、地下のコア試料を採取しよう"
     },
     {
       "key": "quest.chapter4.sample.obj1",
@@ -822,7 +826,7 @@
     },
     {
       "key": "quest.chapter5.kaede.prompt",
-      "value": "[E] Dr.Kaedeと話す"
+      "value": "［E］カエデ研究員に話を聞く"
     },
     {
       "key": "quest.chapter5.field.title",
@@ -838,7 +842,7 @@
     },
     {
       "key": "quest.chapter5.return.title",
-      "value": "quest5.2：G-Labに帰ろ"
+      "value": "調査結果を持ってG-Labへ戻ろう"
     },
     {
       "key": "quest.chapter5.return.desc",
@@ -850,7 +854,7 @@
     },
     {
       "key": "quest.chapter6.kaede.title",
-      "value": "quest6：Dr.kaedeと話す"
+      "value": "最終報告をカエデ研究員に伝えよう"
     },
     {
       "key": "quest.chapter6.kaede.desc",
@@ -862,11 +866,11 @@
     },
     {
       "key": "quest.chapter6.kaede.prompt",
-      "value": "[E] Dr.Kaedeと話す"
+      "value": "［E］カエデ研究員に話を聞く"
     },
     {
       "key": "quest.ui.completed",
-      "value": "クエスト完了"
+      "value": "調査ミッション完了"
     },
     {
       "key": "encyclopedia.layer.aoba_mountain",
@@ -906,7 +910,7 @@
     },
     {
       "key": "encyclopedia.property.non_reactive",
-      "value": "非反应性"
+      "value": "反応なし"
     },
     {
       "key": "encyclopedia.property.diamagnetic",
@@ -1146,7 +1150,7 @@
     },
     {
       "key": "fossil.description.ammonite",
-      "value": "この地層で発見されたアンモナイト化石、中生代海洋の標準化石。"
+      "value": "この地層で発見されたアンモナイト。中生代の地層の年代を知る手掛かりになる示準化石です。"
     },
     {
       "key": "fossil.description.trilobite",
@@ -1158,23 +1162,23 @@
     },
     {
       "key": "cutting_system.warehouse.title",
-      "value": "倉庫 (100スロット)"
+      "value": "試料保管庫（100個まで）"
     },
     {
       "key": "cutting_system.cutting_area.title",
-      "value": "サンプル切断台"
+      "value": "試料切断台"
     },
     {
       "key": "cutting_system.instruction.drag_sample",
-      "value": "多層地質サンプルを\n左側からここにドラッグ\n\nサンプル切断操作を開始\n\n対応サンプルタイプ:\n• 多層掘削サンプル\n• 地質探査サンプル"
+      "value": "複数の地層を含む試料を\n左側からここへ移動してください。"
     },
     {
       "key": "cutting_system.instruction.cutting_in_progress",
-      "value": "切断中: {0}\n\n移動する切断線を見て\nスペースキー/画面タッチで切断\n\n⚠️ 切断失敗でサンプルは破壊される"
+      "value": "切断中：{0}\n\n動く線を見て、スペースキーまたは画面タッチで切断します。\n\n位置がずれても、もう一度試せます。"
     },
     {
       "key": "cutting_system.instruction.multi_layer_required",
-      "value": "多層サンプルのみ切断可能"
+      "value": "複数の地層を含む試料を選んでください。"
     },
     {
       "key": "cutting_system.button.close",
@@ -1182,55 +1186,55 @@
     },
     {
       "key": "cutting_system.cutting_line.instruction",
-      "value": "スペースキー/画面タッチ\nで切断"
+      "value": "スペースキーまたは画面タッチで切断"
     },
     {
       "key": "cutting_system.cutting_complete",
-      "value": "切断完了"
+      "value": "切断できました"
     },
     {
       "key": "cutting_system.cutting_failed",
-      "value": "切断失敗"
+      "value": "切断位置がずれました"
     },
     {
       "key": "cutting_system.cutting_progress",
-      "value": "切断進度: {0}/{1}"
+      "value": "切断の進み具合：{0}/{1}"
     },
     {
       "key": "cutting_system.analyzing_sample",
-      "value": "サンプル分析中..."
+      "value": "試料を調べています…"
     },
     {
       "key": "cutting_system.success_message",
-      "value": "✅ 切断成功！\n\n単層サンプルがバックパックに追加されました\n他のサンプルの切断を続けることができます"
+      "value": "試料を地層ごとに分け、調査バッグに入れました。\n続けて別の試料を切断できます。"
     },
     {
       "key": "cutting_system.failure_message",
-      "value": "❌ 切断失敗\n\nサンプルは破壊されました\n切断するサンプルを再選択してください"
+      "value": "切断位置がずれました。\nもう一度試せます。"
     },
     {
       "key": "cutting_system.initialization_failed",
-      "value": "切断システム初期化失敗"
+      "value": "試料切断台を読み込めませんでした。いったん閉じて、もう一度試してください。"
     },
     {
       "key": "drill_tower.drilling",
-      "value": "掘削中..."
+      "value": "ボーリング調査中…"
     },
     {
       "key": "drill_tower.max_depth",
-      "value": "最大掘削深度に到達"
+      "value": "調査できる最大の深さに達しました"
     },
     {
       "key": "drill_tower.recall_prompt",
-      "value": "Gキーでドリルタワー回収"
+      "value": "［G］ボーリング装置を回収する"
     },
     {
       "key": "drill_tower.drill_prompt",
-      "value": "Fキーで第{0}回掘削\n({1:F0}m-{2:F0}m)"
+      "value": "［F］{1:F0}～{2:F0}mのコアを採取する"
     },
     {
       "key": "cutting_system.all_cuts_complete",
-      "value": "全ての切断が完了！"
+      "value": "すべての切断が完了しました"
     },
     {
       "key": "encyclopedia.ui.title",
@@ -1238,7 +1242,7 @@
     },
     {
       "key": "encyclopedia.ui.collection_progress",
-      "value": "収集進度: {0}/{1} ({2})"
+      "value": "収集の進み具合：{0}/{1}（{2}）"
     },
     {
       "key": "encyclopedia.ui.minerals_progress",
@@ -1270,7 +1274,7 @@
     },
     {
       "key": "encyclopedia.ui.rarity_template",
-      "value": "レア度"
+      "value": "見つけやすさ"
     },
     {
       "key": "encyclopedia.ui.statistics_template",
@@ -1286,7 +1290,7 @@
     },
     {
       "key": "encyclopedia.ui.detail_properties",
-      "value": "プロパティ"
+      "value": "特徴"
     },
     {
       "key": "encyclopedia.ui.viewer_reset",
@@ -1325,14 +1329,6 @@
       "value": "発見後に詳細属性を表示"
     },
     {
-      "key": "encyclopedia.detail.type",
-      "value": "タイプ"
-    },
-    {
-      "key": "encyclopedia.detail.layer",
-      "value": "地層"
-    },
-    {
       "key": "encyclopedia.detail.rock",
       "value": "岩石"
     },
@@ -1341,40 +1337,12 @@
       "value": "含有量"
     },
     {
-      "key": "encyclopedia.detail.mohs_hardness",
-      "value": "モース硬度"
-    },
-    {
-      "key": "encyclopedia.detail.density",
-      "value": "密度"
-    },
-    {
-      "key": "encyclopedia.detail.magnetism",
-      "value": "磁性"
-    },
-    {
-      "key": "encyclopedia.detail.rarity",
-      "value": "レア度"
-    },
-    {
-      "key": "encyclopedia.detail.discovery_probability",
-      "value": "発見確率"
-    },
-    {
-      "key": "encyclopedia.detail.discovery_count",
-      "value": "発見回数"
-    },
-    {
-      "key": "encyclopedia.detail.first_discovered",
-      "value": "初回発見"
-    },
-    {
       "key": "encyclopedia.layer.unknown",
       "value": "未知の地層"
     },
     {
       "key": "encyclopedia.ui.layer_section_title",
-      "value": "地質地層"
+      "value": "地層"
     },
     {
       "key": "story.quest1_1.line01",
@@ -1594,7 +1562,7 @@
     },
     {
       "key": "story.quest2_1.line23",
-      "value": "もちろん安全な環境で行います。今後の地震防止にもつながる可能性があります。もし彼の“感覚”が地殻変動と関係しているなら、命を救えるかもしれません。"
+      "value": "もちろん安全な環境で行います。地震による被害を減らすための調査にもつながる可能性があります。"
     },
     {
       "key": "story.quest2_1.line24",
@@ -1790,7 +1758,7 @@
     },
     {
       "key": "story.quest3_3.line17",
-      "value": "言い終わる前に、大地が激しく震え出した。地鳴りが耳をつんざき、足元の岩が崩れる。"
+      "value": "言い終わる前に、大地が大きくゆれ、足元の小石が転がった。"
     },
     {
       "key": "story.quest3_3.line18",
@@ -1822,7 +1790,7 @@
     },
     {
       "key": "story.quest3_3.line25",
-      "value": "白い閃光が主人公を包み込む。次の瞬間、耳をつんざく地鳴りの音が消え、静寂と機械音が戻った。"
+      "value": "白い光が主人公を包み込む。次の瞬間、周囲は静かになり、研究所の機械音が聞こえた。"
     },
     {
       "key": "story.quest3_4.line01",
@@ -1946,7 +1914,7 @@
     },
     {
       "key": "story.quest4_2.line02",
-      "value": "主人公が立つ場所は、かつて崩れた崖の少し北。そこには地震で割れた地面が乾き、まだうっすらと焦げたような色をしていた。"
+      "value": "主人公が立つ場所は、前回調べた露頭の少し北。地面には、ゆれでできた小さな割れ目が残っていた。"
     },
     {
       "key": "story.quest4_2.line03",
@@ -2328,166 +2296,877 @@
       "key": "story.speaker.student_b",
       "value": "学生B"
     },
-    { "key": "ui.dialog.continue", "value": "ダイアログをクリックして続（つづ）ける" },
-    { "key": "ui.dialog.choose", "value": "答（こた）えをえらんでね" },
-    { "key": "quiz.correct", "value": "正解（せいかい）！" },
-    { "key": "quiz.incorrect", "value": "ざんねん、もう一度（いちど）かんがえてみよう。" },
-    { "key": "report.title", "value": "ちょうさ報告（ほうこく）" },
-    { "key": "report.grade", "value": "そうごう評価（ひょうか）" },
-    { "key": "report.score", "value": "せいかい数（すう）" },
-    { "key": "story.beat1.l01", "value": "昼休（ひるやす）みの教室（きょうしつ）。とつぜん、大（おお）きなゆれが教室（きょうしつ）をおそった。" },
-    { "key": "story.beat1.l02", "value": "うわっ…！？　地震（じしん）だ…！　みんな、机（つくえ）の下（した）に！" },
-    { "key": "story.beat1.l03", "value": "ゆれはどんどん強（つよ）くなり、てんじょうがくずれ落（お）ちる。視界（しかい）が白（しろ）い光（ひかり）に包（つつ）まれた——。" },
-    { "key": "story.beat1.l04", "value": "目（め）をさますと、そこは見（み）たことのない白（しろ）い研究室（けんきゅうしつ）だった。" },
-    { "key": "story.beat1.l05", "value": "気（き）がついた？　ここは大地（だいち）を調（しら）べ、街（まち）を守（まも）るための防災研究所（ぼうさいけんきゅうじょ）「G-Lab」。わたしは研究員（けんきゅういん）のカエデ。" },
-    { "key": "story.beat1.l06", "value": "さっきの地震（じしん）で、君（きみ）の中（なか）の「力（ちから）」が目覚（めざ）めた。むずかしく考（かんが）えないで——「地層（ちそう）を読（よ）む力（ちから）」のこと。大地（だいち）の声（こえ）に、ちゃんと耳（みみ）をすませられる人（ひと）、それだけよ。" },
-    { "key": "story.beat1.l07", "value": "ありがとう。地層（ちそう）っていう「本（ほん）」を読（よ）むには、まずそれがどう書（か）かれたかを知（し）らなきゃ。" },
-    { "key": "story.beat1.q1.prompt", "value": "山（やま）の岩石（がんせき）が地層（ちそう）になるまで——正（ただ）しい順番（じゅんばん）は？" },
-    { "key": "story.beat1.q1.a", "value": "風化（ふうか）→ 侵食（しんしょく）→ 運搬（うんぱん）→ 堆積（たいせき）" },
-    { "key": "story.beat1.q1.b", "value": "堆積（たいせき）→ 運搬（うんぱん）→ 侵食（しんしょく）→ 風化（ふうか）" },
-    { "key": "story.beat1.q1.c", "value": "侵食（しんしょく）→ 風化（ふうか）→ 堆積（たいせき）→ 運搬（うんぱん）" },
-    { "key": "story.beat1.q1.fb_ok", "value": "せいかい！　もろくなって、けずられて、運（はこ）ばれて、積（つ）もる。この順番（じゅんばん）が基本（きほん）だよ。" },
-    { "key": "story.beat1.l08", "value": "いい調子（ちょうし）！　じゃあ野外（やがい）へ——大地（だいち）の最初（さいしょ）の1ページを、自分（じぶん）の手（て）でめくってみよう。" },
-    { "key": "story.beat2.l01", "value": "野外（やがい）の露頭（ろとう）。地震（じしん）でわれた地面（じめん）に、しま模様（もよう）の地層（ちそう）が見（み）えている。" },
-    { "key": "story.beat2.l02", "value": "ハンマーでサンプルを取（と）ったら、顕微鏡（けんびきょう）で粒（つぶ）の大（おお）きさを見（み）てみよう。" },
-    { "key": "story.beat2.q1.prompt", "value": "じゃあ、このサンプル——粒（つぶ）は 0.06mm より細（こま）かい、なめらか。これは？" },
-    { "key": "story.beat2.q1.a", "value": "泥岩（でいがん）" },
-    { "key": "story.beat2.q1.b", "value": "砂岩（さがん）" },
-    { "key": "story.beat2.q1.c", "value": "れき岩（がん）" },
-    { "key": "story.beat2.q1.fb_ok", "value": "せいかい！　粒（つぶ）が細（こま）かいほど、河口（かこう）から遠（とお）い深（ふか）い海（うみ）でたまるんだ。つまりここは昔（むかし）、静（しず）かで深（ふか）い海（うみ）の底（そこ）だった。" },
-    { "key": "story.beat2.q2.prompt", "value": "次（つぎ）のサンプルは、うすい塩酸（えんさん）をかけたら泡（あわ）（二酸化炭素（にさんかたんそ））が出（で）たわ。これは？" },
-    { "key": "story.beat2.q2.a", "value": "石灰岩（せっかいがん）" },
-    { "key": "story.beat2.q2.b", "value": "チャート" },
-    { "key": "story.beat2.q2.c", "value": "凝灰岩（ぎょうかいがん）" },
-    { "key": "story.beat2.q2.fb_ok", "value": "そのとおり。石灰岩（せっかいがん）は貝（かい）やサンゴなどが積（つ）もってできて、塩酸（えんさん）で二酸化炭素（にさんかたんそ）を出（だ）すよ。つまりここは昔（むかし）、あたたかい浅（あさ）い海（うみ）だったの。" },
-    { "key": "story.beat2.q3.prompt", "value": "もうひとつ。くぎでひっかいても傷（きず）がつかないほどかたい。これは？" },
-    { "key": "story.beat2.q3.a", "value": "チャート" },
-    { "key": "story.beat2.q3.b", "value": "泥岩（でいがん）" },
-    { "key": "story.beat2.q3.c", "value": "れき岩（がん）" },
-    { "key": "story.beat2.q3.fb_ok", "value": "正解（せいかい）！　チャートは海（うみ）の小（ちい）さな生物（せいぶつ）の殻（から）が積（つ）もってできた、とてもかたい岩石（がんせき）だよ。大昔（おおむかし）の海（うみ）が、何百万年（なんびゃくまんねん）もかけて積（つ）み上（あ）げたものなの。" },
-    { "key": "story.beat2.l03", "value": "気（き）づいた？　そこが引（ひ）っかかるところなの。もっと深（ふか）く掘（ほ）って、確（たし）かめよう。" },
-    { "key": "story.beat3.l01", "value": "ドリルタワーのサンプルが取（と）れたね。深（ふか）さごとの記録（きろく）を「柱状図（ちゅうじょうず）」で見（み）ていこう。" },
-    { "key": "story.beat3.l02", "value": "深（ふか）い層（そう）のサンプルから、岩（いわ）の中（なか）に化石（かせき）が見（み）つかった。" },
-    { "key": "story.beat3.q1.prompt", "value": "……ということは、この地層（ちそう）ができた当時（とうじ）は、どんな環境（かんきょう）だった？" },
-    { "key": "story.beat3.q1.a", "value": "あたたかくて浅（あさ）い海（うみ）" },
-    { "key": "story.beat3.q1.b", "value": "冷（つめ）たくて深（ふか）い海（うみ）" },
-    { "key": "story.beat3.q1.c", "value": "川（かわ）と海（うみ）が混（ま）じる場所（ばしょ）" },
-    { "key": "story.beat3.q1.fb_ok", "value": "せいかい！　化石（かせき）が当時（とうじ）の「環境（かんきょう）」を教（おし）えてくれたね。" },
-    { "key": "story.beat3.q2.prompt", "value": "サンゴみたいに、地層（ちそう）ができた当時（とうじ）の「環境（かんきょう）」を教（おし）えてくれる化石（かせき）——これを何（なん）て呼（よ）ぶ？" },
-    { "key": "story.beat3.q2.a", "value": "示相化石（しそうかせき）" },
-    { "key": "story.beat3.q2.b", "value": "示準化石（しじゅんかせき）" },
-    { "key": "story.beat3.q2.fb_ok", "value": "そのとおり。環境（かんきょう）を示（しめ）すのが示相化石（しそうかせき）。シジミなら川（かわ）と海（うみ）が混（ま）じる場所（ばしょ）だよ。" },
-    { "key": "story.beat3.q3.prompt", "value": "……ということは、この地層（ちそう）ができたのは？" },
-    { "key": "story.beat3.q3.a", "value": "中生代（ちゅうせいだい）" },
-    { "key": "story.beat3.q3.b", "value": "古生代（こせいだい）" },
-    { "key": "story.beat3.q3.c", "value": "新生代（しんせいだい）" },
-    { "key": "story.beat3.q3.fb_ok", "value": "正解（せいかい）！　アンモナイトは中生代（ちゅうせいだい）の示準化石（しじゅんかせき）。サンヨウチュウなら古生代（こせいだい）だよ。" },
-    { "key": "story.beat3.q4.prompt", "value": "アンモナイトみたいなのを——何（なん）て呼（よ）ぶ？" },
-    { "key": "story.beat3.q4.a", "value": "示準化石（しじゅんかせき）" },
-    { "key": "story.beat3.q4.b", "value": "示相化石（しそうかせき）" },
-    { "key": "story.beat3.q4.fb_ok", "value": "そう。広（ひろ）い範囲（はんい）にすみ、短（みじか）い期間（きかん）だけ栄（さか）えた生物（せいぶつ）が示準化石（しじゅんかせき）になるよ。" },
-    { "key": "story.beat3.q5.prompt", "value": "柱状図（ちゅうじょうず）の中（なか）に、火山灰（かざんばい）がおし固（かた）まった「凝灰岩（ぎょうかいがん）」の層（そう）があるね。当時（とうじ）、何（なに）があった？" },
-    { "key": "story.beat3.q5.a", "value": "近（ちか）くで火山（かざん）の噴火（ふんか）があった" },
-    { "key": "story.beat3.q5.b", "value": "大（おお）きな地震（じしん）があった" },
-    { "key": "story.beat3.q5.c", "value": "海（うみ）がかれた" },
-    { "key": "story.beat3.q5.fb_ok", "value": "正解（せいかい）！　凝灰岩（ぎょうかいがん）の層（そう）は、その時代（じだい）に火山（かざん）の噴火（ふんか）があった証拠（しょうこ）だよ。" },
-    { "key": "story.beat4.l01", "value": "最後（さいご）は、A・B・C 三（みっ）つの地点（ちてん）の柱状図（ちゅうじょうず）をくらべるよ。" },
-    { "key": "story.beat4.q1.prompt", "value": "じゃあ今回（こんかい）——火山灰（かざんばい）の層（そう）が、東（ひがし）の地点（ちてん）ほど深（ふか）い位置（いち）にあったわ。地層（ちそう）はどっちに傾（かたむ）いてる？" },
-    { "key": "story.beat4.q1.a", "value": "東（ひがし）" },
-    { "key": "story.beat4.q1.b", "value": "西（にし）" },
-    { "key": "story.beat4.q1.c", "value": "北（きた）" },
-    { "key": "story.beat4.q1.fb_ok", "value": "せいかい！　同（おな）じ層（そう）が深（ふか）くなる方向（ほうこう）に、地層（ちそう）は傾（かたむ）いて低（ひく）くなっているんだ。火山灰（かざんばい）の層（そう）が東（ひがし）へ下（さ）がる＝この一帯（いったい）、東（ひがし）へ傾（かたむ）きながら沈（しず）んでる。" },
-    { "key": "story.beat4.q2.prompt", "value": "ねえ、あのがけ見（み）て。地層（ちそう）が波（なみ）のように曲（ま）がってる！　あの曲（ま）がりを、何（なん）て呼（よ）ぶ？" },
-    { "key": "story.beat4.q2.a", "value": "しゅう曲（きょく）" },
-    { "key": "story.beat4.q2.b", "value": "断層（だんそう）" },
-    { "key": "story.beat4.q2.c", "value": "整合（せいごう）" },
-    { "key": "story.beat4.q2.fb_ok", "value": "そのとおり。両側（りょうがわ）からおし縮（ちぢ）められる力（ちから）で、地層（ちそう）が曲（ま）がったものをしゅう曲（きょく）というよ。しかも曲（ま）がってる＝今（いま）も地下（ちか）には「おす力（ちから）」がかかったまま、ってこと。" },
-    { "key": "story.beat4.l02", "value": "「地球（ちきゅう）の声（こえ）」なんて、ふしぎな力（ちから）じゃなかったでしょ？　地層（ちそう）を一枚（いちまい）ずつ読（よ）めば、だれにだって聞（き）こえる。" },
-    { "key": "story.beat4.l03", "value": "今日（きょう）の調査（ちょうさ）をまとめて、報告書（ほうこくしょ）をつくろう。" },
-    { "key": "story.beat1.l09", "value": "正直（しょうじき）に言（い）うね。さっきの地震（じしん）は、たぶん「終（お）わり」じゃない。" },
-    { "key": "story.beat1.l10", "value": "……あの教室（きょうしつ）を、もう一度（いちど）あんな目（め）にあわせたくない。やる。" },
-    { "key": "story.beat2.l04", "value": "崖（がけ）の地層（ちそう）は、何万年（なんまんねん）もの時間（じかん）を、しましま模様（もよう）に閉（と）じこめていた。" },
-    { "key": "story.beat2.l05", "value": "ふふ、いい目（め）をしてる。地質調査員（ちしつちょうさいん）の素質（そしつ）あり、ね。" },
-    { "key": "story.beat2.l06", "value": "同（おな）じ“石（いし）”でも、こんなに違（ちが）うんだ……！" },
-    { "key": "story.beat3.l03", "value": "うわ、本物（ほんもの）の化石（かせき）だ……！　何千万年（なんせんまんねん）も前（まえ）の生（い）きものが、今（いま）、目（め）の前（まえ）に。" },
-    { "key": "story.beat3.l04", "value": "柱状図（ちゅうじょうず）を追（お）うほど、地下（ちか）から低（ひく）い響（ひび）きが伝（つた）わってくる気（き）がした。" },
-    { "key": "story.beat3.l05", "value": "こんな大（おお）きな機械（きかい）で取（と）ったデータ、迫力（はくりょく）あるな……！" },
-    { "key": "story.beat4.l04", "value": "わかった？　力（ちから）がたまってる場所（ばしょ）——そこが、次（つぎ）にいちばん動（うご）きやすい。" },
-    { "key": "story.beat4.l05", "value": "地球（ちきゅう）の声（こえ）……ほんの少（すこ）しだけ、聞（き）こえた気（き）がするよ。" },
-    { "key": "story.bridge.q21.l01", "value": "翌朝（よくあさ）、G-Lab の研究室（けんきゅうしつ）。" },
-    { "key": "story.bridge.q21.l02", "value": "おはよう！　さっそく最初（さいしょ）の任務（にんむ）。街（まち）の北（きた）にある露頭（ろとう）で、サンプルを取（と）ってきて。" },
-    { "key": "story.bridge.q21.l03", "value": "移動（いどう）にはフェーズシフターを使（つか）うの。Tabキーで道具（どうぐ）を切（き）り替（か）えてね。" },
-    { "key": "story.bridge.q31.l01", "value": "露頭（ろとう）では、粒（つぶ）の大（おお）きさや、塩酸（えんさん）への反応（はんのう）をよく観察（かんさつ）してきて。岩石（がんせき）の名前（なまえ）がわかるはずよ。" },
-    { "key": "story.bridge.q31.l02", "value": "わかった、観察（かんさつ）してくる！" },
-    { "key": "story.bridge.q32.l01", "value": "一瞬（いっしゅん）で風（かぜ）と土（つち）のにおいに包（つつ）まれた。野外（やがい）だ。" },
-    { "key": "story.bridge.q32.l02", "value": "着（つ）いたわね。ハンマーで岩（いわ）を割（わ）って、サンプルを取（と）ろう。" },
-    { "key": "story.bridge.q34.l01", "value": "G-Lab に戻（もど）る。机（つくえ）の上（うえ）に、採（と）ってきたサンプルが並（なら）ぶ。" },
-    { "key": "story.bridge.q34.l02", "value": "薄片（はくへん）を顕微鏡（けんびきょう）にかけるね。……粒（つぶ）が細（こま）かくつぶれてる。" },
-    { "key": "story.bridge.q34.l03", "value": "この割（わ）れ方（かた）は、表面（ひょうめん）の揺（ゆ）れだけでできた傷（きず）じゃないかもしれない。" },
-    { "key": "story.bridge.q34.l04", "value": "じゃあ、もっと深（ふか）いところで何（なに）か起（お）きてる？" },
-    { "key": "story.bridge.q34.l05", "value": "その可能性（かのうせい）がある。薄片（はくへん）だけでは、浅（あさ）い部分（ぶぶん）の変化（へんか）しか読（よ）めない。" },
-    { "key": "story.bridge.q34.l06", "value": "深（ふか）さごとの柱状（ちゅうじょう）サンプルがあれば、どの層（そう）が新（あたら）しく動（うご）いたか比（くら）べられる。" },
-    { "key": "story.bridge.q34.l07", "value": "だから次（つぎ）はドリルタワー。表面（ひょうめん）ではなく、もっと深（ふか）い記録（きろく）を取（と）りに行（い）こう。" },
-    { "key": "story.bridge.q41.l01", "value": "ドリルタワーは深（ふか）さごとにサンプルが取（と）れるの。地層（ちそう）の重（かさ）なりがわかるよ。" },
-    { "key": "story.bridge.q41.l02", "value": "化石（かせき）が出（で）たら教（おし）えて。地層（ちそう）ができた当時（とうじ）の手（て）がかりになるから。" },
-    { "key": "story.bridge.q41.l03", "value": "化石（かせき）……！　なんかワクワクするな。" },
-    { "key": "story.beat3.q1.teach1", "value": "ねえ、化石（かせき）って「タイムカプセル」みたいなものなの。" },
-    { "key": "story.beat3.q1.teach2", "value": "生（い）きものは住（す）める場所（ばしょ）が決（き）まってる。だから化石（かせき）からは、当時（とうじ）の「環境（かんきょう）」がわかるんだよ。" },
-    { "key": "story.beat3.q1.teach3", "value": "たとえばこのサンゴ。今（いま）も、あたたかくて浅（あさ）い海（うみ）にしか育（そだ）たないんだ。" },
-    { "key": "story.beat3.q3.teach1", "value": "今度（こんど）は別（べつ）の層（そう）から——アンモナイトの化石（かせき）！" },
-    { "key": "story.beat3.q3.teach2", "value": "地球（ちきゅう）の歴史（れきし）は、大（おお）きく「古生代（こせいだい）→ 中生代（ちゅうせいだい）→ 新生代（しんせいだい）」って分（わ）かれてるの。" },
-    { "key": "story.beat3.q3.teach3", "value": "アンモナイトは、その中（なか）の「中生代（ちゅうせいだい）」にだけ栄（さか）えた生（い）きもの。恐竜（きょうりゅう）と同（おな）じ時代（じだい）だね。" },
-    { "key": "story.beat3.q4.teach1", "value": "広（ひろ）い範囲（はんい）にすんで、短（みじか）い期間（きかん）だけ栄（さか）えた生（い）きものの化石（かせき）は、年代（ねんだい）を決（き）めるのに役立（やくだ）つの。" },
-    { "key": "story.beat4.q1.teach1", "value": "「同（おな）じ層（そう）」が見（み）つかれば、それを目印（めじるし）にできる——「鍵層（かぎそう）」っていうの。火山灰（かざんばい）はとても目立（めだ）つ、いい鍵層（かぎそう）よ。" },
-    { "key": "story.beat4.q1.teach2", "value": "その鍵層（かぎそう）が「ある方向（ほうこう）に行（い）くほど深（ふか）い位置（いち）」にあったら？　地層全体（ちそうぜんたい）がそっちに傾（かたむ）いて低（ひく）くなってる、ってこと。" },
-    { "key": "story.beat4.q2.teach1", "value": "地層（ちそう）は本来（ほんらい）まっすぐ重（かさ）なるはず。でも、両側（りょうがわ）から押（お）し縮（ちぢ）められると——あんなふうに曲（ま）がっちゃうの。" },
-    { "key": "story.beat1.q1.teach1", "value": "地層（ちそう）はね、大地（だいち）が書（か）いた「日記（にっき）」なの。山（やま）の岩石（がんせき）が地層（ちそう）になるまでには、4つの「はたらき」がある——「風化（ふうか）」「侵食（しんしょく）」「運搬（うんぱん）」「堆積（たいせき）」、ね。" },
-    { "key": "story.beat1.q1.teach2", "value": "風化（ふうか）はもろくなる、侵食（しんしょく）はけずられる、運搬（うんぱん）は運（はこ）ばれる、堆積（たいせき）は積（つ）もる。" },
-    { "key": "story.beat2.q1.teach1", "value": "堆積岩（たいせきがん）はね、粒（つぶ）の大（おお）きさで名前（なまえ）が決（き）まるんだ。大（おお）きい方（ほう）から「れき岩（がん）」(>2mm)、「砂岩（さがん）」、「泥岩（でいがん）」(<0.06mm)。" },
-    { "key": "story.beat2.q1.teach2", "value": "それと、変（か）わり種（だね）が2つ——塩酸（えんさん）で泡（あわ）が出（で）るのが「石灰岩（せっかいがん）」、くぎでも傷（きず）がつかないかたさが「チャート」。" },
-    { "key": "story.beat1.q1.fb_ng_b", "value": "順番（じゅんばん）が逆（ぎゃく）！　岩石（がんせき）が先（さき）にもろくならないと、削（けず）られないよ。" },
-    { "key": "story.beat1.q1.fb_ng_c", "value": "おしい。「もろくなる→削（けず）られる→運（はこ）ばれる→積（つ）もる」が基本（きほん）。運搬（うんぱん）は最後（さいご）にはこないんだ。" },
-    { "key": "story.beat2.q1.fb_ng_b", "value": "砂岩（さがん）の粒（つぶ）はもう少（すこ）し大（おお）きいんだ（0.06–2mm）。なめらかさが手（て）がかりだよ。" },
-    { "key": "story.beat2.q1.fb_ng_c", "value": "れき岩（がん）は粒（つぶ）が 2mm 以上（いじょう）と、はっきり見（み）えるくらい大（おお）きいよ。" },
-    { "key": "story.beat2.q2.fb_ng_b", "value": "チャートは塩酸（えんさん）には反応（はんのう）しないんだ。あわが出（で）る＝石灰岩（せっかいがん）の特徴（とくちょう）だよ。" },
-    { "key": "story.beat2.q2.fb_ng_c", "value": "凝灰岩（ぎょうかいがん）は火山灰（かざんばい）からできる岩石（がんせき）。塩酸（えんさん）には反応（はんのう）しないよ。" },
-    { "key": "story.beat2.q3.fb_ng_b", "value": "泥岩（でいがん）は意外（いがい）とやわらかい。くぎで傷（きず）がつかないほどかたいのは別（べつ）の岩（いわ）だよ。" },
-    { "key": "story.beat2.q3.fb_ng_c", "value": "れき岩（がん）も粒（つぶ）の集（あつ）まりだから、くぎでガリガリ削（けず）れちゃうんだ。" },
-    { "key": "story.beat3.q1.fb_ng_b", "value": "サンゴは光合成（こうごうせい）する藻（も）と共生（きょうせい）するから、冷（つめ）たく深（ふか）い海（うみ）では育（そだ）たないんだよ。" },
-    { "key": "story.beat3.q1.fb_ng_c", "value": "そこにすむのはシジミだね。サンゴは塩分（えんぶん）の濃（こ）い海（うみ）が好（す）きなんだ。" },
-    { "key": "story.beat3.q2.fb_ng_b", "value": "示準化石（しじゅんかせき）は「時代（じだい）」を教（おし）えてくれる方（ほう）。「環境（かんきょう）」を示（しめ）すのは別（べつ）の名前（なまえ）だよ。" },
-    { "key": "story.beat3.q3.fb_ng_b", "value": "古生代（こせいだい）はサンヨウチュウやフズリナの時代（じだい）。アンモナイトはもう少（すこ）し後（あと）なんだ。" },
-    { "key": "story.beat3.q3.fb_ng_c", "value": "新生代（しんせいだい）はビカリアやナウマンゾウの時代（じだい）。アンモナイトはその前（まえ）に絶滅（ぜつめつ）してるよ。" },
-    { "key": "story.beat3.q4.fb_ng_b", "value": "示相化石（しそうかせき）は「環境（かんきょう）」を教（おし）える方（ほう）。「時代（じだい）」の決（き）め手（て）になるのは別（べつ）の名前（なまえ）だよ。" },
-    { "key": "story.beat3.q5.fb_ng_b", "value": "地震（じしん）は岩（いわ）をゆらすけど、火山灰（かざんばい）の層（そう）はつくらないんだ。" },
-    { "key": "story.beat3.q5.fb_ng_c", "value": "海（うみ）がかれるとできるのは岩塩（がんえん）など別（べつ）の岩（いわ）。火山灰（かざんばい）はやっぱり火山（かざん）から来（く）るよ。" },
-    { "key": "story.beat4.q1.fb_ng_b", "value": "逆（ぎゃく）だね。同（おな）じ層（そう）が東（ひがし）ほど深（ふか）いなら、地層（ちそう）全体（ぜんたい）は東（ひがし）に向（む）かって低（ひく）くなるんだ。" },
-    { "key": "story.beat4.q1.fb_ng_c", "value": "南北（なんぼく）方向（ほうこう）で深（ふか）さは変（か）わってないよ。東西（とうざい）の差（さ）に注目（ちゅうもく）して。" },
-    { "key": "story.beat4.q2.fb_ng_b", "value": "断層（だんそう）は地層（ちそう）が「ずれる」こと。曲（ま）がるのは別（べつ）の現象（げんしょう）だよ。" },
-    { "key": "story.beat4.q2.fb_ng_c", "value": "整合（せいごう）は地層（ちそう）が途切（とぎ）れずに重（かさ）なってる状態（じょうたい）。波（なみ）状（じょう）の曲（ま）がりとはちがうよ。" },
-    { "key": "story.beat1.q1.hint", "value": "もろくなる→けずられる→運（はこ）ばれる→積（つ）もる、の自然（しぜん）な流（なが）れを思（おも）い出（だ）してみよう。" },
-    { "key": "story.beat2.q1.hint", "value": "粒（つぶ）の大（おお）きさで分（わ）かれる岩石（がんせき）3 種類（しゅるい）のうち、一番（いちばん）細（こま）かいのは？" },
-    { "key": "story.beat2.q2.hint", "value": "塩酸（えんさん）に反応（はんのう）する岩石（がんせき）は限（かぎ）られているよ。貝（かい）やサンゴからできた岩（いわ）は？" },
-    { "key": "story.beat2.q3.hint", "value": "海（うみ）の小（ちい）さな生物（せいぶつ）の殻（から）が積（つ）もってできた、とてもかたい岩（いわ）は？" },
-    { "key": "story.beat3.q1.hint", "value": "今（いま）のサンゴはどんな海（うみ）でしか育（そだ）たないか、思（おも）い出（だ）してみよう。" },
-    { "key": "story.beat3.q2.hint", "value": "「環境（かんきょう）」を「示（しめ）す」「化石（かせき）」——漢字（かんじ）3つで。" },
-    { "key": "story.beat3.q3.hint", "value": "恐竜（きょうりゅう）と同（おな）じ時代（じだい）に栄（さか）えた化石（かせき）は、どの時代（じだい）？" },
-    { "key": "story.beat3.q4.hint", "value": "「時代（じだい）」を「示（しめ）す」「化石（かせき）」——漢字（かんじ）3つで。" },
-    { "key": "story.beat3.q5.hint", "value": "凝灰岩（ぎょうかいがん）は火山灰（かざんばい）からできるよ。火山灰（かざんばい）はどこから飛（と）んでくる？" },
-    { "key": "story.beat4.q1.hint", "value": "同（おな）じ層（そう）が深（ふか）い方向（ほうこう）＝地層全体（ちそうぜんたい）が低（ひく）くなる方向（ほうこう）だよ。" },
-    { "key": "story.beat4.q2.hint", "value": "両側（りょうがわ）から押（お）し縮（ちぢ）められた地層（ちそう）が、波（なみ）のように曲（ま）がる現象（げんしょう）。" },
-    { "key": "story.beat1.l11", "value": "でも地面（じめん）が割（わ）れて、いつもは草木（くさき）にかくれてる地層（ちそう）が、今（いま）だけ顔（かお）を出（だ）してる。今（いま）のうちに読（よ）み解（と）けば——次（つぎ）がいつ、どこで来（く）るか、先回（さきまわ）りできる。" },
-    { "key": "story.beat3.l09", "value": "余震（よしん）。でもこれは「記録（きろく）」じゃない——「今（いま）」も動（うご）いてる証拠（しょうこ）。……急（いそ）ごう。" },
-    { "key": "story.beat4.l07", "value": "……うん。これはもう「宿題（しゅくだい）」じゃない。「警告（けいこく）」よ。みんなに伝（つた）えよう。" },
-    { "key": "story.beat4.l06", "value": "だったら……危（あぶ）ないのは、ここ。学校（がっこう）の、すぐ西（にし）。" },
-    { "key": "story.beat2.l07", "value": "待（ま）って……この崖（がけ）、地層（ちそう）の線（せん）が少（すこ）し「ゆがんで」ない？　まっすぐじゃない。" },
-    { "key": "story.beat3.l06", "value": "つまりこの場所（ばしょ）は、昔（むかし）ほんとうに大（おお）きく姿（すがた）を変（か）えてきた——浅（あさ）い海（うみ）、深（ふか）い海（うみ）、そして火山（かざん）……地層（ちそう）はそれを全部（ぜんぶ）、記録（きろく）してたんだ。" },
-    { "key": "story.beat3.l07", "value": "——ズン。足元（あしもと）が、また小（ちい）さくゆれた。" },
-    { "key": "story.beat3.l08", "value": "今（いま）の、地震（じしん）……？　さっきより小（ちい）さいけど……" },
-    { "key": "story.beat1.l16", "value": "でも、わたし一人（ひとり）じゃ手（て）も目（め）も足（た）りない。それに——この土地（とち）の地下（ちか）は、ここに住（す）む君（きみ）自身（じしん）が読（よ）むのが、いちばんいい。" },
-    { "key": "story.beat1.l14", "value": "転送（てんそう）……装置（そうち）？" },
-    { "key": "story.beat1.l15", "value": "でもこの装置（そうち）、研究所（けんきゅうじょ）のまわりにしか届（とど）かないし、一度（いちど）に運（はこ）べるのは一人（ひとり）だけ。街（まち）ぜんぶは、救（すく）えない。" },
-    { "key": "story.beat1.l12", "value": "さっきまで教室（きょうしつ）がくずれてたはず……ここは、どこ？　どうして……？" },
-    { "key": "story.beat1.l13", "value": "落（お）ち着（つ）いて。天井（てんじょう）がくずれるその一瞬（いっしゅん）に、研究所（けんきゅうじょ）の「転送装置（てんそうそうち）」で、君（きみ）を教室（きょうしつ）から引（ひ）き上（あ）げたの。さっきの白（しろ）い光（ひかり）、あれがそれよ。" }
+    {
+      "key": "ui.dialog.continue",
+      "value": "ダイアログをクリックして続（つづ）ける"
+    },
+    {
+      "key": "ui.dialog.choose",
+      "value": "答（こた）えをえらんでね"
+    },
+    {
+      "key": "quiz.correct",
+      "value": "正解（せいかい）！"
+    },
+    {
+      "key": "quiz.incorrect",
+      "value": "ざんねん、もう一度（いちど）かんがえてみよう。"
+    },
+    {
+      "key": "report.title",
+      "value": "ちょうさ報告（ほうこく）"
+    },
+    {
+      "key": "report.grade",
+      "value": "そうごう評価（ひょうか）"
+    },
+    {
+      "key": "report.score",
+      "value": "せいかい数（すう）"
+    },
+    {
+      "key": "story.beat1.l01",
+      "value": "昼休（ひるやす）みの教室（きょうしつ）。とつぜん、大（おお）きなゆれが教室（きょうしつ）をおそった。"
+    },
+    {
+      "key": "story.beat1.l02",
+      "value": "うわっ…！？　地震（じしん）だ…！　みんな、机（つくえ）の下（した）に！"
+    },
+    {
+      "key": "story.beat1.l03",
+      "value": "ゆれが強（つよ）くなり、机（つくえ）の下（した）で身（み）を守（まも）った。やがて視界（しかい）が白（しろ）い光（ひかり）に包（つつ）まれた——。"
+    },
+    {
+      "key": "story.beat1.l04",
+      "value": "目（め）をさますと、そこは見（み）たことのない白（しろ）い研究室（けんきゅうしつ）だった。"
+    },
+    {
+      "key": "story.beat1.l05",
+      "value": "気（き）がついた？　ここは大地（だいち）を調（しら）べ、街（まち）を守（まも）るための防災研究所（ぼうさいけんきゅうじょ）「G-Lab」。わたしは研究員（けんきゅういん）のカエデ。"
+    },
+    {
+      "key": "story.beat1.l06",
+      "value": "さっきの地震（じしん）で、君（きみ）の中（なか）の「力（ちから）」が目覚（めざ）めた。むずかしく考（かんが）えないで——「地層（ちそう）を読（よ）む力（ちから）」のこと。大地（だいち）の声（こえ）に、ちゃんと耳（みみ）をすませられる人（ひと）、それだけよ。"
+    },
+    {
+      "key": "story.beat1.l07",
+      "value": "ありがとう。地層（ちそう）っていう「本（ほん）」を読（よ）むには、まずそれがどう書（か）かれたかを知（し）らなきゃ。"
+    },
+    {
+      "key": "story.beat1.q1.prompt",
+      "value": "山（やま）の岩石（がんせき）が地層（ちそう）になるまで——正（ただ）しい順番（じゅんばん）は？"
+    },
+    {
+      "key": "story.beat1.q1.a",
+      "value": "風化（ふうか）→ 侵食（しんしょく）→ 運搬（うんぱん）→ 堆積（たいせき）"
+    },
+    {
+      "key": "story.beat1.q1.b",
+      "value": "堆積（たいせき）→ 運搬（うんぱん）→ 侵食（しんしょく）→ 風化（ふうか）"
+    },
+    {
+      "key": "story.beat1.q1.c",
+      "value": "侵食（しんしょく）→ 風化（ふうか）→ 堆積（たいせき）→ 運搬（うんぱん）"
+    },
+    {
+      "key": "story.beat1.q1.fb_ok",
+      "value": "せいかい！　もろくなって、けずられて、運（はこ）ばれて、積（つ）もる。この順番（じゅんばん）が基本（きほん）だよ。"
+    },
+    {
+      "key": "story.beat1.l08",
+      "value": "いい調子（ちょうし）！　じゃあ野外（やがい）へ——大地（だいち）の最初（さいしょ）の1ページを、自分（じぶん）の手（て）でめくってみよう。"
+    },
+    {
+      "key": "story.beat2.l01",
+      "value": "野外（やがい）の露頭（ろとう）。地震（じしん）でわれた地面（じめん）に、しま模様（もよう）の地層（ちそう）が見（み）えている。"
+    },
+    {
+      "key": "story.beat2.l02",
+      "value": "ハンマーでサンプルを取（と）ったら、顕微鏡（けんびきょう）で粒（つぶ）の大（おお）きさを見（み）てみよう。"
+    },
+    {
+      "key": "story.beat2.q1.prompt",
+      "value": "じゃあ、このサンプル——粒（つぶ）は 0.06mm より細（こま）かい、なめらか。これは？"
+    },
+    {
+      "key": "story.beat2.q1.a",
+      "value": "泥岩（でいがん）"
+    },
+    {
+      "key": "story.beat2.q1.b",
+      "value": "砂岩（さがん）"
+    },
+    {
+      "key": "story.beat2.q1.c",
+      "value": "れき岩（がん）"
+    },
+    {
+      "key": "story.beat2.q1.fb_ok",
+      "value": "せいかい！　粒（つぶ）が細（こま）かいほど、河口（かこう）から遠（とお）い深（ふか）い海（うみ）でたまるんだ。つまりここは昔（むかし）、静（しず）かで深（ふか）い海（うみ）の底（そこ）だった。"
+    },
+    {
+      "key": "story.beat2.q2.prompt",
+      "value": "次（つぎ）のサンプルは、うすい塩酸（えんさん）をかけたら泡（あわ）（二酸化炭素（にさんかたんそ））が出（で）たわ。これは？"
+    },
+    {
+      "key": "story.beat2.q2.a",
+      "value": "石灰岩（せっかいがん）"
+    },
+    {
+      "key": "story.beat2.q2.b",
+      "value": "チャート"
+    },
+    {
+      "key": "story.beat2.q2.c",
+      "value": "凝灰岩（ぎょうかいがん）"
+    },
+    {
+      "key": "story.beat2.q2.fb_ok",
+      "value": "そのとおり。石灰岩（せっかいがん）は貝（かい）やサンゴなどが積（つ）もってできて、塩酸（えんさん）で二酸化炭素（にさんかたんそ）を出（だ）すよ。つまりここは昔（むかし）、あたたかい浅（あさ）い海（うみ）だったの。"
+    },
+    {
+      "key": "story.beat2.q3.prompt",
+      "value": "もうひとつ。くぎでひっかいても傷（きず）がつかないほどかたい。これは？"
+    },
+    {
+      "key": "story.beat2.q3.a",
+      "value": "チャート"
+    },
+    {
+      "key": "story.beat2.q3.b",
+      "value": "泥岩（でいがん）"
+    },
+    {
+      "key": "story.beat2.q3.c",
+      "value": "れき岩（がん）"
+    },
+    {
+      "key": "story.beat2.q3.fb_ok",
+      "value": "正解（せいかい）！　チャートは海（うみ）の小（ちい）さな生物（せいぶつ）の殻（から）が積（つ）もってできた、とてもかたい岩石（がんせき）だよ。大昔（おおむかし）の海（うみ）が、何百万年（なんびゃくまんねん）もかけて積（つ）み上（あ）げたものなの。"
+    },
+    {
+      "key": "story.beat2.l03",
+      "value": "気（き）づいた？　そこが引（ひ）っかかるところなの。もっと深（ふか）く掘（ほ）って、確（たし）かめよう。"
+    },
+    {
+      "key": "story.beat3.l01",
+      "value": "ドリルタワーのサンプルが取（と）れたね。深（ふか）さごとの記録（きろく）を「柱状図（ちゅうじょうず）」で見（み）ていこう。"
+    },
+    {
+      "key": "story.beat3.l02",
+      "value": "深（ふか）い層（そう）のサンプルから、岩（いわ）の中（なか）に化石（かせき）が見（み）つかった。"
+    },
+    {
+      "key": "story.beat3.q1.prompt",
+      "value": "……ということは、この地層（ちそう）ができた当時（とうじ）は、どんな環境（かんきょう）だった？"
+    },
+    {
+      "key": "story.beat3.q1.a",
+      "value": "あたたかくて浅（あさ）い海（うみ）"
+    },
+    {
+      "key": "story.beat3.q1.b",
+      "value": "冷（つめ）たくて深（ふか）い海（うみ）"
+    },
+    {
+      "key": "story.beat3.q1.c",
+      "value": "川（かわ）と海（うみ）が混（ま）じる場所（ばしょ）"
+    },
+    {
+      "key": "story.beat3.q1.fb_ok",
+      "value": "せいかい！　化石（かせき）が当時（とうじ）の「環境（かんきょう）」を教（おし）えてくれたね。"
+    },
+    {
+      "key": "story.beat3.q2.prompt",
+      "value": "サンゴみたいに、地層（ちそう）ができた当時（とうじ）の「環境（かんきょう）」を教（おし）えてくれる化石（かせき）——これを何（なん）て呼（よ）ぶ？"
+    },
+    {
+      "key": "story.beat3.q2.a",
+      "value": "示相化石（しそうかせき）"
+    },
+    {
+      "key": "story.beat3.q2.b",
+      "value": "示準化石（しじゅんかせき）"
+    },
+    {
+      "key": "story.beat3.q2.fb_ok",
+      "value": "そのとおり。環境（かんきょう）を示（しめ）すのが示相化石（しそうかせき）。シジミなら川（かわ）と海（うみ）が混（ま）じる場所（ばしょ）だよ。"
+    },
+    {
+      "key": "story.beat3.q3.prompt",
+      "value": "……ということは、この地層（ちそう）ができたのは？"
+    },
+    {
+      "key": "story.beat3.q3.a",
+      "value": "中生代（ちゅうせいだい）"
+    },
+    {
+      "key": "story.beat3.q3.b",
+      "value": "古生代（こせいだい）"
+    },
+    {
+      "key": "story.beat3.q3.c",
+      "value": "新生代（しんせいだい）"
+    },
+    {
+      "key": "story.beat3.q3.fb_ok",
+      "value": "正解（せいかい）！　アンモナイトは中生代（ちゅうせいだい）の示準化石（しじゅんかせき）。サンヨウチュウなら古生代（こせいだい）だよ。"
+    },
+    {
+      "key": "story.beat3.q4.prompt",
+      "value": "アンモナイトみたいなのを——何（なん）て呼（よ）ぶ？"
+    },
+    {
+      "key": "story.beat3.q4.a",
+      "value": "示準化石（しじゅんかせき）"
+    },
+    {
+      "key": "story.beat3.q4.b",
+      "value": "示相化石（しそうかせき）"
+    },
+    {
+      "key": "story.beat3.q4.fb_ok",
+      "value": "そう。広（ひろ）い範囲（はんい）にすみ、短（みじか）い期間（きかん）だけ栄（さか）えた生物（せいぶつ）が示準化石（しじゅんかせき）になるよ。"
+    },
+    {
+      "key": "story.beat3.q5.prompt",
+      "value": "柱状図（ちゅうじょうず）の中（なか）に、火山灰（かざんばい）がおし固（かた）まった「凝灰岩（ぎょうかいがん）」の層（そう）があるね。当時（とうじ）、何（なに）があった？"
+    },
+    {
+      "key": "story.beat3.q5.a",
+      "value": "火山（かざん）が噴火（ふんか）し、火山灰（かざんばい）が降（ふ）り積（つ）もった"
+    },
+    {
+      "key": "story.beat3.q5.b",
+      "value": "大（おお）きな地震（じしん）があった"
+    },
+    {
+      "key": "story.beat3.q5.c",
+      "value": "海（うみ）がかれた"
+    },
+    {
+      "key": "story.beat3.q5.fb_ok",
+      "value": "正解（せいかい）！　凝灰岩（ぎょうかいがん）の層（そう）は、その時代（じだい）に火山（かざん）の噴火（ふんか）があった証拠（しょうこ）だよ。"
+    },
+    {
+      "key": "story.beat4.l01",
+      "value": "最後（さいご）は、A・B・C 三（みっ）つの地点（ちてん）の柱状図（ちゅうじょうず）をくらべるよ。"
+    },
+    {
+      "key": "story.beat4.q1.prompt",
+      "value": "じゃあ今回（こんかい）——火山灰（かざんばい）の層（そう）が、東（ひがし）の地点（ちてん）ほど深（ふか）い位置（いち）にあったわ。地層（ちそう）はどっちに傾（かたむ）いてる？"
+    },
+    {
+      "key": "story.beat4.q1.a",
+      "value": "東（ひがし）"
+    },
+    {
+      "key": "story.beat4.q1.b",
+      "value": "西（にし）"
+    },
+    {
+      "key": "story.beat4.q1.c",
+      "value": "北（きた）"
+    },
+    {
+      "key": "story.beat4.q1.fb_ok",
+      "value": "せいかい！　同（おな）じ層（そう）が深（ふか）くなる方向（ほうこう）に、地層（ちそう）は傾（かたむ）いて低（ひく）くなっているんだ。火山灰（かざんばい）の層（そう）が東（ひがし）へ下（さ）がる＝この一帯（いったい）、東（ひがし）へ傾（かたむ）きながら沈（しず）んでる。"
+    },
+    {
+      "key": "story.beat4.q2.prompt",
+      "value": "ねえ、あのがけ見（み）て。地層（ちそう）が波（なみ）のように曲（ま）がってる！　あの曲（ま）がりを、何（なん）て呼（よ）ぶ？"
+    },
+    {
+      "key": "story.beat4.q2.a",
+      "value": "しゅう曲（きょく）"
+    },
+    {
+      "key": "story.beat4.q2.b",
+      "value": "断層（だんそう）"
+    },
+    {
+      "key": "story.beat4.q2.c",
+      "value": "整合（せいごう）"
+    },
+    {
+      "key": "story.beat4.q2.fb_ok",
+      "value": "そのとおり。両側（りょうがわ）からおし縮（ちぢ）められる力（ちから）で、地層（ちそう）が曲（ま）がったものをしゅう曲（きょく）というよ。しゅう曲は、過去（かこ）に地層へ大きな力が加わった証拠（しょうこ）になる。"
+    },
+    {
+      "key": "story.beat4.l02",
+      "value": "「地球（ちきゅう）の声（こえ）」なんて、ふしぎな力（ちから）じゃなかったでしょ？　地層（ちそう）を一枚（いちまい）ずつ読（よ）めば、だれにだって聞（き）こえる。"
+    },
+    {
+      "key": "story.beat4.l03",
+      "value": "今日（きょう）の調査（ちょうさ）をまとめて、報告書（ほうこくしょ）をつくろう。"
+    },
+    {
+      "key": "story.beat1.l09",
+      "value": "正直（しょうじき）に言（い）うね。さっきの地震（じしん）は、たぶん「終（お）わり」じゃない。"
+    },
+    {
+      "key": "story.beat1.l10",
+      "value": "……あの教室（きょうしつ）を、もう一度（いちど）あんな目（め）にあわせたくない。やる。"
+    },
+    {
+      "key": "story.beat2.l04",
+      "value": "崖（がけ）の地層（ちそう）は、何万年（なんまんねん）もの時間（じかん）を、しましま模様（もよう）に閉（と）じこめていた。"
+    },
+    {
+      "key": "story.beat2.l05",
+      "value": "ふふ、いい目（め）をしてる。地質調査員（ちしつちょうさいん）の素質（そしつ）あり、ね。"
+    },
+    {
+      "key": "story.beat2.l06",
+      "value": "同（おな）じ“石（いし）”でも、こんなに違（ちが）うんだ……！"
+    },
+    {
+      "key": "story.beat3.l03",
+      "value": "うわ、本物（ほんもの）の化石（かせき）だ……！　何千万年（なんせんまんねん）も前（まえ）の生（い）きものが、今（いま）、目（め）の前（まえ）に。"
+    },
+    {
+      "key": "story.beat3.l04",
+      "value": "柱状図（ちゅうじょうず）を追（お）うほど、地下（ちか）から低（ひく）い響（ひび）きが伝（つた）わってくる気（き）がした。"
+    },
+    {
+      "key": "story.beat3.l05",
+      "value": "こんな大（おお）きな機械（きかい）で取（と）ったデータ、迫力（はくりょく）あるな……！"
+    },
+    {
+      "key": "story.beat4.l04",
+      "value": "断層（だんそう）や地層（ちそう）の変形（へんけい）は、過去（かこ）の大地（だいち）の動（うご）きを知（し）り、防災（ぼうさい）を考（かんが）える手掛（てが）かりになる。"
+    },
+    {
+      "key": "story.beat4.l05",
+      "value": "地球（ちきゅう）の声（こえ）……ほんの少（すこ）しだけ、聞（き）こえた気（き）がするよ。"
+    },
+    {
+      "key": "story.bridge.q21.l01",
+      "value": "翌朝（よくあさ）、G-Lab の研究室（けんきゅうしつ）。"
+    },
+    {
+      "key": "story.bridge.q21.l02",
+      "value": "おはよう！　さっそく最初（さいしょ）の任務（にんむ）。街（まち）の北（きた）にある露頭（ろとう）で、サンプルを取（と）ってきて。"
+    },
+    {
+      "key": "story.bridge.q21.l03",
+      "value": "移動（いどう）にはフェーズシフターを使（つか）うの。道具（どうぐ）の一覧（いちらん）から選（えら）んでね。"
+    },
+    {
+      "key": "story.bridge.q31.l01",
+      "value": "露頭（ろとう）では、粒（つぶ）の大（おお）きさや、塩酸（えんさん）への反応（はんのう）をよく観察（かんさつ）してきて。岩石（がんせき）の名前（なまえ）がわかるはずよ。"
+    },
+    {
+      "key": "story.bridge.q31.l02",
+      "value": "わかった、観察（かんさつ）してくる！"
+    },
+    {
+      "key": "story.bridge.q32.l01",
+      "value": "一瞬（いっしゅん）で風（かぜ）と土（つち）のにおいに包（つつ）まれた。野外（やがい）だ。"
+    },
+    {
+      "key": "story.bridge.q32.l02",
+      "value": "着（つ）いたわね。ハンマーで岩（いわ）を割（わ）って、サンプルを取（と）ろう。"
+    },
+    {
+      "key": "story.bridge.q34.l01",
+      "value": "G-Lab に戻（もど）る。机（つくえ）の上（うえ）に、採（と）ってきたサンプルが並（なら）ぶ。"
+    },
+    {
+      "key": "story.bridge.q34.l02",
+      "value": "岩石試料（がんせきしりょう）から薄片（はくへん）を作（つく）って、偏光顕微鏡（へんこうけんびきょう）で観察（かんさつ）しよう。……粒（つぶ）が細（こま）かくくだけているね。"
+    },
+    {
+      "key": "story.bridge.q34.l03",
+      "value": "この割（わ）れ方（かた）は、表面（ひょうめん）の揺（ゆ）れだけでできた傷（きず）じゃないかもしれない。"
+    },
+    {
+      "key": "story.bridge.q34.l04",
+      "value": "じゃあ、もっと深（ふか）いところで何（なに）か起（お）きてる？"
+    },
+    {
+      "key": "story.bridge.q34.l05",
+      "value": "その可能性（かのうせい）がある。薄片（はくへん）だけでは、浅（あさ）い部分（ぶぶん）の変化（へんか）しか読（よ）めない。"
+    },
+    {
+      "key": "story.bridge.q34.l06",
+      "value": "深（ふか）さごとのボーリングコアがあれば、地層（ちそう）の重（かさ）なり方（かた）を比（くら）べられる。"
+    },
+    {
+      "key": "story.bridge.q34.l07",
+      "value": "だから次（つぎ）はドリルタワー。表面（ひょうめん）ではなく、もっと深（ふか）い記録（きろく）を取（と）りに行（い）こう。"
+    },
+    {
+      "key": "story.bridge.q41.l01",
+      "value": "ドリルタワーは深（ふか）さごとにサンプルが取（と）れるの。地層（ちそう）の重（かさ）なりがわかるよ。"
+    },
+    {
+      "key": "story.bridge.q41.l02",
+      "value": "化石（かせき）が出（で）たら教（おし）えて。地層（ちそう）ができた当時（とうじ）の手（て）がかりになるから。"
+    },
+    {
+      "key": "story.bridge.q41.l03",
+      "value": "化石（かせき）……！　なんかワクワクするな。"
+    },
+    {
+      "key": "story.beat3.q1.teach1",
+      "value": "ねえ、化石（かせき）って「タイムカプセル」みたいなものなの。"
+    },
+    {
+      "key": "story.beat3.q1.teach2",
+      "value": "生（い）きものは住（す）める場所（ばしょ）が決（き）まってる。だから化石（かせき）からは、当時（とうじ）の「環境（かんきょう）」がわかるんだよ。"
+    },
+    {
+      "key": "story.beat3.q1.teach3",
+      "value": "たとえばこのサンゴ。今（いま）も、あたたかくて浅（あさ）い海（うみ）にしか育（そだ）たないんだ。"
+    },
+    {
+      "key": "story.beat3.q3.teach1",
+      "value": "今度（こんど）は別（べつ）の層（そう）から——アンモナイトの化石（かせき）！"
+    },
+    {
+      "key": "story.beat3.q3.teach2",
+      "value": "地球（ちきゅう）の歴史（れきし）は、大（おお）きく「古生代（こせいだい）→ 中生代（ちゅうせいだい）→ 新生代（しんせいだい）」って分（わ）かれてるの。"
+    },
+    {
+      "key": "story.beat3.q3.teach3",
+      "value": "アンモナイトは、中生代（ちゅうせいだい）の地層（ちそう）の年代（ねんだい）を知（し）る手掛（てが）かりとして、よく使（つか）われる示準化石（しじゅんかせき）だよ。"
+    },
+    {
+      "key": "story.beat3.q4.teach1",
+      "value": "広（ひろ）い範囲（はんい）にすんで、短（みじか）い期間（きかん）だけ栄（さか）えた生（い）きものの化石（かせき）は、年代（ねんだい）を決（き）めるのに役立（やくだ）つの。"
+    },
+    {
+      "key": "story.beat4.q1.teach1",
+      "value": "「同（おな）じ層（そう）」が見（み）つかれば、それを目印（めじるし）にできる——「鍵層（かぎそう）」っていうの。火山灰（かざんばい）はとても目立（めだ）つ、いい鍵層（かぎそう）よ。"
+    },
+    {
+      "key": "story.beat4.q1.teach2",
+      "value": "その鍵層（かぎそう）が「ある方向（ほうこう）に行（い）くほど深（ふか）い位置（いち）」にあったら？　地層全体（ちそうぜんたい）がそっちに傾（かたむ）いて低（ひく）くなってる、ってこと。"
+    },
+    {
+      "key": "story.beat4.q2.teach1",
+      "value": "多（おお）くの地層（ちそう）は、できたときにはほぼ水平（すいへい）に重（かさ）なるよ。その後（ご）、両側（りょうがわ）から押（お）し縮（ちぢ）められると、あんなふうに曲（ま）がることがある。"
+    },
+    {
+      "key": "story.beat1.q1.teach1",
+      "value": "地層（ちそう）はね、大地（だいち）が書（か）いた「日記（にっき）」なの。山（やま）の岩石（がんせき）が地層（ちそう）になるまでには、4つの「はたらき」がある——「風化（ふうか）」「侵食（しんしょく）」「運搬（うんぱん）」「堆積（たいせき）」、ね。"
+    },
+    {
+      "key": "story.beat1.q1.teach2",
+      "value": "風化（ふうか）はもろくなる、侵食（しんしょく）はけずられる、運搬（うんぱん）は運（はこ）ばれる、堆積（たいせき）は積（つ）もる。"
+    },
+    {
+      "key": "story.beat2.q1.teach1",
+      "value": "れき岩（がん）、砂岩（さがん）、泥岩（でいがん）は、主（おも）にふくまれる粒（つぶ）の大（おお）きさで分（わ）けるよ。れき岩は2mm以上（いじょう）、砂岩は約（やく）0.06～2mm、泥岩は約0.06mm未満（みまん）の粒を主にふくむ。"
+    },
+    {
+      "key": "story.beat2.q1.teach2",
+      "value": "それと、変（か）わり種（だね）が2つ——塩酸（えんさん）で泡（あわ）が出（で）るのが「石灰岩（せっかいがん）」、くぎでも傷（きず）がつかないかたさが「チャート」。"
+    },
+    {
+      "key": "story.beat1.q1.fb_ng_b",
+      "value": "順番（じゅんばん）が逆（ぎゃく）！　岩石（がんせき）が先（さき）にもろくならないと、削（けず）られないよ。"
+    },
+    {
+      "key": "story.beat1.q1.fb_ng_c",
+      "value": "おしい。「もろくなる→削（けず）られる→運（はこ）ばれる→積（つ）もる」が基本（きほん）。運搬（うんぱん）は最後（さいご）にはこないんだ。"
+    },
+    {
+      "key": "story.beat2.q1.fb_ng_b",
+      "value": "砂岩（さがん）の粒（つぶ）はもう少（すこ）し大（おお）きいんだ（0.06–2mm）。なめらかさが手（て）がかりだよ。"
+    },
+    {
+      "key": "story.beat2.q1.fb_ng_c",
+      "value": "れき岩（がん）は粒（つぶ）が 2mm 以上（いじょう）と、はっきり見（み）えるくらい大（おお）きいよ。"
+    },
+    {
+      "key": "story.beat2.q2.fb_ng_b",
+      "value": "チャートは塩酸（えんさん）には反応（はんのう）しないんだ。あわが出（で）る＝石灰岩（せっかいがん）の特徴（とくちょう）だよ。"
+    },
+    {
+      "key": "story.beat2.q2.fb_ng_c",
+      "value": "凝灰岩（ぎょうかいがん）は火山灰（かざんばい）からできる岩石（がんせき）。塩酸（えんさん）には反応（はんのう）しないよ。"
+    },
+    {
+      "key": "story.beat2.q3.fb_ng_b",
+      "value": "泥岩（でいがん）は意外（いがい）とやわらかい。くぎで傷（きず）がつかないほどかたいのは別（べつ）の岩（いわ）だよ。"
+    },
+    {
+      "key": "story.beat2.q3.fb_ng_c",
+      "value": "れき岩（がん）も粒（つぶ）の集（あつ）まりだから、くぎでガリガリ削（けず）れちゃうんだ。"
+    },
+    {
+      "key": "story.beat3.q1.fb_ng_b",
+      "value": "サンゴは光合成（こうごうせい）する藻（も）と共生（きょうせい）するから、冷（つめ）たく深（ふか）い海（うみ）では育（そだ）たないんだよ。"
+    },
+    {
+      "key": "story.beat3.q1.fb_ng_c",
+      "value": "そこにすむのはシジミだね。サンゴは塩分（えんぶん）の濃（こ）い海（うみ）が好（す）きなんだ。"
+    },
+    {
+      "key": "story.beat3.q2.fb_ng_b",
+      "value": "示準化石（しじゅんかせき）は「時代（じだい）」を教（おし）えてくれる方（ほう）。「環境（かんきょう）」を示（しめ）すのは別（べつ）の名前（なまえ）だよ。"
+    },
+    {
+      "key": "story.beat3.q3.fb_ng_b",
+      "value": "古生代（こせいだい）はサンヨウチュウやフズリナの時代（じだい）。アンモナイトはもう少（すこ）し後（あと）なんだ。"
+    },
+    {
+      "key": "story.beat3.q3.fb_ng_c",
+      "value": "新生代（しんせいだい）はビカリアやナウマンゾウの時代（じだい）。アンモナイトはその前（まえ）に絶滅（ぜつめつ）してるよ。"
+    },
+    {
+      "key": "story.beat3.q4.fb_ng_b",
+      "value": "示相化石（しそうかせき）は「環境（かんきょう）」を教（おし）える方（ほう）。「時代（じだい）」の決（き）め手（て）になるのは別（べつ）の名前（なまえ）だよ。"
+    },
+    {
+      "key": "story.beat3.q5.fb_ng_b",
+      "value": "地震（じしん）は岩（いわ）をゆらすけど、火山灰（かざんばい）の層（そう）はつくらないんだ。"
+    },
+    {
+      "key": "story.beat3.q5.fb_ng_c",
+      "value": "海（うみ）がかれるとできるのは岩塩（がんえん）など別（べつ）の岩（いわ）。火山灰（かざんばい）はやっぱり火山（かざん）から来（く）るよ。"
+    },
+    {
+      "key": "story.beat4.q1.fb_ng_b",
+      "value": "逆（ぎゃく）だね。同（おな）じ層（そう）が東（ひがし）ほど深（ふか）いなら、地層（ちそう）全体（ぜんたい）は東（ひがし）に向（む）かって低（ひく）くなるんだ。"
+    },
+    {
+      "key": "story.beat4.q1.fb_ng_c",
+      "value": "南北（なんぼく）方向（ほうこう）で深（ふか）さは変（か）わってないよ。東西（とうざい）の差（さ）に注目（ちゅうもく）して。"
+    },
+    {
+      "key": "story.beat4.q2.fb_ng_b",
+      "value": "断層（だんそう）は地層（ちそう）が「ずれる」こと。曲（ま）がるのは別（べつ）の現象（げんしょう）だよ。"
+    },
+    {
+      "key": "story.beat4.q2.fb_ng_c",
+      "value": "整合（せいごう）は地層（ちそう）が途切（とぎ）れずに重（かさ）なってる状態（じょうたい）。波（なみ）状（じょう）の曲（ま）がりとはちがうよ。"
+    },
+    {
+      "key": "story.beat1.q1.hint",
+      "value": "もろくなる→けずられる→運（はこ）ばれる→積（つ）もる、の自然（しぜん）な流（なが）れを思（おも）い出（だ）してみよう。"
+    },
+    {
+      "key": "story.beat2.q1.hint",
+      "value": "粒（つぶ）の大（おお）きさで分（わ）かれる岩石（がんせき）3 種類（しゅるい）のうち、一番（いちばん）細（こま）かいのは？"
+    },
+    {
+      "key": "story.beat2.q2.hint",
+      "value": "塩酸（えんさん）に反応（はんのう）する岩石（がんせき）は限（かぎ）られているよ。貝（かい）やサンゴからできた岩（いわ）は？"
+    },
+    {
+      "key": "story.beat2.q3.hint",
+      "value": "海（うみ）の小（ちい）さな生物（せいぶつ）の殻（から）が積（つ）もってできた、とてもかたい岩（いわ）は？"
+    },
+    {
+      "key": "story.beat3.q1.hint",
+      "value": "今（いま）のサンゴはどんな海（うみ）でしか育（そだ）たないか、思（おも）い出（だ）してみよう。"
+    },
+    {
+      "key": "story.beat3.q2.hint",
+      "value": "「環境（かんきょう）」を示（しめ）す化石（かせき）。漢字（かんじ）4文字（もじ）で考（かんが）えよう。"
+    },
+    {
+      "key": "story.beat3.q3.hint",
+      "value": "恐竜（きょうりゅう）と同（おな）じ時代（じだい）に栄（さか）えた化石（かせき）は、どの時代（じだい）？"
+    },
+    {
+      "key": "story.beat3.q4.hint",
+      "value": "地層（ちそう）ができた年代（ねんだい）を知（し）る手掛（てが）かりになる化石（かせき）。漢字（かんじ）4文字（もじ）で考（かんが）えよう。"
+    },
+    {
+      "key": "story.beat3.q5.hint",
+      "value": "凝灰岩（ぎょうかいがん）は火山灰（かざんばい）からできるよ。火山灰（かざんばい）はどこから飛（と）んでくる？"
+    },
+    {
+      "key": "story.beat4.q1.hint",
+      "value": "同（おな）じ層（そう）が深（ふか）い方向（ほうこう）＝地層全体（ちそうぜんたい）が低（ひく）くなる方向（ほうこう）だよ。"
+    },
+    {
+      "key": "story.beat4.q2.hint",
+      "value": "両側（りょうがわ）から押（お）し縮（ちぢ）められた地層（ちそう）が、波（なみ）のように曲（ま）がる現象（げんしょう）。"
+    },
+    {
+      "key": "story.beat1.l11",
+      "value": "でも地面（じめん）が割（わ）れて、いつもは草木（くさき）にかくれている地層（ちそう）が、今（いま）だけ顔（かお）を出（だ）してる。今（いま）のうちに調（しら）べれば、どこでどんな変化（へんか）が起（お）きたかが分（わ）かる。次（つぎ）の災害（さいがい）に備（そな）える手掛（てが）かりになる。"
+    },
+    {
+      "key": "story.beat3.l09",
+      "value": "余震（よしん）。でもこれは「記録（きろく）」じゃない——「今（いま）」も動（うご）いてる証拠（しょうこ）。……急（いそ）ごう。"
+    },
+    {
+      "key": "story.beat4.l07",
+      "value": "調査（ちょうさ）で分（わ）かったことをまとめて、地域（ちいき）の防災（ぼうさい）を考（かんが）える資料（しりょう）にしよう。"
+    },
+    {
+      "key": "story.beat4.l06",
+      "value": "学校（がっこう）の西側（にしがわ）では、地層（ちそう）や断層（だんそう）について、さらに調（しら）べる必要（ひつよう）がありそう。"
+    },
+    {
+      "key": "story.beat2.l07",
+      "value": "待（ま）って……この崖（がけ）、地層（ちそう）の線（せん）が少（すこ）し「ゆがんで」ない？　まっすぐじゃない。"
+    },
+    {
+      "key": "story.beat3.l06",
+      "value": "つまりこの場所（ばしょ）は、昔（むかし）ほんとうに大（おお）きく姿（すがた）を変（か）えてきた——浅（あさ）い海（うみ）、深（ふか）い海（うみ）、そして火山（かざん）……地層（ちそう）はそれを全部（ぜんぶ）、記録（きろく）してたんだ。"
+    },
+    {
+      "key": "story.beat3.l07",
+      "value": "——ズン。足元（あしもと）が、また小（ちい）さくゆれた。"
+    },
+    {
+      "key": "story.beat3.l08",
+      "value": "今（いま）の、地震（じしん）……？　さっきより小（ちい）さいけど……"
+    },
+    {
+      "key": "story.beat1.l16",
+      "value": "でも、わたし一人（ひとり）じゃ手（て）も目（め）も足（た）りない。それに——この土地（とち）の地下（ちか）は、ここに住（す）む君（きみ）自身（じしん）が読（よ）むのが、いちばんいい。"
+    },
+    {
+      "key": "story.beat1.l14",
+      "value": "転送（てんそう）……装置（そうち）？"
+    },
+    {
+      "key": "story.beat1.l15",
+      "value": "でもこの装置（そうち）、研究所（けんきゅうじょ）のまわりにしか届（とど）かないし、一度（いちど）に運（はこ）べるのは一人（ひとり）だけ。街（まち）ぜんぶは、救（すく）えない。"
+    },
+    {
+      "key": "story.beat1.l12",
+      "value": "さっきまで教室（きょうしつ）にいたはず……ここは、どこ？　どうして……？"
+    },
+    {
+      "key": "story.beat1.l13",
+      "value": "落（お）ち着（つ）いて。ゆれが強（つよ）くなったとき、研究所（けんきゅうじょ）の「転送装置（てんそうそうち）」で、君（きみ）を安全（あんぜん）な場所（ばしょ）へ移動（いどう）させたの。さっきの白（しろ）い光（ひかり）、あれがそれよ。"
+    },
+    {
+      "key": "sample.message.retrieved",
+      "value": "試料を回収しました：{0}"
+    },
+    {
+      "key": "sample.message.retrieve_missing",
+      "value": "試料の情報を読み込めないため、回収できませんでした。"
+    },
+    {
+      "key": "sample.message.retrieve_failed",
+      "value": "試料を回収できませんでした。もう一度試してください。"
+    },
+    {
+      "key": "sample.message.placed",
+      "value": "試料を置きました：{0}"
+    },
+    {
+      "key": "sample.message.place_invalid",
+      "value": "ここには試料を置けません。平らな場所を選んでください。"
+    },
+    {
+      "key": "sample.message.place_cancelled",
+      "value": "試料を置く操作を取り消しました。"
+    },
+    {
+      "key": "warehouse.interaction.mobile",
+      "value": "試料保管庫を開く"
+    },
+    {
+      "key": "warehouse.button.batch_discard_count",
+      "value": "選んだ試料を捨てる（{0}）"
+    },
+    {
+      "key": "warehouse.pagination",
+      "value": "{0}/{1}ページ"
+    },
+    {
+      "key": "scene.main.description",
+      "value": "地層や岩石を調べる野外調査エリア"
+    },
+    {
+      "key": "scene.laboratory.description",
+      "value": "試料を整理して観察する研究室"
+    },
+    {
+      "key": "cutting_system.drop_ready",
+      "value": "ここで指を離すと切断を始めます"
+    },
+    {
+      "key": "cutting_system.drop_invalid",
+      "value": "複数の地層を含む試料を選んでください"
+    },
+    {
+      "key": "cutting_system.sample_loaded",
+      "value": "試料を読み込みました。切断を始められます。"
+    },
+    {
+      "key": "cutting_system.sample_preview",
+      "value": "試料の確認\n地層：{0}層\n必要な切断：{1}回"
+    },
+    {
+      "key": "cutting_system.title",
+      "value": "試料切断台"
+    },
+    {
+      "key": "cutting_system.profile_title",
+      "value": "試料の断面"
+    },
+    {
+      "key": "cutting_system.welcome",
+      "value": "複数の地層を含む試料を、地層ごとに分けられます。\n左の試料保管庫から、調べたい試料をここへ移動してください。"
+    },
+    {
+      "key": "cutting_system.instruction.ready",
+      "value": "試料を調べました。切断を始められます。"
+    },
+    {
+      "key": "cutting_system.instruction.cut",
+      "value": "スペースキーまたは画面タッチで切断します。"
+    },
+    {
+      "key": "cutting_system.instruction.complete_collect",
+      "value": "すべての切断が完了しました。分けた試料を確認してください。"
+    },
+    {
+      "key": "drill_tower.recall_prompt_mobile",
+      "value": "ボーリング装置を回収する"
+    },
+    {
+      "key": "drill_tower.drill_prompt_mobile",
+      "value": "{1:F0}～{2:F0}mのコアを採取する"
+    },
+    {
+      "key": "sample.collection.mobile",
+      "value": "試料を採取する"
+    },
+    {
+      "key": "sample.retrieve.mobile",
+      "value": "試料を回収する"
+    },
+    {
+      "key": "cutting_station.interaction.mobile",
+      "value": "試料切断台を使う"
+    },
+    {
+      "key": "ui.mobile_controls.jump",
+      "value": "ジャンプ"
+    },
+    {
+      "key": "ui.mobile_controls.run",
+      "value": "走る"
+    },
+    {
+      "key": "ui.mobile_controls.interact",
+      "value": "調べる"
+    },
+    {
+      "key": "ui.mobile_controls.secondary",
+      "value": "使う"
+    },
+    {
+      "key": "ui.mobile_controls.inventory",
+      "value": "バッグ"
+    },
+    {
+      "key": "ui.mobile_controls.encyclopedia",
+      "value": "図鑑"
+    },
+    {
+      "key": "ui.mobile_controls.tools",
+      "value": "道具"
+    },
+    {
+      "key": "ui.mobile_controls.menu",
+      "value": "メニュー"
+    },
+    {
+      "key": "ui.mobile_controls.ascend",
+      "value": "上昇"
+    },
+    {
+      "key": "ui.mobile_controls.descend",
+      "value": "下降"
+    },
+    {
+      "key": "ui.start.new_game.title",
+      "value": "最初から始めますか？"
+    },
+    {
+      "key": "ui.start.new_game.message",
+      "value": "現在の進行状況を消して、最初から始めます。\nストーリー、調査ミッション、持っている試料の記録が消えます。"
+    },
+    {
+      "key": "ui.start.new_game.confirm",
+      "value": "最初から始める"
+    },
+    {
+      "key": "ui.start.new_game.cancel",
+      "value": "戻る"
+    },
+    {
+      "key": "story.content_notice.title",
+      "value": "災害場面について"
+    },
+    {
+      "key": "story.content_notice.message",
+      "value": "このあと、地震の揺れと音を表す場面があります。\n不安を感じる場合は、この場面をスキップできます。ゲームはいつでもメニューから終了できます。"
+    },
+    {
+      "key": "story.content_notice.continue",
+      "value": "この場面を見る"
+    },
+    {
+      "key": "story.content_notice.skip",
+      "value": "この場面をスキップ"
+    },
+    {
+      "key": "encyclopedia.ui.basic_section",
+      "value": "基本情報"
+    },
+    {
+      "key": "encyclopedia.ui.more_details",
+      "value": "もっと詳しく"
+    },
+    {
+      "key": "encyclopedia.ui.show_more",
+      "value": "専門的な情報を見る"
+    },
+    {
+      "key": "encyclopedia.ui.show_less",
+      "value": "基本情報に戻る"
+    },
+    {
+      "key": "hammer.message.camera_missing",
+      "value": "カメラが見つかりません。"
+    },
+    {
+      "key": "hammer.message.no_target",
+      "value": "採取できる岩石に照準を合わせてください。"
+    },
+    {
+      "key": "hammer.message.aim_at_marker",
+      "value": "目印の範囲をたたいてください。"
+    },
+    {
+      "key": "hammer.message.collected",
+      "value": "岩石試料を採取しました。"
+    },
+    {
+      "key": "hammer.message.timeout",
+      "value": "時間が空いたため、採取を最初からやり直してください。"
+    },
+    {
+      "key": "hammer.message.too_far",
+      "value": "岩石から離れすぎています。現在：{0:F1}m、採取できる距離：{1:F1}m"
+    },
+    {
+      "key": "quest.npc.prompt.mobile",
+      "value": "カエデ研究員に話を聞く"
+    },
+    {
+      "key": "workbench.interaction.prompt",
+      "value": "［E］作業台を使う"
+    },
+    {
+      "key": "workbench.interaction.mobile",
+      "value": "作業台を使う"
+    }
   ]
 }

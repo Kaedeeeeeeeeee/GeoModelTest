@@ -211,7 +211,9 @@ namespace SampleCuttingSystem
         private void ShowWaitingForSampleUI()
         {
             if (instructionText != null)
-                instructionText.text = "将多层样本拖拽到切割台";
+                instructionText.text = LocalizationManager.Resolve(
+                    "cutting_system.instruction.drag_sample",
+                    "複数の地層を含む試料を左側からここへ移動してください。");
                 
             if (startCuttingButton != null)
                 startCuttingButton.gameObject.SetActive(false);
@@ -229,7 +231,9 @@ namespace SampleCuttingSystem
         private void ShowSampleLoadedUI()
         {
             if (instructionText != null)
-                instructionText.text = "样本分析完成，准备开始切割";
+                instructionText.text = LocalizationManager.Resolve(
+                    "cutting_system.instruction.ready",
+                    "試料を調べました。切断を始められます。");
                 
             if (startCuttingButton != null)
                 startCuttingButton.gameObject.SetActive(true);
@@ -244,7 +248,9 @@ namespace SampleCuttingSystem
         private void ShowCuttingUI()
         {
             if (instructionText != null)
-                instructionText.text = "按空格键进行切割";
+                instructionText.text = LocalizationManager.Resolve(
+                    "cutting_system.instruction.cut",
+                    "スペースキーまたは画面タッチで切断します。");
                 
             if (startCuttingButton != null)
                 startCuttingButton.gameObject.SetActive(false);
@@ -262,7 +268,9 @@ namespace SampleCuttingSystem
         private void ShowSuccessUI()
         {
             if (instructionText != null)
-                instructionText.text = "切割成功！";
+                instructionText.text = LocalizationManager.Resolve(
+                    "cutting_system.cutting_complete",
+                    "切断できました");
                 
             if (spaceKeyIcon != null)
                 spaceKeyIcon.gameObject.SetActive(false);
@@ -274,7 +282,9 @@ namespace SampleCuttingSystem
         private void ShowFailedUI()
         {
             if (instructionText != null)
-                instructionText.text = "切割失败，样本损坏";
+                instructionText.text = LocalizationManager.Resolve(
+                    "cutting_system.cutting_failed",
+                    "切断位置がずれました。もう一度試せます。");
                 
             if (spaceKeyIcon != null)
                 spaceKeyIcon.gameObject.SetActive(false);
@@ -289,7 +299,9 @@ namespace SampleCuttingSystem
         private void ShowCompletedUI()
         {
             if (instructionText != null)
-                instructionText.text = "所有切割完成！收集样本";
+                instructionText.text = LocalizationManager.Resolve(
+                    "cutting_system.instruction.complete_collect",
+                    "すべての切断が完了しました。分けた試料を確認してください。");
                 
             if (cuttingLine != null)
                 cuttingLine.gameObject.SetActive(false);
@@ -334,13 +346,13 @@ namespace SampleCuttingSystem
             
             if (sampleNameText != null)
             {
-                string sampleName = currentSample?.sampleID ?? "未知样本";
-                sampleNameText.text = $"样本: {sampleName}";
+                string sampleName = currentSample?.sampleID ?? "不明な試料";
+                sampleNameText.text = $"試料：{sampleName}";
             }
             
             if (layerCountText != null)
             {
-                layerCountText.text = $"地层数量: {currentSampleInfo.layerCount}";
+                layerCountText.text = $"含まれる地層：{currentSampleInfo.layerCount}層";
             }
             
             if (progressText != null)

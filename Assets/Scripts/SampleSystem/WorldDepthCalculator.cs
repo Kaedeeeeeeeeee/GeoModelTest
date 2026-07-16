@@ -68,32 +68,13 @@ public static class WorldDepthCalculator
         float relativeDepthEnd,
         bool showRelativeDepth = false)
     {
-        var (worldDepthStart, worldDepthEnd) = CalculateWorldDepthRange(
-            collectionPosition, relativeDepthStart, relativeDepthEnd);
-        
-        var localizationManager = LocalizationManager.Instance;
-        if (localizationManager != null)
-        {
-            string key = showRelativeDepth ? "sample.info.depth_world_relative" : "sample.info.depth_world";
-            
-            if (showRelativeDepth)
-            {
-                return localizationManager.GetText(key, 
-                    worldDepthStart.ToString("F1"), 
-                    worldDepthEnd.ToString("F1"),
-                    relativeDepthStart.ToString("F1"),
-                    relativeDepthEnd.ToString("F1"));
-            }
-            else
-            {
-                return localizationManager.GetText(key, 
-                    worldDepthStart.ToString("F1"), 
-                    worldDepthEnd.ToString("F1"));
-            }
-        }
-        
-        // 默认文本（如果本地化系统不可用）
-        return FormatDepthRange(worldDepthStart, worldDepthEnd, showRelativeDepth, relativeDepthStart, relativeDepthEnd);
+        // 世界座標は実装内部の値であり、生徒向け画面では意味を持たない。
+        // 表示は常に採取地点の地表を0mとした相対深度に統一する。
+        return LocalizationManager.Resolve(
+            "sample.info.collection_depth",
+            "採取した深さ：{0}m～{1}m",
+            relativeDepthStart.ToString("F1"),
+            relativeDepthEnd.ToString("F1"));
     }
     
     /// <summary>

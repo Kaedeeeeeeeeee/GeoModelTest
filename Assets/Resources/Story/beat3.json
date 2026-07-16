@@ -91,7 +91,7 @@
             "textKey": "story.beat3.q2.prompt",
             "illustrationKey": "06_facies_fossil",
             "questionId": "q.fossil_facies_term",
-            "hint": "「環境（かんきょう）」を「示（しめ）す」「化石（かせき）」——漢字（かんじ）3つで。",
+            "hint": "「環境（かんきょう）」を示（しめ）す化石（かせき）。漢字（かんじ）4文字（もじ）で考（かんが）えよう。",
             "hintKey": "story.beat3.q2.hint",
             "choices": [
                 {
@@ -125,7 +125,7 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "アンモナイトは、その中（なか）の「中生代（ちゅうせいだい）」にだけ栄（さか）えた生（い）きもの。恐竜（きょうりゅう）と同（おな）じ時代（じだい）だね。",
+            "text": "アンモナイトは、中生代（ちゅうせいだい）の地層（ちそう）の年代（ねんだい）を知（し）る手掛（てが）かりとして、よく使（つか）われる示準化石（しじゅんかせき）だよ。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q3.teach3"
         },
@@ -174,7 +174,7 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q4.prompt",
             "questionId": "q.fossil_index_term",
-            "hint": "「時代（じだい）」を「示（しめ）す」「化石（かせき）」——漢字（かんじ）3つで。",
+            "hint": "地層（ちそう）ができた年代（ねんだい）を知（し）る手掛（てが）かりになる化石（かせき）。漢字（かんじ）4文字（もじ）で考（かんが）えよう。",
             "hintKey": "story.beat3.q4.hint",
             "choices": [
                 {
@@ -204,7 +204,7 @@
             "hintKey": "story.beat3.q5.hint",
             "choices": [
                 {
-                    "text": "近（ちか）くで火山（かざん）の噴火（ふんか）があった",
+                    "text": "火山（かざん）が噴火（ふんか）し、火山灰（かざんばい）が降（ふ）り積（つ）もった",
                     "textKey": "story.beat3.q5.a",
                     "isCorrect": true,
                     "feedback": "正解（せいかい）！　凝灰岩（ぎょうかいがん）の層（そう）は、その時代（じだい）に火山（かざん）の噴火（ふんか）があった証拠（しょうこ）だよ。",

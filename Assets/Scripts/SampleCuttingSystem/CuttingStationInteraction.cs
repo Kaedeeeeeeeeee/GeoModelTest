@@ -209,7 +209,7 @@ namespace SampleCuttingSystem
             promptTextObj.transform.SetParent(promptBg.transform, false);
 
             promptText = promptTextObj.AddComponent<Text>();
-            promptText.text = LocalizationManager.Instance?.GetText("cutting_station.interaction.prompt") ?? "[F] 使用切割台";
+            promptText.text = GetInteractionPrompt();
             promptText.font = UIFontResolver.GetUIFont();
             promptText.fontSize = 20;
             promptText.color = Color.white;
@@ -843,7 +843,9 @@ namespace SampleCuttingSystem
             titleRect.offsetMax = Vector2.zero;
 
             Text titleText = titleObj.AddComponent<Text>();
-            titleText.text = "样本切割系统";
+            titleText.text = LocalizationManager.Resolve(
+                "cutting_system.title",
+                "試料切断台");
             titleText.font = UIFontResolver.GetUIFont();
             titleText.fontSize = 48;
             titleText.color = Color.white;
@@ -866,7 +868,9 @@ namespace SampleCuttingSystem
             instructionRect.offsetMax = Vector2.zero;
 
             Text instructionText = instructionObj.AddComponent<Text>();
-            instructionText.text = "欢迎使用样本切割系统！\n\n此系统可以对多层地质样本进行精确切割，\n将复合样本分解为单独的地层样本。\n\n请将需要切割的样本拖拽到此界面中开始操作。";
+            instructionText.text = LocalizationManager.Resolve(
+                "cutting_system.welcome",
+                "複数の地層を含む試料を、地層ごとに分けられます。\n左の試料保管庫から、調べたい試料をここへ移動してください。");
             instructionText.font = UIFontResolver.GetUIFont();
             instructionText.fontSize = 24;
             instructionText.color = Color.white;
@@ -1194,7 +1198,7 @@ namespace SampleCuttingSystem
             textRect.offsetMax = Vector2.zero;
 
             Text text = btnText.AddComponent<Text>();
-            text.text = LocalizationManager.Instance?.GetText("cutting_system.button.close") ?? "关闭";
+            text.text = LocalizationManager.Resolve("cutting_system.button.close", "閉じる");
             text.font = UIFontResolver.GetUIFont();
             text.fontSize = 16;
             text.color = Color.white;
@@ -1424,8 +1428,17 @@ namespace SampleCuttingSystem
         {
             if (promptText != null)
             {
-                promptText.text = LocalizationManager.Instance?.GetText("cutting_station.interaction.prompt") ?? "[F] 使用切割台";
+                promptText.text = GetInteractionPrompt();
             }
+        }
+
+        private string GetInteractionPrompt()
+        {
+            return LocalizationManager.ResolveForCurrentInput(
+                "cutting_station.interaction.prompt",
+                "cutting_station.interaction.mobile",
+                "［F］試料切断台を使う",
+                "試料切断台を使う");
         }
 
         void OnDestroy()
