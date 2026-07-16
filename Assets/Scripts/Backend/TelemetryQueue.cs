@@ -7,21 +7,28 @@ using UnityEngine;
 
 namespace Backend
 {
+    /// <summary>
+    /// 研究参加者・セッションに紐づいたイベントと回答を永続化するオフラインキュー。
+    /// v1以前の参加者情報を持たないイベントは研究データとして送信しない。
+    /// </summary>
     public sealed class TelemetryQueue
     {
         public const string PendingEventsPrefsKey = "Backend.PendingTelemetry";
         public const int MaxEventPropsBytes = 8192;
+        private static readonly TimeSpan MaxQueuedAge = TimeSpan.FromDays(30);
+        private static readonly TimeSpan MaxFutureSkew = TimeSpan.FromMinutes(5);
 
         private readonly List<TelemetryEvent> _events = new List<TelemetryEvent>();
-        private readonly int _maxPersistedEvents;
+        private readonly List<QuizAttemptUpload> _quizAttempts = new List<QuizAttemptUpload>();
+        private readonly int _maxPersistedItems;
 
-        public TelemetryQueue(int maxPersistedEvents)
+        public TelemetryQueue(int maxPersistedItems)
         {
-            _maxPersistedEvents = Mathf.Clamp(maxPersistedEvents, 10, 500);
+            _maxPersistedItems = Mathf.Clamp(maxPersistedItems, 10, 1000);
             LoadPersisted();
         }
 
-        public int Count => _events.Count;
+        public int Count => _events.Count + _quizAttempts.Count;
 
         public static TelemetryEvent Create(string eventName, string sceneName, Dictionary<string, object> props = null)
         {
@@ -29,7 +36,7 @@ namespace Backend
             {
                 id = Guid.NewGuid().ToString("D"),
                 name = eventName,
-                occurredAt = DateTime.UtcNow.ToString("o"),
+                occurredAt = DateTimeOffset.UtcNow.ToString("o"),
                 sceneName = sceneName,
                 props = props ?? new Dictionary<string, object>()
             };
@@ -37,7 +44,9 @@ namespace Backend
 
         public bool Enqueue(TelemetryEvent telemetryEvent)
         {
-            if (telemetryEvent == null || string.IsNullOrWhiteSpace(telemetryEvent.name))
+            if (!HasResearchBinding(telemetryEvent) ||
+                string.IsNullOrWhiteSpace(telemetryEvent.name) ||
+                !IsUploadableTimestamp(telemetryEvent.occurredAt))
             {
                 return false;
             }
@@ -49,36 +58,70 @@ namespace Backend
             return true;
         }
 
-        public List<TelemetryEvent> PeekBatch(int maxBatchSize)
+        public bool EnqueueQuizAttempt(QuizAttemptUpload quizAttempt)
         {
-            int count = Mathf.Clamp(maxBatchSize, 1, 100);
-            string sessionId = _events.FirstOrDefault()?.sessionId ?? "";
-            if (string.IsNullOrEmpty(sessionId))
+            if (!HasResearchBinding(quizAttempt) ||
+                !Guid.TryParse(quizAttempt.eventId, out _) ||
+                !Guid.TryParse(quizAttempt.runId, out _) ||
+                string.IsNullOrWhiteSpace(quizAttempt.questionId) ||
+                string.IsNullOrWhiteSpace(quizAttempt.choiceId) ||
+                quizAttempt.attemptIndex <= 0 ||
+                !IsUploadableTimestamp(quizAttempt.occurredAt))
             {
-                return _events.Take(count).ToList();
+                return false;
             }
 
-            return _events
-                .Where(e => string.IsNullOrEmpty(e.sessionId) || e.sessionId == sessionId)
-                .Take(count)
-                .ToList();
+            _quizAttempts.Add(quizAttempt);
+            TrimToCapacity();
+            Persist();
+            return true;
         }
 
-        public void RemoveSent(IEnumerable<string> sentIds)
+        public TelemetryBatch PeekBatch(int maxBatchSize)
         {
-            if (sentIds == null)
+            int limit = Mathf.Clamp(maxBatchSize, 1, 100);
+            var batch = new TelemetryBatch();
+            ResearchBinding binding = FindOldestBinding();
+            if (binding == null)
             {
-                return;
+                return batch;
             }
 
-            var sent = new HashSet<string>(sentIds);
-            _events.RemoveAll(e => sent.Contains(e.id));
+            batch.participantId = binding.participantId;
+            batch.studyId = binding.studyId;
+            batch.condition = binding.condition;
+            batch.sessionId = binding.sessionId;
+
+            batch.events = _events
+                .Where(value => Matches(value, binding))
+                .Take(limit)
+                .ToList();
+
+            int remaining = limit - batch.events.Count;
+            if (remaining > 0)
+            {
+                batch.quizAttempts = _quizAttempts
+                    .Where(value => Matches(value, binding))
+                    .Take(remaining)
+                    .ToList();
+            }
+
+            return batch;
+        }
+
+        public void RemoveSent(IEnumerable<string> eventIds, IEnumerable<string> quizAttemptIds)
+        {
+            var sentEvents = new HashSet<string>(eventIds ?? Array.Empty<string>(), StringComparer.Ordinal);
+            var sentAttempts = new HashSet<string>(quizAttemptIds ?? Array.Empty<string>(), StringComparer.Ordinal);
+            _events.RemoveAll(value => sentEvents.Contains(value.id));
+            _quizAttempts.RemoveAll(value => sentAttempts.Contains(value.eventId));
             Persist();
         }
 
         public void Clear()
         {
             _events.Clear();
+            _quizAttempts.Clear();
             PlayerPrefs.DeleteKey(PendingEventsPrefsKey);
             PlayerPrefs.Save();
         }
@@ -86,7 +129,11 @@ namespace Backend
         public void Persist()
         {
             TrimToCapacity();
-            var persisted = new PersistedTelemetryQueue { events = _events };
+            var persisted = new PersistedTelemetryQueue
+            {
+                events = _events,
+                quizAttempts = _quizAttempts
+            };
             string json = JsonConvert.SerializeObject(persisted, BackendJson.Settings);
             PlayerPrefs.SetString(PendingEventsPrefsKey, json);
             PlayerPrefs.Save();
@@ -109,20 +156,96 @@ namespace Backend
             try
             {
                 var persisted = JsonConvert.DeserializeObject<PersistedTelemetryQueue>(json, BackendJson.Settings);
-                if (persisted?.events == null)
+                _events.Clear();
+                _quizAttempts.Clear();
+                if (persisted?.events != null)
                 {
-                    return;
+                    _events.AddRange(persisted.events.Where(value =>
+                        HasResearchBinding(value) &&
+                        !string.IsNullOrWhiteSpace(value.name) &&
+                        IsUploadableTimestamp(value.occurredAt)));
                 }
 
-                _events.Clear();
-                _events.AddRange(persisted.events.Where(e => e != null && !string.IsNullOrWhiteSpace(e.name)));
+                if (persisted?.quizAttempts != null)
+                {
+                    _quizAttempts.AddRange(persisted.quizAttempts.Where(value =>
+                        HasResearchBinding(value) &&
+                        IsUploadableTimestamp(value.occurredAt)));
+                }
+
                 TrimToCapacity();
+                Persist();
             }
             catch (Exception ex)
             {
                 Debug.LogWarning($"[TelemetryQueue] Pending queue load failed, clearing stale data: {ex.Message}");
                 Clear();
             }
+        }
+
+        private static bool HasResearchBinding(TelemetryEvent value)
+        {
+            return value != null &&
+                   Guid.TryParse(value.participantId, out _) &&
+                   Guid.TryParse(value.studyId, out _) &&
+                   Guid.TryParse(value.sessionId, out _) &&
+                   !string.IsNullOrWhiteSpace(value.condition);
+        }
+
+        private static bool HasResearchBinding(QuizAttemptUpload value)
+        {
+            return value != null &&
+                   Guid.TryParse(value.participantId, out _) &&
+                   Guid.TryParse(value.studyId, out _) &&
+                   Guid.TryParse(value.sessionId, out _) &&
+                   !string.IsNullOrWhiteSpace(value.condition);
+        }
+
+        private static bool IsUploadableTimestamp(string value)
+        {
+            if (!DateTimeOffset.TryParse(value, out DateTimeOffset occurredAt))
+            {
+                return false;
+            }
+
+            DateTimeOffset now = DateTimeOffset.UtcNow;
+            return occurredAt >= now - MaxQueuedAge && occurredAt <= now + MaxFutureSkew;
+        }
+
+        private static bool Matches(TelemetryEvent value, ResearchBinding binding)
+        {
+            return value != null &&
+                   value.participantId == binding.participantId &&
+                   value.studyId == binding.studyId &&
+                   value.condition == binding.condition &&
+                   value.sessionId == binding.sessionId;
+        }
+
+        private static bool Matches(QuizAttemptUpload value, ResearchBinding binding)
+        {
+            return value != null &&
+                   value.participantId == binding.participantId &&
+                   value.studyId == binding.studyId &&
+                   value.condition == binding.condition &&
+                   value.sessionId == binding.sessionId;
+        }
+
+        private ResearchBinding FindOldestBinding()
+        {
+            TelemetryEvent firstEvent = _events.FirstOrDefault();
+            QuizAttemptUpload firstAttempt = _quizAttempts.FirstOrDefault();
+            if (firstEvent == null && firstAttempt == null)
+            {
+                return null;
+            }
+
+            if (firstAttempt == null ||
+                (firstEvent != null && CompareOccurredAt(firstEvent.occurredAt, firstAttempt.occurredAt) <= 0))
+            {
+                return new ResearchBinding(firstEvent.participantId, firstEvent.studyId, firstEvent.condition, firstEvent.sessionId);
+            }
+
+            return new ResearchBinding(firstAttempt.participantId, firstAttempt.studyId, firstAttempt.condition, firstAttempt.sessionId);
         }
 
         private Dictionary<string, object> ClampProps(Dictionary<string, object> props)
@@ -143,15 +266,49 @@ namespace Backend
 
         private void TrimToCapacity()
         {
-            while (_events.Count > _maxPersistedEvents)
+            while (Count > _maxPersistedItems)
             {
-                _events.RemoveAt(0);
+                TelemetryEvent firstEvent = _events.FirstOrDefault();
+                QuizAttemptUpload firstAttempt = _quizAttempts.FirstOrDefault();
+                if (firstAttempt == null ||
+                    (firstEvent != null && CompareOccurredAt(firstEvent.occurredAt, firstAttempt.occurredAt) <= 0))
+                {
+                    _events.RemoveAt(0);
+                }
+                else
+                {
+                    _quizAttempts.RemoveAt(0);
+                }
             }
+        }
+
+        private static int CompareOccurredAt(string left, string right)
+        {
+            DateTimeOffset.TryParse(left, out DateTimeOffset leftTime);
+            DateTimeOffset.TryParse(right, out DateTimeOffset rightTime);
+            return leftTime.CompareTo(rightTime);
         }
 
         private sealed class PersistedTelemetryQueue
         {
             public List<TelemetryEvent> events = new List<TelemetryEvent>();
+            public List<QuizAttemptUpload> quizAttempts = new List<QuizAttemptUpload>();
+        }
+
+        private sealed class ResearchBinding
+        {
+            public readonly string participantId;
+            public readonly string studyId;
+            public readonly string condition;
+            public readonly string sessionId;
+
+            public ResearchBinding(string participantId, string studyId, string condition, string sessionId)
+            {
+                this.participantId = participantId;
+                this.studyId = studyId;
+                this.condition = condition;
+                this.sessionId = sessionId;
+            }
         }
     }
 }

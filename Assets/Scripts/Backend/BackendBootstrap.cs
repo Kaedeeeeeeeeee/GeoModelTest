@@ -2,25 +2,21 @@ using UnityEngine;
 
 namespace Backend
 {
+    /// <summary>
+    /// 通常プレイでは呼び出されない明示的な研究クライアント生成口。
+    /// 参加コードの検証が成功するまで TelemetryClient は初期化されない。
+    /// </summary>
     public static class BackendBootstrap
     {
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Bootstrap()
+        public static TelemetryClient CreateResearchClient()
         {
             if (TelemetryClient.Instance != null)
             {
-                return;
+                return TelemetryClient.Instance;
             }
 
-            BackendSettings settings = BackendSettingsProvider.Load();
-            if (settings == null || !settings.EnableBackend || !settings.HasClientConfig)
-            {
-                return;
-            }
-
-            var gameObject = new GameObject("BackendBootstrap");
-            var client = gameObject.AddComponent<TelemetryClient>();
-            client.Initialize(settings);
+            var gameObject = new GameObject("ResearchTelemetryClient");
+            return gameObject.AddComponent<TelemetryClient>();
         }
     }
 }

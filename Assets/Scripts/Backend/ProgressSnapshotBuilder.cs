@@ -20,6 +20,7 @@ namespace Backend
         {
             var snapshot = new ProgressSnapshot
             {
+                eventId = Guid.NewGuid().ToString("D"),
                 currentScene = string.IsNullOrEmpty(currentSceneOverride)
                     ? SceneManager.GetActiveScene().name
                     : currentSceneOverride,

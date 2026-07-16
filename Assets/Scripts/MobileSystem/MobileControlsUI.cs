@@ -2388,11 +2388,23 @@ public class MobileControlsUI : MonoBehaviour
         CloseMobileMenu();
         Time.timeScale = 1f;
 
+        void FinishExit()
+        {
 #if UNITY_WEBGL && !UNITY_EDITOR
-        UnityEngine.SceneManagement.SceneManager.LoadScene("StartScene");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("StartScene");
 #else
-        Application.Quit();
+            Application.Quit();
 #endif
+        }
+
+        if (Backend.TelemetryClient.Instance != null && Backend.TelemetryClient.Instance.IsResearchActive)
+        {
+            Backend.ResearchParticipationCoordinator.Instance.EndSession("menu_exit", FinishExit);
+        }
+        else
+        {
+            FinishExit();
+        }
         Debug.Log("[MobileControlsUI] 退出游戏");
     }
 

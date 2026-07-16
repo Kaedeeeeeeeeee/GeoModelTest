@@ -10,6 +10,10 @@ namespace Backend
         public const string RefreshTokenKey = "Backend.RefreshToken";
         public const string UserIdKey = "Backend.UserId";
         public const string AccessTokenExpiresAtKey = "Backend.AccessTokenExpiresAtUnix";
+        public const string ResearchParticipantIdKey = "Backend.ResearchParticipantId";
+        public const string ResearchStudyIdKey = "Backend.ResearchStudyId";
+        public const string ResearchConditionKey = "Backend.ResearchCondition";
+        public const string ResearchProtocolVersionKey = "Backend.ResearchProtocolVersion";
 
         public static string GetOrCreateInstallId()
         {
@@ -85,6 +89,31 @@ namespace Backend
             PlayerPrefs.DeleteKey(RefreshTokenKey);
             PlayerPrefs.DeleteKey(UserIdKey);
             PlayerPrefs.DeleteKey(AccessTokenExpiresAtKey);
+            PlayerPrefs.Save();
+        }
+
+        public static void SaveResearchContext(ResearchContext context)
+        {
+            if (context == null ||
+                !Guid.TryParse(context.participantId, out _) ||
+                !Guid.TryParse(context.studyId, out _))
+            {
+                return;
+            }
+
+            PlayerPrefs.SetString(ResearchParticipantIdKey, context.participantId);
+            PlayerPrefs.SetString(ResearchStudyIdKey, context.studyId);
+            PlayerPrefs.SetString(ResearchConditionKey, context.condition ?? string.Empty);
+            PlayerPrefs.SetString(ResearchProtocolVersionKey, context.protocolVersion ?? string.Empty);
+            PlayerPrefs.Save();
+        }
+
+        public static void ClearResearchContext()
+        {
+            PlayerPrefs.DeleteKey(ResearchParticipantIdKey);
+            PlayerPrefs.DeleteKey(ResearchStudyIdKey);
+            PlayerPrefs.DeleteKey(ResearchConditionKey);
+            PlayerPrefs.DeleteKey(ResearchProtocolVersionKey);
             PlayerPrefs.Save();
         }
     }

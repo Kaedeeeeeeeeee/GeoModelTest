@@ -58,11 +58,13 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q1.prompt",
             "questionId": "q.fossil_coral_env",
+            "questionVersion": "story-formative-v1",
             "hint": "今（いま）のサンゴはどんな海（うみ）でしか育（そだ）たないか、思（おも）い出（だ）してみよう。",
             "hintKey": "story.beat3.q1.hint",
             "choices": [
                 {
                     "text": "あたたかくて浅（あさ）い海（うみ）",
+                    "id": "q.fossil_coral_env.warm_shallow_sea",
                     "textKey": "story.beat3.q1.a",
                     "isCorrect": true,
                     "feedback": "せいかい！　化石（かせき）が当時（とうじ）の「環境（かんきょう）」を教（おし）えてくれたね。",
@@ -70,6 +72,7 @@
                 },
                 {
                     "text": "冷（つめ）たくて深（ふか）い海（うみ）",
+                    "id": "q.fossil_coral_env.deep_cold_sea",
                     "textKey": "story.beat3.q1.b",
                     "isCorrect": false,
                     "feedback": "サンゴは光合成（こうごうせい）する藻（も）と共生（きょうせい）するから、冷（つめ）たく深（ふか）い海（うみ）では育（そだ）たないんだよ。",
@@ -77,6 +80,7 @@
                 },
                 {
                     "text": "川（かわ）と海（うみ）が混（ま）じる場所（ばしょ）",
+                    "id": "q.fossil_coral_env.brackish_water",
                     "textKey": "story.beat3.q1.c",
                     "isCorrect": false,
                     "feedback": "そこにすむのはシジミだね。サンゴは塩分（えんぶん）の濃（こ）い海（うみ）が好（す）きなんだ。",
@@ -91,11 +95,13 @@
             "textKey": "story.beat3.q2.prompt",
             "illustrationKey": "06_facies_fossil",
             "questionId": "q.fossil_facies_term",
+            "questionVersion": "story-formative-v1",
             "hint": "「環境（かんきょう）」を示（しめ）す化石（かせき）。漢字（かんじ）4文字（もじ）で考（かんが）えよう。",
             "hintKey": "story.beat3.q2.hint",
             "choices": [
                 {
                     "text": "示相化石（しそうかせき）",
+                    "id": "q.fossil_facies_term.facies_fossil",
                     "textKey": "story.beat3.q2.a",
                     "isCorrect": true,
                     "feedback": "そのとおり。環境（かんきょう）を示（しめ）すのが示相化石（しそうかせき）。シジミなら川（かわ）と海（うみ）が混（ま）じる場所（ばしょ）だよ。",
@@ -103,6 +109,7 @@
                 },
                 {
                     "text": "示準化石（しじゅんかせき）",
+                    "id": "q.fossil_facies_term.index_fossil",
                     "textKey": "story.beat3.q2.b",
                     "isCorrect": false,
                     "feedback": "示準化石（しじゅんかせき）は「時代（じだい）」を教（おし）えてくれる方（ほう）。「環境（かんきょう）」を示（しめ）すのは別（べつ）の名前（なまえ）だよ。",
@@ -135,11 +142,13 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q3.prompt",
             "questionId": "q.fossil_ammonite_era",
+            "questionVersion": "story-formative-v1",
             "hint": "恐竜（きょうりゅう）と同（おな）じ時代（じだい）に栄（さか）えた化石（かせき）は、どの時代（じだい）？",
             "hintKey": "story.beat3.q3.hint",
             "choices": [
                 {
                     "text": "中生代（ちゅうせいだい）",
+                    "id": "q.fossil_ammonite_era.mesozoic",
                     "textKey": "story.beat3.q3.a",
                     "isCorrect": true,
                     "feedback": "正解（せいかい）！　アンモナイトは中生代（ちゅうせいだい）の示準化石（しじゅんかせき）。サンヨウチュウなら古生代（こせいだい）だよ。",
@@ -147,6 +156,7 @@
                 },
                 {
                     "text": "古生代（こせいだい）",
+                    "id": "q.fossil_ammonite_era.paleozoic",
                     "textKey": "story.beat3.q3.b",
                     "isCorrect": false,
                     "feedback": "古生代（こせいだい）はサンヨウチュウやフズリナの時代（じだい）。アンモナイトはもう少（すこ）し後（あと）なんだ。",
@@ -154,6 +164,7 @@
                 },
                 {
                     "text": "新生代（しんせいだい）",
+                    "id": "q.fossil_ammonite_era.cenozoic",
                     "textKey": "story.beat3.q3.c",
                     "isCorrect": false,
                     "feedback": "新生代（しんせいだい）はビカリアやナウマンゾウの時代（じだい）。アンモナイトはその前（まえ）に絶滅（ぜつめつ）してるよ。",
@@ -174,11 +185,13 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q4.prompt",
             "questionId": "q.fossil_index_term",
+            "questionVersion": "story-formative-v1",
             "hint": "地層（ちそう）ができた年代（ねんだい）を知（し）る手掛（てが）かりになる化石（かせき）。漢字（かんじ）4文字（もじ）で考（かんが）えよう。",
             "hintKey": "story.beat3.q4.hint",
             "choices": [
                 {
                     "text": "示準化石（しじゅんかせき）",
+                    "id": "q.fossil_index_term.index_fossil",
                     "textKey": "story.beat3.q4.a",
                     "isCorrect": true,
                     "feedback": "そう。広（ひろ）い範囲（はんい）にすみ、短（みじか）い期間（きかん）だけ栄（さか）えた生物（せいぶつ）が示準化石（しじゅんかせき）になるよ。",
@@ -186,6 +199,7 @@
                 },
                 {
                     "text": "示相化石（しそうかせき）",
+                    "id": "q.fossil_index_term.facies_fossil",
                     "textKey": "story.beat3.q4.b",
                     "isCorrect": false,
                     "feedback": "示相化石（しそうかせき）は「環境（かんきょう）」を教（おし）える方（ほう）。「時代（じだい）」の決（き）め手（て）になるのは別（べつ）の名前（なまえ）だよ。",
@@ -200,11 +214,13 @@
             "textKey": "story.beat3.q5.prompt",
             "illustrationKey": "09_tuff_volcano",
             "questionId": "q.tuff_volcano",
+            "questionVersion": "story-formative-v1",
             "hint": "凝灰岩（ぎょうかいがん）は火山灰（かざんばい）からできるよ。火山灰（かざんばい）はどこから飛（と）んでくる？",
             "hintKey": "story.beat3.q5.hint",
             "choices": [
                 {
                     "text": "火山（かざん）が噴火（ふんか）し、火山灰（かざんばい）が降（ふ）り積（つ）もった",
+                    "id": "q.tuff_volcano.volcano",
                     "textKey": "story.beat3.q5.a",
                     "isCorrect": true,
                     "feedback": "正解（せいかい）！　凝灰岩（ぎょうかいがん）の層（そう）は、その時代（じだい）に火山（かざん）の噴火（ふんか）があった証拠（しょうこ）だよ。",
@@ -212,6 +228,7 @@
                 },
                 {
                     "text": "大（おお）きな地震（じしん）があった",
+                    "id": "q.tuff_volcano.river",
                     "textKey": "story.beat3.q5.b",
                     "isCorrect": false,
                     "feedback": "地震（じしん）は岩（いわ）をゆらすけど、火山灰（かざんばい）の層（そう）はつくらないんだ。",
@@ -219,6 +236,7 @@
                 },
                 {
                     "text": "海（うみ）がかれた",
+                    "id": "q.tuff_volcano.glacier",
                     "textKey": "story.beat3.q5.c",
                     "isCorrect": false,
                     "feedback": "海（うみ）がかれるとできるのは岩塩（がんえん）など別（べつ）の岩（いわ）。火山灰（かざんばい）はやっぱり火山（かざん）から来（く）るよ。",

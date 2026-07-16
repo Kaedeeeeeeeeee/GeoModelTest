@@ -17,6 +17,8 @@ public static class ProgressResetService
 
     public static void ResetAll()
     {
+        StorySystem.QuizScoreManager.Instance.StartNewRun();
+
         // 1) 清 PlayerPrefs 存档
         PlayerPrefs.DeleteKey(InventoryPrefsKey);
         PlayerPrefs.DeleteKey(UnlockedToolsPrefsKey);

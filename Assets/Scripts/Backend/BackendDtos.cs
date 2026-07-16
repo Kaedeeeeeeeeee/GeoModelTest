@@ -20,6 +20,9 @@ namespace Backend
     public sealed class TelemetryEvent
     {
         public string id;
+        public string participantId;
+        public string studyId;
+        public string condition;
         public string sessionId;
         public string name;
         public string occurredAt;
@@ -29,6 +32,11 @@ namespace Backend
 
     public sealed class ProgressSnapshot
     {
+        public string eventId;
+        public string participantId;
+        public string studyId;
+        public string condition;
+        public string sessionId;
         public string currentScene;
         public List<string> completedQuests = new List<string>();
         public List<string> completedObjectives = new List<string>();
@@ -45,18 +53,77 @@ namespace Backend
     public sealed class SessionEndPayload
     {
         public string endedAt;
+        public string reason;
+    }
+
+    public sealed class QuizAttemptUpload
+    {
+        public string eventId;
+        public string participantId;
+        public string studyId;
+        public string condition;
+        public string sessionId;
+        public string runId;
+        public string questionId;
+        public string questionVersion;
+        public string choiceId;
+        public int attemptIndex;
+        public bool isCorrect;
+        public bool usedHint;
+        public long responseTimeMs;
+        public string occurredAt;
+        public string gameVersion;
+        public string contentVersion;
+        public string storyRoute;
+    }
+
+    public sealed class ResearchParticipationResponse
+    {
+        public bool ok;
+        public string participantId;
+        public string studyId;
+        public string condition;
+        public string protocolVersion;
+        public string error;
+    }
+
+    public sealed class ResearchContext
+    {
+        public string participantId;
+        public string studyId;
+        public string condition;
+        public string protocolVersion;
+    }
+
+    public sealed class TelemetryBatch
+    {
+        public string participantId;
+        public string studyId;
+        public string condition;
+        public string sessionId;
+        public List<TelemetryEvent> events = new List<TelemetryEvent>();
+        public List<QuizAttemptUpload> quizAttempts = new List<QuizAttemptUpload>();
+
+        public int Count => events.Count + quizAttempts.Count;
     }
 
     public sealed class IngestRequest
     {
         public string installId;
+        public string participantId;
+        public string studyId;
+        public string condition;
+        public string protocolVersion;
         public string sessionId;
         public string gameVersion;
         public string platform;
         public string buildTarget;
         public string language;
         public string currentScene;
+        public string contentVersion;
+        public string storyRoute;
         public List<TelemetryEvent> events = new List<TelemetryEvent>();
+        public List<QuizAttemptUpload> quizAttempts = new List<QuizAttemptUpload>();
         public ProgressSnapshot progressSnapshot;
         public SessionEndPayload sessionEnd;
     }

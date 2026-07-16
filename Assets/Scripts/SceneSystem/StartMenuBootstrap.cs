@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Backend;
 
 namespace SceneSystem
 {
@@ -97,7 +98,7 @@ namespace SceneSystem
             cRt.anchorMin = new Vector2(0.5f, 0.5f);
             cRt.anchorMax = new Vector2(0.5f, 0.5f);
             cRt.anchoredPosition = new Vector2(0f, -40f);
-            cRt.sizeDelta = new Vector2(520f, 360f);
+            cRt.sizeDelta = new Vector2(520f, 450f);
 
             float y = 0f;
             float spacing = 90f;
@@ -125,6 +126,19 @@ namespace SceneSystem
                 var startBtn = CreateButton(container.transform, "Game Start");
                 startBtn.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
                 startBtn.onClick.AddListener(OnStartGame);
+                y -= spacing;
+            }
+
+            // 研究入口は既定で閉鎖。Editor/Development Build か、明示的に本番受付を有効化した場合のみ表示する。
+            BackendSettings backendSettings = BackendSettingsProvider.Load();
+            if (backendSettings != null && backendSettings.CanShowResearchEntry)
+            {
+                var researchBtn = CreateButton(container.transform,
+                    backendSettings.EnableProductionResearchEntry
+                        ? LocalizationManager.Resolve("ui.start.research", "研究（けんきゅう）に参加（さんか）する")
+                        : LocalizationManager.Resolve("ui.start.research_test", "研究接続（けんきゅうせつぞく）テスト"));
+                researchBtn.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
+                researchBtn.onClick.AddListener(ShowResearchCodeDialog);
                 y -= spacing;
             }
 
@@ -250,12 +264,23 @@ namespace SceneSystem
         public void OnQuitGame()
         {
             Debug.Log("[StartMenu] Quit");
+            void FinishQuit()
+            {
 #if UNITY_EDITOR
-            // 在编辑器下停止播放
-            UnityEditor.EditorApplication.isPlaying = false;
+                UnityEditor.EditorApplication.isPlaying = false;
 #else
-            Application.Quit();
+                Application.Quit();
 #endif
+            }
+
+            if (TelemetryClient.Instance != null && TelemetryClient.Instance.IsResearchActive)
+            {
+                ResearchParticipationCoordinator.Instance.EndSession("application_quit", FinishQuit);
+            }
+            else
+            {
+                FinishQuit();
+            }
         }
 
         /// <summary>
@@ -284,6 +309,134 @@ namespace SceneSystem
                     OnStartGame();
                 }
             );
+        }
+
+        private void ShowResearchCodeDialog()
+        {
+            var overlay = new GameObject("ResearchCodeDialog");
+            overlay.transform.SetParent(_canvas.transform, false);
+            var overlayRect = overlay.AddComponent<RectTransform>();
+            overlayRect.anchorMin = Vector2.zero;
+            overlayRect.anchorMax = Vector2.one;
+            overlayRect.offsetMin = Vector2.zero;
+            overlayRect.offsetMax = Vector2.zero;
+            var overlayImage = overlay.AddComponent<Image>();
+            overlayImage.color = new Color(0f, 0f, 0f, 0.78f);
+            overlayImage.raycastTarget = true;
+
+            var panel = new GameObject("Panel");
+            panel.transform.SetParent(overlay.transform, false);
+            var panelRect = panel.AddComponent<RectTransform>();
+            panelRect.anchorMin = new Vector2(0.5f, 0.5f);
+            panelRect.anchorMax = new Vector2(0.5f, 0.5f);
+            panelRect.sizeDelta = new Vector2(760f, 470f);
+            var panelImage = panel.AddComponent<Image>();
+            panelImage.color = new Color(0.12f, 0.14f, 0.18f, 1f);
+
+            var title = CreateText(panel.transform, "Title",
+                LocalizationManager.Resolve("ui.start.research_code.title", "研究参加（けんきゅうさんか）コード"), 36);
+            var titleRect = title.GetComponent<RectTransform>();
+            titleRect.anchorMin = new Vector2(0f, 1f);
+            titleRect.anchorMax = new Vector2(1f, 1f);
+            titleRect.anchoredPosition = new Vector2(0f, -58f);
+            titleRect.sizeDelta = new Vector2(-64f, 60f);
+
+            var explanation = CreateText(panel.transform, "Explanation",
+                LocalizationManager.Resolve("ui.start.research_code.help",
+                    "研究者（けんきゅうしゃ）から受（う）け取（と）ったコードを入力（にゅうりょく）してください。通常（つうじょう）のゲームでは入力（にゅうりょく）しません。"), 22);
+            var explanationRect = explanation.GetComponent<RectTransform>();
+            explanationRect.anchorMin = new Vector2(0.5f, 0.5f);
+            explanationRect.anchorMax = new Vector2(0.5f, 0.5f);
+            explanationRect.anchoredPosition = new Vector2(0f, 90f);
+            explanationRect.sizeDelta = new Vector2(660f, 90f);
+            explanation.GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Wrap;
+
+            var inputObject = new GameObject("ParticipantCodeInput");
+            inputObject.transform.SetParent(panel.transform, false);
+            var inputRect = inputObject.AddComponent<RectTransform>();
+            inputRect.anchorMin = new Vector2(0.5f, 0.5f);
+            inputRect.anchorMax = new Vector2(0.5f, 0.5f);
+            inputRect.anchoredPosition = new Vector2(0f, 5f);
+            inputRect.sizeDelta = new Vector2(580f, 68f);
+            var inputImage = inputObject.AddComponent<Image>();
+            inputImage.color = new Color(0.94f, 0.95f, 0.97f, 1f);
+            var input = inputObject.AddComponent<InputField>();
+            input.targetGraphic = inputImage;
+            input.lineType = InputField.LineType.SingleLine;
+            input.characterLimit = 64;
+
+            var inputTextObject = CreateText(inputObject.transform, "Text", string.Empty, 28);
+            var inputTextRect = inputTextObject.GetComponent<RectTransform>();
+            inputTextRect.anchorMin = Vector2.zero;
+            inputTextRect.anchorMax = Vector2.one;
+            inputTextRect.offsetMin = new Vector2(20f, 8f);
+            inputTextRect.offsetMax = new Vector2(-20f, -8f);
+            var inputText = inputTextObject.GetComponent<Text>();
+            inputText.color = new Color(0.08f, 0.10f, 0.14f, 1f);
+            inputText.alignment = TextAnchor.MiddleLeft;
+            input.textComponent = inputText;
+
+            var placeholderObject = CreateText(inputObject.transform, "Placeholder",
+                LocalizationManager.Resolve("ui.start.research_code.placeholder", "参加コード"), 26);
+            var placeholderRect = placeholderObject.GetComponent<RectTransform>();
+            placeholderRect.anchorMin = Vector2.zero;
+            placeholderRect.anchorMax = Vector2.one;
+            placeholderRect.offsetMin = new Vector2(20f, 8f);
+            placeholderRect.offsetMax = new Vector2(-20f, -8f);
+            var placeholder = placeholderObject.GetComponent<Text>();
+            placeholder.color = new Color(0.35f, 0.38f, 0.43f, 0.75f);
+            placeholder.alignment = TextAnchor.MiddleLeft;
+            input.placeholder = placeholder;
+
+            var statusObject = CreateText(panel.transform, "Status", string.Empty, 20);
+            var statusRect = statusObject.GetComponent<RectTransform>();
+            statusRect.anchorMin = new Vector2(0.5f, 0f);
+            statusRect.anchorMax = new Vector2(0.5f, 0f);
+            statusRect.anchoredPosition = new Vector2(0f, 132f);
+            statusRect.sizeDelta = new Vector2(650f, 48f);
+            var statusText = statusObject.GetComponent<Text>();
+            statusText.color = new Color(1f, 0.78f, 0.35f, 1f);
+
+            var submitButton = CreateButton(panel.transform,
+                LocalizationManager.Resolve("ui.start.research_code.confirm", "コードを確認（かくにん）"));
+            var submitRect = submitButton.GetComponent<RectTransform>();
+            submitRect.anchorMin = new Vector2(0.5f, 0f);
+            submitRect.anchorMax = new Vector2(0.5f, 0f);
+            submitRect.anchoredPosition = new Vector2(-155f, 42f);
+            submitRect.sizeDelta = new Vector2(280f, 66f);
+
+            var cancelButton = CreateButton(panel.transform,
+                LocalizationManager.Resolve("ui.start.research_code.cancel", "戻（もど）る"));
+            var cancelRect = cancelButton.GetComponent<RectTransform>();
+            cancelRect.anchorMin = new Vector2(0.5f, 0f);
+            cancelRect.anchorMax = new Vector2(0.5f, 0f);
+            cancelRect.anchoredPosition = new Vector2(155f, 42f);
+            cancelRect.sizeDelta = new Vector2(280f, 66f);
+
+            cancelButton.onClick.AddListener(() => Destroy(overlay));
+            submitButton.onClick.AddListener(() =>
+            {
+                submitButton.interactable = false;
+                cancelButton.interactable = false;
+                statusText.text = LocalizationManager.Resolve("ui.start.research_code.checking", "コードを確認（かくにん）しています…");
+                ResearchParticipationCoordinator.Instance.Activate(input.text, (success, error) =>
+                {
+                    if (success)
+                    {
+                        Destroy(overlay);
+                        OnStartGame();
+                        return;
+                    }
+
+                    statusText.text = string.IsNullOrWhiteSpace(error)
+                        ? LocalizationManager.Resolve("ui.start.research_code.failed", "コードを確認（かくにん）できませんでした。")
+                        : error;
+                    submitButton.interactable = true;
+                    cancelButton.interactable = true;
+                });
+            });
+
+            input.ActivateInputField();
         }
 
         /// <summary>

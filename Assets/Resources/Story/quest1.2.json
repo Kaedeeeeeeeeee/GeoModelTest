@@ -94,10 +94,12 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat1.q1.prompt",
             "questionId": "q.weathering_order",
+            "questionVersion": "story-formative-v1",
             "hint": "もろくなる→けずられる→運（はこ）ばれる→積（つ）もる、の自然（しぜん）な流（なが）れを思（おも）い出（だ）してみよう。",
             "hintKey": "story.beat1.q1.hint",
             "choices": [
                 {
+                    "id": "q.weathering_order.correct_sequence",
                     "text": "風化（ふうか）→ 侵食（しんしょく）→ 運搬（うんぱん）→ 堆積（たいせき）",
                     "textKey": "story.beat1.q1.a",
                     "isCorrect": true,
@@ -105,6 +107,7 @@
                     "feedbackKey": "story.beat1.q1.fb_ok"
                 },
                 {
+                    "id": "q.weathering_order.reverse_sequence",
                     "text": "堆積（たいせき）→ 運搬（うんぱん）→ 侵食（しんしょく）→ 風化（ふうか）",
                     "textKey": "story.beat1.q1.b",
                     "isCorrect": false,
@@ -112,6 +115,7 @@
                     "feedbackKey": "story.beat1.q1.fb_ng_b"
                 },
                 {
+                    "id": "q.weathering_order.mixed_sequence",
                     "text": "侵食（しんしょく）→ 風化（ふうか）→ 堆積（たいせき）→ 運搬（うんぱん）",
                     "textKey": "story.beat1.q1.c",
                     "isCorrect": false,

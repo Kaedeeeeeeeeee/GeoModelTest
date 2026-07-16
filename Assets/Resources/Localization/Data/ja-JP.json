@@ -2325,6 +2325,26 @@
       "value": "せいかい数（すう）"
     },
     {
+      "key": "report.first_correct",
+      "value": "1回目（かいめ）に正解（せいかい）"
+    },
+    {
+      "key": "report.final_mastery",
+      "value": "最後（さいご）に正解（せいかい）できた問題（もんだい）"
+    },
+    {
+      "key": "report.completion",
+      "value": "答（こた）えた問題（もんだい）"
+    },
+    {
+      "key": "report.average_attempts",
+      "value": "平均（へいきん）の回答回数（かいすう）"
+    },
+    {
+      "key": "report.hint_usage",
+      "value": "ヒントを使（つか）った割合（わりあい）"
+    },
+    {
       "key": "story.beat1.l01",
       "value": "昼休（ひるやす）みの教室（きょうしつ）。とつぜん、大（おお）きなゆれが教室（きょうしつ）をおそった。"
     },
@@ -3167,6 +3187,42 @@
     {
       "key": "workbench.interaction.mobile",
       "value": "作業台を使う"
+    },
+    {
+      "key": "ui.start.research",
+      "value": "研究（けんきゅう）に参加（さんか）する"
+    },
+    {
+      "key": "ui.start.research_test",
+      "value": "研究接続（けんきゅうせつぞく）テスト"
+    },
+    {
+      "key": "ui.start.research_code.title",
+      "value": "研究参加（けんきゅうさんか）コード"
+    },
+    {
+      "key": "ui.start.research_code.help",
+      "value": "研究者（けんきゅうしゃ）から受（う）け取（と）ったコードを入力（にゅうりょく）してください。通常（つうじょう）のゲームでは入力（にゅうりょく）しません。"
+    },
+    {
+      "key": "ui.start.research_code.placeholder",
+      "value": "参加（さんか）コード"
+    },
+    {
+      "key": "ui.start.research_code.confirm",
+      "value": "コードを確認（かくにん）"
+    },
+    {
+      "key": "ui.start.research_code.cancel",
+      "value": "戻（もど）る"
+    },
+    {
+      "key": "ui.start.research_code.checking",
+      "value": "コードを確認（かくにん）しています…"
+    },
+    {
+      "key": "ui.start.research_code.failed",
+      "value": "コードを確認（かくにん）できませんでした。"
     }
   ]
 }

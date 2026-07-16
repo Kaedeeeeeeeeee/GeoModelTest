@@ -2353,8 +2353,13 @@
     { "key": "quiz.correct", "value": "Correct!" },
     { "key": "quiz.incorrect", "value": "Not quite — give it another think." },
     { "key": "report.title", "value": "Field Report" },
-    { "key": "report.grade", "value": "Overall Grade" },
+    { "key": "report.grade", "value": "First-answer grade" },
     { "key": "report.score", "value": "Correct" },
+    { "key": "report.first_correct", "value": "Correct on first answer" },
+    { "key": "report.final_mastery", "value": "Eventually mastered" },
+    { "key": "report.completion", "value": "Questions answered" },
+    { "key": "report.average_attempts", "value": "Average attempts" },
+    { "key": "report.hint_usage", "value": "Hint usage" },
     { "key": "story.beat1.l01", "value": "A classroom at lunch break. Suddenly, a violent shaking strikes." },
     { "key": "story.beat1.l02", "value": "Whoa...!? An earthquake...! Everyone, get under your desks!" },
     { "key": "story.beat1.l03", "value": "The shaking grows stronger, the ceiling collapses. A white light swallows your vision——." },
@@ -2508,6 +2513,15 @@
     { "key": "story.beat1.l14", "value": "A transfer... device?" },
     { "key": "story.beat1.l15", "value": "But this device only reaches around the institute, and it can move just one person at a time. It can't save the whole town." },
     { "key": "story.beat1.l12", "value": "The classroom was caving in just now... where is this? How did I... get here?" },
-    { "key": "story.beat1.l13", "value": "Easy now. The instant the ceiling came down, I pulled you out of that classroom with the institute's 'transfer device.' That white light you saw — that was it." }
+    { "key": "story.beat1.l13", "value": "Easy now. The instant the ceiling came down, I pulled you out of that classroom with the institute's 'transfer device.' That white light you saw — that was it." },
+    { "key": "ui.start.research", "value": "Join the study" },
+    { "key": "ui.start.research_test", "value": "Research connection test" },
+    { "key": "ui.start.research_code.title", "value": "Study participation code" },
+    { "key": "ui.start.research_code.help", "value": "Enter the code provided by the researcher. You do not need a code for ordinary play." },
+    { "key": "ui.start.research_code.placeholder", "value": "Participation code" },
+    { "key": "ui.start.research_code.confirm", "value": "Check code" },
+    { "key": "ui.start.research_code.cancel", "value": "Back" },
+    { "key": "ui.start.research_code.checking", "value": "Checking the code…" },
+    { "key": "ui.start.research_code.failed", "value": "The code could not be verified." }
   ]
 }

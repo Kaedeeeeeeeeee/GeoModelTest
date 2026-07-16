@@ -35,7 +35,9 @@ namespace StorySystem.EditorTests
         {
             "ui.dialog.continue", "ui.dialog.choose",
             "quiz.correct", "quiz.incorrect",
-            "report.title", "report.grade", "report.score"
+            "report.title", "report.grade", "report.score",
+            "report.first_correct", "report.final_mastery", "report.completion",
+            "report.average_attempts", "report.hint_usage"
         };
 
         private static int _pass;
@@ -64,48 +66,24 @@ namespace StorySystem.EditorTests
             else Debug.LogError(summary);
         }
 
-        // 1) 计分器逻辑：评级边界、去重、重置。
+        // 1) 计分器逻辑：追加式回答、首次正确率、最终掌握率、重置。
         private static void TestQuizScoreManager()
         {
             var qs = QuizScoreManager.Instance;
 
             qs.Reset();
-            Check(qs.Total == 0, "score empty after reset");
+            Check(qs.Attempts.Count == 0, "attempts empty after reset");
             Check(qs.Grade == "-", "grade is '-' with no answers");
 
             qs.Reset();
-            for (int i = 0; i < 5; i++) qs.Record("p" + i, true);
-            Check(qs.Total == 5 && qs.CorrectCount == 5, "5/5 recorded");
-            Check(qs.Grade == "A", "100% -> A");
-
-            qs.Reset();
-            for (int i = 0; i < 4; i++) qs.Record("q" + i, true);
-            qs.Record("q4", false);
-            Check(qs.Grade == "A", "80% -> A (boundary)");
-
-            qs.Reset();
-            for (int i = 0; i < 3; i++) qs.Record("q" + i, true);
-            qs.Record("q3", false);
-            qs.Record("q4", false);
-            Check(qs.Grade == "B", "60% -> B (boundary)");
-
-            qs.Reset();
-            for (int i = 0; i < 2; i++) qs.Record("q" + i, true);
-            for (int i = 2; i < 5; i++) qs.Record("q" + i, false);
-            Check(qs.Grade == "C", "40% -> C");
-
-            // 同一 questionId 重复作答：只算一题，最后一次为准。
-            qs.Reset();
-            qs.Record("dup", false);
-            qs.Record("dup", true);
-            Check(qs.Total == 1, "dedup keeps a single entry for same questionId");
-            Check(qs.CorrectCount == 1, "dedup is last-write-wins");
-
-            // 空 id 每次都追加。
-            qs.Reset();
-            qs.Record("", true);
-            qs.Record("", false);
-            Check(qs.Total == 2, "empty questionId appends each time");
+            qs.Record("q.weathering_order", "story-formative-v1", "wrong", false, false, 1000);
+            qs.Record("q.weathering_order", "story-formative-v1", "correct", true, false, 2000);
+            QuizSummary summary = qs.BuildSummary();
+            Check(qs.Attempts.Count == 2, "duplicate question appends two attempts");
+            Check(summary.FirstCorrectCount == 0, "first answer remains incorrect");
+            Check(summary.FinalMasteredCount == 1, "final answer is mastered");
+            Check(Math.Abs(summary.AverageAttemptCount - 2f) < 0.001f, "average attempts is two");
+            Check(summary.ExpectedQuestionCount == 11, "research route denominator is fixed at eleven");
 
             qs.Reset();
         }
@@ -131,6 +109,7 @@ namespace StorySystem.EditorTests
                     int correct = line.choices.Count(c => c != null && c.isCorrect);
                     Check(correct == 1, $"{path} quiz '{line.questionId}' must have exactly 1 correct (got {correct})");
                     Check(!string.IsNullOrEmpty(line.questionId), $"{path} quiz line needs a questionId");
+                    Check(!string.IsNullOrEmpty(line.questionVersion), $"{path} quiz '{line.questionId}' needs a questionVersion");
 
                     foreach (var c in line.choices)
                     {
@@ -138,7 +117,11 @@ namespace StorySystem.EditorTests
                         if (c == null) continue;
                         Check(!string.IsNullOrEmpty(c.text) || !string.IsNullOrEmpty(c.textKey),
                             $"{path} choice has text or textKey");
+                        Check(!string.IsNullOrEmpty(c.id), $"{path} quiz '{line.questionId}' choice needs a stable id");
                     }
+
+                    Check(line.choices.Where(c => c != null).Select(c => c.id).Distinct().Count() == line.choices.Count,
+                        $"{path} quiz '{line.questionId}' choice ids are unique");
                 }
             }
         }

@@ -13,6 +13,10 @@ public class BackendSessionStoreTests
         PlayerPrefs.DeleteKey((string)BackendTestReflection.GetField(storeType, "RefreshTokenKey"));
         PlayerPrefs.DeleteKey((string)BackendTestReflection.GetField(storeType, "UserIdKey"));
         PlayerPrefs.DeleteKey((string)BackendTestReflection.GetField(storeType, "AccessTokenExpiresAtKey"));
+        PlayerPrefs.DeleteKey((string)BackendTestReflection.GetField(storeType, "ResearchParticipantIdKey"));
+        PlayerPrefs.DeleteKey((string)BackendTestReflection.GetField(storeType, "ResearchStudyIdKey"));
+        PlayerPrefs.DeleteKey((string)BackendTestReflection.GetField(storeType, "ResearchConditionKey"));
+        PlayerPrefs.DeleteKey((string)BackendTestReflection.GetField(storeType, "ResearchProtocolVersionKey"));
         PlayerPrefs.Save();
     }
 

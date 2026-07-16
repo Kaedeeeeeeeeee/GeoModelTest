@@ -30,6 +30,33 @@ public static class BackendTestReflection
         return method.Invoke(null, args);
     }
 
+    public static object InvokeInstance(object target, string methodName, params object[] args)
+    {
+        var method = target.GetType().GetMethod(
+            methodName,
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        if (method == null)
+        {
+            throw new MissingMethodException(target.GetType().FullName, methodName);
+        }
+
+        return method.Invoke(target, args);
+    }
+
+    public static object GetProperty(object target, string propertyName)
+    {
+        var type = target is Type targetType ? targetType : target.GetType();
+        var property = type.GetProperty(
+            propertyName,
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+        if (property == null)
+        {
+            throw new MissingMemberException(type.FullName, propertyName);
+        }
+
+        return property.GetValue(target is Type ? null : target);
+    }
+
     public static object GetField(object target, string fieldName)
     {
         var type = target is Type targetType ? targetType : target.GetType();
@@ -41,5 +68,17 @@ public static class BackendTestReflection
         }
 
         return field.GetValue(target is Type ? null : target);
+    }
+
+    public static void SetField(object target, string fieldName, object value)
+    {
+        var type = target.GetType();
+        var field = type.GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        if (field == null)
+        {
+            throw new MissingFieldException(type.FullName, fieldName);
+        }
+
+        field.SetValue(target, value);
     }
 }

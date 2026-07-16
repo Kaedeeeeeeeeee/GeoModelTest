@@ -28,6 +28,7 @@ namespace StorySystem
 
         // 选择题（可选）。choices 为空时该行是普通台词。
         public string questionId;
+        public string questionVersion;
         public List<StoryChoice> choices;
 
         // 选择题"ヒント"按钮文本（可选）；选择题专用，普通台词上无效。
@@ -41,6 +42,7 @@ namespace StorySystem
     [Serializable]
     public class StoryChoice
     {
+        public string id;          // 分析用の安定ID（表示文言や並び順に依存させない）
         public string text;        // 直接文本
         public string textKey;     // 本地化键（优先）
         public bool isCorrect;     // 是否正确答案（用于计分）
@@ -129,6 +131,9 @@ namespace StorySystem
                 if (entry.choices != null && entry.choices.Count > 0)
                 {
                     subtitleLine.QuestionId = entry.questionId;
+                    subtitleLine.QuestionVersion = string.IsNullOrWhiteSpace(entry.questionVersion)
+                        ? QuizScoreManager.DefaultQuestionVersion
+                        : entry.questionVersion.Trim();
                     subtitleLine.Hint = ResolveText(entry.hint, entry.hintKey, localizationManager, canLocalize);
                     subtitleLine.Choices = new List<StoryDirector.SubtitleUI.SubtitleChoice>();
                     foreach (var choice in entry.choices)
@@ -136,6 +141,7 @@ namespace StorySystem
                         if (choice == null) continue;
                         subtitleLine.Choices.Add(new StoryDirector.SubtitleUI.SubtitleChoice
                         {
+                            ChoiceId = choice.id,
                             Text = ResolveText(choice.text, choice.textKey, localizationManager, canLocalize),
                             IsCorrect = choice.isCorrect,
                             Feedback = ResolveText(choice.feedback, choice.feedbackKey, localizationManager, canLocalize)

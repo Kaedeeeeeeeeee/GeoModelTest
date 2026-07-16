@@ -40,10 +40,12 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat2.q1.prompt",
             "questionId": "q.rock_mudstone",
+            "questionVersion": "story-formative-v1",
             "hint": "粒（つぶ）の大（おお）きさで分（わ）かれる岩石（がんせき）3 種類（しゅるい）のうち、一番（いちばん）細（こま）かいのは？",
             "hintKey": "story.beat2.q1.hint",
             "choices": [
                 {
+                    "id": "q.rock_mudstone.mudstone",
                     "text": "泥岩（でいがん）",
                     "textKey": "story.beat2.q1.a",
                     "isCorrect": true,
@@ -51,6 +53,7 @@
                     "feedbackKey": "story.beat2.q1.fb_ok"
                 },
                 {
+                    "id": "q.rock_mudstone.sandstone",
                     "text": "砂岩（さがん）",
                     "textKey": "story.beat2.q1.b",
                     "isCorrect": false,
@@ -58,6 +61,7 @@
                     "feedbackKey": "story.beat2.q1.fb_ng_b"
                 },
                 {
+                    "id": "q.rock_mudstone.conglomerate",
                     "text": "れき岩（がん）",
                     "textKey": "story.beat2.q1.c",
                     "isCorrect": false,
@@ -73,10 +77,12 @@
             "textKey": "story.beat2.q2.prompt",
             "illustrationKey": "03_limestone",
             "questionId": "q.rock_limestone",
+            "questionVersion": "story-formative-v1",
             "hint": "塩酸（えんさん）に反応（はんのう）する岩石（がんせき）は限（かぎ）られているよ。貝（かい）やサンゴからできた岩（いわ）は？",
             "hintKey": "story.beat2.q2.hint",
             "choices": [
                 {
+                    "id": "q.rock_limestone.limestone",
                     "text": "石灰岩（せっかいがん）",
                     "textKey": "story.beat2.q2.a",
                     "isCorrect": true,
@@ -84,6 +90,7 @@
                     "feedbackKey": "story.beat2.q2.fb_ok"
                 },
                 {
+                    "id": "q.rock_limestone.chert",
                     "text": "チャート",
                     "textKey": "story.beat2.q2.b",
                     "isCorrect": false,
@@ -91,6 +98,7 @@
                     "feedbackKey": "story.beat2.q2.fb_ng_b"
                 },
                 {
+                    "id": "q.rock_limestone.tuff",
                     "text": "凝灰岩（ぎょうかいがん）",
                     "textKey": "story.beat2.q2.c",
                     "isCorrect": false,
@@ -106,10 +114,12 @@
             "textKey": "story.beat2.q3.prompt",
             "illustrationKey": "04_chert",
             "questionId": "q.rock_chert",
+            "questionVersion": "story-formative-v1",
             "hint": "海（うみ）の小（ちい）さな生物（せいぶつ）の殻（から）が積（つ）もってできた、とてもかたい岩（いわ）は？",
             "hintKey": "story.beat2.q3.hint",
             "choices": [
                 {
+                    "id": "q.rock_chert.chert",
                     "text": "チャート",
                     "textKey": "story.beat2.q3.a",
                     "isCorrect": true,
@@ -117,6 +127,7 @@
                     "feedbackKey": "story.beat2.q3.fb_ok"
                 },
                 {
+                    "id": "q.rock_chert.mudstone",
                     "text": "泥岩（でいがん）",
                     "textKey": "story.beat2.q3.b",
                     "isCorrect": false,
@@ -124,6 +135,7 @@
                     "feedbackKey": "story.beat2.q3.fb_ng_b"
                 },
                 {
+                    "id": "q.rock_chert.conglomerate",
                     "text": "れき岩（がん）",
                     "textKey": "story.beat2.q3.c",
                     "isCorrect": false,

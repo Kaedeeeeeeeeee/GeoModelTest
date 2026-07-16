@@ -2353,8 +2353,13 @@
     { "key": "quiz.correct", "value": "回答正确！" },
     { "key": "quiz.incorrect", "value": "可惜，再想一想吧。" },
     { "key": "report.title", "value": "调查报告" },
-    { "key": "report.grade", "value": "综合评价" },
+    { "key": "report.grade", "value": "首次作答评价" },
     { "key": "report.score", "value": "答对题数" },
+    { "key": "report.first_correct", "value": "首次回答正确" },
+    { "key": "report.final_mastery", "value": "最终掌握" },
+    { "key": "report.completion", "value": "已回答题目" },
+    { "key": "report.average_attempts", "value": "平均作答次数" },
+    { "key": "report.hint_usage", "value": "提示使用率" },
     { "key": "story.beat1.l01", "value": "午休时的教室。突然，一阵剧烈的摇晃袭来。" },
     { "key": "story.beat1.l02", "value": "哇……！？地震了……！大家，快躲到桌子下面！" },
     { "key": "story.beat1.l03", "value": "摇晃越来越强，天花板开始坍塌。视野被一道白光吞没——。" },
@@ -2508,6 +2513,15 @@
     { "key": "story.beat1.l14", "value": "转送……装置？" },
     { "key": "story.beat1.l15", "value": "不过它只够得着研究所周围，一次也只能转一个人——整座城市，它是救不了的。" },
     { "key": "story.beat1.l12", "value": "刚才教室明明还在塌……这里是哪儿？我……怎么会在这里？" },
-    { "key": "story.beat1.l13", "value": "别慌。就在天花板塌下来的那一瞬，我用研究所的「转送装置」，把你从教室里拉了出来。你看到的那道白光，就是它。" }
+    { "key": "story.beat1.l13", "value": "别慌。就在天花板塌下来的那一瞬，我用研究所的「转送装置」，把你从教室里拉了出来。你看到的那道白光，就是它。" },
+    { "key": "ui.start.research", "value": "参加研究" },
+    { "key": "ui.start.research_test", "value": "研究连接测试" },
+    { "key": "ui.start.research_code.title", "value": "研究参与码" },
+    { "key": "ui.start.research_code.help", "value": "请输入研究者提供的参与码。普通游玩不需要输入。" },
+    { "key": "ui.start.research_code.placeholder", "value": "参与码" },
+    { "key": "ui.start.research_code.confirm", "value": "确认参与码" },
+    { "key": "ui.start.research_code.cancel", "value": "返回" },
+    { "key": "ui.start.research_code.checking", "value": "正在确认参与码…" },
+    { "key": "ui.start.research_code.failed", "value": "无法确认参与码。" }
   ]
 }

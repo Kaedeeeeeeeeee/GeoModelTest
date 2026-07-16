@@ -260,7 +260,6 @@ namespace StorySystem
         private IEnumerator Run_MainScene_Rescue()
         {
             _isRunningCinematic = true;
-            QuizScoreManager.Instance.Reset(); // 新一轮游玩开始，清空测验成绩
             if (enableDebugLog) Debug.Log("[StoryDirector] Run_MainScene_Rescue 开始");
 
             bool playDisasterScene = true;
@@ -838,6 +837,7 @@ namespace StorySystem
         /// </summary>
         public class SubtitleChoice
         {
+            public string ChoiceId;
             public string Text;
             public bool IsCorrect;
             public string Feedback;
@@ -852,6 +852,7 @@ namespace StorySystem
 
             // 选择题支持（可选）：QuestionId 用于计分/报告，Choices 为 null/空表示普通线性台词。
             public string QuestionId;
+            public string QuestionVersion;
             public System.Collections.Generic.List<SubtitleChoice> Choices;
             public string Hint; // 选择题"ヒント"按钮显示的提示文本（可选）
 
@@ -868,6 +869,7 @@ namespace StorySystem
                 TriggerCameraShake = triggerCameraShake;
                 ShakeAmplitudeOverride = shakeAmplitudeOverride;
                 QuestionId = null;
+                QuestionVersion = QuizScoreManager.DefaultQuestionVersion;
                 Choices = null;
                 Hint = null;
                 IllustrationKey = null;
@@ -1070,7 +1072,15 @@ namespace StorySystem
                     // E: 答错可重答。已错过的选项灰掉禁用；最终必须答对才推进。
                     var disabledIdx = new HashSet<int>();
                     bool correctlyAnswered = false;
+                    bool usedHint = false;
+                    double questionShownAt = Time.realtimeSinceStartupAsDouble;
                     SetDialogAdvanceEnabled(false); // 选择期间屏蔽背景点击推进
+
+                    Backend.TelemetryClient.Instance?.Track("quiz_question_shown", new Dictionary<string, object>
+                    {
+                        ["questionId"] = line.QuestionId,
+                        ["questionVersion"] = line.QuestionVersion
+                    });
 
                     while (!correctlyAnswered)
                     {
@@ -1103,6 +1113,12 @@ namespace StorySystem
                         // D: 点了 ヒント → 显示提示，按推进键后重建选择面板（不计分、不算尝试）
                         if (showHintRequested)
                         {
+                            usedHint = true;
+                            Backend.TelemetryClient.Instance?.Track("quiz_hint_viewed", new Dictionary<string, object>
+                            {
+                                ["questionId"] = line.QuestionId,
+                                ["questionVersion"] = line.QuestionVersion
+                            });
                             SetDialogAdvanceEnabled(true);
                             speakerGO.SetActive(false);
                             txt.text = FuriganaProcessor.Process(line.Hint);
@@ -1123,7 +1139,16 @@ namespace StorySystem
                         }
 
                         var chosen = line.Choices[Mathf.Clamp(picked, 0, line.Choices.Count - 1)];
-                        QuizScoreManager.Instance.Record(line.QuestionId, chosen.IsCorrect); // dedup → 最终算最后一次
+                        long responseTimeMs = Math.Max(0L, (long)Math.Round(
+                            (Time.realtimeSinceStartupAsDouble - questionShownAt) * 1000d));
+                        QuizAttempt attempt = QuizScoreManager.Instance.Record(
+                            line.QuestionId,
+                            line.QuestionVersion,
+                            chosen.ChoiceId,
+                            chosen.IsCorrect,
+                            usedHint,
+                            responseTimeMs);
+                        Backend.TelemetryClient.Instance?.RecordQuizAttempt(attempt);
                         if (chosen.IsCorrect)
                             AudioManager.Instance?.PlaySFX(AudioKeys.SFX.SamplePickup);
                         else
@@ -1626,6 +1651,7 @@ namespace StorySystem
             MarkDialogOpened();
 
             var score = QuizScoreManager.Instance;
+            QuizSummary summary = score.BuildSummary();
             string grade = score.Grade;
 
             var canvasGO = new GameObject("ReportCanvas");
@@ -1656,17 +1682,28 @@ namespace StorySystem
             var card = new GameObject("Card");
             card.transform.SetParent(canvasGO.transform, false);
             var cardRt = card.AddComponent<RectTransform>();
-            cardRt.anchorMin = new Vector2(0.25f, 0.22f);
-            cardRt.anchorMax = new Vector2(0.75f, 0.78f);
+            cardRt.anchorMin = new Vector2(0.22f, 0.12f);
+            cardRt.anchorMax = new Vector2(0.78f, 0.88f);
             cardRt.offsetMin = Vector2.zero;
             cardRt.offsetMax = Vector2.zero;
             var cardImg = card.AddComponent<Image>();
             cardImg.color = new Color(0.08f, 0.10f, 0.14f, 0.96f);
 
-            CreateReportText(card.transform, LocalizedOr("report.title", "ちょうさ報告（ほうこく）"), 40, new Vector2(0f, 0.78f), new Vector2(1f, 0.98f));
-            CreateReportText(card.transform, $"{LocalizedOr("report.grade", "そうごう評価（ひょうか）")}: {grade}", 64, new Vector2(0f, 0.42f), new Vector2(1f, 0.74f));
-            CreateReportText(card.transform, $"{LocalizedOr("report.score", "せいかい数（すう）")}: {score.CorrectCount} / {score.Total}", 32, new Vector2(0f, 0.24f), new Vector2(1f, 0.40f));
-            CreateReportText(card.transform, LocalizedOr("ui.dialog.continue", "ダイアログをクリックして続ける"), 22, new Vector2(0f, 0.04f), new Vector2(1f, 0.16f));
+            CreateReportText(card.transform, LocalizedOr("report.title", "ちょうさ報告（ほうこく）"), 40, new Vector2(0f, 0.84f), new Vector2(1f, 0.98f));
+            CreateReportText(card.transform, $"{LocalizedOr("report.grade", "はじめの答えによる評価（ひょうか）")}: {grade}", 48, new Vector2(0f, 0.68f), new Vector2(1f, 0.84f));
+            CreateReportText(card.transform,
+                $"{LocalizedOr("report.first_correct", "1回目（かいめ）に正解（せいかい）")}: {summary.FirstCorrectCount} / {summary.ExpectedQuestionCount} ({AsPercent(summary.FirstCorrectRate)})",
+                28, new Vector2(0f, 0.53f), new Vector2(1f, 0.68f));
+            CreateReportText(card.transform,
+                $"{LocalizedOr("report.final_mastery", "最後（さいご）に正解（せいかい）できた問題（もんだい）")}: {summary.FinalMasteredCount} / {summary.ExpectedQuestionCount} ({AsPercent(summary.FinalMasteryRate)})",
+                28, new Vector2(0f, 0.40f), new Vector2(1f, 0.53f));
+            CreateReportText(card.transform,
+                $"{LocalizedOr("report.completion", "答（こた）えた問題（もんだい）")}: {summary.AnsweredQuestionCount} / {summary.ExpectedQuestionCount} ({AsPercent(summary.CompletionRate)})",
+                28, new Vector2(0f, 0.27f), new Vector2(1f, 0.40f));
+            CreateReportText(card.transform,
+                $"{LocalizedOr("report.average_attempts", "平均（へいきん）の回答回数（かいすう）")}: {summary.AverageAttemptCount:F1}    {LocalizedOr("report.hint_usage", "ヒントを使（つか）った割合（わりあい）")}: {AsPercent(summary.HintUsageRate)}",
+                24, new Vector2(0f, 0.15f), new Vector2(1f, 0.27f));
+            CreateReportText(card.transform, LocalizedOr("ui.dialog.continue", "ダイアログをクリックして続ける"), 21, new Vector2(0f, 0.03f), new Vector2(1f, 0.13f));
 
             yield return null;
             while (!advance)
@@ -1696,6 +1733,11 @@ namespace StorySystem
             t.alignment = TextAlignmentOptions.Center;
             t.lineSpacing = RubyLineSpacing;
             t.text = FuriganaProcessor.Process(content);
+        }
+
+        private static string AsPercent(float value)
+        {
+            return $"{Mathf.RoundToInt(Mathf.Clamp01(value) * 100f)}%";
         }
     }
 

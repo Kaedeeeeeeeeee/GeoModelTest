@@ -35,7 +35,15 @@ public class LocalizationDataTests
         "story.content_notice.title",
         "story.content_notice.continue",
         "story.content_notice.skip",
-        "warehouse.button.confirm_discard"
+        "warehouse.button.confirm_discard",
+        "report.first_correct",
+        "report.final_mastery",
+        "report.completion",
+        "report.average_attempts",
+        "report.hint_usage",
+        "ui.start.research_test",
+        "ui.start.research_code.title",
+        "ui.start.research_code.confirm"
     };
 
     private string _json;
