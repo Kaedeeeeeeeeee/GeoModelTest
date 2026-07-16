@@ -50,3 +50,26 @@ Original prompt: Mobile WebGL controls now slide correctly on the left joystick;
 - WebGL build succeeded with 0 errors, productVersion 2026.07.09-mobile-tool-wheel-tap, and butler validate passed.
 - Headed Playwright WebGL check passed: Unity loaded with WebGL2, the tool wheel renders with a circular background, slot hover highlights the slot/icon/text, and clicking a slot selects it and closes the wheel.
 - itch html5 build #1782964 is active as 2026.07.09-mobile-tool-wheel-tap.
+
+## 2026-07-09 mobile wild tool button tap-toggle follow-up
+- User reported the laboratory Tools button stays open after tap, but the wild scene Tools button behaves like hold-to-show.
+- Root cause: runtime MobileControlsUI click buttons invoked on PointerDown, then the raw touch fallback invoked again on the same touch Ended, toggling the tool wheel closed on release.
+- MobileControlsUI click buttons now use PointerDown only for pressed visuals; touch clicks are executed once by the raw release fallback, while mouse/desktop-test clicks execute on pointer release.
+- Unity compile passed with 0 C# errors.
+- WebGL build succeeded with 0 errors, productVersion 2026.07.09-mobile-wild-tool-toggle, and butler validate passed.
+- Headed Chromium WebGL check passed: Unity loaded, WebGL2 is available, and the built page contains productVersion 2026.07.09-mobile-wild-tool-toggle.
+- itch html5 build #1783059 is active as 2026.07.09-mobile-wild-tool-toggle.
+
+## 2026-07-09 mobile menu and quality settings release
+- Added the mobile pause/menu surface with Resume, Settings, and Exit Game, plus Settings controls for camera look sensitivity and manual/auto graphics quality.
+- WebGL build succeeded with 0 errors and productVersion 2026.07.09-mobile-menu-quality.
+- Butler validate passed and local HTTP smoke check returned 200 for index.html, loader, wasm, data, and framework files.
+- itch html5 build #1783091 is active as 2026.07.09-mobile-menu-quality.
+
+## 2026-07-10 mobile menu touch and layout fix
+- Added raw-touch release handling for the Resume, Settings, and Exit Game menu actions, while blocking touches from reaching gameplay controls behind the open menu.
+- Expanded and clipped the mobile menu panel, kept long settings labels inside their rows, and made the settings content opaque so underlying UI cannot bleed through it.
+- Added a modal canvas layer guard so story/report canvases cannot render or receive input above the pause menu or settings; their original sort order is restored on close.
+- Unity compile and WebGL build passed with 0 errors; Butler validation and local HTTP checks passed.
+- iPad-emulated Playwright touch flow passed: open Menu -> open Settings -> close Settings.
+- itch html5 build #1784712 is active as 2026.07.10-mobile-menu-touch-layout-fix.

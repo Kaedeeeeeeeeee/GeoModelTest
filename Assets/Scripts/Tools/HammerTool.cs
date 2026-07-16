@@ -110,7 +110,7 @@ public class HammerTool : CollectionTool
 
     public override bool RequestPrimaryUse()
     {
-        if (!isEquipped || !canUse)
+        if (IsToolInputBlocked || !isEquipped || !canUse)
         {
             return false;
         }

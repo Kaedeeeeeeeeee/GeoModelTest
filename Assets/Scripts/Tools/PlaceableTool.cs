@@ -139,7 +139,7 @@ public abstract class PlaceableTool : CollectionTool
 
     public override bool RequestPrimaryUse()
     {
-        if (!isEquipped || !canUse)
+        if (IsToolInputBlocked || !isEquipped || !canUse)
         {
             return false;
         }

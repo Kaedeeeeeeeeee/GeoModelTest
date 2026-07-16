@@ -395,18 +395,7 @@ public class MobileUIAdapter : MonoBehaviour
     /// </summary>
     void ApplyQualityOptimization()
     {
-        // 根据设备性能调整质量设置
-        int qualityLevel = GetRecommendedQualityLevel();
-        
-        if (QualitySettings.GetQualityLevel() != qualityLevel)
-        {
-            QualitySettings.SetQualityLevel(qualityLevel);
-            
-            if (logAdaptationChanges)
-            {
-                Debug.Log($"[MobileUIAdapter] 质量等级调整为: {qualityLevel}");
-            }
-        }
+        GamePerformanceSettings.Instance.ApplyQualityPreference(logAdaptationChanges);
         
         // 动画优化
         if (reduceAnimationsOnLowEnd && IsLowEndDevice())
@@ -420,22 +409,7 @@ public class MobileUIAdapter : MonoBehaviour
     /// </summary>
     int GetRecommendedQualityLevel()
     {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
-        {
-            return QualitySettings.GetQualityLevel();
-        }
-
-        switch (CurrentDeviceType)
-        {
-            case DeviceType.Phone:
-                return SystemInfo.systemMemorySize < 3000 ? 0 : 1; // 低端手机用最低质量
-            case DeviceType.Tablet:
-                return 2;
-            case DeviceType.Desktop:
-                return QualitySettings.names.Length - 1; // 最高质量
-            default:
-                return 1;
-        }
+        return GamePerformanceSettings.Instance.GetRecommendedQualityLevel();
     }
     
     /// <summary>

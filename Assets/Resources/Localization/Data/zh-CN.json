@@ -29,6 +29,30 @@
       "value": "界面音量"
     },
     {
+      "key": "ui.settings.gameplay",
+      "value": "游戏"
+    },
+    {
+      "key": "ui.settings.look_sensitivity",
+      "value": "镜头灵敏度"
+    },
+    {
+      "key": "ui.settings.quality",
+      "value": "画质"
+    },
+    {
+      "key": "ui.settings.auto_quality",
+      "value": "自动画质"
+    },
+    {
+      "key": "ui.settings.auto",
+      "value": "自动"
+    },
+    {
+      "key": "ui.settings.manual",
+      "value": "手动"
+    },
+    {
       "key": "ui.button.close",
       "value": "关闭"
     },
@@ -51,6 +75,18 @@
     {
       "key": "ui.button.settings",
       "value": "设置"
+    },
+    {
+      "key": "ui.mobile_menu.title",
+      "value": "菜单"
+    },
+    {
+      "key": "ui.mobile_menu.resume",
+      "value": "继续游戏"
+    },
+    {
+      "key": "ui.mobile_menu.quit",
+      "value": "退出游戏"
     },
     {
       "key": "warehouse.title",

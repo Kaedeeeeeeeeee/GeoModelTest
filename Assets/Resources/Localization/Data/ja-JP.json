@@ -29,6 +29,30 @@
       "value": "UI音量"
     },
     {
+      "key": "ui.settings.gameplay",
+      "value": "ゲーム"
+    },
+    {
+      "key": "ui.settings.look_sensitivity",
+      "value": "視点感度"
+    },
+    {
+      "key": "ui.settings.quality",
+      "value": "画質"
+    },
+    {
+      "key": "ui.settings.auto_quality",
+      "value": "自動画質"
+    },
+    {
+      "key": "ui.settings.auto",
+      "value": "自動"
+    },
+    {
+      "key": "ui.settings.manual",
+      "value": "手動"
+    },
+    {
       "key": "ui.button.close",
       "value": "閉じる"
     },
@@ -51,6 +75,18 @@
     {
       "key": "ui.button.settings",
       "value": "設定"
+    },
+    {
+      "key": "ui.mobile_menu.title",
+      "value": "メニュー"
+    },
+    {
+      "key": "ui.mobile_menu.resume",
+      "value": "ゲームに戻る"
+    },
+    {
+      "key": "ui.mobile_menu.quit",
+      "value": "ゲーム終了"
     },
     {
       "key": "warehouse.title",

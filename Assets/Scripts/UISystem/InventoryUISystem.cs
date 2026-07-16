@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using StorySystem;
 
 public class InventoryUISystem : MonoBehaviour
 {
@@ -57,6 +58,7 @@ public class InventoryUISystem : MonoBehaviour
     private RectTransform mobileToolbarRect;
     private Rect lastMobileToolbarSafeArea;
     private Vector2 lastMobileToolbarScreenSize;
+    private Coroutine pendingMobileToolUse;
 
 
     /// <summary>
@@ -87,6 +89,11 @@ public class InventoryUISystem : MonoBehaviour
     /// </summary>
     void HandleToolWheelInput()
     {
+        if (StoryDirector.IsStoryPlaybackActive)
+        {
+            return;
+        }
+
         RefreshMobileModeState();
 
         CloseLegacyMobileToolbar();
@@ -97,9 +104,29 @@ public class InventoryUISystem : MonoBehaviour
     {
         RefreshMobileModeState();
 
-        if (!isPressed || !isMobileMode || IsToolMenuOpen())
+        if (StoryDirector.IsStoryPlaybackActive ||
+            !isPressed || !isMobileMode || IsToolMenuOpen())
         {
             return;
+        }
+
+        // 同一次触摸也可能被 NPC/剧情交互消费。延后一帧再决定是否使用工具，
+        // 让剧情优先打开，避免“点剧情”的手势同时落到手持道具上。
+        if (pendingMobileToolUse == null)
+        {
+            pendingMobileToolUse = StartCoroutine(TryUseCurrentToolAfterInteractionRouting());
+        }
+    }
+
+    IEnumerator TryUseCurrentToolAfterInteractionRouting()
+    {
+        yield return null;
+        pendingMobileToolUse = null;
+
+        RefreshMobileModeState();
+        if (StoryDirector.IsStoryPlaybackActive || !isMobileMode || IsToolMenuOpen())
+        {
+            yield break;
         }
 
         ToolManager toolManager = FindFirstObjectByType<ToolManager>(FindObjectsInactive.Include);

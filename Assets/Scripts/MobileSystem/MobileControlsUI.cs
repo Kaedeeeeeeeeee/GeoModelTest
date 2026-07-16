@@ -30,6 +30,7 @@ public class MobileControlsUI : MonoBehaviour
         Inventory,
         Encyclopedia,
         Tools,
+        Menu,
         Ascend,
         Descend
     }
@@ -61,6 +62,13 @@ public class MobileControlsUI : MonoBehaviour
     // public Button warehouseButton; // 仓库按钮已移除，使用其他方式访问仓库
     public Button encyclopediaButton;
     public Button toolWheelButton;
+    public Button menuButton;
+
+    [Header("移动端菜单")]
+    public GameObject mobileMenuPanel;
+    public Button resumeMenuButton;
+    public Button settingsMenuButton;
+    public Button quitMenuButton;
 
     [Header("无人机专用按钮")]
     public Button ascendButton; // 上升按钮（无人机模式）
@@ -121,11 +129,20 @@ public class MobileControlsUI : MonoBehaviour
     private int rawInventoryTouchId = NoTouchId;
     private int rawEncyclopediaTouchId = NoTouchId;
     private int rawToolWheelTouchId = NoTouchId;
+    private int rawMenuTouchId = NoTouchId;
+    private int rawResumeMenuTouchId = NoTouchId;
+    private int rawSettingsMenuTouchId = NoTouchId;
+    private int rawQuitMenuTouchId = NoTouchId;
     private int rawAscendTouchId = NoTouchId;
     private int rawDescendTouchId = NoTouchId;
     private readonly HashSet<int> activeRawTouchIds = new HashSet<int>();
     private bool isLanguageChangeSubscribed = false;
     private bool hasPublishedJoystickInput = false;
+    private bool isMobileMenuOpen = false;
+    private float mobileMenuOriginalTimeScale = 1f;
+    private ModalCanvasLayerGuard.Scope mobileMenuCanvasScope;
+    private FirstPersonController pausedPlayerController;
+    private bool pausedPlayerControllerWasEnabled;
 
     void Awake()
     {
@@ -239,6 +256,11 @@ public class MobileControlsUI : MonoBehaviour
 
     void OnDisable()
     {
+        if (isMobileMenuOpen)
+        {
+            CloseMobileMenu();
+        }
+
         if (ActiveInstance == this)
         {
             ActiveInstance = null;
@@ -301,6 +323,8 @@ public class MobileControlsUI : MonoBehaviour
         // 如果组件为空，自动创建
         if (joystickContainer == null) CreateVirtualJoystick();
         if (jumpButton == null) CreateVirtualButtons();
+        if (menuButton == null) CreateMobileMenuButton();
+        if (mobileMenuPanel == null) CreateMobilePauseMenu();
         if (lookTouchArea == null) CreateLookTouchArea();
         ConfigureLookTouchAreaRaycasts();
         UpdateLocalizedButtonLabels();
@@ -458,10 +482,136 @@ public class MobileControlsUI : MonoBehaviour
         toolWheelButton = CreateButton("ToolWheelButton", "工具", new Vector2(edgeMargin + buttonSize * 2.5f + buttonSpacing * 2, -edgeMargin - buttonSize/2),
                                        new Vector2(0, 1), OnToolWheelButtonClick, null);
 
+        CreateMobileMenuButton();
+
         // 创建无人机控制容器
         CreateDroneControls();
 
         Debug.Log("[MobileControlsUI] 虚拟按钮创建完成");
+    }
+
+    void CreateMobileMenuButton()
+    {
+        menuButton = CreateButton("MenuButton", "菜单", new Vector2(-edgeMargin - buttonSize/2, -edgeMargin - buttonSize/2),
+                                  new Vector2(1, 1), OnMenuButtonClick, null);
+    }
+
+    void CreateMobilePauseMenu()
+    {
+        GameObject overlay = new GameObject("MobilePauseMenu");
+        overlay.transform.SetParent(transform, false);
+
+        RectTransform overlayRect = overlay.AddComponent<RectTransform>();
+        overlayRect.anchorMin = Vector2.zero;
+        overlayRect.anchorMax = Vector2.one;
+        overlayRect.offsetMin = Vector2.zero;
+        overlayRect.offsetMax = Vector2.zero;
+
+        Image overlayImage = overlay.AddComponent<Image>();
+        overlayImage.color = new Color(0f, 0f, 0f, 0.72f);
+        overlayImage.raycastTarget = true;
+
+        GameObject panel = new GameObject("Panel");
+        panel.transform.SetParent(overlay.transform, false);
+
+        RectTransform panelRect = panel.AddComponent<RectTransform>();
+        panelRect.anchorMin = new Vector2(0.30f, 0.16f);
+        panelRect.anchorMax = new Vector2(0.70f, 0.84f);
+        panelRect.offsetMin = Vector2.zero;
+        panelRect.offsetMax = Vector2.zero;
+
+        Image panelImage = panel.AddComponent<Image>();
+        panelImage.color = new Color(0.06f, 0.075f, 0.085f, 1f);
+        panelImage.raycastTarget = true;
+        panel.AddComponent<RectMask2D>();
+
+        CreateMenuText(panel.transform, "Title", "ui.mobile_menu.title", "菜单", 34,
+            new Vector2(0.08f, 0.80f), new Vector2(0.92f, 0.94f), FontStyle.Bold);
+
+        resumeMenuButton = CreateMenuOptionButton(panel.transform, "ResumeButton", "ui.mobile_menu.resume", "继续游戏",
+            new Vector2(0.12f, 0.59f), new Vector2(0.88f, 0.73f), CloseMobileMenu);
+
+        settingsMenuButton = CreateMenuOptionButton(panel.transform, "SettingsButton", "ui.button.settings", "设置",
+            new Vector2(0.12f, 0.40f), new Vector2(0.88f, 0.54f), OpenSettingsFromMobileMenu);
+
+        quitMenuButton = CreateMenuOptionButton(panel.transform, "QuitButton", "ui.mobile_menu.quit", "退出游戏",
+            new Vector2(0.12f, 0.21f), new Vector2(0.88f, 0.35f), QuitGameFromMobileMenu);
+
+        mobileMenuPanel = overlay;
+        mobileMenuPanel.transform.SetAsLastSibling();
+        mobileMenuPanel.SetActive(false);
+    }
+
+    Text CreateMenuText(Transform parent, string name, string localizationKey, string fallbackText, int fontSize,
+                        Vector2 anchorMin, Vector2 anchorMax, FontStyle fontStyle = FontStyle.Normal)
+    {
+        GameObject textObj = new GameObject(name);
+        textObj.transform.SetParent(parent, false);
+
+        RectTransform rect = textObj.AddComponent<RectTransform>();
+        rect.anchorMin = anchorMin;
+        rect.anchorMax = anchorMax;
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+
+        Text text = textObj.AddComponent<Text>();
+        text.text = fallbackText;
+        text.font = UIFontResolver.GetUIFont();
+        text.fontSize = fontSize;
+        text.resizeTextForBestFit = true;
+        text.resizeTextMinSize = 12;
+        text.resizeTextMaxSize = fontSize;
+        text.color = Color.white;
+        text.alignment = TextAnchor.MiddleCenter;
+        text.fontStyle = fontStyle;
+        text.raycastTarget = false;
+
+        LocalizedText localizedText = textObj.AddComponent<LocalizedText>();
+        localizedText.TextKey = localizationKey;
+
+        return text;
+    }
+
+    Button CreateMenuOptionButton(Transform parent, string name, string localizationKey, string fallbackText,
+                                  Vector2 anchorMin, Vector2 anchorMax, UnityEngine.Events.UnityAction onClick)
+    {
+        GameObject buttonObj = new GameObject(name);
+        buttonObj.transform.SetParent(parent, false);
+
+        RectTransform rect = buttonObj.AddComponent<RectTransform>();
+        rect.anchorMin = anchorMin;
+        rect.anchorMax = anchorMax;
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+
+        Image image = buttonObj.AddComponent<Image>();
+        image.color = new Color(0.12f, 0.24f, 0.27f, 0.92f);
+        image.raycastTarget = true;
+
+        Button button = buttonObj.AddComponent<Button>();
+        button.targetGraphic = image;
+        ColorBlock colors = button.colors;
+        colors.normalColor = image.color;
+        colors.highlightedColor = new Color(0.18f, 0.34f, 0.38f, 0.96f);
+        colors.pressedColor = new Color(0.08f, 0.18f, 0.2f, 1f);
+        colors.selectedColor = colors.highlightedColor;
+        colors.disabledColor = new Color(0.08f, 0.08f, 0.08f, 0.5f);
+        colors.colorMultiplier = 1f;
+        colors.fadeDuration = 0.06f;
+        button.colors = colors;
+
+        CreateMenuText(buttonObj.transform, "Text", localizationKey, fallbackText, 24,
+            Vector2.zero, Vector2.one, FontStyle.Bold);
+
+        EventTrigger trigger = buttonObj.AddComponent<EventTrigger>();
+        AddTriggerEntry(trigger, EventTriggerType.PointerDown, (data) => SetButtonVisualPressed(button, true));
+        AddTriggerEntry(trigger, EventTriggerType.PointerUp, (data) =>
+        {
+            SetButtonVisualPressed(button, false);
+            InvokeClickForPointerEvent(data, onClick);
+        });
+        AddTriggerEntry(trigger, EventTriggerType.PointerExit, (data) => SetButtonVisualPressed(button, false));
+        return button;
     }
 
     /// <summary>
@@ -503,14 +653,13 @@ public class MobileControlsUI : MonoBehaviour
         EventTrigger trigger = buttonObj.AddComponent<EventTrigger>();
         if (onDown != null)
         {
-            AddTriggerEntry(trigger, EventTriggerType.PointerDown, (data) =>
-            {
-                SetButtonVisualPressed(button, true);
-                onDown.Invoke();
-            });
-
             if (onUp != null)
             {
+                AddTriggerEntry(trigger, EventTriggerType.PointerDown, (data) =>
+                {
+                    SetButtonVisualPressed(button, true);
+                    onDown.Invoke();
+                });
                 AddTriggerEntry(trigger, EventTriggerType.PointerUp, (data) =>
                 {
                     SetButtonVisualPressed(button, false);
@@ -524,7 +673,12 @@ public class MobileControlsUI : MonoBehaviour
             }
             else
             {
-                AddTriggerEntry(trigger, EventTriggerType.PointerUp, (data) => SetButtonVisualPressed(button, false));
+                AddTriggerEntry(trigger, EventTriggerType.PointerDown, (data) => SetButtonVisualPressed(button, true));
+                AddTriggerEntry(trigger, EventTriggerType.PointerUp, (data) =>
+                {
+                    SetButtonVisualPressed(button, false);
+                    InvokeClickForPointerEvent(data, onDown);
+                });
                 AddTriggerEntry(trigger, EventTriggerType.PointerExit, (data) => SetButtonVisualPressed(button, false));
             }
         }
@@ -629,16 +783,41 @@ public class MobileControlsUI : MonoBehaviour
         }
         else
         {
-            AddTriggerEntry(trigger, EventTriggerType.PointerDown, (data) =>
+            AddTriggerEntry(trigger, EventTriggerType.PointerDown, (data) => SetButtonVisualPressed(button, true));
+            AddTriggerEntry(trigger, EventTriggerType.PointerUp, (data) =>
             {
-                SetButtonVisualPressed(button, true);
-                onDown?.Invoke();
+                SetButtonVisualPressed(button, false);
+                InvokeClickForPointerEvent(data, onDown);
             });
-            AddTriggerEntry(trigger, EventTriggerType.PointerUp, (data) => SetButtonVisualPressed(button, false));
             AddTriggerEntry(trigger, EventTriggerType.PointerExit, (data) => SetButtonVisualPressed(button, false));
         }
 
         return button;
+    }
+
+    bool ShouldRawTouchFallbackHandleClick(BaseEventData eventData)
+    {
+        PointerEventData pointerData = eventData as PointerEventData;
+        return pointerData != null &&
+               pointerData.pointerId >= 0 &&
+               enableRawTouchFallback &&
+               Touchscreen.current != null;
+    }
+
+    void InvokeClickForPointerEvent(BaseEventData eventData, UnityEngine.Events.UnityAction onClick)
+    {
+        if (!ShouldRawTouchFallbackHandleClick(eventData))
+        {
+            onClick?.Invoke();
+        }
+    }
+
+    void InvokeClickForPointerEvent(BaseEventData eventData, System.Action onClick)
+    {
+        if (!ShouldRawTouchFallbackHandleClick(eventData))
+        {
+            onClick?.Invoke();
+        }
     }
 
     /// <summary>
@@ -793,6 +972,7 @@ public class MobileControlsUI : MonoBehaviour
         ApplySafeAreaOffset(GetButtonRect(inventoryButton), leftMargin, rightMargin, topMargin, bottomMargin);
         ApplySafeAreaOffset(GetButtonRect(encyclopediaButton), leftMargin, rightMargin, topMargin, bottomMargin);
         ApplySafeAreaOffset(GetButtonRect(toolWheelButton), leftMargin, rightMargin, topMargin, bottomMargin);
+        ApplySafeAreaOffset(GetButtonRect(menuButton), leftMargin, rightMargin, topMargin, bottomMargin);
         ApplySafeAreaOffset(GetRectTransform(droneControlsContainer), leftMargin, rightMargin, topMargin, bottomMargin);
 
         Debug.Log($"[MobileControlsUI] 安全区域适配完成 - 边距: L{leftMargin} R{rightMargin} T{topMargin} B{bottomMargin}");
@@ -820,6 +1000,8 @@ public class MobileControlsUI : MonoBehaviour
                IsScreenPointInButton(inventoryButton, screenPosition) ||
                IsScreenPointInButton(encyclopediaButton, screenPosition) ||
                IsScreenPointInButton(toolWheelButton, screenPosition) ||
+               IsScreenPointInButton(menuButton, screenPosition) ||
+               IsScreenPointInRect(GetRectTransform(mobileMenuPanel), screenPosition) ||
                IsScreenPointInButton(ascendButton, screenPosition) ||
                IsScreenPointInButton(descendButton, screenPosition);
     }
@@ -954,6 +1136,7 @@ public class MobileControlsUI : MonoBehaviour
             case "InventoryButton":
             case "EncyclopediaButton":
             case "ToolWheelButton":
+            case "MenuButton":
                 return ControlButtonRole.Utility;
             case "AscendButton":
             case "DescendButton":
@@ -979,6 +1162,8 @@ public class MobileControlsUI : MonoBehaviour
                 return ControlButtonIcon.Encyclopedia;
             case "ToolWheelButton":
                 return ControlButtonIcon.Tools;
+            case "MenuButton":
+                return ControlButtonIcon.Menu;
             case "AscendButton":
                 return ControlButtonIcon.Ascend;
             case "DescendButton":
@@ -1135,6 +1320,7 @@ public class MobileControlsUI : MonoBehaviour
         SetButtonVisualPressed(inventoryButton, false);
         SetButtonVisualPressed(encyclopediaButton, false);
         SetButtonVisualPressed(toolWheelButton, false);
+        SetButtonVisualPressed(menuButton, false);
         SetButtonVisualPressed(ascendButton, false);
         SetButtonVisualPressed(descendButton, false);
     }
@@ -1222,6 +1408,7 @@ public class MobileControlsUI : MonoBehaviour
         UpdateButtonLabel(inventoryButton, GetControlLabel(language, "inventory"));
         UpdateButtonLabel(encyclopediaButton, GetControlLabel(language, "encyclopedia"));
         UpdateButtonLabel(toolWheelButton, GetControlLabel(language, "tools"));
+        UpdateButtonLabel(menuButton, GetControlLabel(language, "menu"));
         UpdateButtonLabel(ascendButton, GetControlLabel(language, "ascend"));
         UpdateButtonLabel(descendButton, GetControlLabel(language, "descend"));
     }
@@ -1251,6 +1438,7 @@ public class MobileControlsUI : MonoBehaviour
                     "inventory" => "背包",
                     "encyclopedia" => "图鉴",
                     "tools" => "工具",
+                    "menu" => "菜单",
                     "ascend" => "上升",
                     "descend" => "下降",
                     _ => key
@@ -1266,6 +1454,7 @@ public class MobileControlsUI : MonoBehaviour
                     "inventory" => "Bag",
                     "encyclopedia" => "Guide",
                     "tools" => "Tools",
+                    "menu" => "Menu",
                     "ascend" => "Up",
                     "descend" => "Down",
                     _ => key
@@ -1282,6 +1471,7 @@ public class MobileControlsUI : MonoBehaviour
                     "inventory" => "バッグ",
                     "encyclopedia" => "図鑑",
                     "tools" => "道具",
+                    "menu" => "メニュー",
                     "ascend" => "上昇",
                     "descend" => "下降",
                     _ => key
@@ -1340,6 +1530,10 @@ public class MobileControlsUI : MonoBehaviour
         rawInventoryTouchId = NoTouchId;
         rawEncyclopediaTouchId = NoTouchId;
         rawToolWheelTouchId = NoTouchId;
+        rawMenuTouchId = NoTouchId;
+        rawResumeMenuTouchId = NoTouchId;
+        rawSettingsMenuTouchId = NoTouchId;
+        rawQuitMenuTouchId = NoTouchId;
         rawAscendTouchId = NoTouchId;
         rawDescendTouchId = NoTouchId;
         hasPublishedJoystickInput = false;
@@ -1476,6 +1670,8 @@ public class MobileControlsUI : MonoBehaviour
                 return IsBookIcon(point);
             case ControlButtonIcon.Tools:
                 return IsToolIcon(point);
+            case ControlButtonIcon.Menu:
+                return IsMenuIcon(point);
             case ControlButtonIcon.Descend:
                 return IsArrowIcon(point, false);
             case ControlButtonIcon.Ascend:
@@ -1529,6 +1725,13 @@ public class MobileControlsUI : MonoBehaviour
                IsRing(point, new Vector2(0.74f, 0.7f), 0.14f, 0.09f) ||
                IsLine(point, new Vector2(0.67f, 0.79f), new Vector2(0.84f, 0.62f), 0.04f) ||
                IsCircle(point, new Vector2(0.28f, 0.23f), 0.065f);
+    }
+
+    bool IsMenuIcon(Vector2 point)
+    {
+        return IsLine(point, new Vector2(0.25f, 0.68f), new Vector2(0.75f, 0.68f), 0.05f) ||
+               IsLine(point, new Vector2(0.25f, 0.50f), new Vector2(0.75f, 0.50f), 0.05f) ||
+               IsLine(point, new Vector2(0.25f, 0.32f), new Vector2(0.75f, 0.32f), 0.05f);
     }
 
     bool IsRect(Vector2 point, float minX, float minY, float maxX, float maxY)
@@ -1736,6 +1939,14 @@ public class MobileControlsUI : MonoBehaviour
                 activeRawTouchIds.Add(touchId);
             }
 
+            if (isMobileMenuOpen)
+            {
+                ProcessRawClickButtonTouch(resumeMenuButton, ref rawResumeMenuTouchId, touchId, position, phase, CloseMobileMenu);
+                ProcessRawClickButtonTouch(settingsMenuButton, ref rawSettingsMenuTouchId, touchId, position, phase, OpenSettingsFromMobileMenu);
+                ProcessRawClickButtonTouch(quitMenuButton, ref rawQuitMenuTouchId, touchId, position, phase, QuitGameFromMobileMenu);
+                continue;
+            }
+
             ProcessRawJoystickTouch(touchId, position, phase);
             ProcessRawHoldButtonTouch(jumpButton, ref rawJumpTouchId, touchId, position, phase, OnJumpButtonDown, OnJumpButtonUp);
             ProcessRawHoldButtonTouch(runButton, ref rawRunTouchId, touchId, position, phase, OnRunButtonDown, OnRunButtonUp);
@@ -1747,6 +1958,7 @@ public class MobileControlsUI : MonoBehaviour
             ProcessRawClickButtonTouch(inventoryButton, ref rawInventoryTouchId, touchId, position, phase, OnInventoryButtonClick);
             ProcessRawClickButtonTouch(encyclopediaButton, ref rawEncyclopediaTouchId, touchId, position, phase, OnEncyclopediaButtonClick);
             ProcessRawClickButtonTouch(toolWheelButton, ref rawToolWheelTouchId, touchId, position, phase, OnToolWheelButtonClick);
+            ProcessRawClickButtonTouch(menuButton, ref rawMenuTouchId, touchId, position, phase, OnMenuButtonClick);
         }
 
         ReleaseMissingRawTouches(activeRawTouchIds);
@@ -1865,6 +2077,10 @@ public class MobileControlsUI : MonoBehaviour
         ReleaseMissingRawClickTouch(inventoryButton, ref rawInventoryTouchId, activeTouchIds);
         ReleaseMissingRawClickTouch(encyclopediaButton, ref rawEncyclopediaTouchId, activeTouchIds);
         ReleaseMissingRawClickTouch(toolWheelButton, ref rawToolWheelTouchId, activeTouchIds);
+        ReleaseMissingRawClickTouch(menuButton, ref rawMenuTouchId, activeTouchIds);
+        ReleaseMissingRawClickTouch(resumeMenuButton, ref rawResumeMenuTouchId, activeTouchIds);
+        ReleaseMissingRawClickTouch(settingsMenuButton, ref rawSettingsMenuTouchId, activeTouchIds);
+        ReleaseMissingRawClickTouch(quitMenuButton, ref rawQuitMenuTouchId, activeTouchIds);
     }
 
     void ReleaseMissingRawHoldTouch(ref int trackedTouchId, HashSet<int> activeTouchIds, System.Action onUp)
@@ -2079,6 +2295,95 @@ public class MobileControlsUI : MonoBehaviour
         {
             Debug.LogError("[MobileControlsUI] inputManager为null，无法触发工具轮盘");
         }
+    }
+
+    void OnMenuButtonClick()
+    {
+        if (isMobileMenuOpen)
+        {
+            CloseMobileMenu();
+        }
+        else
+        {
+            OpenMobileMenu();
+        }
+    }
+
+    void OpenMobileMenu()
+    {
+        if (isMobileMenuOpen)
+        {
+            return;
+        }
+
+        if (mobileMenuPanel == null)
+        {
+            CreateMobilePauseMenu();
+        }
+
+        ResetControlState();
+        mobileMenuOriginalTimeScale = Time.timeScale;
+        Time.timeScale = 0f;
+
+        mobileMenuCanvasScope = ModalCanvasLayerGuard.Activate(controlsCanvas);
+
+        pausedPlayerController = FindFirstObjectByType<FirstPersonController>();
+        if (pausedPlayerController != null)
+        {
+            pausedPlayerControllerWasEnabled = pausedPlayerController.enabled;
+            pausedPlayerController.enabled = false;
+        }
+
+        mobileMenuPanel.transform.SetAsLastSibling();
+        mobileMenuPanel.SetActive(true);
+        isMobileMenuOpen = true;
+        Debug.Log("[MobileControlsUI] 移动端菜单打开");
+    }
+
+    void CloseMobileMenu()
+    {
+        if (!isMobileMenuOpen)
+        {
+            return;
+        }
+
+        if (mobileMenuPanel != null)
+        {
+            mobileMenuPanel.SetActive(false);
+        }
+
+        Time.timeScale = mobileMenuOriginalTimeScale;
+
+        mobileMenuCanvasScope?.Dispose();
+        mobileMenuCanvasScope = null;
+
+        if (pausedPlayerController != null && pausedPlayerControllerWasEnabled)
+        {
+            pausedPlayerController.enabled = true;
+        }
+
+        pausedPlayerController = null;
+        isMobileMenuOpen = false;
+        Debug.Log("[MobileControlsUI] 移动端菜单关闭");
+    }
+
+    void OpenSettingsFromMobileMenu()
+    {
+        CloseMobileMenu();
+        SettingsManager.Instance.OpenSettings();
+    }
+
+    void QuitGameFromMobileMenu()
+    {
+        CloseMobileMenu();
+        Time.timeScale = 1f;
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        UnityEngine.SceneManagement.SceneManager.LoadScene("StartScene");
+#else
+        Application.Quit();
+#endif
+        Debug.Log("[MobileControlsUI] 退出游戏");
     }
 
     #endregion

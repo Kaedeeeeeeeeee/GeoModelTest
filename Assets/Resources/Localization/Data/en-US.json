@@ -29,6 +29,30 @@
       "value": "UI Volume"
     },
     {
+      "key": "ui.settings.gameplay",
+      "value": "Gameplay"
+    },
+    {
+      "key": "ui.settings.look_sensitivity",
+      "value": "Look Sensitivity"
+    },
+    {
+      "key": "ui.settings.quality",
+      "value": "Quality"
+    },
+    {
+      "key": "ui.settings.auto_quality",
+      "value": "Auto Quality"
+    },
+    {
+      "key": "ui.settings.auto",
+      "value": "Auto"
+    },
+    {
+      "key": "ui.settings.manual",
+      "value": "Manual"
+    },
+    {
       "key": "ui.button.close",
       "value": "Close"
     },
@@ -51,6 +75,18 @@
     {
       "key": "ui.button.settings",
       "value": "Settings"
+    },
+    {
+      "key": "ui.mobile_menu.title",
+      "value": "Menu"
+    },
+    {
+      "key": "ui.mobile_menu.resume",
+      "value": "Resume"
+    },
+    {
+      "key": "ui.mobile_menu.quit",
+      "value": "Exit Game"
     },
     {
       "key": "warehouse.title",

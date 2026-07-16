@@ -76,6 +76,9 @@ public class FirstPersonController : MonoBehaviour
         // 初始化移动端输入管理器
         InitializeMobileInput();
 
+        ApplyLookSensitivity(GamePerformanceSettings.LoadLookSensitivity(mouseSensitivity));
+        GamePerformanceSettings.LookSensitivityChanged += ApplyLookSensitivity;
+
         // 桌面测试模式下不锁定鼠标，允许点击虚拟控件
         SetCursorLockState();
 
@@ -402,6 +405,11 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
+    public void ApplyLookSensitivity(float sensitivity)
+    {
+        mouseSensitivity = Mathf.Clamp(sensitivity, GamePerformanceSettings.MinLookSensitivity, GamePerformanceSettings.MaxLookSensitivity);
+    }
+
     public void OnRun(InputAction.CallbackContext context)
     {
         runInput = context.ReadValueAsButton();
@@ -619,6 +627,8 @@ public class FirstPersonController : MonoBehaviour
 
     private void OnDestroy()
     {
+        GamePerformanceSettings.LookSensitivityChanged -= ApplyLookSensitivity;
+
         if (GuidanceManager.Current != null)
         {
             GuidanceManager.Current.RegisterPlayer(null);

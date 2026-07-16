@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Core;
+using StorySystem;
 
 public abstract class CollectionTool : MonoBehaviour
 {
@@ -20,6 +21,12 @@ public abstract class CollectionTool : MonoBehaviour
     protected Camera playerCamera;
     protected AudioSource audioSource;
     protected float lastUseTime = 0f;
+    private bool wasToolInputBlocked = false;
+
+    /// <summary>
+    /// 剧情对话显示期间，所有工具共用同一个输入锁。
+    /// </summary>
+    protected bool IsToolInputBlocked => StoryDirector.IsStoryPlaybackActive;
     
     protected virtual void Start()
     {
@@ -39,10 +46,31 @@ public abstract class CollectionTool : MonoBehaviour
     
     protected virtual void Update()
     {
+        bool inputBlocked = IsToolInputBlocked;
+        if (inputBlocked)
+        {
+            if (!wasToolInputBlocked && isEquipped)
+            {
+                OnToolInputBlocked();
+            }
+
+            wasToolInputBlocked = true;
+            return;
+        }
+
+        wasToolInputBlocked = false;
+
         if (isEquipped)
         {
             if (GetPlayerCamera() == null) return;
-            HandleInput();
+
+            // 真机移动端统一由 MobileInputManager/InventoryUISystem 路由工具按钮。
+            // 不再把任意触摸（看向、点剧情、点 UI）当作鼠标左键直接使用工具。
+            if (!MobileInputManager.IsRuntimeMobileDevice())
+            {
+                HandleInput();
+            }
+
             CheckCooldown();
         }
     }
@@ -114,7 +142,7 @@ public abstract class CollectionTool : MonoBehaviour
 
     public virtual bool RequestPrimaryUse()
     {
-        if (!isEquipped || !canUse)
+        if (IsToolInputBlocked || !isEquipped || !canUse)
         {
             return false;
         }
@@ -126,6 +154,14 @@ public abstract class CollectionTool : MonoBehaviour
     public virtual bool RequestCancelUse()
     {
         return false;
+    }
+
+    /// <summary>
+    /// 剧情开始的首帧取消尚未完成的工具动作（例如锤击采集或放置预览）。
+    /// </summary>
+    protected virtual void OnToolInputBlocked()
+    {
+        RequestCancelUse();
     }
     
     protected virtual bool CanUseOnTarget(RaycastHit hit)

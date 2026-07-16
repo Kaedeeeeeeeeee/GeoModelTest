@@ -30,6 +30,12 @@ namespace StorySystem
             }
         }
 
+        /// <summary>
+        /// 剧情协程已经启动、对话框正在显示，或对话刚关闭的保护帧内，都阻止游戏操作。
+        /// </summary>
+        public static bool IsStoryPlaybackActive =>
+            (_instance != null && _instance._isRunningCinematic) || SubtitleUI.IsPlayerInputBlocked;
+
         private HashSet<string> _flags;
         [SerializeField] private bool enableDebugLog = true;
         [SerializeField] private string mainRescueSequenceResource = "Story/quest1.1";

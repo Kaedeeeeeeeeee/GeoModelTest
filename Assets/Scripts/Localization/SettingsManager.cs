@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using GeoModel.AudioSystem;
+using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// 设置管理器 - 管理ESC键触发的设置界面
@@ -58,6 +60,15 @@ public class SettingsManager : MonoBehaviour
     public Text bgmVolumeLabel;
     public Text sfxVolumeLabel;
     public Text uiVolumeLabel;
+
+    [Header("游戏设置")]
+    public Text gameplaySectionLabel;
+    public Slider lookSensitivitySlider;
+    public Slider qualitySlider;
+    public Text lookSensitivityLabel;
+    public Text qualityLabel;
+    public Button autoQualityButton;
+    public Text autoQualityText;
     
     [Header("设置")]
     public bool pauseGameWhenOpen = true;
@@ -66,7 +77,9 @@ public class SettingsManager : MonoBehaviour
     // 私有成员
     private bool isSettingsOpen = false;
     private FirstPersonController playerController;
+    private GamePerformanceSettings performanceSettings;
     private float originalTimeScale = 1f;
+    private ModalCanvasLayerGuard.Scope settingsCanvasScope;
     
     #region Unity生命周期
     void Awake()
@@ -89,6 +102,8 @@ public class SettingsManager : MonoBehaviour
     
     void Start()
     {
+        performanceSettings = GamePerformanceSettings.Instance;
+
         // 如果没有设置界面，创建一个
         if (settingsPanel == null)
         {
@@ -138,6 +153,15 @@ public class SettingsManager : MonoBehaviour
             return;
         
         Debug.Log("打开设置界面");
+        FindPlayerController();
+        RefreshSettingsControlValues();
+
+        if (settingsCanvas != null)
+        {
+            settingsCanvas.overrideSorting = true;
+            settingsCanvas.sortingOrder = 31000;
+        }
+        settingsCanvasScope = ModalCanvasLayerGuard.Activate(settingsCanvas);
         
         // 显示设置面板
         if (settingsPanel != null)
@@ -182,6 +206,9 @@ public class SettingsManager : MonoBehaviour
         
         if (settingsCanvas != null)
             settingsCanvas.gameObject.SetActive(false);
+
+        settingsCanvasScope?.Dispose();
+        settingsCanvasScope = null;
         
         // 恢复游戏
         if (pauseGameWhenOpen)
@@ -233,7 +260,8 @@ public class SettingsManager : MonoBehaviour
         
         settingsCanvas = canvasObj.AddComponent<Canvas>();
         settingsCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        settingsCanvas.sortingOrder = 200; // 确保在最顶层
+        settingsCanvas.overrideSorting = true;
+        settingsCanvas.sortingOrder = 31000; // 高于剧情、背包等运行时Canvas
         
         // 添加CanvasScaler
         CanvasScaler scaler = canvasObj.AddComponent<CanvasScaler>();
@@ -263,7 +291,7 @@ public class SettingsManager : MonoBehaviour
         
         // 添加半透明背景
         Image backgroundImage = panelObj.AddComponent<Image>();
-        backgroundImage.color = new Color(0, 0, 0, 0.7f);
+        backgroundImage.color = new Color(0, 0, 0, 0.88f);
         
         settingsPanel = panelObj;
     }
@@ -278,14 +306,15 @@ public class SettingsManager : MonoBehaviour
         contentObj.transform.SetParent(settingsPanel.transform);
         
         RectTransform contentRect = contentObj.AddComponent<RectTransform>();
-        contentRect.anchorMin = new Vector2(0.25f, 0.08f);
-        contentRect.anchorMax = new Vector2(0.75f, 0.92f);
+        contentRect.anchorMin = new Vector2(0.14f, 0.06f);
+        contentRect.anchorMax = new Vector2(0.86f, 0.94f);
         contentRect.offsetMin = Vector2.zero;
         contentRect.offsetMax = Vector2.zero;
         
         // 添加内容背景
         Image contentBg = contentObj.AddComponent<Image>();
-        contentBg.color = new Color(0.2f, 0.2f, 0.2f, 0.95f);
+        contentBg.color = new Color(0.2f, 0.2f, 0.2f, 1f);
+        contentObj.AddComponent<RectMask2D>();
         
         // 创建标题
         CreateTitle(contentObj);
@@ -298,6 +327,9 @@ public class SettingsManager : MonoBehaviour
 
         // 创建音频设置区
         CreateAudioSection(contentObj);
+
+        // 创建游戏设置区
+        CreateGameplaySection(contentObj);
 
         // 创建关闭按钮
         CreateCloseButton(contentObj);
@@ -420,6 +452,9 @@ public class SettingsManager : MonoBehaviour
         buttonText.text = text;
         buttonText.font = UIFontResolver.GetUIFont();
         buttonText.fontSize = 20;
+        buttonText.resizeTextForBestFit = true;
+        buttonText.resizeTextMinSize = 12;
+        buttonText.resizeTextMaxSize = 20;
         buttonText.color = Color.white;
         buttonText.alignment = TextAnchor.MiddleCenter;
         
@@ -435,8 +470,8 @@ public class SettingsManager : MonoBehaviour
         GameObject headerObj = new GameObject("AudioSectionLabel");
         headerObj.transform.SetParent(parent.transform);
         RectTransform headerRect = headerObj.AddComponent<RectTransform>();
-        headerRect.anchorMin = new Vector2(0.1f, 0.69f);
-        headerRect.anchorMax = new Vector2(0.9f, 0.74f);
+        headerRect.anchorMin = new Vector2(0.1f, 0.68f);
+        headerRect.anchorMax = new Vector2(0.9f, 0.72f);
         headerRect.offsetMin = Vector2.zero;
         headerRect.offsetMax = Vector2.zero;
 
@@ -454,16 +489,16 @@ public class SettingsManager : MonoBehaviour
         // 4 个滑条（顶部到底部）
         masterVolumeSlider = CreateVolumeSliderRow(parent, "MasterVolume",
             "ui.settings.master_volume", "主音量",
-            0.60f, 0.67f, out masterVolumeLabel);
+            0.60f, 0.66f, out masterVolumeLabel);
         bgmVolumeSlider = CreateVolumeSliderRow(parent, "BGMVolume",
             "ui.settings.bgm_volume", "音乐音量",
-            0.51f, 0.58f, out bgmVolumeLabel);
+            0.52f, 0.58f, out bgmVolumeLabel);
         sfxVolumeSlider = CreateVolumeSliderRow(parent, "SFXVolume",
             "ui.settings.sfx_volume", "音效音量",
-            0.42f, 0.49f, out sfxVolumeLabel);
+            0.44f, 0.50f, out sfxVolumeLabel);
         uiVolumeSlider = CreateVolumeSliderRow(parent, "UIVolume",
             "ui.settings.ui_volume", "界面音量",
-            0.33f, 0.40f, out uiVolumeLabel);
+            0.36f, 0.42f, out uiVolumeLabel);
     }
 
     /// <summary>
@@ -485,6 +520,9 @@ public class SettingsManager : MonoBehaviour
         labelText.text = fallbackText;
         labelText.font = UIFontResolver.GetUIFont();
         labelText.fontSize = 16;
+        labelText.resizeTextForBestFit = true;
+        labelText.resizeTextMinSize = 11;
+        labelText.resizeTextMaxSize = 16;
         labelText.color = Color.white;
         labelText.alignment = TextAnchor.MiddleLeft;
 
@@ -559,6 +597,130 @@ public class SettingsManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 创建游戏设置区（镜头灵敏度 + 画质）。
+    /// </summary>
+    private void CreateGameplaySection(GameObject parent)
+    {
+        GameObject headerObj = new GameObject("GameplaySectionLabel");
+        headerObj.transform.SetParent(parent.transform);
+        RectTransform headerRect = headerObj.AddComponent<RectTransform>();
+        headerRect.anchorMin = new Vector2(0.1f, 0.28f);
+        headerRect.anchorMax = new Vector2(0.9f, 0.32f);
+        headerRect.offsetMin = Vector2.zero;
+        headerRect.offsetMax = Vector2.zero;
+
+        gameplaySectionLabel = headerObj.AddComponent<Text>();
+        gameplaySectionLabel.text = "游戏";
+        gameplaySectionLabel.font = UIFontResolver.GetUIFont();
+        gameplaySectionLabel.fontSize = 22;
+        gameplaySectionLabel.color = new Color(0.85f, 0.85f, 0.85f, 1f);
+        gameplaySectionLabel.alignment = TextAnchor.MiddleCenter;
+        gameplaySectionLabel.fontStyle = FontStyle.Bold;
+
+        LocalizedText loc = headerObj.AddComponent<LocalizedText>();
+        loc.TextKey = "ui.settings.gameplay";
+
+        lookSensitivitySlider = CreateSettingsSliderRow(parent, "LookSensitivity", "镜头灵敏度",
+            0.21f, 0.27f, GamePerformanceSettings.MinLookSensitivity, GamePerformanceSettings.MaxLookSensitivity,
+            false, out lookSensitivityLabel);
+
+        int maxQuality = Mathf.Max(0, QualitySettings.names.Length - 1);
+        qualitySlider = CreateSettingsSliderRow(parent, "Quality", "画质",
+            0.13f, 0.19f, 0f, maxQuality,
+            true, out qualityLabel);
+
+        autoQualityButton = CreateLanguageButton(parent, "AutoQualityButton", "自动画质",
+            new Vector2(0.08f, 0.04f), new Vector2(0.34f, 0.10f));
+        autoQualityText = autoQualityButton.GetComponentInChildren<Text>();
+    }
+
+    private Slider CreateSettingsSliderRow(GameObject parent, string name, string fallbackText,
+                                           float yMin, float yMax, float minValue, float maxValue,
+                                           bool wholeNumbers, out Text labelText)
+    {
+        GameObject labelObj = new GameObject($"{name}_Label");
+        labelObj.transform.SetParent(parent.transform);
+        RectTransform labelRect = labelObj.AddComponent<RectTransform>();
+        labelRect.anchorMin = new Vector2(0.05f, yMin);
+        labelRect.anchorMax = new Vector2(0.38f, yMax);
+        labelRect.offsetMin = Vector2.zero;
+        labelRect.offsetMax = Vector2.zero;
+
+        labelText = labelObj.AddComponent<Text>();
+        labelText.text = fallbackText;
+        labelText.font = UIFontResolver.GetUIFont();
+        labelText.fontSize = 16;
+        labelText.resizeTextForBestFit = true;
+        labelText.resizeTextMinSize = 11;
+        labelText.resizeTextMaxSize = 16;
+        labelText.color = Color.white;
+        labelText.alignment = TextAnchor.MiddleLeft;
+
+        GameObject sliderObj = new GameObject($"{name}_Slider");
+        sliderObj.transform.SetParent(parent.transform);
+        RectTransform sliderRect = sliderObj.AddComponent<RectTransform>();
+        sliderRect.anchorMin = new Vector2(0.40f, yMin);
+        sliderRect.anchorMax = new Vector2(0.95f, yMax);
+        sliderRect.offsetMin = Vector2.zero;
+        sliderRect.offsetMax = Vector2.zero;
+
+        Slider slider = sliderObj.AddComponent<Slider>();
+        slider.direction = Slider.Direction.LeftToRight;
+        slider.minValue = minValue;
+        slider.maxValue = maxValue;
+        slider.wholeNumbers = wholeNumbers;
+
+        GameObject bgObj = new GameObject("Background");
+        bgObj.transform.SetParent(sliderObj.transform);
+        RectTransform bgRect = bgObj.AddComponent<RectTransform>();
+        bgRect.anchorMin = new Vector2(0f, 0.3f);
+        bgRect.anchorMax = new Vector2(1f, 0.7f);
+        bgRect.offsetMin = Vector2.zero;
+        bgRect.offsetMax = Vector2.zero;
+        Image bgImg = bgObj.AddComponent<Image>();
+        bgImg.color = new Color(0.15f, 0.15f, 0.15f, 1f);
+
+        GameObject fillAreaObj = new GameObject("Fill Area");
+        fillAreaObj.transform.SetParent(sliderObj.transform);
+        RectTransform fillAreaRect = fillAreaObj.AddComponent<RectTransform>();
+        fillAreaRect.anchorMin = new Vector2(0f, 0.3f);
+        fillAreaRect.anchorMax = new Vector2(1f, 0.7f);
+        fillAreaRect.offsetMin = new Vector2(5f, 0f);
+        fillAreaRect.offsetMax = new Vector2(-15f, 0f);
+
+        GameObject fillObj = new GameObject("Fill");
+        fillObj.transform.SetParent(fillAreaObj.transform);
+        RectTransform fillRect = fillObj.AddComponent<RectTransform>();
+        fillRect.anchorMin = Vector2.zero;
+        fillRect.anchorMax = Vector2.one;
+        fillRect.offsetMin = Vector2.zero;
+        fillRect.offsetMax = Vector2.zero;
+        Image fillImg = fillObj.AddComponent<Image>();
+        fillImg.color = new Color(0.4f, 0.7f, 0.95f, 1f);
+
+        GameObject handleAreaObj = new GameObject("Handle Slide Area");
+        handleAreaObj.transform.SetParent(sliderObj.transform);
+        RectTransform handleAreaRect = handleAreaObj.AddComponent<RectTransform>();
+        handleAreaRect.anchorMin = Vector2.zero;
+        handleAreaRect.anchorMax = Vector2.one;
+        handleAreaRect.offsetMin = new Vector2(10f, 0f);
+        handleAreaRect.offsetMax = new Vector2(-10f, 0f);
+
+        GameObject handleObj = new GameObject("Handle");
+        handleObj.transform.SetParent(handleAreaObj.transform);
+        RectTransform handleRect = handleObj.AddComponent<RectTransform>();
+        handleRect.sizeDelta = new Vector2(18f, 0f);
+        Image handleImg = handleObj.AddComponent<Image>();
+        handleImg.color = new Color(0.7f, 0.85f, 1f, 1f);
+
+        slider.fillRect = fillRect;
+        slider.handleRect = handleRect;
+        slider.targetGraphic = handleImg;
+
+        return slider;
+    }
+
+    /// <summary>
     /// 创建关闭按钮
     /// </summary>
     private void CreateCloseButton(GameObject parent)
@@ -567,8 +729,8 @@ public class SettingsManager : MonoBehaviour
         buttonObj.transform.SetParent(parent.transform);
         
         RectTransform buttonRect = buttonObj.AddComponent<RectTransform>();
-        buttonRect.anchorMin = new Vector2(0.35f, 0.04f);
-        buttonRect.anchorMax = new Vector2(0.65f, 0.13f);
+        buttonRect.anchorMin = new Vector2(0.38f, 0.04f);
+        buttonRect.anchorMax = new Vector2(0.66f, 0.10f);
         buttonRect.offsetMin = Vector2.zero;
         buttonRect.offsetMax = Vector2.zero;
 
@@ -599,6 +761,9 @@ public class SettingsManager : MonoBehaviour
         closeText.text = "关闭";
         closeText.font = UIFontResolver.GetUIFont();
         closeText.fontSize = 24;
+        closeText.resizeTextForBestFit = true;
+        closeText.resizeTextMinSize = 12;
+        closeText.resizeTextMaxSize = 24;
         closeText.color = Color.white;
         closeText.alignment = TextAnchor.MiddleCenter;
         
@@ -634,6 +799,42 @@ public class SettingsManager : MonoBehaviour
             closeButton.onClick.AddListener(CloseSettings);
         }
 
+        if (lookSensitivitySlider != null)
+        {
+            float fallbackSensitivity = playerController != null ? playerController.mouseSensitivity : GamePerformanceSettings.DefaultLookSensitivity;
+            lookSensitivitySlider.SetValueWithoutNotify(GamePerformanceSettings.LoadLookSensitivity(fallbackSensitivity));
+            lookSensitivitySlider.onValueChanged.AddListener(value =>
+            {
+                GamePerformanceSettings.SaveLookSensitivity(value);
+                UpdateGameplaySettingsLabels();
+            });
+        }
+
+        if (qualitySlider != null)
+        {
+            qualitySlider.minValue = 0f;
+            qualitySlider.maxValue = Mathf.Max(0, QualitySettings.names.Length - 1);
+            qualitySlider.wholeNumbers = true;
+            qualitySlider.SetValueWithoutNotify(GetDisplayedQualityLevel());
+            qualitySlider.onValueChanged.AddListener(value =>
+            {
+                GamePerformanceSettings.Instance.SetManualQualityLevel(Mathf.RoundToInt(value));
+                UpdateGameplaySettingsLabels();
+            });
+        }
+
+        if (autoQualityButton != null)
+        {
+            autoQualityButton.onClick.AddListener(() =>
+            {
+                GamePerformanceSettings.Instance.SetAutoQuality();
+                RefreshQualitySlider();
+                UpdateGameplaySettingsLabels();
+            });
+        }
+
+        UpdateGameplaySettingsLabels();
+
         // 音量滑条
         var am = AudioManager.Instance;
         if (masterVolumeSlider != null)
@@ -665,6 +866,93 @@ public class SettingsManager : MonoBehaviour
             });
         }
     }
+
+    private void RefreshSettingsControlValues()
+    {
+        if (performanceSettings == null)
+        {
+            performanceSettings = GamePerformanceSettings.Instance;
+        }
+
+        if (lookSensitivitySlider != null)
+        {
+            float fallbackSensitivity = playerController != null ? playerController.mouseSensitivity : GamePerformanceSettings.DefaultLookSensitivity;
+            lookSensitivitySlider.SetValueWithoutNotify(GamePerformanceSettings.LoadLookSensitivity(fallbackSensitivity));
+        }
+
+        RefreshQualitySlider();
+        UpdateGameplaySettingsLabels();
+    }
+
+    private void RefreshQualitySlider()
+    {
+        if (qualitySlider == null)
+        {
+            return;
+        }
+
+        qualitySlider.minValue = 0f;
+        qualitySlider.maxValue = Mathf.Max(0, QualitySettings.names.Length - 1);
+        qualitySlider.SetValueWithoutNotify(GetDisplayedQualityLevel());
+    }
+
+    private int GetDisplayedQualityLevel()
+    {
+        if (performanceSettings == null)
+        {
+            performanceSettings = GamePerformanceSettings.Instance;
+        }
+
+        return performanceSettings.IsManualQualityEnabled
+            ? performanceSettings.SavedManualQualityLevel
+            : performanceSettings.GetRecommendedQualityLevel();
+    }
+
+    private void UpdateGameplaySettingsLabels()
+    {
+        if (performanceSettings == null)
+        {
+            performanceSettings = GamePerformanceSettings.Instance;
+        }
+
+        if (lookSensitivityLabel != null)
+        {
+            float value = lookSensitivitySlider != null
+                ? lookSensitivitySlider.value
+                : GamePerformanceSettings.LoadLookSensitivity(GamePerformanceSettings.DefaultLookSensitivity);
+            lookSensitivityLabel.text = $"{GetLocalizedText("ui.settings.look_sensitivity", "镜头灵敏度")}: {value:0.0}";
+        }
+
+        if (qualityLabel != null)
+        {
+            int qualityLevel = qualitySlider != null ? Mathf.RoundToInt(qualitySlider.value) : GetDisplayedQualityLevel();
+            string modeLabel = performanceSettings.IsManualQualityEnabled
+                ? GetLocalizedText("ui.settings.manual", "手动")
+                : GetLocalizedText("ui.settings.auto", "自动");
+            qualityLabel.text = $"{GetLocalizedText("ui.settings.quality", "画质")}: {performanceSettings.GetQualityDisplayName(qualityLevel)} ({modeLabel})";
+        }
+
+        if (autoQualityText != null)
+        {
+            autoQualityText.text = GetLocalizedText("ui.settings.auto_quality", "自动画质");
+        }
+
+        if (autoQualityButton != null)
+        {
+            autoQualityButton.interactable = performanceSettings.IsManualQualityEnabled;
+        }
+    }
+
+    private string GetLocalizedText(string key, string fallback)
+    {
+        if (LocalizationManager.Instance == null)
+        {
+            return fallback;
+        }
+
+        string text = LocalizationManager.Instance.GetText(key);
+        return string.IsNullOrEmpty(text) || text.StartsWith("[") ? fallback : text;
+    }
     
     /// <summary>
     /// 切换语言
@@ -677,6 +965,7 @@ public class SettingsManager : MonoBehaviour
         {
             LocalizationManager.Instance.SwitchLanguage(language);
             UpdateButtonStates(language);
+            UpdateGameplaySettingsLabels();
         }
     }
     
@@ -760,4 +1049,98 @@ public class SettingsManager : MonoBehaviour
     /// </summary>
     public bool IsSettingsOpen => isSettingsOpen;
     #endregion
+}
+
+internal static class ModalCanvasLayerGuard
+{
+    private const int ModalSortingOrder = 32767;
+    private const int DemotionThreshold = 30000;
+    private const int DemotedSortingOrder = 29999;
+
+    internal sealed class Scope : IDisposable
+    {
+        private readonly Canvas modalCanvas;
+        private readonly int originalModalSortingOrder;
+        private readonly bool originalOverrideSorting;
+        private readonly List<CanvasState> demotedCanvases;
+        private bool isDisposed;
+
+        internal Scope(Canvas modalCanvas, List<CanvasState> demotedCanvases)
+        {
+            this.modalCanvas = modalCanvas;
+            originalModalSortingOrder = modalCanvas.sortingOrder;
+            originalOverrideSorting = modalCanvas.overrideSorting;
+            this.demotedCanvases = demotedCanvases;
+        }
+
+        public void Dispose()
+        {
+            if (isDisposed)
+            {
+                return;
+            }
+
+            for (int i = 0; i < demotedCanvases.Count; i++)
+            {
+                CanvasState state = demotedCanvases[i];
+                if (state.Canvas != null)
+                {
+                    state.Canvas.sortingOrder = state.SortingOrder;
+                }
+            }
+
+            if (modalCanvas != null)
+            {
+                modalCanvas.sortingOrder = originalModalSortingOrder;
+                modalCanvas.overrideSorting = originalOverrideSorting;
+            }
+
+            isDisposed = true;
+        }
+    }
+
+    internal readonly struct CanvasState
+    {
+        internal CanvasState(Canvas canvas)
+        {
+            Canvas = canvas;
+            SortingOrder = canvas.sortingOrder;
+        }
+
+        internal Canvas Canvas { get; }
+        internal int SortingOrder { get; }
+    }
+
+    internal static Scope Activate(Canvas modalCanvas)
+    {
+        if (modalCanvas == null)
+        {
+            return null;
+        }
+
+        List<CanvasState> demotedCanvases = new List<CanvasState>();
+        Canvas[] canvases = UnityEngine.Object.FindObjectsByType<Canvas>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        for (int i = 0; i < canvases.Length; i++)
+        {
+            Canvas canvas = canvases[i];
+            if (canvas == null || canvas == modalCanvas || !canvas.isActiveAndEnabled)
+            {
+                continue;
+            }
+
+            if (canvas.sortingOrder >= DemotionThreshold)
+            {
+                demotedCanvases.Add(new CanvasState(canvas));
+                canvas.sortingOrder = DemotedSortingOrder;
+            }
+        }
+
+        Scope scope = new Scope(modalCanvas, demotedCanvases);
+        modalCanvas.overrideSorting = true;
+        modalCanvas.sortingOrder = ModalSortingOrder;
+        return scope;
+    }
 }

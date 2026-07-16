@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System;
 using System.Runtime.InteropServices;
+using StorySystem;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 /// <summary>
@@ -77,6 +78,7 @@ public class MobileInputManager : MonoBehaviour
     private bool isMobileDevice;
     private bool hasTouch;
     private bool hasActiveTouchInput;
+    private bool wasStoryInputBlocked;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")]
@@ -129,6 +131,19 @@ public class MobileInputManager : MonoBehaviour
     void Update()
     {
         DetectDevice();
+
+        if (StoryDirector.IsStoryPlaybackActive)
+        {
+            if (!wasStoryInputBlocked)
+            {
+                ReleaseGameplayInputsForStory();
+            }
+
+            wasStoryInputBlocked = true;
+            return;
+        }
+
+        wasStoryInputBlocked = false;
 
         // 处理不同输入源
         switch (currentInputMode)
@@ -547,6 +562,23 @@ public class MobileInputManager : MonoBehaviour
         activeTouchStartedOverUI = false;
         SetLookInput(Vector2.zero);
     }
+
+    /// <summary>
+    /// 剧情 UI 可能接管原本落在虚拟按钮上的抬起事件，因此进入剧情时主动释放所有状态。
+    /// </summary>
+    void ReleaseGameplayInputsForStory()
+    {
+        hasActiveTouchInput = false;
+        ResetRawTouchState();
+        SetMoveInput(Vector2.zero);
+
+        if (IsJumping) SetJumpInput(false);
+        if (IsRunning) SetRunInput(false);
+        if (IsInteracting) SetInteractInput(false);
+        if (IsSecondaryInteracting) SetSecondaryInteractInput(false);
+        if (IsAscending) SetAscendInput(false);
+        if (IsDescending) SetDescendInput(false);
+    }
     
     #region 公共接口方法
     
@@ -603,6 +635,11 @@ public class MobileInputManager : MonoBehaviour
     /// </summary>
     public void SetInteractInput(bool isPressed)
     {
+        if (isPressed && StoryDirector.IsStoryPlaybackActive)
+        {
+            return;
+        }
+
         IsInteracting = isPressed;
         OnInteractInput?.Invoke(isPressed);
     }
@@ -612,6 +649,11 @@ public class MobileInputManager : MonoBehaviour
     /// </summary>
     public void SetSecondaryInteractInput(bool isPressed)
     {
+        if (isPressed && StoryDirector.IsStoryPlaybackActive)
+        {
+            return;
+        }
+
         IsSecondaryInteracting = isPressed;
         OnSecondaryInteractInput?.Invoke(isPressed);
     }
@@ -754,6 +796,11 @@ public class MobileInputManager : MonoBehaviour
     /// </summary>
     public void TriggerToolWheelInput()
     {
+        if (StoryDirector.IsStoryPlaybackActive)
+        {
+            return;
+        }
+
         Debug.Log("[MobileInputManager] 触发工具轮盘输入");
         OnToolWheelInput?.Invoke();
     }

@@ -124,6 +124,11 @@ public class DrillTowerTool : PlaceableTool
     protected override void Update()
     {
         base.Update();
+
+        if (IsToolInputBlocked)
+        {
+            return;
+        }
         
         // 检查与已放置钻塔的交互
         if (!isPlacementMode && hasPlacedObject && placedTower != null)
