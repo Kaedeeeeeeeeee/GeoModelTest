@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
+    <title>GeoModelTest</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+  </head>
+  <body>
+    <div id="unity-container">
+      <canvas id="unity-canvas" width=1920 height=1080 tabindex="-1"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <div id="unity-warning"></div>
+    </div>
+    <div id="orientation-overlay" aria-hidden="true">
+      <div class="orientation-card">
+        <div class="orientation-icon">↻</div>
+        <div class="orientation-title">请横屏游玩</div>
+        <div class="orientation-body">旋转手机后继续地质探索。</div>
+      </div>
+    </div>
+    <script>
+      var canvas = document.querySelector("#unity-canvas");
+      var orientationOverlay = document.querySelector("#orientation-overlay");
+
+      function unityShowBanner(msg, type) {
+        var warningBanner = document.querySelector("#unity-warning");
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/WebGL.loader.js";
+      var config = {
+        arguments: [],
+        dataUrl: buildUrl + "/WebGL.data.unityweb",
+        frameworkUrl: buildUrl + "/WebGL.framework.js.unityweb",
+        codeUrl: buildUrl + "/WebGL.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "ZHANGSHIFENG",
+        productName: "GeoModelTest",
+        productVersion: "2026.07.10-story-tool-input-lock",
+        showBanner: unityShowBanner,
+      };
+
+      // 不修改 canvas DOM 属性 width/height（Unity 渲染目标分辨率保持 1920×1080）
+      // 显示尺寸完全交给 CSS 处理（保持 16:9 + letterbox）
+      // 不再根据 user-agent 切换 mobile 模式 → UI 不会变形拉伸
+      function isCoarsePointer() {
+        return window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+      }
+
+      function isIPadLike() {
+        return /iPad/.test(navigator.userAgent) ||
+          (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      }
+
+      function updateOrientationOverlay() {
+        var portrait = window.innerHeight > window.innerWidth;
+        var shouldBlock = isCoarsePointer() && portrait;
+        orientationOverlay.classList.toggle("is-visible", shouldBlock);
+        orientationOverlay.setAttribute("aria-hidden", shouldBlock ? "false" : "true");
+        canvas.style.pointerEvents = shouldBlock ? "none" : "auto";
+      }
+
+      ["resize", "orientationchange"].forEach((eventName) => {
+        window.addEventListener(eventName, updateOrientationOverlay, { passive: true });
+      });
+      updateOrientationOverlay();
+
+      canvas.addEventListener("pointerdown", () => {
+        try {
+          canvas.focus({ preventScroll: true });
+        } catch (error) {
+          canvas.focus();
+        }
+      });
+
+      function preventBrowserGesture(event) {
+        event.preventDefault();
+      }
+
+      [
+        "touchstart",
+        "touchmove",
+        "touchend",
+        "touchcancel",
+        "gesturestart",
+        "gesturechange",
+        "gestureend"
+      ].forEach((eventName) => {
+        document.addEventListener(eventName, preventBrowserGesture, { passive: false });
+      });
+
+      window.addEventListener("scroll", () => {
+        window.scrollTo(0, 0);
+      }, { passive: false });
+
+      function exitIPadFullscreenIfNeeded() {
+        if (!isIPadLike()) return;
+
+        var fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement;
+        if (!fullscreenElement) return;
+
+        try {
+          var exitFullscreen = document.exitFullscreen || document.webkitExitFullscreen;
+          if (exitFullscreen) {
+            var result = exitFullscreen.call(document);
+            if (result && typeof result.catch === "function") {
+              result.catch(function() {});
+            }
+          }
+        } catch (error) {
+          // Browser-reserved fullscreen gestures cannot always be controlled from the iframe.
+        }
+      }
+
+      ["fullscreenchange", "webkitfullscreenchange"].forEach((eventName) => {
+        document.addEventListener(eventName, exitIPadFullscreenIfNeeded);
+      });
+      setTimeout(exitIPadFullscreenIfNeeded, 250);
+      setTimeout(exitIPadFullscreenIfNeeded, 1000);
+
+      document.addEventListener("contextmenu", (event) => {
+        event.preventDefault();
+      });
+
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        loadingBar.style.display = "block";
+        createUnityInstance(canvas, config, (progress) => {
+          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
+        }).then((unityInstance) => {
+          loadingBar.style.display = "none";
+          window.unityInstance = unityInstance;
+        }).catch((message) => {
+          alert(message);
+        });
+      };
+      document.body.appendChild(script);
+    </script>
+  </body>
+</html>

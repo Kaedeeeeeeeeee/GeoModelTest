@@ -6,6 +6,9 @@
 [Bb]uilds/
 # Allow WebGL Build directory for Vercel deployment
 !/Build/
+!/Build/WebGL/
+!/Build/WebGL/Build/
+!/Build/WebGL/Build/**
 [Ll]ogs/
 [Uu]ser[Ss]ettings/
 

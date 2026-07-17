@@ -1,0 +1,14 @@
+{
+  "name": "geomodel-art-pipeline",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Batch generation of knowledge-illustration banners via Codex imagegen (ChatGPT subscription billed)",
+  "scripts": {
+    "one": "node stylize-one.mjs",
+    "batch": "node stylize-batch.mjs"
+  },
+  "dependencies": {
+    "@openai/codex-sdk": "^0.137.0"
+  }
+}
