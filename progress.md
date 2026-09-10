@@ -1,5 +1,10 @@
 Original prompt: Mobile WebGL controls now slide correctly on the left joystick; continue optimizing touch look speed, mobile button language, and the iPad itch fullscreen swipe-down behavior.
 
+## 2026-09-11 direct opening story
+- Removed the disaster notice and its watch/skip gate at the user's request. New games now play the opening directly and continue to the laboratory after the three dialogue lines.
+- Seven localization EditMode tests passed; Unity 6000.0.51f1 release build completed with 0 errors and Butler validation passed.
+- Mobile touch emulation verified the opening-to-laboratory flow. The deployed player starts directly with the expected version, `2026.09.11-direct-intro`, itch.io HTML5 build #1965690. Screenshots and verification scope: `Docs/reports/2026-09-11-direct-intro/README.md`.
+
 ## 2026-09-11 Japanese portrait prompt
 - Replaced the Chinese portrait orientation prompt with Japanese in the source WebGL template and published HTML, including a Japanese language attribute and a readable description line break.
 - Published the HTML patch as `2026.09.11-portrait-ja`, itch.io HTML5 build #1965646; Unity runtime binaries are unchanged.
