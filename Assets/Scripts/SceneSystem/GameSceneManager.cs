@@ -127,8 +127,9 @@ public class GameSceneManager : MonoBehaviour
         
         // 恢复游戏时间和光标
         Time.timeScale = 1f;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        bool mobilePointer = MobileInputManager.IsRuntimeMobileDevice();
+        Cursor.lockState = mobilePointer ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = mobilePointer;
         
         // 恢复玩家输入
         SetPlayerInputEnabled(true);

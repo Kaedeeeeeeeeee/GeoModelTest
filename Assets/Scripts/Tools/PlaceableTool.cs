@@ -135,10 +135,12 @@ public abstract class PlaceableTool : CollectionTool
     {
         var mouse = Mouse.current;
         var keyboard = Keyboard.current;
+        bool pointerOverUI = UnityEngine.EventSystems.EventSystem.current != null &&
+            UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
 
         if (isPlacementMode)
         {
-            if (mouse != null && mouse.leftButton.wasPressedThisFrame && canUse)
+            if (!pointerOverUI && mouse != null && mouse.leftButton.wasPressedThisFrame && canUse)
             {
                 TryPlaceObject();
             }
@@ -153,7 +155,7 @@ public abstract class PlaceableTool : CollectionTool
         else
         {
             // 只有在未放置过对象时才允许通过鼠标左键进入放置模式
-            if (mouse != null && mouse.leftButton.wasPressedThisFrame && canUse && !hasPlacedObject)
+            if (!pointerOverUI && mouse != null && mouse.leftButton.wasPressedThisFrame && canUse && !hasPlacedObject)
             {
                 EnterPlacementMode();
             }

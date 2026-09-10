@@ -1082,9 +1082,9 @@ public class InventoryUISystem : MonoBehaviour
         // Tab 轮盘关闭音效
         GeoModel.AudioSystem.AudioManager.Instance.PlayUI(GeoModel.AudioSystem.AudioKeys.UI.TabClose);
 
-        // 简化逻辑：直接恢复鼠标锁定状态
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        bool mobilePointer = MobileInputManager.IsRuntimeMobileDevice();
+        Cursor.lockState = mobilePointer ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = mobilePointer;
 
         // 重新启用鼠标视角控制
         FirstPersonController controller = GetFirstPersonController();
