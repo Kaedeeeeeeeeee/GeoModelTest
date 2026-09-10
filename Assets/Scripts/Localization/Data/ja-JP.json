@@ -3121,22 +3121,6 @@
       "value": "キャンセル"
     },
     {
-      "key": "story.content_notice.title",
-      "value": "災害場面について"
-    },
-    {
-      "key": "story.content_notice.message",
-      "value": "このあと、地震の揺れと音を表す場面があります。\n不安を感じる場合は、この場面をスキップできます。ゲームはいつでもメニューから終了できます。"
-    },
-    {
-      "key": "story.content_notice.continue",
-      "value": "この場面を見る"
-    },
-    {
-      "key": "story.content_notice.skip",
-      "value": "この場面をスキップ"
-    },
-    {
       "key": "encyclopedia.ui.basic_section",
       "value": "基本情報"
     },
