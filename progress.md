@@ -1,5 +1,10 @@
 Original prompt: Mobile WebGL controls now slide correctly on the left joystick; continue optimizing touch look speed, mobile button language, and the iPad itch fullscreen swipe-down behavior.
 
+## 2026-09-11 Japanese portrait prompt
+- Replaced the Chinese portrait orientation prompt with Japanese in the source WebGL template and published HTML, including a Japanese language attribute and a readable description line break.
+- Published the HTML patch as `2026.09.11-portrait-ja`, itch.io HTML5 build #1965646; Unity runtime binaries are unchanged.
+- Butler validation, deployed file verification, mobile portrait/landscape checks and small-phone layout checks passed. See `Docs/reports/2026-09-11-portrait-ja/README.md` for scope and the deployed-page screenshot.
+
 ## 2026-09-11 UI remediation and questionnaire release
 - Pushed the accumulated four-batch gameplay/UI remediation, dialogue speaker fixes, secure questionnaire backend/page, tests and screenshot reports to `codex/experiment-validity-foundation` (source commit `23084b3`).
 - Rebuilt the release WebGL player with Unity 6000.0.51f1, 0 build errors; Butler validation and local startup passed.

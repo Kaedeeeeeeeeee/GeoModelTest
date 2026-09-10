@@ -1,5 +1,5 @@
 {
-  "version": "2026.09.11-survey-ui",
+  "version": "2026.09.11-portrait-ja",
   "sourceCommit": "23084b3bc50f91a94842a66008cbc49940aa2ac0",
   "unity": "6000.0.51f1",
   "buildType": "release",
@@ -21,5 +21,10 @@
       "bytes": 16113489,
       "sha256": "e07ef8d007343933effca0433e700ca4427548a0e6a1da05e118fb3df1e38e03"
     }
+  },
+  "webPatch": {
+    "baseVersion": "2026.09.11-survey-ui",
+    "appliedAt": "2026-09-10T16:02:16.090998+00:00",
+    "description": "Japanese portrait orientation prompt; Unity runtime binaries unchanged."
   }
 }
