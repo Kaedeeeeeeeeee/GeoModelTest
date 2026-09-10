@@ -26,7 +26,7 @@ public abstract class CollectionTool : MonoBehaviour
     /// <summary>
     /// 剧情对话显示期间，所有工具共用同一个输入锁。
     /// </summary>
-    protected bool IsToolInputBlocked => StoryDirector.IsStoryPlaybackActive || Core.GameInputState.GameplayBlocked;
+    protected bool IsToolInputBlocked => VehicleController.Active != null || StoryDirector.IsStoryPlaybackActive || Core.GameInputState.GameplayBlocked;
     
     protected virtual void Start()
     {

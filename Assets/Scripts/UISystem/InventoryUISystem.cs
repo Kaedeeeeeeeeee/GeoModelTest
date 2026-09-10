@@ -1006,8 +1006,11 @@ public class InventoryUISystem : MonoBehaviour
         }
     }
     
+    public bool IsWheelOpen => isWheelOpen;
+
     void OpenWheel()
     {
+        if (VehicleController.Active != null) return;
         if (wheelUI == null)
         {
             Debug.LogError("❌ 无法打开TabUI：wheelUI为null");

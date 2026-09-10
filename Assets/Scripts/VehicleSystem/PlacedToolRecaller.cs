@@ -103,39 +103,10 @@ public class PlacedToolRecaller : MonoBehaviour
     /// </summary>
     void StopToolOperation()
     {
-        // 检查是否是无人机控制器
-        DroneController droneController = GetComponent<DroneController>();
-        if (droneController != null)
-        {
-            // 如果玩家正在控制无人机，先退出控制
-            var isControlledField = typeof(DroneController).GetField("isBeingControlled", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (isControlledField != null && (bool)isControlledField.GetValue(droneController))
-            {
-                // 调用停止控制方法
-                var stopMethod = typeof(DroneController).GetMethod("StopControlling", 
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                stopMethod?.Invoke(droneController, null);
-            }
-        }
-        
-        // 检查是否是钻探车控制器
-        DrillCarController carController = GetComponent<DrillCarController>();
-        if (carController != null)
-        {
-            // 如果玩家正在驾驶车辆，先退出驾驶
-            var isBeingDrivenField = typeof(DrillCarController).GetField("isBeingDriven", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (isBeingDrivenField != null && (bool)isBeingDrivenField.GetValue(carController))
-            {
-                // 调用停止驾驶方法
-                var stopMethod = typeof(DrillCarController).GetMethod("StopDriving", 
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                stopMethod?.Invoke(carController, null);
-            }
-        }
+        GetComponent<DroneController>()?.StopControlling();
+        GetComponent<DrillCarController>()?.StopDriving();
     }
-    
+
     /// <summary>
     /// 将工具归还到库存
     /// </summary>
@@ -216,25 +187,9 @@ public class PlacedToolRecaller : MonoBehaviour
     {
         if (placeableTool == null) return;
         
-        // 使用反射重置hasPlacedObject状态
-        var hasPlacedObjectField = typeof(PlaceableTool).GetField("hasPlacedObject", 
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        
-        if (hasPlacedObjectField != null)
-        {
-            hasPlacedObjectField.SetValue(placeableTool, false);
-        }
-        
-        // 重置canUse状态，允许立即使用
-        var canUseField = typeof(CollectionTool).GetField("canUse", 
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        
-        if (canUseField != null)
-        {
-            canUseField.SetValue(placeableTool, true);
-        }
+        placeableTool.ResetPlacement();
     }
-    
+
     /// <summary>
     /// 在Scene视图中显示交互范围
     /// </summary>

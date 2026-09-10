@@ -3447,6 +3447,34 @@
     {
       "key": "survey.research_only",
       "value": "研究参加で遊ぶと、アンケートに進めます。"
+    },
+    {
+      "key": "vehicle.enter",
+      "value": "操作する"
+    },
+    {
+      "key": "vehicle.exit",
+      "value": "操作を終える"
+    },
+    {
+      "key": "vehicle.recall",
+      "value": "収める"
+    },
+    {
+      "key": "vehicle.drill",
+      "value": "採取する"
+    },
+    {
+      "key": "vehicle.drilling",
+      "value": "採取中…"
+    },
+    {
+      "key": "vehicle.sample_ready",
+      "value": "試料を採取しました"
+    },
+    {
+      "key": "vehicle.no_sample",
+      "value": "地層のある場所で採取してください"
     }
   ]
 }

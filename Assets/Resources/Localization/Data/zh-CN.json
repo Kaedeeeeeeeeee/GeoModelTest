@@ -3267,6 +3267,34 @@
     {
       "key": "survey.research_only",
       "value": "以研究参与模式游玩后可回答问卷。"
+    },
+    {
+      "key": "vehicle.enter",
+      "value": "操作"
+    },
+    {
+      "key": "vehicle.exit",
+      "value": "退出操作"
+    },
+    {
+      "key": "vehicle.recall",
+      "value": "收回"
+    },
+    {
+      "key": "vehicle.drill",
+      "value": "取芯"
+    },
+    {
+      "key": "vehicle.drilling",
+      "value": "取样中…"
+    },
+    {
+      "key": "vehicle.sample_ready",
+      "value": "已生成岩芯样本"
+    },
+    {
+      "key": "vehicle.no_sample",
+      "value": "请在有地层的位置取样"
     }
   ]
 }

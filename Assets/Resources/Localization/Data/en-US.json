@@ -3267,6 +3267,34 @@
     {
       "key": "survey.research_only",
       "value": "Play in research mode to answer the survey."
+    },
+    {
+      "key": "vehicle.enter",
+      "value": "Operate"
+    },
+    {
+      "key": "vehicle.exit",
+      "value": "Exit"
+    },
+    {
+      "key": "vehicle.recall",
+      "value": "Recall"
+    },
+    {
+      "key": "vehicle.drill",
+      "value": "Take core"
+    },
+    {
+      "key": "vehicle.drilling",
+      "value": "Sampling…"
+    },
+    {
+      "key": "vehicle.sample_ready",
+      "value": "Core sample ready"
+    },
+    {
+      "key": "vehicle.no_sample",
+      "value": "Sample where geological layers are present"
     }
   ]
 }

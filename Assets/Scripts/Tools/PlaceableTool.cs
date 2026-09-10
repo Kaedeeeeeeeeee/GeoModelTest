@@ -18,6 +18,20 @@ public abstract class PlaceableTool : CollectionTool
         base.Start();
     }
     
+    protected override void Update()
+    {
+        base.Update();
+        if (isPlacementMode && isEquipped && !IsToolInputBlocked)
+            UpdatePreviewPosition();
+    }
+
+    public void ResetPlacement()
+    {
+        hasPlacedObject = false;
+        canUse = true;
+        lastUseTime = 0f;
+    }
+
     protected virtual void CreatePreviewObject()
     {
         // 如果已经有预览对象，先清理掉
@@ -66,6 +80,14 @@ public abstract class PlaceableTool : CollectionTool
             col.enabled = false;
         }
         
+        foreach (var behaviour in previewObject.GetComponentsInChildren<MonoBehaviour>())
+            behaviour.enabled = false;
+        foreach (var body in previewObject.GetComponentsInChildren<Rigidbody>())
+        {
+            body.isKinematic = true;
+            body.useGravity = false;
+        }
+
         Renderer[] renderers = previewObject.GetComponentsInChildren<Renderer>();
         
         if (previewMaterial != null)
@@ -113,8 +135,6 @@ public abstract class PlaceableTool : CollectionTool
 
         if (isPlacementMode)
         {
-            UpdatePreviewPosition();
-            
             if (mouse != null && mouse.leftButton.wasPressedThisFrame && canUse)
             {
                 TryPlaceObject();
@@ -172,7 +192,7 @@ public abstract class PlaceableTool : CollectionTool
     
     protected virtual void UpdatePreviewPosition()
     {
-        if (previewObject == null) return;
+        if (previewObject == null || GetPlayerCamera() == null) return;
         
         Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
         Ray ray = playerCamera.ScreenPointToRay(screenCenter);
@@ -283,6 +303,7 @@ public abstract class PlaceableTool : CollectionTool
         if (templateObject != null)
         {
             GameObject placedObject = Instantiate(templateObject, position, rotation);
+            placedObject.SetActive(true);
 
             // 直接保持模板对象的原始缩放，不做任何修改
 

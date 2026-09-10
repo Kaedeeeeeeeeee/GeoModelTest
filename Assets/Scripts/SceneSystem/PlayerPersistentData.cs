@@ -93,6 +93,10 @@ public class PlayerPersistentData : MonoBehaviour
             }
         }
 
+        // Exploration vehicles are available in both new games and existing saves.
+        unlockedToolIds.Add("1100");
+        unlockedToolIds.Add("1101");
+
         // 同步到序列化字段以便调试查看
         unlockedToolIdsSerialized = new List<string>(unlockedToolIds).ToArray();
     }

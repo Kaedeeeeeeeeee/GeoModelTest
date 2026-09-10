@@ -91,6 +91,16 @@ public static class ToolUnlockService
                 return true;
             }
         }
+        else if (toolId == "1101")
+        {
+            var created = ToolUnlockService_Internal.EnsureDrillCarTool(toolManager);
+            if (created != null)
+            {
+                toolManager.AddTool(created);
+                Object.FindFirstObjectByType<PlayerPersistentData>()?.MarkToolUnlocked(toolId);
+                return true;
+            }
+        }
         else if (toolId == "999") // 场景切换器
         {
             var created = ToolUnlockService_Internal.EnsureSceneSwitcherTool(toolManager);
@@ -163,10 +173,12 @@ public static class ToolUnlockService
         else if (tool is DroneTool)
         {
             tool.toolName = "調査用ドローン";
+            ToolUnlockService_Internal.EnsureDroneTool(tool.GetComponent<ToolManager>());
         }
         else if (tool is DrillCarTool)
         {
             tool.toolName = "ボーリング調査車";
+            ToolUnlockService_Internal.EnsureDrillCarTool(tool.GetComponent<ToolManager>());
         }
     }
 }
@@ -363,77 +375,21 @@ public static class ToolUnlockService_Internal
 
         if (droneTool.prefabToPlace == null)
         {
-            droneTool.prefabToPlace = CreateFallbackDronePrefab(toolManager.transform);
+            droneTool.prefabToPlace = Resources.Load<GameObject>("Prefabs/Vehicles/Drone");
         }
 
         return droneTool;
     }
 
-    private static GameObject CreateFallbackDronePrefab(Transform parent)
+    public static DrillCarTool EnsureDrillCarTool(ToolManager toolManager)
     {
-        var prefab = new GameObject("FallbackDrone");
-        if (parent != null) prefab.transform.SetParent(parent, false);
-
-        var body = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        body.name = "DroneBody";
-        body.transform.SetParent(prefab.transform, false);
-        body.transform.localScale = new Vector3(0.6f, 0.1f, 0.6f);
-        body.transform.localPosition = new Vector3(0f, 0.1f, 0f);
-
-        var rotorHolder = new GameObject("Rotors");
-        rotorHolder.transform.SetParent(prefab.transform, false);
-        rotorHolder.transform.localPosition = new Vector3(0f, 0.25f, 0f);
-
-        float rotorRadius = 0.45f;
-        for (int i = 0; i < 4; i++)
-        {
-            var rotor = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            rotor.name = $"Rotor_{i}";
-            rotor.transform.SetParent(rotorHolder.transform, false);
-            rotor.transform.localScale = new Vector3(0.1f, 0.01f, 0.3f);
-            rotor.transform.localPosition = new Vector3(
-                Mathf.Cos(i * Mathf.PI / 2f) * rotorRadius,
-                0f,
-                Mathf.Sin(i * Mathf.PI / 2f) * rotorRadius);
-        }
-
-        foreach (var renderer in prefab.GetComponentsInChildren<Renderer>())
-        {
-            renderer.sharedMaterial = new Material(Shader.Find("Standard"))
-            {
-                color = new Color(0.2f, 0.6f, 0.9f, 1f)
-            };
-        }
-
-        if (prefab.GetComponent<Rigidbody>() == null)
-        {
-            var rb = prefab.AddComponent<Rigidbody>();
-            rb.useGravity = false;
-            rb.linearDamping = 5f;
-            rb.angularDamping = 5f;
-        }
-
-        if (prefab.GetComponent<Collider>() == null)
-        {
-            var sphere = prefab.AddComponent<SphereCollider>();
-            sphere.radius = 0.6f;
-        }
-
-        if (prefab.GetComponent<DroneController>() == null)
-        {
-            prefab.AddComponent<DroneController>();
-        }
-
-        var recaller = prefab.GetComponent<PlacedToolRecaller>();
-        if (recaller == null)
-        {
-            recaller = prefab.AddComponent<PlacedToolRecaller>();
-            recaller.toolName = "調査用ドローン";
-            recaller.interactionRange = 5f;
-            recaller.recallKey = KeyCode.G;
-        }
-
-        prefab.SetActive(false);
-        return prefab;
+        if (toolManager == null) return null;
+        var tool = toolManager.GetComponent<DrillCarTool>();
+        if (tool == null) tool = toolManager.gameObject.AddComponent<DrillCarTool>();
+        tool.toolID = "1101";
+        tool.toolName = "ボーリング調査車";
+        if (tool.prefabToPlace == null)
+            tool.prefabToPlace = Resources.Load<GameObject>("Prefabs/Vehicles/DrillCar");
+        return tool;
     }
 }
