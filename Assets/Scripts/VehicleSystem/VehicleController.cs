@@ -50,6 +50,8 @@ public abstract class VehicleController : MonoBehaviour
 
     public bool CanInteract => Player != null && !InputBlocked && (_inventory == null || !_inventory.IsWheelOpen) &&
         (IsControlled || (Active == null && Vector3.Distance(Player.transform.position, transform.position) <= interactionRange));
+    public bool CanRecall => !InputBlocked && (_inventory == null || !_inventory.IsWheelOpen) &&
+        (IsControlled || (Active == null && Owner != null && Owner.IsEquipped));
 
     public bool BeginControl()
     {
@@ -102,9 +104,13 @@ public abstract class VehicleController : MonoBehaviour
         _engine = null;
         if (Player != null)
         {
-            Vector3 exit = transform.position - transform.forward * 3f;
-            if (TryFindGround(exit + Vector3.up * 2f, out RaycastHit ground)) exit = ground.point + Vector3.up * 0.15f;
-            Player.transform.position = exit;
+            // The drone is remotely controlled: its operator stays at the launch point.
+            if (!(this is DroneController))
+            {
+                Vector3 exit = transform.position - transform.forward * 3f;
+                if (TryFindGround(exit + Vector3.up * 2f, out RaycastHit ground)) exit = ground.point + Vector3.up * 0.15f;
+                Player.transform.position = exit;
+            }
             Player.enabled = _playerWasEnabled;
             if (_character != null) _character.enabled = _characterWasEnabled;
         }
@@ -128,7 +134,7 @@ public abstract class VehicleController : MonoBehaviour
 
     public void Recall()
     {
-        if (!CanInteract) return;
+        if (!CanRecall && !CanInteract) return;
         EndControl();
         if (Owner != null) Owner.ResetPlacement();
         Destroy(gameObject);
@@ -140,12 +146,13 @@ public abstract class VehicleController : MonoBehaviour
         bool pressed = (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame) || (secondary && !_previousSecondary);
         _previousSecondary = secondary;
         if (InputBlocked) return;
-        if (CanInteract && pressed && Time.frameCount > _startedFrame)
+        if (CanInteract && pressed && Time.frameCount > _startedFrame &&
+            (IsControlled || (Owner != null && Owner.IsEquipped)))
         {
             if (IsControlled) EndControl();
             else BeginControl();
         }
-        if (CanInteract && Keyboard.current != null && Keyboard.current.gKey.wasPressedThisFrame) Recall();
+        if (CanRecall && Keyboard.current != null && Keyboard.current.gKey.wasPressedThisFrame) Recall();
     }
 
     protected virtual void FixedUpdate()

@@ -3475,6 +3475,18 @@
     {
       "key": "vehicle.no_sample",
       "value": "地層のある場所で採取してください"
+    },
+    {
+      "key": "vehicle.place",
+      "value": "ここに置く"
+    },
+    {
+      "key": "vehicle.place_ready",
+      "value": "この場所に設置できます"
+    },
+    {
+      "key": "vehicle.place_hint",
+      "value": "少し先の床や地面を選んでください"
     }
   ]
 }

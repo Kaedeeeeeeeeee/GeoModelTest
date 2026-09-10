@@ -1596,6 +1596,10 @@ public class InventoryUISystem : MonoBehaviour
                     return "tool.drill_tower.short";
                 case "1002":
                     return "tool.hammer.name";
+                case "1100":
+                    return "tool.drone.name";
+                case "1101":
+                    return "tool.drill_car.name";
             }
         }
         

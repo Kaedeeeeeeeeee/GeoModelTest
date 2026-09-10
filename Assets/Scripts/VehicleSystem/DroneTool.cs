@@ -15,6 +15,16 @@ public class DroneTool : PlaceableTool
         if (prefabToPlace == null) prefabToPlace = Resources.Load<GameObject>("Prefabs/Vehicles/Drone");
     }
 
+    protected override void OnEquip()
+    {
+        base.OnEquip();
+        if (!hasPlacedObject)
+        {
+            EnterPlacementMode();
+            VehiclePlacementUI.Show(this);
+        }
+    }
+
     protected override GameObject GetTemplateObject()
     {
         if (prefabToPlace == null) prefabToPlace = Resources.Load<GameObject>("Prefabs/Vehicles/Drone");

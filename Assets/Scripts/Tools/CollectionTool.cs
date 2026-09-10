@@ -17,6 +17,7 @@ public abstract class CollectionTool : MonoBehaviour
     public AudioClip useSound;
     
     protected bool isEquipped = false;
+    public bool IsEquipped => isEquipped;
     protected bool canUse = true;
     protected Camera playerCamera;
     protected AudioSource audioSource;

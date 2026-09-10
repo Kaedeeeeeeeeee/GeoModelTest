@@ -15,6 +15,16 @@ public class DrillCarTool : PlaceableTool
         if (prefabToPlace == null) prefabToPlace = Resources.Load<GameObject>("Prefabs/Vehicles/DrillCar");
     }
 
+    protected override void OnEquip()
+    {
+        base.OnEquip();
+        if (!hasPlacedObject)
+        {
+            EnterPlacementMode();
+            VehiclePlacementUI.Show(this);
+        }
+    }
+
     protected override GameObject GetTemplateObject()
     {
         if (prefabToPlace == null) prefabToPlace = Resources.Load<GameObject>("Prefabs/Vehicles/DrillCar");

@@ -12,6 +12,9 @@ public abstract class PlaceableTool : CollectionTool
     protected GameObject previewObject;
     protected bool isPlacementMode = false;
     public bool hasPlacedObject = false; // 标记是否已经放置过对象
+    public bool IsPlacing => isPlacementMode && isEquipped && !IsToolInputBlocked;
+    public bool CanConfirmPlacement => IsPlacing && previewObject != null && previewObject.activeInHierarchy &&
+        CanPlaceAtPosition(previewObject.transform.position);
     
     protected override void Start()
     {
@@ -256,8 +259,10 @@ public abstract class PlaceableTool : CollectionTool
             previewObject = null;
         }
         
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        bool keepCursorFree = MobileInputManager.IsRuntimeMobileDevice() || Core.GameInputState.IsModalOpen ||
+            StorySystem.StoryDirector.IsStoryPlaybackActive;
+        Cursor.lockState = keepCursorFree ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = keepCursorFree;
         
     }
     

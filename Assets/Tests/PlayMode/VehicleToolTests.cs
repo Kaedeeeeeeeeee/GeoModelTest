@@ -33,9 +33,23 @@ public class VehicleToolTests
     [UnityTest]
     public IEnumerator DrillCar_ShouldMoveWithMobileInputAndRestorePlayerAfterRecall() => ControlAndRecall("DrillCar");
 
+    [TestCase("Drone", "1100", "tool.drone.name")]
+    [TestCase("DrillCar", "1101", "tool.drill_car.name")]
+    public void ToolWheel_ShouldResolveVehicleNamesById(string name, string id, string expectedKey)
+    {
+        var tool = New("VehicleNameTest").AddComponent(TypeOf(name + "Tool"));
+        tool.GetType().GetField("toolID").SetValue(tool, id);
+        tool.GetType().GetField("toolName").SetValue(tool, "任意の名前");
+        var inventoryObject = New("VehicleNameInventory");
+        inventoryObject.SetActive(false);
+        var inventory = inventoryObject.AddComponent(TypeOf("InventoryUISystem"));
+        Assert.AreEqual(expectedKey, Call(inventory, "GetToolNameKey", tool));
+    }
+
     private IEnumerator ControlAndRecall(string name)
     {
         var player = New("VehicleTestPlayer");
+        var operatorPosition = player.transform.position;
         var camera = New("VehicleTestCamera").AddComponent<Camera>();
         camera.transform.SetParent(player.transform, false);
         camera.transform.localPosition = new Vector3(0f, 1.5f, 0f);
@@ -118,6 +132,8 @@ public class VehicleToolTests
         Assert.IsTrue(player.GetComponent<CharacterController>().enabled);
         Assert.IsFalse((bool)tool.GetType().GetField("hasPlacedObject").GetValue(tool), "Recall must allow placement again.");
         Assert.IsFalse(person.enabled, "Restore the actual pre-control state.");
+        if (name == "Drone") Assert.AreEqual(operatorPosition, player.transform.position,
+            "The drone operator must stay at the launch point when remote control ends.");
         yield return null;
     }
 

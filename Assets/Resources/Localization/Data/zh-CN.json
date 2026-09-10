@@ -3295,6 +3295,18 @@
     {
       "key": "vehicle.no_sample",
       "value": "请在有地层的位置取样"
+    },
+    {
+      "key": "vehicle.place",
+      "value": "放置在这里"
+    },
+    {
+      "key": "vehicle.place_ready",
+      "value": "可以放置在这个位置"
+    },
+    {
+      "key": "vehicle.place_hint",
+      "value": "请选择稍远处的地面"
     }
   ]
 }

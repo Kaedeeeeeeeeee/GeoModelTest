@@ -3295,6 +3295,18 @@
     {
       "key": "vehicle.no_sample",
       "value": "Sample where geological layers are present"
+    },
+    {
+      "key": "vehicle.place",
+      "value": "Place here"
+    },
+    {
+      "key": "vehicle.place_ready",
+      "value": "Ready to place here"
+    },
+    {
+      "key": "vehicle.place_hint",
+      "value": "Aim at open ground a little farther away"
     }
   ]
 }

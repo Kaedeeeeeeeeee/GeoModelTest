@@ -474,13 +474,13 @@ public class MobileControlsUI : MonoBehaviour
 
         // 顶部低频入口
         inventoryButton = CreateButton("InventoryButton", "バッグ", new Vector2(edgeMargin + buttonSize/2, -edgeMargin - buttonSize/2),
-                                       new Vector2(0, 1), OnInventoryButtonClick, null);
+                                       new Vector2(0, 0.78f), OnInventoryButtonClick, null);
 
         encyclopediaButton = CreateButton("EncyclopediaButton", "図鑑", new Vector2(edgeMargin + buttonSize * 1.5f + buttonSpacing, -edgeMargin - buttonSize/2),
-                                          new Vector2(0, 1), OnEncyclopediaButtonClick, null);
+                                          new Vector2(0, 0.78f), OnEncyclopediaButtonClick, null);
 
         toolWheelButton = CreateButton("ToolWheelButton", "道具", new Vector2(edgeMargin + buttonSize * 2.5f + buttonSpacing * 2, -edgeMargin - buttonSize/2),
-                                       new Vector2(0, 1), OnToolWheelButtonClick, null);
+                                       new Vector2(0, 0.78f), OnToolWheelButtonClick, null);
 
         CreateMobileMenuButton();
 

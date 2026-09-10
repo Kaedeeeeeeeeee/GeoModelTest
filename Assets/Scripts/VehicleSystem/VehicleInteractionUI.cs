@@ -1,15 +1,14 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UISystem;
 
 public sealed class VehicleInteractionUI : MonoBehaviour
 {
-    private static readonly List<VehicleInteractionUI> Instances = new List<VehicleInteractionUI>();
     private VehicleController _vehicle;
     private Canvas _canvas;
     private Text _title;
     private Text _actionLabel;
+    private Button _action;
     private Button _drill;
 
     public static void Attach(VehicleController vehicle)
@@ -18,8 +17,6 @@ public sealed class VehicleInteractionUI : MonoBehaviour
         if (ui == null) ui = vehicle.gameObject.AddComponent<VehicleInteractionUI>();
         ui._vehicle = vehicle;
     }
-
-    private void OnEnable() => Instances.Add(this);
 
     private void Start()
     {
@@ -32,6 +29,7 @@ public sealed class VehicleInteractionUI : MonoBehaviour
             if (_vehicle.IsControlled) _vehicle.EndControl(); else _vehicle.BeginControl();
         }, true);
         _actionLabel = action.GetComponentInChildren<Text>();
+        _action = action;
         _drill = GameUI.Button(panel.transform, "Drill", GameUI.L("vehicle.drill"), new Vector2(0.36f, 0.1f), new Vector2(0.67f, 0.58f), () =>
         {
             if (_vehicle is DrillCarController car) car.StartDrilling();
@@ -42,25 +40,19 @@ public sealed class VehicleInteractionUI : MonoBehaviour
     private void Update()
     {
         if (_canvas == null) return;
-        bool show = _vehicle != null && _vehicle.CanInteract;
-        if (show && !_vehicle.IsControlled)
-        {
-            float distance = Vector3.Distance(_vehicle.Player.transform.position, transform.position);
-            foreach (var other in Instances)
-                if (other != this && other._vehicle != null && other._vehicle.CanInteract &&
-                    Vector3.Distance(other._vehicle.Player.transform.position, other.transform.position) < distance) show = false;
-        }
+        bool show = _vehicle != null && (_vehicle.IsControlled || (_vehicle.Owner != null && _vehicle.Owner.IsEquipped)) &&
+            (_vehicle.CanInteract || _vehicle.CanRecall);
         _canvas.gameObject.SetActive(show);
         if (!show) return;
         _title.text = string.IsNullOrEmpty(_vehicle.Status) ? _vehicle.DisplayName : _vehicle.Status;
         _actionLabel.text = GameUI.L(_vehicle.IsControlled ? "vehicle.exit" : "vehicle.enter");
+        _action.interactable = _vehicle.CanInteract;
         _drill.gameObject.SetActive(_vehicle is DrillCarController);
         _drill.interactable = _vehicle.IsControlled && !(_vehicle is DrillCarController car && car.IsDrilling);
     }
 
     private void OnDestroy()
     {
-        Instances.Remove(this);
         if (_canvas != null) Destroy(_canvas.gameObject);
     }
 }
