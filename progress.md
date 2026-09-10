@@ -90,3 +90,14 @@ Original prompt: Mobile WebGL controls now slide correctly on the left joystick;
 - Unity compile and WebGL build passed with 0 errors; Butler validation and local HTTP checks passed.
 - iPad-emulated Playwright touch flow passed: open Menu -> open Settings -> close Settings.
 - itch html5 build #1784712 is active as 2026.07.10-mobile-menu-touch-layout-fix.
+
+
+## 2026-09-11 restore drone and drill car
+- Added both vehicle tools to the baseline unlocks for new and existing saves, with Japanese wheel labels and packaged runtime prefabs.
+- Unified vehicle control, explicit touch placement/control/recall buttons, drone ascent/descent and remote recovery, and drill-car movement with actual geological core reconstruction (source tool 1101).
+- Kept player services active during control and restored camera/controller state on exit. Disabled preview physics/scripts and made mobile previews follow aim. Moved the mobile utility buttons below the investigation HUD.
+- Fixed touch pointer-lock requests when closing the tool wheel or travel UI and prevented scene placement from UI mouse clicks.
+- PlayMode vehicle checks: 6/6. Localization EditMode: 7/7; earlier full EditMode suite: 42/42. Release WebGL build succeeded with 0 errors; Butler validation passed.
+- Actual local WebGL mouse/keyboard and mobile-emulated touch flows verified vehicle selection, placement, movement, exit, recall, and core generation in the field; mobile also verified re-placement after recall.
+- Published itch HTML5 build #1965829 as 2026.09.11-vehicles. Source cb2b8e6, build commit 5eb2420. Review evidence: Docs/reports/2026-09-11-vehicles/.
+- Post-deployment mobile checks repeated the complete vehicle flows with 0 JavaScript page errors and no checked C# runtime exceptions. Public Run game loaded the expected version, and deployed HTML/release manifest matched the final package.
