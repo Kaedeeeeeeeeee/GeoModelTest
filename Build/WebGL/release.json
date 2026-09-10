@@ -1,0 +1,25 @@
+{
+  "version": "2026.09.11-survey-ui",
+  "sourceCommit": "23084b3bc50f91a94842a66008cbc49940aa2ac0",
+  "unity": "6000.0.51f1",
+  "buildType": "release",
+  "builtAt": "2026-09-10T15:37:19.352137+00:00",
+  "assets": {
+    "Build/WebGL.data.unityweb": {
+      "bytes": 182153710,
+      "sha256": "dd582a78ac0e0ebaaff933e93e70e9130a3ca7c0e1228d70c03a5e6ef3b6b81e"
+    },
+    "Build/WebGL.framework.js.unityweb": {
+      "bytes": 97091,
+      "sha256": "96c7fb8a5a142618ab1e933490c1b0c180701155a200201d5d6b17b9327200e5"
+    },
+    "Build/WebGL.loader.js": {
+      "bytes": 47338,
+      "sha256": "36c1c7296b26bce2dde6d7dd09d9813b628e8a171cd5a3bd20c14941a9c48fd4"
+    },
+    "Build/WebGL.wasm.unityweb": {
+      "bytes": 16113489,
+      "sha256": "e07ef8d007343933effca0433e700ca4427548a0e6a1da05e118fb3df1e38e03"
+    }
+  }
+}

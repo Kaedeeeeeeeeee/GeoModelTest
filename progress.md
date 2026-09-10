@@ -1,5 +1,12 @@
 Original prompt: Mobile WebGL controls now slide correctly on the left joystick; continue optimizing touch look speed, mobile button language, and the iPad itch fullscreen swipe-down behavior.
 
+## 2026-09-11 UI remediation and questionnaire release
+- Pushed the accumulated four-batch gameplay/UI remediation, dialogue speaker fixes, secure questionnaire backend/page, tests and screenshot reports to `codex/experiment-validity-foundation` (source commit `23084b3`).
+- Rebuilt the release WebGL player with Unity 6000.0.51f1, 0 build errors; Butler validation and local startup passed.
+- itch.io HTML5 build #1965578 is active as `2026.09.11-survey-ui`.
+- Public-embed checks passed for initial story/quiz interaction, movement, tool menu, pause, saving, reload/continue and exit. See `Docs/reports/2026-09-11-release/README.md` for screenshots, verification scope and two nonblocking pointer-lock errors observed during refresh.
+- The bundled questionnaire files are published; production research backend migration and activation remain pending.
+
 ## 2026-07-03
 - Lowered mobile touch-look sensitivity for iPad/WebGL.
 - Updated mobile control labels to follow the active localization language (zh-CN, en-US, ja-JP).

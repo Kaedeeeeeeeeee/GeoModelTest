@@ -26,3 +26,5 @@ For editor research UI tests, apply `backend_local` before each new login becaus
 - `survey-browser.py`: 9 browser checks against that real backend; consumes the fresh fixture and saves desktop/mobile screenshots.
 - `survey-bridge.py`: test the actual WebGL survey navigation bridge after transient user activation expires, without popup permission.
 - Editor command `survey_local` reads the isolated survey fixture, temporarily overrides backend and questionnaire settings, and captures the game's issued URL to ignored logs. No settings asset is saved. Restore PlayerPrefs and persistent data after editor QA.
+
+- `itch-release-review.py --url <published game page> --expect-version <version>`: operate the actual published itch.io embed in an isolated Chromium profile. `itch-review-command.py` sends explicit JSON commands for screenshots, canvas clicks, keys, state and reload. Commands/results/profile remain in ignored release logs. Canvas clicks scroll into view before dispatch; itch.io may auto-start on reload, so the driver supports both the Run button and an already-created game iframe.
