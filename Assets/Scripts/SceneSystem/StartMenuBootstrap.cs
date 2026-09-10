@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Backend;
+using UISystem;
+using UnityEngine.SceneManagement;
 
 namespace SceneSystem
 {
@@ -27,10 +29,6 @@ namespace SceneSystem
         private static void EnsureOnStartScene()
         {
             var active = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
-            if (active.name == null || active.name != "StartScene")
-            {
-                return;
-            }
 
             // 防止重复创建
             if (FindFirstObjectByType<StartMenuBootstrap>() != null)
@@ -45,129 +43,74 @@ namespace SceneSystem
 
         private void Awake()
         {
-            // 仅在 StartScene 构建 UI
-            var active = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
-            if (active.name != _startSceneName)
-            {
-                return;
-            }
+            DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += SceneLoaded;
+            LocalizationManager.Instance.OnLanguageChanged += RefreshLanguage;
+            SceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
+        }
 
+        private void OnDestroy()
+        {
+            SceneManager.sceneLoaded -= SceneLoaded;
+            LocalizationManager.Instance.OnLanguageChanged -= RefreshLanguage;
+        }
+
+        private void SceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (_canvas != null) Destroy(_canvas.gameObject);
+            _canvas = null;
+            if (scene.name == _startSceneName) BuildUI();
+        }
+
+        private void RefreshLanguage()
+        {
+            if (SceneManager.GetActiveScene().name != _startSceneName) return;
+            if (_canvas != null) Destroy(_canvas.gameObject);
             BuildUI();
-
-            // 预创建 SettingsManager，确保其 Start 在用户点击前已执行，从而生成设置UI
-            var _ = SettingsManager.Instance;
         }
 
         private void BuildUI()
         {
-            EnsureEventSystem();
-
-            // Canvas 根
-            var root = new GameObject("StartMenuCanvas");
-            root.layer = LayerMask.NameToLayer("UI");
-            _canvas = root.AddComponent<Canvas>();
-            _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            var scaler = root.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            root.AddComponent<GraphicRaycaster>();
-
-            // 背景
-            var bg = new GameObject("Background");
-            bg.transform.SetParent(root.transform, false);
-            var bgRt = bg.AddComponent<RectTransform>();
-            bgRt.anchorMin = Vector2.zero;
-            bgRt.anchorMax = Vector2.one;
-            bgRt.offsetMin = Vector2.zero;
-            bgRt.offsetMax = Vector2.zero;
-            var bgImg = bg.AddComponent<Image>();
-            bgImg.color = new Color(0f, 0f, 0f, 0.6f);
-
-            // 标题
-            var title = CreateText(root.transform, "Title", "Geo Model", 48);
-            var titleRt = title.GetComponent<RectTransform>();
-            titleRt.anchorMin = new Vector2(0.5f, 1f);
-            titleRt.anchorMax = new Vector2(0.5f, 1f);
-            titleRt.anchoredPosition = new Vector2(0f, -120f);
-            titleRt.sizeDelta = new Vector2(800f, 100f);
-
-            // 按钮容器
-            var container = new GameObject("Buttons");
-            container.transform.SetParent(root.transform, false);
-            var cRt = container.AddComponent<RectTransform>();
-            cRt.anchorMin = new Vector2(0.5f, 0.5f);
-            cRt.anchorMax = new Vector2(0.5f, 0.5f);
-            cRt.anchoredPosition = new Vector2(0f, -40f);
-            cRt.sizeDelta = new Vector2(520f, 450f);
-
-            float y = 0f;
-            float spacing = 90f;
-
-            // 检测玩家是否已有存档：决定是单 "Game Start" 还是 "Continue + New Game"
-            bool hasProgress = HasSavedProgress();
-
-            if (hasProgress)
+            _canvas = GameUI.Canvas("StartMenuCanvas", 100);
+            _canvas.transform.SetParent(transform, false);
+            var background = GameUI.Box(_canvas.transform, "Background", Color.white, Vector2.zero, Vector2.one);
+            var texture = Resources.Load<Texture2D>("UI/TitleLandscape");
+            if (texture != null)
             {
-                // Continue（接着上次玩，不清档）
-                var continueBtn = CreateButton(container.transform, "Continue");
-                continueBtn.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
-                continueBtn.onClick.AddListener(OnStartGame);
-                y -= spacing;
-
-                // New Game（弹确认对话框 → 清档 → 进 MainScene）
-                var newGameBtn = CreateButton(container.transform, "New Game");
-                newGameBtn.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
-                newGameBtn.onClick.AddListener(OnNewGameClicked);
-                y -= spacing;
+                background.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                background.color = new Color(0.75f, 0.85f, 0.84f);
             }
-            else
+            else background.color = GameUI.Surface;
+            var menu = GameUI.Box(_canvas.transform, "Menu", new Color(0.03f, 0.09f, 0.12f, 0.94f), Vector2.zero, new Vector2(0.45f, 1f));
+            GameUI.Label(menu.transform, "Eyebrow", "G-LAB  /  FIELD RESEARCH", 20, new Vector2(0.14f, 0.89f), new Vector2(0.92f, 0.94f)).color = GameUI.Accent;
+            GameUI.Label(menu.transform, "Title", "Geo Model", 70, new Vector2(0.13f, 0.73f), new Vector2(0.95f, 0.87f));
+            GameUI.Label(menu.transform, "Subtitle", GameUI.L("ui.start.subtitle"), 24, new Vector2(0.14f, 0.63f), new Vector2(0.88f, 0.74f)).color = GameUI.Muted;
+            var next = GameUI.Button(menu.transform, "Continue", GameUI.L("ui.start.continue"), new Vector2(0.14f, 0.51f), new Vector2(0.87f, 0.59f), OnStartGame, true);
+            next.interactable = HasSavedProgress();
+            GameUI.Button(menu.transform, "NewGame", GameUI.L("ui.start.new_game.title"), new Vector2(0.14f, 0.41f), new Vector2(0.87f, 0.49f), () =>
             {
-                // 首次玩或已清档：只显示一个 "Game Start"
-                var startBtn = CreateButton(container.transform, "Game Start");
-                startBtn.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
-                startBtn.onClick.AddListener(OnStartGame);
-                y -= spacing;
-            }
-
-            // 研究入口は既定で閉鎖。Editor/Development Build か、明示的に本番受付を有効化した場合のみ表示する。
-            BackendSettings backendSettings = BackendSettingsProvider.Load();
-            if (backendSettings != null && backendSettings.CanShowResearchEntry)
+                if (HasSavedProgress()) OnNewGameClicked();
+                else { ProgressResetService.ResetAll(); OnStartGame(); }
+            });
+            GameUI.Button(menu.transform, "Settings", GameUI.L("ui.start.settings"), new Vector2(0.14f, 0.31f), new Vector2(0.49f, 0.39f), OnOpenSettings);
+            GameUI.Button(menu.transform, "Quit", GameUI.L("ui.start.quit"), new Vector2(0.52f, 0.31f), new Vector2(0.87f, 0.39f), OnQuitGame);
+            var settings = BackendSettingsProvider.Load();
+            if (settings != null && settings.CanShowResearchEntry)
             {
-                var researchBtn = CreateButton(container.transform,
-                    backendSettings.EnableProductionResearchEntry
-                        ? LocalizationManager.Resolve("ui.start.research", "研究（けんきゅう）に参加（さんか）する")
-                        : LocalizationManager.Resolve("ui.start.research_test", "研究接続（けんきゅうせつぞく）テスト"));
-                researchBtn.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
-                researchBtn.onClick.AddListener(ShowResearchCodeDialog);
-                y -= spacing;
+                GameUI.Button(menu.transform, "ResearchEntry", GameUI.L("ui.start.research_test"), new Vector2(0.14f, 0.19f), new Vector2(0.87f, 0.27f), ShowResearchCodeDialog);
             }
-
-            // Settings（复用 ESC 设置界面的语言切换UI）
-            var settingBtn = CreateButton(container.transform, "Settings");
-            var setRt = settingBtn.GetComponent<RectTransform>();
-            setRt.anchoredPosition = new Vector2(0f, y);
-            settingBtn.onClick.AddListener(OnOpenSettings);
-            y -= spacing;
-
-            // Quit Game（桌面平台有效）
-            var quitBtn = CreateButton(container.transform, "Quit Game");
-            var qRt = quitBtn.GetComponent<RectTransform>();
-            qRt.anchoredPosition = new Vector2(0f, y);
-            quitBtn.onClick.AddListener(OnQuitGame);
+            GameUI.Label(menu.transform, "Footer", GameUI.L("ui.start.footer"), 18, new Vector2(0.14f, 0.06f), new Vector2(0.90f, 0.15f)).color = GameUI.Muted;
+            GameUI.Label(_canvas.transform, "FieldCaption", GameUI.L("ui.start.field_caption"), 26, new Vector2(0.53f, 0.07f), new Vector2(0.95f, 0.17f));
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            _ = SettingsManager.Instance;
         }
 
         /// <summary>
         /// 检查 PlayerPrefs 里是否存在任何已保存的进度。
         /// 任何一个核心存档键存在就算"有进度"。
         /// </summary>
-        private static bool HasSavedProgress()
-        {
-            return PlayerPrefs.HasKey("StoryFlags")
-                || PlayerPrefs.HasKey("PlayerPersistentData.UnlockedToolIds")
-                || PlayerPrefs.HasKey("PlayerPersistentData.Inventory")
-                || PlayerPrefs.HasKey("QuestSystem.CompletedObjectives")
-                || PlayerPrefs.HasKey("QuestSystem.CompletedQuests");
-        }
+        private static bool HasSavedProgress() => GameSession.HasProgress;
 
         private void Update()
         {
@@ -183,26 +126,7 @@ namespace SceneSystem
             }
         }
 
-        private void OnOpenSettings()
-        {
-            var sm = SettingsManager.Instance;
-            // 在启动菜单里打开不需要暂停游戏、也不需要禁用玩家（StartScene 通常没有玩家）
-            sm.pauseGameWhenOpen = false;
-            sm.disablePlayerControlWhenOpen = false;
-            // 打开设置界面（复用 ESC 的语言切换UI）
-            sm.OpenSettings();
-
-            // 额外确保关闭按钮关闭后仍保留鼠标状态（添加一个跟随的监听）
-            if (sm.closeButton != null)
-            {
-                sm.closeButton.onClick.AddListener(() =>
-                {
-                    // 关闭后回到启动菜单，应保持鼠标可见
-                    Cursor.lockState = CursorLockMode.None;
-                    Cursor.visible = true;
-                });
-            }
-        }
+        private void OnOpenSettings() => SettingsManager.Instance.OpenSettings();
 
         private Button CreateButton(Transform parent, string label)
         {
@@ -215,7 +139,7 @@ namespace SceneSystem
             rt.anchorMax = new Vector2(0.5f, 0.5f);
 
             var img = go.AddComponent<Image>();
-            img.color = new Color(0.2f, 0.5f, 0.9f, 0.9f);
+            img.color = GameUI.Panel;
 
             var btn = go.AddComponent<Button>();
             btn.targetGraphic = img;
@@ -244,71 +168,22 @@ namespace SceneSystem
             return go;
         }
 
-        public void OnStartGame()
-        {
-            Debug.Log($"[StartMenu] Start -> {_mainSceneName}");
-            // 优先使用项目的场景管理器逻辑（含数据恢复、加载UI等）
-            // 使用项目的场景管理器（若不存在会在其 Instance 中创建）
-            var gsm = GameSceneManager.Instance;
-            if (gsm != null)
-            {
-                gsm.SwitchToScene(_mainSceneName);
-            }
-            else
-            {
-                // 兜底：直接加载场景
-                UnityEngine.SceneManagement.SceneManager.LoadScene(_mainSceneName);
-            }
-        }
+        public void OnStartGame() => GameSession.Instance.ContinueGame();
 
-        public void OnQuitGame()
-        {
-            Debug.Log("[StartMenu] Quit");
-            void FinishQuit()
-            {
-#if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-#else
-                Application.Quit();
-#endif
-            }
-
-            if (TelemetryClient.Instance != null && TelemetryClient.Instance.IsResearchActive)
-            {
-                ResearchParticipationCoordinator.Instance.EndSession("application_quit", FinishQuit);
-            }
-            else
-            {
-                FinishQuit();
-            }
-        }
+        public void OnQuitGame() => GameSession.Instance.QuitToWebsite();
 
         /// <summary>
         /// 玩家点击 New Game 按钮。弹确认框，确认后清掉所有 PlayerPrefs 进度并进 MainScene。
         /// </summary>
         private void OnNewGameClicked()
         {
-            Debug.Log("[StartMenu] New Game clicked, showing confirm dialog");
-            ShowConfirmDialog(
-                title: LocalizationManager.Resolve(
-                    "ui.start.new_game.title",
-                    "最初から始めますか？"),
-                message: LocalizationManager.Resolve(
-                    "ui.start.new_game.message",
-                    "現在の進行状況を消して、最初から始めます。\nストーリー、調査ミッション、持っている試料の記録が消えます。"),
-                confirmLabel: LocalizationManager.Resolve(
-                    "ui.start.new_game.confirm",
-                    "最初から始める"),
-                cancelLabel: LocalizationManager.Resolve(
-                    "ui.start.new_game.cancel",
-                    "戻る"),
-                onConfirm: () =>
+            GameUI.Confirm(GameUI.L("ui.start.new_game.title"),
+                GameUI.L("ui.start.new_game.message") + "\n\n" + GameUI.L("ui.start.new_game.warning"),
+                GameUI.L("ui.start.new_game.confirm"), () =>
                 {
-                    Debug.Log("[StartMenu] Resetting all progress and starting new game");
                     ProgressResetService.ResetAll();
                     OnStartGame();
-                }
-            );
+                });
         }
 
         private void ShowResearchCodeDialog()
@@ -331,7 +206,7 @@ namespace SceneSystem
             panelRect.anchorMax = new Vector2(0.5f, 0.5f);
             panelRect.sizeDelta = new Vector2(760f, 470f);
             var panelImage = panel.AddComponent<Image>();
-            panelImage.color = new Color(0.12f, 0.14f, 0.18f, 1f);
+            panelImage.color = GameUI.Surface;
 
             var title = CreateText(panel.transform, "Title",
                 LocalizationManager.Resolve("ui.start.research_code.title", "研究参加（けんきゅうさんか）コード"), 36);

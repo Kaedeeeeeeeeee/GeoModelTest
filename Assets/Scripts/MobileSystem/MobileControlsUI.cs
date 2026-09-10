@@ -2319,6 +2319,8 @@ public class MobileControlsUI : MonoBehaviour
         }
     }
 
+    private Core.GameInputState.Scope menuInputScope;
+
     void OpenMobileMenu()
     {
         if (isMobileMenuOpen)
@@ -2332,17 +2334,9 @@ public class MobileControlsUI : MonoBehaviour
         }
 
         ResetControlState();
-        mobileMenuOriginalTimeScale = Time.timeScale;
-        Time.timeScale = 0f;
+        menuInputScope = Core.GameInputState.Acquire(CloseMobileMenu);
 
         mobileMenuCanvasScope = ModalCanvasLayerGuard.Activate(controlsCanvas);
-
-        pausedPlayerController = FindFirstObjectByType<FirstPersonController>();
-        if (pausedPlayerController != null)
-        {
-            pausedPlayerControllerWasEnabled = pausedPlayerController.enabled;
-            pausedPlayerController.enabled = false;
-        }
 
         mobileMenuPanel.transform.SetAsLastSibling();
         mobileMenuPanel.SetActive(true);
@@ -2362,16 +2356,11 @@ public class MobileControlsUI : MonoBehaviour
             mobileMenuPanel.SetActive(false);
         }
 
-        Time.timeScale = mobileMenuOriginalTimeScale;
-
         mobileMenuCanvasScope?.Dispose();
         mobileMenuCanvasScope = null;
 
-        if (pausedPlayerController != null && pausedPlayerControllerWasEnabled)
-        {
-            pausedPlayerController.enabled = true;
-        }
-
+        menuInputScope?.Dispose();
+        menuInputScope = null;
         pausedPlayerController = null;
         isMobileMenuOpen = false;
         Debug.Log("[MobileControlsUI] 移动端菜单关闭");
@@ -2386,26 +2375,7 @@ public class MobileControlsUI : MonoBehaviour
     void QuitGameFromMobileMenu()
     {
         CloseMobileMenu();
-        Time.timeScale = 1f;
-
-        void FinishExit()
-        {
-#if UNITY_WEBGL && !UNITY_EDITOR
-            UnityEngine.SceneManagement.SceneManager.LoadScene("StartScene");
-#else
-            Application.Quit();
-#endif
-        }
-
-        if (Backend.TelemetryClient.Instance != null && Backend.TelemetryClient.Instance.IsResearchActive)
-        {
-            Backend.ResearchParticipationCoordinator.Instance.EndSession("menu_exit", FinishExit);
-        }
-        else
-        {
-            FinishExit();
-        }
-        Debug.Log("[MobileControlsUI] 退出游戏");
+        SceneSystem.GameSession.Instance.ConfirmReturnToTitle();
     }
 
     #endregion

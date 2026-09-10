@@ -9,6 +9,50 @@
       "value": "语言"
     },
     {
+      "key": "ui.settings.audio",
+      "value": "音频"
+    },
+    {
+      "key": "ui.settings.master_volume",
+      "value": "主音量"
+    },
+    {
+      "key": "ui.settings.bgm_volume",
+      "value": "音乐音量"
+    },
+    {
+      "key": "ui.settings.sfx_volume",
+      "value": "音效音量"
+    },
+    {
+      "key": "ui.settings.ui_volume",
+      "value": "界面音量"
+    },
+    {
+      "key": "ui.settings.gameplay",
+      "value": "游戏"
+    },
+    {
+      "key": "ui.settings.look_sensitivity",
+      "value": "镜头灵敏度"
+    },
+    {
+      "key": "ui.settings.quality",
+      "value": "画质"
+    },
+    {
+      "key": "ui.settings.auto_quality",
+      "value": "自动画质"
+    },
+    {
+      "key": "ui.settings.auto",
+      "value": "自动"
+    },
+    {
+      "key": "ui.settings.manual",
+      "value": "手动"
+    },
+    {
       "key": "ui.button.close",
       "value": "关闭"
     },
@@ -31,6 +75,18 @@
     {
       "key": "ui.button.settings",
       "value": "设置"
+    },
+    {
+      "key": "ui.mobile_menu.title",
+      "value": "菜单"
+    },
+    {
+      "key": "ui.mobile_menu.resume",
+      "value": "继续游戏"
+    },
+    {
+      "key": "ui.mobile_menu.quit",
+      "value": "退出游戏"
     },
     {
       "key": "warehouse.title",
@@ -87,6 +143,10 @@
     {
       "key": "warehouse.interaction.prompt",
       "value": "[F] 打开仓库"
+    },
+    {
+      "key": "cutting_station.interaction.prompt",
+      "value": "[F] 使用样本切割台"
     },
     {
       "key": "tool.drill.name",
@@ -253,12 +313,376 @@
       "value": "[空键]"
     },
     {
+      "key": "sample.inventory.title",
+      "value": "样本背包"
+    },
+    {
+      "key": "sample.detail.title",
+      "value": "样本详情"
+    },
+    {
+      "key": "sample.detail.placeholder",
+      "value": "选择一个样本查看详情"
+    },
+    {
+      "key": "sample.button.take_out",
+      "value": "拿出"
+    },
+    {
+      "key": "sample.button.discard",
+      "value": "丢弃"
+    },
+    {
       "key": "tool.scene_switcher.name",
       "value": "场景切换器"
     },
     {
-      "key": "quest.ui.completed",
-      "value": "已完成"
+      "key": "sample.collection.interact",
+      "value": "[E] 采集 {0}"
+    },
+    {
+      "key": "sample.collection.retrieve",
+      "value": "[E] 收回 {0}"
+    },
+    {
+      "key": "sample.info.id",
+      "value": "样本ID: {0}"
+    },
+    {
+      "key": "sample.info.name",
+      "value": "名称: {0}"
+    },
+    {
+      "key": "sample.info.collection_time",
+      "value": "采集时间: {0}"
+    },
+    {
+      "key": "sample.info.collection_position",
+      "value": "采集位置: ({0}, {1}, {2})"
+    },
+    {
+      "key": "sample.info.collection_tool",
+      "value": "采集工具: {0}"
+    },
+    {
+      "key": "sample.info.collection_depth",
+      "value": "采集深度: {0}m - {1}m"
+    },
+    {
+      "key": "sample.info.layer_count",
+      "value": "地质层数: {0}"
+    },
+    {
+      "key": "sample.info.current_status",
+      "value": "当前状态: {0}"
+    },
+    {
+      "key": "sample.info.layer_details",
+      "value": "地质层详情:"
+    },
+    {
+      "key": "sample.info.no_layer_data",
+      "value": "无地层数据"
+    },
+    {
+      "key": "sample.info.layer_item",
+      "value": "  {0}. {1} - 厚度: {2}m"
+    },
+    {
+      "key": "sample.status.inventory",
+      "value": "背包中"
+    },
+    {
+      "key": "sample.status.world",
+      "value": "世界中"
+    },
+    {
+      "key": "sample.message.collected",
+      "value": "已采集样本: {0}"
+    },
+    {
+      "key": "sample.message.inventory_full",
+      "value": "背包已满或无法添加样本！"
+    },
+    {
+      "key": "sample.message.no_inventory",
+      "value": "未找到样本背包系统！"
+    },
+    {
+      "key": "sample.description.template",
+      "value": "使用{0}采集的地质样本"
+    },
+    {
+      "key": "tool.unknown.name",
+      "value": "未知工具"
+    },
+    {
+      "key": "scene.selection.title",
+      "value": "场景选择"
+    },
+    {
+      "key": "scene.main.name",
+      "value": "野外"
+    },
+    {
+      "key": "scene.laboratory.name",
+      "value": "研究室"
+    },
+    {
+      "key": "scene.unknown.name",
+      "value": "未知场景"
+    },
+    {
+      "key": "scene.button.current",
+      "value": "{0} (当前)"
+    },
+    {
+      "key": "sample.info.depth_world",
+      "value": "采集深度: {0}m - {1}m (世界坐标)"
+    },
+    {
+      "key": "sample.info.depth_world_relative",
+      "value": "采集深度: {0}m - {1}m (相对: {2}m - {3}m)"
+    },
+    {
+      "key": "sample.drill_tower.description",
+      "value": "钻塔样本 #{0}\n{1}\n厚度: {2}m"
+    },
+    {
+      "key": "encyclopedia.system_status.title",
+      "value": "系统状态"
+    },
+    {
+      "key": "encyclopedia.data_system.label",
+      "value": "数据系统"
+    },
+    {
+      "key": "encyclopedia.collection_system.label",
+      "value": "收集系统"
+    },
+    {
+      "key": "encyclopedia.status.loaded",
+      "value": "已加载"
+    },
+    {
+      "key": "encyclopedia.status.not_initialized",
+      "value": "未初始化"
+    },
+    {
+      "key": "encyclopedia.status.running",
+      "value": "正常运行"
+    },
+    {
+      "key": "encyclopedia.status.data_error",
+      "value": "数据异常"
+    },
+    {
+      "key": "encyclopedia.progress.overall",
+      "value": "总进度"
+    },
+    {
+      "key": "encyclopedia.progress.minerals",
+      "value": "矿物"
+    },
+    {
+      "key": "encyclopedia.progress.fossils",
+      "value": "化石"
+    },
+    {
+      "key": "encyclopedia.progress.discovery",
+      "value": "发现进度"
+    },
+    {
+      "key": "encyclopedia.current_layer.title",
+      "value": "当前地层: {0}"
+    },
+    {
+      "key": "encyclopedia.current_layer.total_entries",
+      "value": "总条目"
+    },
+    {
+      "key": "encyclopedia.current_layer.minerals",
+      "value": "矿物"
+    },
+    {
+      "key": "encyclopedia.current_layer.fossils",
+      "value": "化石"
+    },
+    {
+      "key": "encyclopedia.detail.title",
+      "value": "条目详情"
+    },
+    {
+      "key": "encyclopedia.detail.basic_info",
+      "value": "基本信息"
+    },
+    {
+      "key": "encyclopedia.detail.name",
+      "value": "名称"
+    },
+    {
+      "key": "encyclopedia.detail.type",
+      "value": "类型"
+    },
+    {
+      "key": "encyclopedia.detail.layer",
+      "value": "地层"
+    },
+    {
+      "key": "encyclopedia.detail.rock_type",
+      "value": "岩石类型"
+    },
+    {
+      "key": "encyclopedia.detail.percentage",
+      "value": "含量比例"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_probability",
+      "value": "发现概率"
+    },
+    {
+      "key": "encyclopedia.detail.rarity",
+      "value": "稀有度"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_status",
+      "value": "发现状态"
+    },
+    {
+      "key": "encyclopedia.detail.discovered",
+      "value": "已发现"
+    },
+    {
+      "key": "encyclopedia.detail.not_discovered",
+      "value": "未发现"
+    },
+    {
+      "key": "encyclopedia.detail.description",
+      "value": "详细描述"
+    },
+    {
+      "key": "encyclopedia.detail.appearance",
+      "value": "外观特征"
+    },
+    {
+      "key": "encyclopedia.detail.physical_properties",
+      "value": "物理属性"
+    },
+    {
+      "key": "encyclopedia.detail.mohs_hardness",
+      "value": "莫氏硬度"
+    },
+    {
+      "key": "encyclopedia.detail.density",
+      "value": "密度"
+    },
+    {
+      "key": "encyclopedia.detail.uv_fluorescence",
+      "value": "紫外荧光"
+    },
+    {
+      "key": "encyclopedia.detail.magnetism",
+      "value": "磁性"
+    },
+    {
+      "key": "encyclopedia.detail.polarized_color",
+      "value": "偏光颜色"
+    },
+    {
+      "key": "encyclopedia.detail.acid_reaction",
+      "value": "酸性反应"
+    },
+    {
+      "key": "encyclopedia.detail.acid_reaction_yes",
+      "value": "有反应"
+    },
+    {
+      "key": "encyclopedia.detail.acid_reaction_no",
+      "value": "无反应"
+    },
+    {
+      "key": "encyclopedia.detail.collection_info",
+      "value": "收集信息"
+    },
+    {
+      "key": "encyclopedia.detail.first_discovered",
+      "value": "首次发现"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_count",
+      "value": "发现次数"
+    },
+    {
+      "key": "encyclopedia.detail.times",
+      "value": "次"
+    },
+    {
+      "key": "encyclopedia.type.mineral",
+      "value": "矿物"
+    },
+    {
+      "key": "encyclopedia.type.fossil",
+      "value": "化石"
+    },
+    {
+      "key": "encyclopedia.rarity.common",
+      "value": "常见"
+    },
+    {
+      "key": "encyclopedia.rarity.uncommon",
+      "value": "少见"
+    },
+    {
+      "key": "encyclopedia.rarity.rare",
+      "value": "稀有"
+    },
+    {
+      "key": "encyclopedia.rarity.unknown",
+      "value": "未知"
+    },
+    {
+      "key": "encyclopedia.entry_list.title",
+      "value": "条目列表"
+    },
+    {
+      "key": "rock.conglomerate",
+      "value": "砾岩"
+    },
+    {
+      "key": "rock.volcanic_ash",
+      "value": "火山灰"
+    },
+    {
+      "key": "rock.siltstone_sandstone",
+      "value": "粉砂岩/砂岩"
+    },
+    {
+      "key": "rock.sandstone_siltstone",
+      "value": "砂岩/粉砂岩"
+    },
+    {
+      "key": "rock.dacitic_welded_tuff",
+      "value": "英安岩质熔结凝灰岩"
+    },
+    {
+      "key": "rock.siltstone_fine_sandstone",
+      "value": "粉砂岩/细粒砂岩"
+    },
+    {
+      "key": "rock.tuff",
+      "value": "凝灰岩"
+    },
+    {
+      "key": "rock.tuffaceous_sandstone",
+      "value": "凝灰质砂岩"
+    },
+    {
+      "key": "rock.siltstone",
+      "value": "粉砂岩"
+    },
+    {
+      "key": "encyclopedia.system.title",
+      "value": "地质图鉴系统"
     },
     {
       "key": "quest.lab.intro.title",
@@ -266,11 +690,2583 @@
     },
     {
       "key": "quest.lab.intro.desc",
-      "value": "跟随引导，领取基础工具。"
+      "value": "跟随引导熟悉研究室并领取基础工具"
     },
     {
       "key": "quest.lab.intro.obj1",
-      "value": "领取基础工具"
+      "value": "跟随提示，完成实验室开场引导"
+    },
+    {
+      "key": "quest.lab.drkaede.title",
+      "value": "任务2：与Dr.Kaede对话"
+    },
+    {
+      "key": "quest.lab.drkaede.desc",
+      "value": "在研究室与Dr.Kaede交谈，了解下一步计划"
+    },
+    {
+      "key": "quest.lab.drkaede.obj1",
+      "value": "quest2:和Dr.Kaede进行对话"
+    },
+    {
+      "key": "quest.lab.drkaede.prompt",
+      "value": "[E] 与Dr.Kaede对话"
+    },
+    {
+      "key": "quest.lab.anomaly.title",
+      "value": "任务3: 异常样本"
+    },
+    {
+      "key": "quest.lab.anomaly.desc",
+      "value": "与Dr.Kaede合作调查异常样本的线索"
+    },
+    {
+      "key": "quest.lab.anomaly.obj1",
+      "value": "向Dr.Kaede了解异常样本"
+    },
+    {
+      "key": "quest.lab.anomaly.prompt",
+      "value": "[E] 询问异常样本"
+    },
+    {
+      "key": "quest.field.phase.title",
+      "value": "3.2 试试场景切换器"
+    },
+    {
+      "key": "quest.field.phase.desc",
+      "value": "使用场景切换器前往野外区域，为下一段剧情做准备"
+    },
+    {
+      "key": "quest.field.phase.obj1",
+      "value": "使用场景切换器切换到野外场景"
+    },
+    {
+      "key": "quest.field.phase.obj2",
+      "value": "3.3 使用地质锤采集样品"
+    },
+    {
+      "key": "quest.lab.return.title",
+      "value": "3.3 返回G-Lab"
+    },
+    {
+      "key": "quest.lab.return.desc",
+      "value": "使用场景切换器返回研究室，准备下一阶段任务"
+    },
+    {
+      "key": "quest.lab.return.obj1",
+      "value": "切换回研究室场景"
+    },
+    {
+      "key": "quest.chapter4.kaede.title",
+      "value": "quest4.1 去和Dr.Kaede谈谈"
+    },
+    {
+      "key": "quest.chapter4.kaede.desc",
+      "value": "向Dr.Kaede汇报最新情况，获取下一步指示"
+    },
+    {
+      "key": "quest.chapter4.kaede.obj1",
+      "value": "与Dr.Kaede交谈"
+    },
+    {
+      "key": "quest.chapter4.kaede.prompt",
+      "value": "[E] 与Dr.Kaede交谈"
+    },
+    {
+      "key": "quest.chapter4.field.title",
+      "value": "quest4.2 前往野外"
+    },
+    {
+      "key": "quest.chapter4.field.desc",
+      "value": "使用相位切换器前往野外场景"
+    },
+    {
+      "key": "quest.chapter4.field.obj1",
+      "value": "前往野外"
+    },
+    {
+      "key": "quest.chapter4.sample.title",
+      "value": "quest4.3 采集一次钻探样本"
+    },
+    {
+      "key": "quest.chapter4.sample.desc",
+      "value": "前往指引地点，使用推荐采集装置或钻塔完成钻探采样"
+    },
+    {
+      "key": "quest.chapter4.sample.obj1",
+      "value": "在目标地点用推荐采集装置或钻塔完成采样"
+    },
+    {
+      "key": "quest.chapter4.return.title",
+      "value": "quest4.4 返回G-Lab"
+    },
+    {
+      "key": "quest.chapter4.return.desc",
+      "value": "带着样本返回G-Lab，为后续分析做准备"
+    },
+    {
+      "key": "quest.chapter4.return.obj1",
+      "value": "返回G-Lab"
+    },
+    {
+      "key": "quest.chapter5.kaede.title",
+      "value": "quest5.1 ：去和Dr.Kaede谈谈"
+    },
+    {
+      "key": "quest.chapter5.kaede.desc",
+      "value": "向Dr.Kaede汇报最新情况，获取下一步指示"
+    },
+    {
+      "key": "quest.chapter5.kaede.obj1",
+      "value": "与Dr.Kaede交谈"
+    },
+    {
+      "key": "quest.chapter5.kaede.prompt",
+      "value": "[E] 与Dr.Kaede交谈"
+    },
+    {
+      "key": "quest.chapter5.field.title",
+      "value": "quest5.2：前往野外"
+    },
+    {
+      "key": "quest.chapter5.field.desc",
+      "value": "使用场景转换器前往野外，准备启用无人机进行侦察"
+    },
+    {
+      "key": "quest.chapter5.field.obj1",
+      "value": "切换到野外场景"
+    },
+    {
+      "key": "quest.chapter5.return.title",
+      "value": "quest5.2：返回G-Lab"
+    },
+    {
+      "key": "quest.chapter5.return.desc",
+      "value": "带着发现返回G-Lab，为汇报做准备"
+    },
+    {
+      "key": "quest.chapter5.return.obj1",
+      "value": "返回G-Lab"
+    },
+    {
+      "key": "quest.chapter6.kaede.title",
+      "value": "quest6：与Dr.Kaede对话"
+    },
+    {
+      "key": "quest.chapter6.kaede.desc",
+      "value": "向Dr.Kaede提交最终报告，确认后续安排"
+    },
+    {
+      "key": "quest.chapter6.kaede.obj1",
+      "value": "与Dr.Kaede交谈"
+    },
+    {
+      "key": "quest.chapter6.kaede.prompt",
+      "value": "[E] 与Dr.Kaede交谈"
+    },
+    {
+      "key": "quest.ui.completed",
+      "value": "任务已完成"
+    },
+    {
+      "key": "encyclopedia.layer.aoba_mountain",
+      "value": "青葉山層"
+    },
+    {
+      "key": "encyclopedia.layer.dainenji",
+      "value": "大年寺層"
+    },
+    {
+      "key": "encyclopedia.layer.mukoyama",
+      "value": "向山層"
+    },
+    {
+      "key": "encyclopedia.layer.hirose_river_tuff",
+      "value": "広瀬川凝灰岩部層"
+    },
+    {
+      "key": "encyclopedia.layer.ryunokuchi",
+      "value": "竜ノ口層"
+    },
+    {
+      "key": "encyclopedia.layer.kameoka",
+      "value": "亀岡層"
+    },
+    {
+      "key": "encyclopedia.property.none",
+      "value": "无"
+    },
+    {
+      "key": "encyclopedia.property.non_magnetic",
+      "value": "无磁性"
+    },
+    {
+      "key": "encyclopedia.property.colorless_green",
+      "value": "无色/无绿色"
+    },
+    {
+      "key": "encyclopedia.property.non_reactive",
+      "value": "无反应"
+    },
+    {
+      "key": "encyclopedia.property.diamagnetic",
+      "value": "无（抗磁性）"
+    },
+    {
+      "key": "encyclopedia.property.colorless",
+      "value": "无色"
+    },
+    {
+      "key": "encyclopedia.property.weak",
+      "value": "弱"
+    },
+    {
+      "key": "encyclopedia.property.strong",
+      "value": "强"
+    },
+    {
+      "key": "mineral.description.plagioclase",
+      "value": "通常呈白色或灰色，有时带淡蓝或淡绿；玻璃光泽。"
+    },
+    {
+      "key": "mineral.description.pyroxene",
+      "value": "呈深绿色、褐色至黑色等深色，柱状晶形，光泽玻璃至暗淡。"
+    },
+    {
+      "key": "mineral.description.amphibole",
+      "value": "颜色多为黑色、深绿色或深褐色，玻璃光泽。"
+    },
+    {
+      "key": "mineral.description.magnetite_simple",
+      "value": "颜色通常黑色或灰色带棕色调，具金属光泽。"
+    },
+    {
+      "key": "mineral.description.magnetite_detailed",
+      "value": "颜色通常黑色或灰色带棕色调，具金属光泽；断口不平，条痕黑色。"
+    },
+    {
+      "key": "mineral.description.olivine",
+      "value": "颜色多为橄榄绿至黄褐色，玻璃光泽，条痕白色，铁含量高的样品表面会氧化呈红色。"
+    },
+    {
+      "key": "mineral.description.quartz",
+      "value": "呈无色、粉色、橙色、白色、绿色、黄色、蓝色、紫色或深褐色等多种颜色，断口贝壳状，玻璃光泽，条痕白色。"
+    },
+    {
+      "key": "mineral.description.feldspar",
+      "value": "颜色可为粉红、白、灰、褐或蓝色，玻璃光泽，条痕白色。"
+    },
+    {
+      "key": "mineral.description.biotite",
+      "value": "颜色黑色至褐色或黄色，具玻璃至珍珠光泽，条痕白色，晶形常呈假六方片状。"
+    },
+    {
+      "key": "mineral.description.zircon_short",
+      "value": "颜色深褐、黑、灰、浅褐、褐红、橙、粉红等多种，条痕无色，光泽油脂至金刚光泽。断口贝壳状至不平，晶体常为短柱状或水磨圆粒。"
+    },
+    {
+      "key": "mineral.description.zircon_long",
+      "value": "颜色深褐、黑、灰、浅褐、褐红、橙、粉红等多种，条痕无色，光泽油脂至金刚光泽，断口贝壳状至不平，晶体常为短柱状或水磨圆粒。"
+    },
+    {
+      "key": "mineral.description.volcanic_glass",
+      "value": "通常黑色，也有绿色或褐色，断口呈典型贝壳状，质地光滑玻璃状，玻璃光泽。"
+    },
+    {
+      "key": "mineral.description.hypersthene",
+      "value": "颜色灰色、褐色或绿色，断口不平，光泽玻璃至珍珠，条痕灰白或绿灰，表面有铜红色金属光泽。"
+    },
+    {
+      "key": "mineral.description.garnet",
+      "value": "颜色几乎涵盖所有色谱，常见为红色；晶体为菱形十二面体或立方体，断口贝壳状至不平，光泽玻璃或树脂光泽，条痕白色。"
+    },
+    {
+      "key": "mineral.description.clay_minerals",
+      "value": "以含水铝硅酸盐为主的细粒矿物集合体，质地柔软，湿润时具有可塑性；颜色多为白色、灰色或浅褐色，光泽土状，常呈土状或粉末状集合体。"
+    },
+    {
+      "key": "mineral.description.heavy_minerals",
+      "value": "重矿物指密度较大的矿物（如锆石、钛磁铁矿、石榴石等）的集合体，常出现在砂中，颜色通常较深，粒度细小，具光泽。"
+    },
+    {
+      "key": "mineral.description.orthopyroxene",
+      "value": "颜色灰色、褐色或绿色，光泽玻璃至珍珠，条痕灰白或绿灰，表面有铜红色金属光泽。"
+    },
+    {
+      "key": "mineral.description.illite_alteration_product",
+      "value": "颜色灰白、银白或绿灰色，集合体呈云母状薄片，光泽珍珠至土状；条痕白色；半透明。"
+    },
+    {
+      "key": "mineral.description.pumice",
+      "value": "浮石是一种浅色的多孔火山岩，含大量气孔，质地轻可浮于水面，通常为白色或淡灰色，是喷出岩。"
+    },
+    {
+      "key": "mineral.description.volcanic_ash",
+      "value": "火山灰是火山喷发时产生的细粒火山碎屑物质，颗粒细小，通常为灰色至深灰色。"
+    },
+    {
+      "key": "mineral.description.carbonaceous_matter",
+      "value": "碳质物质是含碳的有机或无机化合物，通常呈黑色或深褐色，具有特征的碳质光泽。"
+    },
+    {
+      "key": "encyclopedia.property.colorless_fade",
+      "value": "无色/无褪色"
+    },
+    {
+      "key": "encyclopedia.property.mostly_non_fluorescent",
+      "value": "大多数不发光"
+    },
+    {
+      "key": "encyclopedia.property.mostly_non_fluorescent_quartz",
+      "value": "大多数不发光（部分石英可发光）"
+    },
+    {
+      "key": "encyclopedia.property.weak_magnetic",
+      "value": "弱磁性"
+    },
+    {
+      "key": "encyclopedia.property.weak_magnetic_paramagnetic",
+      "value": "弱磁性（顺磁性）"
+    },
+    {
+      "key": "encyclopedia.property.strong_magnetic",
+      "value": "强磁性"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism",
+      "value": "强变色"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism_green_brown",
+      "value": "强变色：绿色到深绿色或棕色"
+    },
+    {
+      "key": "encyclopedia.property.no_pleochroism",
+      "value": "无变色"
+    },
+    {
+      "key": "encyclopedia.property.weak_pleochroism",
+      "value": "弱变色"
+    },
+    {
+      "key": "encyclopedia.property.complex_pleochroism_xyz",
+      "value": "X=浅绿/浅褐黄，Y=浅褐/浅黄绿/紫色，Z=浅绿/灰绿/紫色"
+    },
+    {
+      "key": "encyclopedia.property.opaque",
+      "value": "不透明"
+    },
+    {
+      "key": "encyclopedia.property.variable",
+      "value": "多样"
+    },
+    {
+      "key": "encyclopedia.property.variable_composition_dependent",
+      "value": "多样/取决于组成"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism_opaque",
+      "value": "强变色/不透明"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism_brown_green",
+      "value": "强变色（棕色/绿色）"
+    },
+    {
+      "key": "encyclopedia.property.none_light_color",
+      "value": "无/浅色"
+    },
+    {
+      "key": "encyclopedia.property.none_glassy",
+      "value": "无/玻璃质"
+    },
+    {
+      "key": "encyclopedia.property.no_color_change",
+      "value": "无变色"
+    },
+    {
+      "key": "encyclopedia.property.colorless_no_change",
+      "value": "无色/无变色"
+    },
+    {
+      "key": "encyclopedia.property.none_glassy_quality",
+      "value": "无（玻璃质）"
+    },
+    {
+      "key": "encyclopedia.property.mg_rich_fe_rich_pleochroism",
+      "value": "无（镁富石）；Fe富含样品α=γ淡黄到β橙黄"
+    },
+    {
+      "key": "encyclopedia.property.gray_pink_green_pleochroism",
+      "value": "灰色至粉红/绿色变色"
+    },
+    {
+      "key": "encyclopedia.property.pink_green_pleochroism",
+      "value": "粉红到绿色变色"
+    },
+    {
+      "key": "fossil.description.plant_remains",
+      "value": "在该地层中发现的植物遗骸化石，保存了古代植物的组织结构。"
+    },
+    {
+      "key": "fossil.description.planktonic_diatoms",
+      "value": "在该地层中发现的浮游性硅藻化石，是古海洋环境的重要指示生物。"
+    },
+    {
+      "key": "fossil.description.foraminifera",
+      "value": "在该地层中发现的有孔虫化石，是古海洋深度和温度的指示生物。"
+    },
+    {
+      "key": "fossil.description.shellfish",
+      "value": "在该地层中发现的贝类化石，反映了古代海洋或湖泊环境。"
+    },
+    {
+      "key": "fossil.description.freshwater_shellfish",
+      "value": "在该地层中发现的淡水贝类化石，指示古代淡水湖泊环境。"
+    },
+    {
+      "key": "fossil.description.plant_leaf_fossils",
+      "value": "在该地层中发现的叶片化石，保存了古代植物的叶片形态特征。"
+    },
+    {
+      "key": "fossil.description.pollen_fossils",
+      "value": "在该地层中发现的花粉化石，是重建古植被和古气候的重要依据。"
+    },
+    {
+      "key": "fossil.description.fish_fossils",
+      "value": "在该地层中发现的鱼类化石，反映了古代水生生态系统。"
+    },
+    {
+      "key": "fossil.description.silicified_wood",
+      "value": "在该地层中发现的硅化木化石，是古代森林环境的直接证据。"
+    },
+    {
+      "key": "fossil.description.sendai_clam",
+      "value": "在该地层中发现的仙台蛤化石，是该地区特有的古生物种类。"
+    },
+    {
+      "key": "fossil.description.takahashi_scallop",
+      "value": "在该地层中发现的高桥扇贝化石，指示温带海洋环境。"
+    },
+    {
+      "key": "fossil.description.cetacean_fossils",
+      "value": "在该地层中发现的鲸类化石，是古海洋大型哺乳动物的珍贵遗存。"
+    },
+    {
+      "key": "fossil.description.ancient_coral",
+      "value": "在该地层中发现的古珊瑚化石，指示温暖的浅海环境。"
+    },
+    {
+      "key": "fossil.description.ancient_octopus",
+      "value": "在该地层中发现的古章鱼化石，是软体动物演化的重要证据。"
+    },
+    {
+      "key": "fossil.description.ancient_starfish",
+      "value": "在该地层中发现的古海星化石，反映了古代海底生态系统。"
+    },
+    {
+      "key": "fossil.description.ammonite",
+      "value": "在该地层中发现的菊石化石，是中生代海洋的标准化石。"
+    },
+    {
+      "key": "fossil.description.trilobite",
+      "value": "在该地层中发现的三叶虫化石，是古生代海洋生物的代表。"
+    },
+    {
+      "key": "fossil.description.generic",
+      "value": "在该地层中发现的化石，为了解古代生物和环境提供了重要信息。"
+    },
+    {
+      "key": "cutting_system.warehouse.title",
+      "value": "仓库 (100格)"
+    },
+    {
+      "key": "cutting_system.cutting_area.title",
+      "value": "样本切割台"
+    },
+    {
+      "key": "cutting_system.instruction.drag_sample",
+      "value": "将多层地质样本\n从左侧拖拽到此处\n\n开始样本切割操作\n\n支持的样本类型:\n• 多层钻孔样本\n• 地质探查样本"
+    },
+    {
+      "key": "cutting_system.instruction.cutting_in_progress",
+      "value": "正在切割: {0}\n\n观察移动的切割线\n按空格键/触摸屏幕进行切割\n\n⚠️ 切割失败会销毁样本"
+    },
+    {
+      "key": "cutting_system.instruction.multi_layer_required",
+      "value": "只能切割多层样本"
+    },
+    {
+      "key": "cutting_system.button.close",
+      "value": "关闭"
+    },
+    {
+      "key": "cutting_system.cutting_line.instruction",
+      "value": "按空格键/触摸屏幕\n进行切割"
+    },
+    {
+      "key": "cutting_system.cutting_complete",
+      "value": "切割完成"
+    },
+    {
+      "key": "cutting_system.cutting_failed",
+      "value": "切割失败"
+    },
+    {
+      "key": "cutting_system.cutting_progress",
+      "value": "切割进度: {0}/{1}"
+    },
+    {
+      "key": "cutting_system.analyzing_sample",
+      "value": "分析样本中..."
+    },
+    {
+      "key": "cutting_system.success_message",
+      "value": "✅ 切割成功！\n\n单层样本已添加到背包\n可以继续切割其他样本"
+    },
+    {
+      "key": "cutting_system.failure_message",
+      "value": "❌ 切割失败\n\n样本已被销毁\n请重新选择样本进行切割"
+    },
+    {
+      "key": "cutting_system.initialization_failed",
+      "value": "切割系统初始化失败"
+    },
+    {
+      "key": "drill_tower.drilling",
+      "value": "钻探中..."
+    },
+    {
+      "key": "drill_tower.max_depth",
+      "value": "已达最大钻探深度"
+    },
+    {
+      "key": "drill_tower.recall_prompt",
+      "value": "按G键收回钻塔"
+    },
+    {
+      "key": "drill_tower.drill_prompt",
+      "value": "按F键进行第{0}次钻探\n({1:F0}m-{2:F0}m)"
+    },
+    {
+      "key": "cutting_system.all_cuts_complete",
+      "value": "所有切割完成！"
+    },
+    {
+      "key": "encyclopedia.ui.title",
+      "value": "地质图鉴"
+    },
+    {
+      "key": "encyclopedia.ui.collection_progress",
+      "value": "收集进度: {0}/{1} ({2})"
+    },
+    {
+      "key": "encyclopedia.ui.minerals_progress",
+      "value": "矿物: {0}/{1} ({2})"
+    },
+    {
+      "key": "encyclopedia.ui.fossils_progress",
+      "value": "化石: {0}/{1} ({2})"
+    },
+    {
+      "key": "encyclopedia.ui.search_placeholder",
+      "value": "搜索..."
+    },
+    {
+      "key": "encyclopedia.ui.clear_filters",
+      "value": "清除"
+    },
+    {
+      "key": "encyclopedia.ui.filter_all",
+      "value": "全部"
+    },
+    {
+      "key": "encyclopedia.ui.layer_name_template",
+      "value": "地层名称"
+    },
+    {
+      "key": "encyclopedia.ui.entry_name_template",
+      "value": "条目名称"
+    },
+    {
+      "key": "encyclopedia.ui.rarity_template",
+      "value": "稀有度"
+    },
+    {
+      "key": "encyclopedia.ui.statistics_template",
+      "value": "收集统计:\n矿物: 0/0\n化石: 0/0"
+    },
+    {
+      "key": "encyclopedia.ui.detail_info",
+      "value": "详细信息"
+    },
+    {
+      "key": "encyclopedia.ui.detail_description",
+      "value": "描述信息"
+    },
+    {
+      "key": "encyclopedia.ui.detail_properties",
+      "value": "属性信息"
+    },
+    {
+      "key": "encyclopedia.ui.viewer_reset",
+      "value": "重置"
+    },
+    {
+      "key": "encyclopedia.ui.close_button",
+      "value": "×"
+    },
+    {
+      "key": "encyclopedia.ui.filter.all",
+      "value": "全部"
+    },
+    {
+      "key": "encyclopedia.ui.filter.mineral",
+      "value": "矿物"
+    },
+    {
+      "key": "encyclopedia.ui.filter.fossil",
+      "value": "化石"
+    },
+    {
+      "key": "encyclopedia.ui.rarity.common",
+      "value": "常见"
+    },
+    {
+      "key": "encyclopedia.ui.rarity.uncommon",
+      "value": "少见"
+    },
+    {
+      "key": "encyclopedia.ui.rarity.rare",
+      "value": "稀有"
+    },
+    {
+      "key": "encyclopedia.detail.undiscovered",
+      "value": "发现后显示详细属性"
+    },
+    {
+      "key": "encyclopedia.detail.rock",
+      "value": "岩石"
+    },
+    {
+      "key": "encyclopedia.detail.content",
+      "value": "含量"
+    },
+    {
+      "key": "encyclopedia.layer.unknown",
+      "value": "未知地层"
+    },
+    {
+      "key": "encyclopedia.ui.layer_section_title",
+      "value": "地质地层"
+    },
+    {
+      "key": "story.quest1_1.line01",
+      "value": "午休的教室里，窗外湛蓝的天空与鸟鸣交织。"
+    },
+    {
+      "key": "story.quest1_1.line02",
+      "value": "喂，你有好好听今天的理科课吗？"
+    },
+    {
+      "key": "story.quest1_1.line03",
+      "value": "地震的内容，听起来有点可怕吧？"
+    },
+    {
+      "key": "story.quest1_1.line04",
+      "value": "嗯，可老师说的“地球的呼吸”这词儿，还挺浪漫的不是吗？"
+    },
+    {
+      "key": "story.quest1_1.line05",
+      "value": "浪漫什么啦（笑）。你果然还是那么怪。"
+    },
+    {
+      "key": "story.quest1_1.line06",
+      "value": "不过，地球好像活着，其实也挺有趣的。"
+    },
+    {
+      "key": "story.quest1_1.line07",
+      "value": "要是真的地球在“呼吸”，我们就像住在它身上的小生物吧。"
+    },
+    {
+      "key": "story.quest1_1.line08",
+      "value": "不管地球呼不呼吸，我们本来就是小不点啦。"
+    },
+    {
+      "key": "story.quest1_1.line09",
+      "value": "……咦？你感觉到晃了吗？"
+    },
+    {
+      "key": "story.quest1_1.line10",
+      "value": "是有点，不过等等就会停吧。"
+    },
+    {
+      "key": "story.quest1_1.line11",
+      "value": "咦……怎么还没停……"
+    },
+    {
+      "key": "story.quest1_1.line12",
+      "value": "哇！书柜倒了！"
+    },
+    {
+      "key": "story.quest1_1.line13",
+      "value": "不会吧！？这么大的我还是第一次——！"
+    },
+    {
+      "key": "story.quest1_1.line14",
+      "value": "钻到桌子下面！快！"
+    },
+    {
+      "key": "story.quest1_1.line15",
+      "value": "【震动渐止】"
+    },
+    {
+      "key": "story.quest1_1.line16",
+      "value": "摇晃越来越剧烈，黑板倒下，吊灯砸落，教室里充满尖叫。"
+    },
+    {
+      "key": "story.quest1_1.line17",
+      "value": "呀——！天花板！救命啊！"
+    },
+    {
+      "key": "story.quest1_1.line18",
+      "value": "这边的门打不开！谁来帮忙！"
+    },
+    {
+      "key": "story.quest1_1.line19",
+      "value": "巨大的冲击声炸开，玻璃碎裂，墙壁开始崩塌。"
+    },
+    {
+      "key": "story.quest1_1.line20",
+      "value": "不要啊……！"
+    },
+    {
+      "key": "story.quest1_1.line21",
+      "value": "就在那一刻，天花板的一块砸落，擦过美奈的肩膀，她闷哼一声便失去意识。"
+    },
+    {
+      "key": "story.quest1_1.line22",
+      "value": "美奈！？撑住！美奈！"
+    },
+    {
+      "key": "story.quest1_1.line23",
+      "value": "主角握紧颤抖的手。轰鸣之中，他只能清楚听见自己的心跳。"
+    },
+    {
+      "key": "story.quest1_1.line24",
+      "value": "（……想救她。谁来……！）"
+    },
+    {
+      "key": "story.quest1_1.line25",
+      "value": "就在那一瞬，主角的手心迸出耀眼白光，崩塌的教室被刺眼的闪光吞没。"
+    },
+    {
+      "key": "story.quest1_2.line01",
+      "value": "视野扭曲，声音远去。再次睁眼时，眼前是陌生的白色设施。"
+    },
+    {
+      "key": "story.quest1_2.line02",
+      "value": "这里……是哪？美奈……！你没事吧？"
+    },
+    {
+      "key": "story.quest1_2.line03",
+      "value": "……嗯，嗯……这里……不是学校吧……？"
+    },
+    {
+      "key": "story.quest1_2.line04",
+      "value": "抬头一看，眼前站着一名男子。"
+    },
+    {
+      "key": "story.quest1_2.line05",
+      "value": "......"
+    },
+    {
+      "key": "story.quest1_2.line06",
+      "value": "这里是……？"
+    },
+    {
+      "key": "story.quest1_2.line07",
+      "value": "欢迎来到G-Lab。"
+    },
+    {
+      "key": "story.quest2_1.line01",
+      "value": "G-Lab里灯光冰冷闪烁。"
+    },
+    {
+      "key": "story.quest2_1.line02",
+      "value": "这里是G-Lab，研究地质活动。"
+    },
+    {
+      "key": "story.quest2_1.line03",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line04",
+      "value": "先看个影像。"
+    },
+    {
+      "key": "story.quest2_1.line05",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line06",
+      "value": "新闻：仙台地震严重，余震仍在持续。"
+    },
+    {
+      "key": "story.quest2_1.line07",
+      "value": "那是我们的城市……"
+    },
+    {
+      "key": "story.quest2_1.line08",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line09",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line10",
+      "value": "妈妈来电。"
+    },
+    {
+      "key": "story.quest2_1.line11",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line12",
+      "value": "妈妈：你们没事吧？"
+    },
+    {
+      "key": "story.quest2_1.line13",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line14",
+      "value": "家里有些损伤，但人都安全。"
+    },
+    {
+      "key": "story.quest2_1.line15",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line16",
+      "value": "快回来，你现在在哪？"
+    },
+    {
+      "key": "story.quest2_1.line17",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line18",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line19",
+      "value": "楓：我是G-Lab的研究员。"
+    },
+    {
+      "key": "story.quest2_1.line20",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line21",
+      "value": "她解释我有特殊反应，想请我短期协助。"
+    },
+    {
+      "key": "story.quest2_1.line22",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line23",
+      "value": "她强调安全和防灾意义。"
+    },
+    {
+      "key": "story.quest2_1.line24",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line25",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line26",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line27",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line28",
+      "value": "好吧，但一定要让他休息。"
+    },
+    {
+      "key": "story.quest2_1.line29",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line30",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line31",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line32",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line33",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line34",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line35",
+      "value": "她开始说明任务。"
+    },
+    {
+      "key": "story.quest2_1.line36",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line37",
+      "value": "地质锤：用来采样。"
+    },
+    {
+      "key": "story.quest2_1.line38",
+      "value": "相位转换器：用来稳定能力。"
+    },
+    {
+      "key": "story.quest2_1.line39",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line40",
+      "value": "它能控制传送，往返更安全。"
+    },
+    {
+      "key": "story.quest2_1.line41",
+      "value": "也就是说，要开始地质调查了。"
+    },
+    {
+      "key": "story.quest2_1.line42",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line43",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line44",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line45",
+      "value": ""
+    },
+    {
+      "key": "story.quest2_1.line46",
+      "value": "第一项任务：用地质锤采薄片样本。"
+    },
+    {
+      "key": "story.quest3_1.line01",
+      "value": "先试试相位转换器。"
+    },
+    {
+      "key": "story.quest3_1.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_1.line03",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_1.line04",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_1.line05",
+      "value": "好吧，那就开始。"
+    },
+    {
+      "key": "story.quest3_1.line06",
+      "value": "转换器启动。"
+    },
+    {
+      "key": "story.quest3_2.line01",
+      "value": "{name}抵达野外。"
+    },
+    {
+      "key": "story.quest3_2.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_2.line03",
+      "value": "看指引，到目标点采样。"
+    },
+    {
+      "key": "story.quest3_3.line01",
+      "value": "地表一片荒芜。"
+    },
+    {
+      "key": "story.quest3_3.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line03",
+      "value": "实验室，画面和声音正常吗？"
+    },
+    {
+      "key": "story.quest3_3.line04",
+      "value": "收到，这里像地震后的现场。"
+    },
+    {
+      "key": "story.quest3_3.line05",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line06",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line07",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line08",
+      "value": "{name}用地质锤取样。"
+    },
+    {
+      "key": "story.quest3_3.line09",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line10",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line11",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line12",
+      "value": "像是震碎的部位，先带回去。"
+    },
+    {
+      "key": "story.quest3_3.line13",
+      "value": "地面传来低沉的轰鸣。"
+    },
+    {
+      "key": "story.quest3_3.line14",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line15",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line16",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line17",
+      "value": "地面突然剧烈震动。"
+    },
+    {
+      "key": "story.quest3_3.line18",
+      "value": "立刻撤退，断层在动！"
+    },
+    {
+      "key": "story.quest3_3.line19",
+      "value": "相位转换器在哪？快！"
+    },
+    {
+      "key": "story.quest3_3.line20",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line21",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line22",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line23",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_3.line24",
+      "value": "【传送闪光】"
+    },
+    {
+      "key": "story.quest3_3.line25",
+      "value": "白光之后，一切安静下来。"
+    },
+    {
+      "key": "story.quest3_4.line01",
+      "value": "回到G-Lab，把样品放好。"
+    },
+    {
+      "key": "story.quest3_4.line02",
+      "value": "喘着气：薄片带回来了。"
+    },
+    {
+      "key": "story.quest3_4.line03",
+      "value": "{name}，你没事吧？"
+    },
+    {
+      "key": "story.quest3_4.line04",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line05",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line06",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line07",
+      "value": "我没事啦。"
+    },
+    {
+      "key": "story.quest3_4.line08",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line09",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line10",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line11",
+      "value": "干得漂亮。"
+    },
+    {
+      "key": "story.quest3_4.line12",
+      "value": "接下来研究样品。"
+    },
+    {
+      "key": "story.quest3_4.line13",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line14",
+      "value": "你看，颗粒都被压扁了。"
+    },
+    {
+      "key": "story.quest3_4.line15",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line16",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line17",
+      "value": "这种压痕看起来很新。"
+    },
+    {
+      "key": "story.quest3_4.line18",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line19",
+      "value": "也许地下还在动。"
+    },
+    {
+      "key": "story.quest3_4.line20",
+      "value": ""
+    },
+    {
+      "key": "story.quest3_4.line21",
+      "value": "那就准备钻孔更深看看。"
+    },
+    {
+      "key": "story.quest3_4.line22",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_1.line01",
+      "value": "钻机准备好了。"
+    },
+    {
+      "key": "story.quest4_1.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_1.line03",
+      "value": "紧张正常，我们有防护。"
+    },
+    {
+      "key": "story.quest4_1.line04",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_1.line05",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_1.line06",
+      "value": "这次钻到断层下约50米。"
+    },
+    {
+      "key": "story.quest4_1.line07",
+      "value": "传送启动。"
+    },
+    {
+      "key": "story.quest4_2.line01",
+      "value": "现场安静得有点可怕。"
+    },
+    {
+      "key": "story.quest4_2.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_2.line03",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_2.line04",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_2.line05",
+      "value": "就在错动中心的正上方。"
+    },
+    {
+      "key": "story.quest4_2.line06",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_2.line07",
+      "value": "固定装置开始采样。"
+    },
+    {
+      "key": "story.quest4_2.line08",
+      "value": "裂缝好像变长了？"
+    },
+    {
+      "key": "story.quest4_2.line09",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_2.line10",
+      "value": "可能是地下水在流动。"
+    },
+    {
+      "key": "story.quest4_2.line11",
+      "value": "挖土时传来低低的声响。"
+    },
+    {
+      "key": "story.quest4_2.line12",
+      "value": "你也听到了吗？"
+    },
+    {
+      "key": "story.quest4_2.line13",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_2.line14",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_2.line15",
+      "value": "收好装置，返回G-Lab。"
+    },
+    {
+      "key": "story.quest4_3.line01",
+      "value": "岩芯取出来了。"
+    },
+    {
+      "key": "story.quest4_3.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_3.line03",
+      "value": "封存样品，把数据记下来。"
+    },
+    {
+      "key": "story.quest4_3.line04",
+      "value": "明白，准备返航。"
+    },
+    {
+      "key": "story.quest4_3.line05",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line01",
+      "value": "欢迎回来，平安就好。"
+    },
+    {
+      "key": "story.quest4_4.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line03",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line04",
+      "value": "样品触感有点怪。"
+    },
+    {
+      "key": "story.quest4_4.line05",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line06",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line07",
+      "value": "下层颗粒都被压扁了。"
+    },
+    {
+      "key": "story.quest4_4.line08",
+      "value": "是横向挤压的痕迹。"
+    },
+    {
+      "key": "story.quest4_4.line09",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line10",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line11",
+      "value": "说明地下还在动？"
+    },
+    {
+      "key": "story.quest4_4.line12",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line13",
+      "value": "这像是断层在“呼吸”。"
+    },
+    {
+      "key": "story.quest4_4.line14",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line15",
+      "value": "活断层表面平静，地下却在活动。"
+    },
+    {
+      "key": "story.quest4_4.line16",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line17",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line18",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line19",
+      "value": "我们还需要更确切的情报。"
+    },
+    {
+      "key": "story.quest4_4.line20",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line21",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line22",
+      "value": "用无人机去探查。"
+    },
+    {
+      "key": "story.quest4_4.line23",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line24",
+      "value": ""
+    },
+    {
+      "key": "story.quest4_4.line25",
+      "value": "任务仍然很重要。"
+    },
+    {
+      "key": "story.quest4_4.line26",
+      "value": "视线落在地图上的断层红线。"
+    },
+    {
+      "key": "story.quest5_1.line01",
+      "value": "夜雨和闪电笼罩着G-Lab。"
+    },
+    {
+      "key": "story.quest5_1.line02",
+      "value": "地下雷达群无人机就绪。"
+    },
+    {
+      "key": "story.quest5_1.line03",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_1.line04",
+      "value": "无人机将进入裂隙描绘结构。"
+    },
+    {
+      "key": "story.quest5_1.line05",
+      "value": "就像给地球做CT。"
+    },
+    {
+      "key": "story.quest5_1.line06",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_1.line07",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_1.line08",
+      "value": "{name}，这次由你来操作。"
+    },
+    {
+      "key": "story.quest5_1.line09",
+      "value": "十几架都要我控？"
+    },
+    {
+      "key": "story.quest5_1.line10",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_1.line11",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_1.line12",
+      "value": "……又晃了一下？"
+    },
+    {
+      "key": "story.quest5_2.line01",
+      "value": "无人机启动升空。"
+    },
+    {
+      "key": "story.quest5_2.line02",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line03",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line04",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line05",
+      "value": "雷达系统连线完成。"
+    },
+    {
+      "key": "story.quest5_2.line06",
+      "value": "无人机进入裂隙下潜。"
+    },
+    {
+      "key": "story.quest5_2.line07",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line08",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line09",
+      "value": "地下出现一条红线。"
+    },
+    {
+      "key": "story.quest5_2.line10",
+      "value": "那是断层面，比预想浅。"
+    },
+    {
+      "key": "story.quest5_2.line11",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line12",
+      "value": "地图显示断层贯穿城市。"
+    },
+    {
+      "key": "story.quest5_2.line13",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line14",
+      "value": "断层在多处分岔。"
+    },
+    {
+      "key": "story.quest5_2.line15",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line16",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line17",
+      "value": "断层正在实时活动。"
+    },
+    {
+      "key": "story.quest5_2.line18",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line19",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line20",
+      "value": "应力在快速累积。"
+    },
+    {
+      "key": "story.quest5_2.line21",
+      "value": "红线扩散，G-Lab在中心。"
+    },
+    {
+      "key": "story.quest5_2.line22",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line23",
+      "value": "主要城区都在断层上。"
+    },
+    {
+      "key": "story.quest5_2.line24",
+      "value": "本震要来了。"
+    },
+    {
+      "key": "story.quest5_2.line25",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line26",
+      "value": "必须告知政府和市民。"
+    },
+    {
+      "key": "story.quest5_2.line27",
+      "value": ""
+    },
+    {
+      "key": "story.quest5_2.line28",
+      "value": "下一任务：对外告知。"
+    },
+    {
+      "key": "story.quest5_2.line29",
+      "value": "红线仍在脉动。"
+    },
+    {
+      "key": "story.speaker.classmate",
+      "value": "同学"
+    },
+    {
+      "key": "story.speaker.drkaede",
+      "value": "Dr.Kaede"
+    },
+    {
+      "key": "story.speaker.minato",
+      "value": "美奈"
+    },
+    {
+      "key": "story.speaker.mother",
+      "value": "母亲"
+    },
+    {
+      "key": "story.speaker.narration",
+      "value": "旁白"
+    },
+    {
+      "key": "story.speaker.news",
+      "value": "新闻播报"
+    },
+    {
+      "key": "story.speaker.protagonist",
+      "value": "主人公"
+    },
+    {
+      "key": "story.speaker.sfx",
+      "value": "音效"
+    },
+    {
+      "key": "story.speaker.student_a",
+      "value": "学生A"
+    },
+    {
+      "key": "story.speaker.student_b",
+      "value": "学生B"
+    },
+    {
+      "key": "ui.dialog.continue",
+      "value": "点击对话框继续"
+    },
+    {
+      "key": "ui.dialog.choose",
+      "value": "请选择答案"
+    },
+    {
+      "key": "quiz.correct",
+      "value": "回答正确！"
+    },
+    {
+      "key": "quiz.incorrect",
+      "value": "可惜，再想一想吧。"
+    },
+    {
+      "key": "report.title",
+      "value": "调查报告"
+    },
+    {
+      "key": "report.grade",
+      "value": "首次作答评价"
+    },
+    {
+      "key": "report.score",
+      "value": "答对题数"
+    },
+    {
+      "key": "report.first_correct",
+      "value": "首次答对"
+    },
+    {
+      "key": "report.final_mastery",
+      "value": "最终答对"
+    },
+    {
+      "key": "report.completion",
+      "value": "已回答题目"
+    },
+    {
+      "key": "report.average_attempts",
+      "value": "平均作答次数"
+    },
+    {
+      "key": "report.hint_usage",
+      "value": "提示使用率"
+    },
+    {
+      "key": "story.beat1.l01",
+      "value": "午休时的教室。突然，一阵剧烈的摇晃袭来。"
+    },
+    {
+      "key": "story.beat1.l02",
+      "value": "哇……！？地震了……！大家，快躲到桌子下面！"
+    },
+    {
+      "key": "story.beat1.l03",
+      "value": "摇晃越来越强，天花板开始坍塌。视野被一道白光吞没——。"
+    },
+    {
+      "key": "story.beat1.l04",
+      "value": "醒来时，这里是一间从未见过的白色研究室。"
+    },
+    {
+      "key": "story.beat1.l05",
+      "value": "醒了？这里是研究大地、守护这座城市的防災研究所「G-Lab」。我是研究员·枫。"
+    },
+    {
+      "key": "story.beat1.l06",
+      "value": "刚才那场地震，让你体内的“力量”觉醒了。别想得太复杂——就是“读懂地层的能力”。一个能认真侧耳倾听大地之声的人，仅此而已。"
+    },
+    {
+      "key": "story.beat1.l07",
+      "value": "谢谢你。想读懂地层这本“书”，得先知道它是怎么写成的。"
+    },
+    {
+      "key": "story.beat1.q1.prompt",
+      "value": "山上的岩石变成地层为止——正确的顺序是哪一个？"
+    },
+    {
+      "key": "story.beat1.q1.a",
+      "value": "风化 → 侵蚀 → 搬运 → 沉积"
+    },
+    {
+      "key": "story.beat1.q1.b",
+      "value": "沉积 → 搬运 → 侵蚀 → 风化"
+    },
+    {
+      "key": "story.beat1.q1.c",
+      "value": "侵蚀 → 风化 → 沉积 → 搬运"
+    },
+    {
+      "key": "story.beat1.q1.fb_ok",
+      "value": "答对了！先变松脆、被削刮、被搬运、再堆积。这个顺序是基础哦。"
+    },
+    {
+      "key": "story.beat1.l08",
+      "value": "状态不错！那么，到野外去——亲手翻开大地的第一页吧。"
+    },
+    {
+      "key": "story.beat2.l01",
+      "value": "野外的露头。地震震裂的地面上，能看到条纹状的地层。"
+    },
+    {
+      "key": "story.beat2.l02",
+      "value": "用锤子取下样本后，用显微镜看看颗粒的大小吧。"
+    },
+    {
+      "key": "story.beat2.q1.prompt",
+      "value": "那么这块样本——颗粒小于 0.06mm，摸起来很光滑。这是？"
+    },
+    {
+      "key": "story.beat2.q1.a",
+      "value": "泥岩"
+    },
+    {
+      "key": "story.beat2.q1.b",
+      "value": "砂岩"
+    },
+    {
+      "key": "story.beat2.q1.c",
+      "value": "砾岩"
+    },
+    {
+      "key": "story.beat2.q1.fb_ok",
+      "value": "答对了！颗粒越细，越是在离河口远的深海里沉积下来的。也就是说，这里从前是一片安静而幽深的海底。"
+    },
+    {
+      "key": "story.beat2.q2.prompt",
+      "value": "下一块样本，滴上稀盐酸冒出了气泡（二氧化碳）。这是？"
+    },
+    {
+      "key": "story.beat2.q2.a",
+      "value": "石灰岩"
+    },
+    {
+      "key": "story.beat2.q2.b",
+      "value": "燧石（チャート）"
+    },
+    {
+      "key": "story.beat2.q2.c",
+      "value": "凝灰岩"
+    },
+    {
+      "key": "story.beat2.q2.fb_ok",
+      "value": "没错。石灰岩由贝壳、珊瑚等堆积而成，遇盐酸会放出二氧化碳。换句话说，这里从前是温暖的浅海。"
+    },
+    {
+      "key": "story.beat2.q3.prompt",
+      "value": "再来一块。用钉子刮也刮不出痕迹、非常坚硬。这是？"
+    },
+    {
+      "key": "story.beat2.q3.a",
+      "value": "燧石（チャート）"
+    },
+    {
+      "key": "story.beat2.q3.b",
+      "value": "泥岩"
+    },
+    {
+      "key": "story.beat2.q3.c",
+      "value": "砾岩"
+    },
+    {
+      "key": "story.beat2.q3.fb_ok",
+      "value": "正确！燧石由海中微小生物的壳堆积而成，非常坚硬——是远古的海洋花了几百万年才堆积起来的。"
+    },
+    {
+      "key": "story.beat2.l03",
+      "value": "注意到了？那正是我在意的地方。再往深处挖一挖，确认一下吧。"
+    },
+    {
+      "key": "story.beat3.l01",
+      "value": "回到研究室了。现在把采得的岩芯与柱状图对照分析吧。"
+    },
+    {
+      "key": "story.beat3.l02",
+      "value": "从深层样本的岩石里，发现了化石。"
+    },
+    {
+      "key": "story.beat3.q1.prompt",
+      "value": "……也就是说，这层地层形成当时，是怎样的环境？"
+    },
+    {
+      "key": "story.beat3.q1.a",
+      "value": "温暖的浅海"
+    },
+    {
+      "key": "story.beat3.q1.b",
+      "value": "寒冷的深海"
+    },
+    {
+      "key": "story.beat3.q1.c",
+      "value": "河水与海水交汇的地方"
+    },
+    {
+      "key": "story.beat3.q1.fb_ok",
+      "value": "答对了！化石告诉了我们当时的「环境」。"
+    },
+    {
+      "key": "story.beat3.q2.prompt",
+      "value": "像珊瑚这样，能告诉我们地层形成当时「环境」的化石——它叫什么名字？"
+    },
+    {
+      "key": "story.beat3.q2.a",
+      "value": "示相化石"
+    },
+    {
+      "key": "story.beat3.q2.b",
+      "value": "示准化石"
+    },
+    {
+      "key": "story.beat3.q2.fb_ok",
+      "value": "没错。指示环境的是示相化石。如果是蚬，就代表河海交汇的地方。"
+    },
+    {
+      "key": "story.beat3.q3.prompt",
+      "value": "……所以，这层地层形成于哪个时代？"
+    },
+    {
+      "key": "story.beat3.q3.a",
+      "value": "中生代"
+    },
+    {
+      "key": "story.beat3.q3.b",
+      "value": "古生代"
+    },
+    {
+      "key": "story.beat3.q3.c",
+      "value": "新生代"
+    },
+    {
+      "key": "story.beat3.q3.fb_ok",
+      "value": "正确！菊石是中生代的示准化石。三叶虫则是古生代的。"
+    },
+    {
+      "key": "story.beat3.q4.prompt",
+      "value": "像菊石那样的化石——叫什么名字？"
+    },
+    {
+      "key": "story.beat3.q4.a",
+      "value": "示准化石"
+    },
+    {
+      "key": "story.beat3.q4.b",
+      "value": "示相化石"
+    },
+    {
+      "key": "story.beat3.q4.fb_ok",
+      "value": "对。分布范围广、繁盛时间短的生物，才能成为示准化石。"
+    },
+    {
+      "key": "story.beat3.q5.prompt",
+      "value": "柱状图中有一层由火山灰压实而成的「凝灰岩」。当时发生了什么？"
+    },
+    {
+      "key": "story.beat3.q5.a",
+      "value": "附近发生了火山喷发"
+    },
+    {
+      "key": "story.beat3.q5.b",
+      "value": "发生了大地震"
+    },
+    {
+      "key": "story.beat3.q5.c",
+      "value": "海水干涸了"
+    },
+    {
+      "key": "story.beat3.q5.fb_ok",
+      "value": "正确！凝灰岩层是那个时代附近发生过火山喷发的证据。"
+    },
+    {
+      "key": "story.beat4.l01",
+      "value": "最后，把 A、B、C 三个地点的柱状图比一比吧。"
+    },
+    {
+      "key": "story.beat4.q1.prompt",
+      "value": "那么这次——火山灰层在越往东的地点位置越深。地层向哪个方位倾斜？"
+    },
+    {
+      "key": "story.beat4.q1.a",
+      "value": "东"
+    },
+    {
+      "key": "story.beat4.q1.b",
+      "value": "西"
+    },
+    {
+      "key": "story.beat4.q1.c",
+      "value": "北"
+    },
+    {
+      "key": "story.beat4.q1.fb_ok",
+      "value": "答对了！同一层变深的方向，就是地层倾斜、降低的方向。火山灰那一层向东沉下去＝这一带，正一边向东倾斜一边下沉。"
+    },
+    {
+      "key": "story.beat4.q2.prompt",
+      "value": "你看那悬崖。地层像波浪一样弯了！这种弯曲叫什么？"
+    },
+    {
+      "key": "story.beat4.q2.a",
+      "value": "褶曲"
+    },
+    {
+      "key": "story.beat4.q2.b",
+      "value": "断层"
+    },
+    {
+      "key": "story.beat4.q2.c",
+      "value": "整合"
+    },
+    {
+      "key": "story.beat4.q2.fb_ok",
+      "value": "没错。被两侧挤压而弯曲的地层，就叫褶曲。而且它是“弯着”的＝就是说，此刻地下仍有一股“挤压的力”压着没松开。"
+    },
+    {
+      "key": "story.beat4.l02",
+      "value": "所谓“地球的声音”，根本不是什么神奇的力量，对吧？只要把地层一层一层地读下去，无论是谁都能听见。"
+    },
+    {
+      "key": "story.beat4.l03",
+      "value": "把今天的调查整理一下，写成报告吧。"
+    },
+    {
+      "key": "story.beat1.l09",
+      "value": "我老实跟你说。刚才那场地震，恐怕还“没有结束”。"
+    },
+    {
+      "key": "story.beat1.l10",
+      "value": "……那间教室，我不想让它再遭一次那种事。我来做。"
+    },
+    {
+      "key": "story.beat2.l04",
+      "value": "崖壁的地层，把几万年的时光封存成一道道条纹。"
+    },
+    {
+      "key": "story.beat2.l05",
+      "value": "呵呵，眼力不错。挺有当地质调查员的天赋哦。"
+    },
+    {
+      "key": "story.beat2.l06",
+      "value": "同样是“石头”，差别居然这么大……！"
+    },
+    {
+      "key": "story.beat3.l03",
+      "value": "哇，是真的化石……！几千万年前的生物，此刻就在眼前。"
+    },
+    {
+      "key": "story.beat3.l04",
+      "value": "把柱状图和岩芯记录摆在实验台上，一起解读地下的历史。"
+    },
+    {
+      "key": "story.beat3.l05",
+      "value": "这么大的机器采回来的数据，真有压迫感……！"
+    },
+    {
+      "key": "story.beat4.l04",
+      "value": "看懂了吗？力量积聚的地方——那里，最容易成为“下一个”动起来的地点。"
+    },
+    {
+      "key": "story.beat4.l05",
+      "value": "地球的声音……我好像，真的听到了一点点。"
+    },
+    {
+      "key": "story.bridge.q21.l01",
+      "value": "第二天清晨，G-Lab 研究室。"
+    },
+    {
+      "key": "story.bridge.q21.l02",
+      "value": "早安！马上是第一项任务。去城市北边的露头，采一份样本回来。"
+    },
+    {
+      "key": "story.bridge.q21.l03",
+      "value": "移动用「相位转移器（Phase Shifter）」。按 Tab 键切换工具就行。"
+    },
+    {
+      "key": "story.bridge.q31.l01",
+      "value": "在露头那里，仔细观察颗粒的大小、对盐酸的反应——这些都能帮你判断岩石的名字。"
+    },
+    {
+      "key": "story.bridge.q31.l02",
+      "value": "明白，我去观察一下！"
+    },
+    {
+      "key": "story.bridge.q32.l01",
+      "value": "一瞬间被风和泥土的气味包围——是野外。"
+    },
+    {
+      "key": "story.bridge.q32.l02",
+      "value": "到了。用锤子敲开岩石，取一份样本吧。"
+    },
+    {
+      "key": "story.bridge.q34.l01",
+      "value": "回到 G-Lab。桌上摆着刚采到的样本。"
+    },
+    {
+      "key": "story.bridge.q34.l02",
+      "value": "我把薄片放到显微镜下看看。……颗粒被压得很细。"
+    },
+    {
+      "key": "story.bridge.q34.l03",
+      "value": "这种裂痕，也许不只是地表那次摇晃留下的伤。"
+    },
+    {
+      "key": "story.bridge.q34.l04",
+      "value": "也就是说，更深处可能还在动？"
+    },
+    {
+      "key": "story.bridge.q34.l05",
+      "value": "有这个可能。薄片只能让我们读到浅层和表面的变化。"
+    },
+    {
+      "key": "story.bridge.q34.l06",
+      "value": "如果有按深度取得的柱状样本，就能比较哪一层出现了新的位移或压力痕迹。"
+    },
+    {
+      "key": "story.bridge.q34.l07",
+      "value": "所以接下来用钻塔。不是突然再采一次，而是去拿更深处的证据。"
+    },
+    {
+      "key": "story.bridge.q41.l01",
+      "value": "钻塔可以按深度逐层取样，地层叠置一目了然。"
+    },
+    {
+      "key": "story.bridge.q41.l02",
+      "value": "找到化石就告诉我。它能成为判断地层形成时代的线索。"
+    },
+    {
+      "key": "story.bridge.q41.l03",
+      "value": "化石……！有点期待呢。"
+    },
+    {
+      "key": "story.beat3.q1.teach1",
+      "value": "化石啊，就像是「时间胶囊」一样。"
+    },
+    {
+      "key": "story.beat3.q1.teach2",
+      "value": "每种生物，能住的地方都是固定的。所以从化石里，就能知道当时的「环境」。"
+    },
+    {
+      "key": "story.beat3.q1.teach3",
+      "value": "比如这只珊瑚。即便到了今天，它也只在温暖的浅海里生长。"
+    },
+    {
+      "key": "story.beat3.q3.teach1",
+      "value": "另一层里——又出现了一颗菊石化石！"
+    },
+    {
+      "key": "story.beat3.q3.teach2",
+      "value": "地球的历史，大致分为「古生代 → 中生代 → 新生代」三段。"
+    },
+    {
+      "key": "story.beat3.q3.teach3",
+      "value": "菊石呢，只在「中生代」繁盛过。和恐龙是同一个时代哦。"
+    },
+    {
+      "key": "story.beat3.q4.teach1",
+      "value": "生活范围广、繁盛时间短的生物，化石用来判断年代特别好用。"
+    },
+    {
+      "key": "story.beat4.q1.teach1",
+      "value": "如果能找到「相同的一层」，就能拿它当标志——这叫「键层（鍵層）」。火山灰特别醒目，是好用的键层。"
+    },
+    {
+      "key": "story.beat4.q1.teach2",
+      "value": "键层在「某个方向上越来越深」？　就说明整个地层正在朝那个方向倾斜变低。"
+    },
+    {
+      "key": "story.beat4.q2.teach1",
+      "value": "地层本来是横平竖直叠着的。但被两边挤压，就会像那样弯下去。"
+    },
+    {
+      "key": "story.beat1.q1.teach1",
+      "value": "地层啊，是大地写的“日记”。山上的岩石变成地层，要经过四种「作用」——「风化」「侵蚀」「搬运」「沉积」。"
+    },
+    {
+      "key": "story.beat1.q1.teach2",
+      "value": "风化＝变松脆，侵蚀＝被刮削，搬运＝被运送，沉积＝堆积下来。"
+    },
+    {
+      "key": "story.beat2.q1.teach1",
+      "value": "沉积岩呀，是按颗粒大小命名的。从大到小：「砾岩」(>2mm)、「砂岩」、「泥岩」(<0.06mm)。"
+    },
+    {
+      "key": "story.beat2.q1.teach2",
+      "value": "另外还有 2 个特殊的——盐酸冒泡的是「石灰岩」，钉子刮不出痕迹的是「燧石（チャート）」。"
+    },
+    {
+      "key": "story.beat1.q1.fb_ng_b",
+      "value": "顺序反了！岩石得先变松脆，再被刮削，才能被搬运。"
+    },
+    {
+      "key": "story.beat1.q1.fb_ng_c",
+      "value": "差一点。「松脆→刮削→搬运→堆积」是基本流程，搬运不会是最后一步。"
+    },
+    {
+      "key": "story.beat2.q1.fb_ng_b",
+      "value": "砂岩的颗粒要稍大一点（0.06–2mm）。光滑的触感是关键线索。"
+    },
+    {
+      "key": "story.beat2.q1.fb_ng_c",
+      "value": "砾岩的颗粒大于 2mm，肉眼能看出粒粒分明。"
+    },
+    {
+      "key": "story.beat2.q2.fb_ng_b",
+      "value": "燧石不与盐酸反应。冒泡是石灰岩的特征。"
+    },
+    {
+      "key": "story.beat2.q2.fb_ng_c",
+      "value": "凝灰岩来自火山灰，遇盐酸也不反应。"
+    },
+    {
+      "key": "story.beat2.q3.fb_ng_b",
+      "value": "泥岩其实挺软的。钉子刮不出痕迹的那种坚硬属于另一种岩石。"
+    },
+    {
+      "key": "story.beat2.q3.fb_ng_c",
+      "value": "砾岩也是颗粒集合，钉子能刮出粒粒分明的痕迹。"
+    },
+    {
+      "key": "story.beat3.q1.fb_ng_b",
+      "value": "珊瑚要和能光合作用的藻类共生，冷的深海长不出珊瑚。"
+    },
+    {
+      "key": "story.beat3.q1.fb_ng_c",
+      "value": "那种地方住的是蚬。珊瑚喜欢盐分浓的海水。"
+    },
+    {
+      "key": "story.beat3.q2.fb_ng_b",
+      "value": "示准化石告诉我们「时代」。指示「环境」的化石另有名字。"
+    },
+    {
+      "key": "story.beat3.q3.fb_ng_b",
+      "value": "古生代是三叶虫和纺锤虫的时代，菊石稍晚一些。"
+    },
+    {
+      "key": "story.beat3.q3.fb_ng_c",
+      "value": "新生代是 ビカリア 和 Naumann 象的时代，菊石那时早就灭绝了。"
+    },
+    {
+      "key": "story.beat3.q4.fb_ng_b",
+      "value": "示相化石告诉我们「环境」。决定「时代」的化石另有名字。"
+    },
+    {
+      "key": "story.beat3.q5.fb_ng_b",
+      "value": "地震会摇岩石，但不会形成火山灰的地层。"
+    },
+    {
+      "key": "story.beat3.q5.fb_ng_c",
+      "value": "海干涸会留下岩盐之类的岩石。火山灰还是来自火山。"
+    },
+    {
+      "key": "story.beat4.q1.fb_ng_b",
+      "value": "反过来了。同一层在东边更深，说明整个地层朝东倾斜变低。"
+    },
+    {
+      "key": "story.beat4.q1.fb_ng_c",
+      "value": "南北方向上深度没有变化，注意东西方向上的差异。"
+    },
+    {
+      "key": "story.beat4.q2.fb_ng_b",
+      "value": "断层是地层「错开」。弯曲是另一种现象。"
+    },
+    {
+      "key": "story.beat4.q2.fb_ng_c",
+      "value": "整合指地层连续不间断地叠加。波浪形的弯曲不是这个。"
+    },
+    {
+      "key": "story.beat1.q1.hint",
+      "value": "「松脆→刮削→搬运→堆积」的自然流程，回忆一下吧。"
+    },
+    {
+      "key": "story.beat2.q1.hint",
+      "value": "按颗粒大小分的 3 种岩石里，最细的是哪一种？"
+    },
+    {
+      "key": "story.beat2.q2.hint",
+      "value": "能与盐酸反应的岩石很有限。由贝壳和珊瑚堆积形成的岩是？"
+    },
+    {
+      "key": "story.beat2.q3.hint",
+      "value": "海里小生物的壳堆积形成、非常坚硬的岩石是？"
+    },
+    {
+      "key": "story.beat3.q1.hint",
+      "value": "现在的珊瑚只在什么样的海里生长？回忆一下。"
+    },
+    {
+      "key": "story.beat3.q2.hint",
+      "value": "「指示环境的化石」——3 个汉字。"
+    },
+    {
+      "key": "story.beat3.q3.hint",
+      "value": "和恐龙同时代繁盛的化石属于哪个时代？"
+    },
+    {
+      "key": "story.beat3.q4.hint",
+      "value": "「指示时代的化石」——3 个汉字。"
+    },
+    {
+      "key": "story.beat3.q5.hint",
+      "value": "凝灰岩由火山灰形成。火山灰从哪里飞来？"
+    },
+    {
+      "key": "story.beat4.q1.hint",
+      "value": "同一层在哪个方向更深 = 整个地层往那边倾斜变低。"
+    },
+    {
+      "key": "story.beat4.q2.hint",
+      "value": "被两侧挤压、地层呈波浪状弯曲的现象。"
+    },
+    {
+      "key": "story.beat1.l11",
+      "value": "但地面裂开了，平时被草木盖住的地层，此刻正好露出脸来。趁现在读懂它，就能赶在下一次之前——知道它会在何时、何地到来。"
+    },
+    {
+      "key": "story.beat3.l09",
+      "value": "余震。但这一次不是“记录”——是它“此刻”仍在活动的证据。……我们得快点。"
+    },
+    {
+      "key": "story.beat4.l07",
+      "value": "……嗯。这已经不是“作业”了，是一份“警告”。我们去告诉大家吧。"
+    },
+    {
+      "key": "story.beat4.l06",
+      "value": "那……危险的，就是这里。就在学校的，正西边。"
+    },
+    {
+      "key": "story.beat2.l07",
+      "value": "等等……这片崖壁，地层的线条是不是有点“扭”？不是笔直的。"
+    },
+    {
+      "key": "story.beat3.l06",
+      "value": "也就是说，这个地方，从前真的经历过翻天覆地的变化——浅海、深海、然后是火山……地层把这一切，全都记录下来了。"
+    },
+    {
+      "key": "story.beat3.l07",
+      "value": "——咚。脚下，又轻轻晃了一下。"
+    },
+    {
+      "key": "story.beat3.l08",
+      "value": "刚才那下，是地震……？比刚才小，可是……"
+    },
+    {
+      "key": "story.beat1.l16",
+      "value": "可光靠我一个人，手不够、眼睛也不够。而这片土地的地下——最该由住在这里的你，亲手去读懂。"
+    },
+    {
+      "key": "story.beat1.l14",
+      "value": "转送……装置？"
+    },
+    {
+      "key": "story.beat1.l15",
+      "value": "不过它只够得着研究所周围，一次也只能转一个人——整座城市，它是救不了的。"
+    },
+    {
+      "key": "story.beat1.l12",
+      "value": "刚才教室明明还在塌……这里是哪儿？我……怎么会在这里？"
+    },
+    {
+      "key": "story.beat1.l13",
+      "value": "别慌。就在天花板塌下来的那一瞬，我用研究所的「转送装置」，把你从教室里拉了出来。你看到的那道白光，就是它。"
+    },
+    {
+      "key": "ui.start.research",
+      "value": "参加研究"
+    },
+    {
+      "key": "ui.start.research_test",
+      "value": "研究连接测试"
+    },
+    {
+      "key": "ui.start.research_code.title",
+      "value": "研究参与码"
+    },
+    {
+      "key": "ui.start.research_code.help",
+      "value": "请输入开发测试用参与码。切换到其他参与码时，将重置当前学习进度。"
+    },
+    {
+      "key": "ui.start.research_code.placeholder",
+      "value": "参与码"
+    },
+    {
+      "key": "ui.start.research_code.confirm",
+      "value": "验证参与码"
+    },
+    {
+      "key": "ui.start.research_code.cancel",
+      "value": "返回"
+    },
+    {
+      "key": "ui.start.research_code.checking",
+      "value": "正在验证参与码…"
+    },
+    {
+      "key": "ui.start.research_code.failed",
+      "value": "请检查参与码。"
+    },
+    {
+      "key": "ui.start.subtitle",
+      "value": "走进地层，寻找岩石中的故事。"
+    },
+    {
+      "key": "ui.start.continue",
+      "value": "继续游戏"
+    },
+    {
+      "key": "ui.start.settings",
+      "value": "设置"
+    },
+    {
+      "key": "ui.start.quit",
+      "value": "退出游戏"
+    },
+    {
+      "key": "ui.start.footer",
+      "value": "采集 · 观察 · 发现"
+    },
+    {
+      "key": "ui.start.field_caption",
+      "value": "把野外发现带回研究室。"
+    },
+    {
+      "key": "ui.start.new_game.title",
+      "value": "新游戏"
+    },
+    {
+      "key": "ui.start.new_game.message",
+      "value": "要覆盖当前游戏进度吗？"
+    },
+    {
+      "key": "ui.start.new_game.warning",
+      "value": "当前剧情、任务、物品和本轮成绩将被清除。"
+    },
+    {
+      "key": "ui.start.new_game.confirm",
+      "value": "从头开始"
+    },
+    {
+      "key": "ui.start.new_game.cancel",
+      "value": "取消"
+    },
+    {
+      "key": "ui.common.cancel",
+      "value": "取消"
+    },
+    {
+      "key": "ui.session.return_title",
+      "value": "返回标题"
+    },
+    {
+      "key": "ui.session.return_message",
+      "value": "保存进度并返回标题。未完成的对话会从检查点继续。"
+    },
+    {
+      "key": "ui.session.save_return",
+      "value": "保存并返回"
+    },
+    {
+      "key": "ui.history.title",
+      "value": "对话记录"
+    },
+    {
+      "key": "ui.history.close",
+      "value": "返回"
+    },
+    {
+      "key": "ui.history.empty",
+      "value": "还没有对话记录。"
+    },
+    {
+      "key": "ui.history.dialogue",
+      "value": "旁白"
+    },
+    {
+      "key": "ui.history.hint",
+      "value": "提示"
+    },
+    {
+      "key": "ui.history.feedback",
+      "value": "讲解"
+    },
+    {
+      "key": "ui.history.choice",
+      "value": "选择的答案"
+    },
+    {
+      "key": "ui.tool.current",
+      "value": "当前工具"
+    },
+    {
+      "key": "ui.tool.none",
+      "value": "请选择工具"
+    },
+    {
+      "key": "report.complete_title",
+      "value": "调查完成！"
+    },
+    {
+      "key": "report.complete_message",
+      "value": "你已通过采样与分析，解读了地层的记录。"
+    },
+    {
+      "key": "report.wrong_attempts",
+      "value": "回答错误次数"
+    },
+    {
+      "key": "report.practice",
+      "value": "实践调查完成"
+    },
+    {
+      "key": "report.practice_details",
+      "value": "岩石采集 · 岩芯获取 · 研究室分析 · 调查报告"
+    },
+    {
+      "key": "quest.ui.progress",
+      "value": "调查进度"
+    },
+    {
+      "key": "quest.step.1",
+      "value": "前往研究室"
+    },
+    {
+      "key": "quest.step.2",
+      "value": "听取博士说明"
+    },
+    {
+      "key": "quest.step.3",
+      "value": "观察异常样本"
+    },
+    {
+      "key": "quest.step.4",
+      "value": "在野外采集岩石"
+    },
+    {
+      "key": "quest.step.5",
+      "value": "带着样本返回研究室"
+    },
+    {
+      "key": "quest.step.6",
+      "value": "与博士准备钻探"
+    },
+    {
+      "key": "quest.step.7",
+      "value": "前往野外钻探点"
+    },
+    {
+      "key": "quest.step.8",
+      "value": "用钻塔采集岩芯"
+    },
+    {
+      "key": "quest.step.9",
+      "value": "返回研究室分析岩芯"
+    },
+    {
+      "key": "quest.step.10",
+      "value": "调查完成，查看报告"
+    },
+    {
+      "key": "story.core_return.line",
+      "value": "做得好。回到研究室，我们仔细研究一下这个样本吧。"
+    },
+    {
+      "key": "backend.checking",
+      "value": "正在验证参与码…"
+    },
+    {
+      "key": "backend.closed",
+      "value": "研究参与入口当前已关闭。"
+    },
+    {
+      "key": "backend.invalid_code",
+      "value": "请检查参与码。"
+    },
+    {
+      "key": "backend.network",
+      "value": "连接失败，请稍后重试。"
+    },
+    {
+      "key": "backend.bound",
+      "value": "此参与码已绑定其他登录身份，请联系研究负责人。"
+    },
+    {
+      "key": "backend.rate_limit",
+      "value": "尝试次数过多，请稍后重试。"
+    },
+    {
+      "key": "backend.version",
+      "value": "研究流程版本不一致。"
+    },
+    {
+      "key": "backend.pending_upload",
+      "value": "仍有未上传的研究记录，请使用原参与码连接并重试，上传完成后再切换。"
+    },
+    {
+      "key": "ui.dialog.hint",
+      "value": "提示"
+    },
+    {
+      "key": "ui.session.save_failed",
+      "value": "保存未完成"
+    },
+    {
+      "key": "ui.session.save_retry",
+      "value": "请检查连接和浏览器存储设置后重试。当前页面会保留进度。"
+    },
+    {
+      "key": "ui.session.retry",
+      "value": "重试"
+    },
+    {
+      "key": "tool.drill.simple.short",
+      "value": "简易钻探"
+    },
+    {
+      "key": "tool.drill_tower.short",
+      "value": "钻塔"
+    },
+    {
+      "key": "ui.history.all",
+      "value": "全部"
+    },
+    {
+      "key": "ui.history.field",
+      "value": "野外调查"
+    },
+    {
+      "key": "ui.history.lab",
+      "value": "研究室"
+    },
+    {
+      "key": "survey.answer",
+      "value": "回答问卷"
+    },
+    {
+      "key": "survey.preparing",
+      "value": "正在保存记录并准备问卷…"
+    },
+    {
+      "key": "survey.retry",
+      "value": "请检查网络连接，然后再次点击按钮。"
+    },
+    {
+      "key": "survey.reenter",
+      "value": "请使用原参与码重新进入后再试。"
+    },
+    {
+      "key": "survey.opened",
+      "value": "已打开问卷。"
+    },
+    {
+      "key": "survey.research_only",
+      "value": "以研究参与模式游玩后可回答问卷。"
     }
   ]
 }

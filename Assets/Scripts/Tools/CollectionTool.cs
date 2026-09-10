@@ -26,7 +26,7 @@ public abstract class CollectionTool : MonoBehaviour
     /// <summary>
     /// 剧情对话显示期间，所有工具共用同一个输入锁。
     /// </summary>
-    protected bool IsToolInputBlocked => StoryDirector.IsStoryPlaybackActive;
+    protected bool IsToolInputBlocked => StoryDirector.IsStoryPlaybackActive || Core.GameInputState.GameplayBlocked;
     
     protected virtual void Start()
     {
@@ -97,10 +97,10 @@ public abstract class CollectionTool : MonoBehaviour
     {
         var keyboard = Keyboard.current;
         var mouse = Mouse.current;
-        bool pressed = keyboard != null && keyboard.escapeKey.wasPressedThisFrame;
+        bool pressed = keyboard != null && Core.GameInputState.TryConsumeEscape();
         pressed |= mouse != null && mouse.rightButton.wasPressedThisFrame;
 #if ENABLE_LEGACY_INPUT_MANAGER
-        pressed |= Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape);
+        pressed |= Input.GetMouseButtonDown(1);
 #endif
         return pressed;
     }

@@ -111,13 +111,13 @@ namespace WorkbenchSystem
 
         void Update()
         {
-            if (!isActive) return;
+            if (!isActive || Core.GameInputState.GameplayBlocked) return;
 
             HandlePreviewInput();
 
             // 退出快捷键
             var keyboard = Keyboard.current;
-            if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
+            if (keyboard != null && Core.GameInputState.TryConsumeEscape())
             {
                 Close();
             }

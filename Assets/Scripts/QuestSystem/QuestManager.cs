@@ -451,11 +451,8 @@ namespace QuestSystem
             RestoreQuestRuntimeState(q12);
             if (debugLog) Debug.Log("[QuestManager] 内置任务已注册：q.chapter6.kaede");
 
-            if (q8.status == QuestStatus.Completed && q9.status == QuestStatus.NotStarted)
-            {
-                if (debugLog) Debug.Log("[QuestManager] 检测到q.chapter4.return已完成，自动启动q.chapter5.kaede");
-                StartQuest(q9.id);
-            }
+            // The current teaching route ends at the chapter 4 laboratory report.
+            StorySystem.InvestigationProgress.MigrateLegacyCompletion(q8.status == QuestStatus.Completed);
 
             if (q9.status == QuestStatus.Completed && q10.status == QuestStatus.NotStarted)
             {
@@ -588,11 +585,11 @@ namespace QuestSystem
 
                 if (_boundSampleInventory != null)
                 {
-                    _boundSampleInventory.OnSampleAdded -= OnSampleAdded;
+                    _boundSampleInventory.OnSampleCollected -= OnSampleAdded;
                 }
 
-                inv.OnSampleAdded -= OnSampleAdded;
-                inv.OnSampleAdded += OnSampleAdded;
+                inv.OnSampleCollected -= OnSampleAdded;
+                inv.OnSampleCollected += OnSampleAdded;
                 _boundSampleInventory = inv;
                 if (debugLog) Debug.Log("[QuestManager] 已绑定 SampleInventory.OnSampleAdded 事件");
                 return;
@@ -621,11 +618,11 @@ namespace QuestSystem
             {
                 if (_boundSampleInventory != null && _boundSampleInventory != inv)
                 {
-                    _boundSampleInventory.OnSampleAdded -= OnSampleAdded;
+                    _boundSampleInventory.OnSampleCollected -= OnSampleAdded;
                 }
 
-                inv.OnSampleAdded -= OnSampleAdded;
-                inv.OnSampleAdded += OnSampleAdded;
+                inv.OnSampleCollected -= OnSampleAdded;
+                inv.OnSampleCollected += OnSampleAdded;
                 _boundSampleInventory = inv;
                 if (debugLog) Debug.Log("[QuestManager] 已绑定 SampleInventory.OnSampleAdded 事件 (延迟)");
             }
@@ -639,7 +636,7 @@ namespace QuestSystem
         {
             if (_boundSampleInventory != null)
             {
-                _boundSampleInventory.OnSampleAdded -= OnSampleAdded;
+                _boundSampleInventory.OnSampleCollected -= OnSampleAdded;
                 _boundSampleInventory = null;
             }
         }
@@ -715,6 +712,8 @@ namespace QuestSystem
             // 可用于后续任务的“返回实验室”判断
             if (debugLog) Debug.Log($"[QuestManager] OnSceneLoaded: {sceneName}");
             TryBindSampleEvents();
+            if (StorySystem.InvestigationProgress.HasCore && !IsObjectiveCompleted("q.chapter4.sample.collect"))
+                CompleteObjective("q.chapter4.sample.collect");
 
             // 切换到允许场景且当前无任务时兜底启动
             if (autoStartIntroQuestIfNone && IsAllowedScene(sceneName))
@@ -813,6 +812,16 @@ namespace QuestSystem
             OnSceneLoaded(scene.name);
         }
 
+        public void CancelPendingPlayback()
+        {
+            StopAllCoroutines();
+            _chapter4SampleCutscenePending = false;
+            _chapter4FieldIntroPending = false;
+            _fieldPhaseSampleCutscenePending = false;
+            _sampleBindRoutine = null;
+            _waitingForSampleBind = false;
+        }
+
         private void OnSampleAdded(SampleItem sample)
         {
             // 预留：用于后续采样类任务
@@ -820,33 +829,24 @@ namespace QuestSystem
             if (debugLog)
                 Debug.Log($"[QuestManager] OnSampleAdded: {sample.displayName}, sourceTool={sample.sourceToolID}");
 
+            if (SceneManager.GetActiveScene().name == "MainScene" && sample.sourceToolID == "1002" && GetQuestStatus("q.field.phase") == QuestStatus.InProgress)
+                StorySystem.InvestigationProgress.MarkFieldSample();
             HandleFieldPhaseSamplingProgress(sample);
 
-            var sampleQuestStatus = GetQuestStatus("q.chapter4.sample");
-            if (sampleQuestStatus == QuestStatus.InProgress && !_chapter4SampleCutscenePending && !_chapter4SampleCutscenePlayed)
+            bool isField = SceneManager.GetActiveScene().name == "MainScene";
+            if (StorySystem.InvestigationProgress.AcceptCoreSample(sample.sampleID, sample.sourceToolID, isField,
+                GetQuestStatus("q.chapter4.sample") == QuestStatus.InProgress))
             {
                 _chapter4SampleCutscenePending = true;
-                var director = StorySystem.StoryDirector.Instance;
-                System.Action finalize = () =>
+                _chapter4SampleCutscenePlayed = true;
+                GuidanceManager.Instance?.ClearTarget();
+                StorySystem.StoryDirector.Instance.PlaySequence("Story/core-return", () =>
                 {
                     _chapter4SampleCutscenePending = false;
-                    _chapter4SampleCutscenePlayed = true;
-                    GuidanceManager.Instance?.ClearTarget();
-                    // 完成最终采集目标 → 触发 GrantRewards(q.chapter4.sample) → 弹出调查报告（教学流程结束）。
                     CompleteObjective("q.chapter4.sample.collect");
-                };
-
-                if (director != null)
-                {
-                    director.PlaySequence(Chapter4SampleAnalysisStoryPath, () =>
-                    {
-                        director.PlaySequence(Chapter4SampleCompletionStoryPath, finalize);
-                    });
-                }
-                else
-                {
-                    finalize.Invoke();
-                }
+                    SceneSystem.GameSession.SaveCheckpoint();
+                    QuestUI.RefreshAll();
+                });
             }
         }
 
@@ -1093,21 +1093,14 @@ namespace QuestSystem
             }
             else if (questId == "q.chapter4.sample")
             {
-                // 15分钟教学版：beat4 是最后一个 beat，完成后弹出 A/B/C 调查报告并结束教学流程，
-                // 不再链入章节5/6（无人机等）。
-                if (debugLog) Debug.Log("[QuestManager] 最终 beat 完成，显示调查报告");
                 GuidanceManager.Instance?.ClearTarget();
-                if (_chapter4SampleGuidanceTarget != null)
-                {
-                    Destroy(_chapter4SampleGuidanceTarget.gameObject);
-                    _chapter4SampleGuidanceTarget = null;
-                }
-                StorySystem.StoryDirector.Instance?.PlayReport();
+                if (_chapter4SampleGuidanceTarget != null) Destroy(_chapter4SampleGuidanceTarget.gameObject);
+                StartQuest("q.chapter4.return");
             }
             else if (questId == "q.chapter4.return")
             {
-                if (debugLog) Debug.Log("[QuestManager] 章节4返回完成，开始章节5会谈");
-                StartQuest("q.chapter5.kaede");
+                StorySystem.InvestigationProgress.MarkComplete();
+                QuestUI.RefreshAll();
             }
             else if (questId == "q.chapter5.kaede")
             {

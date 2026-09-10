@@ -2326,11 +2326,11 @@
     },
     {
       "key": "report.first_correct",
-      "value": "1回目（かいめ）に正解（せいかい）"
+      "value": "初回に正解した問題"
     },
     {
       "key": "report.final_mastery",
-      "value": "最後（さいご）に正解（せいかい）できた問題（もんだい）"
+      "value": "最終的に正解した問題"
     },
     {
       "key": "report.completion",
@@ -2470,7 +2470,7 @@
     },
     {
       "key": "story.beat3.l01",
-      "value": "ドリルタワーのサンプルが取（と）れたね。深（ふか）さごとの記録（きろく）を「柱状図（ちゅうじょうず）」で見（み）ていこう。"
+      "value": "研究室（けんきゅうしつ）に戻（もど）ったね。採取（さいしゅ）した岩芯（がんしん）を「柱状図（ちゅうじょうず）」と比（くら）べて調（しら）べよう。"
     },
     {
       "key": "story.beat3.l02",
@@ -2646,7 +2646,7 @@
     },
     {
       "key": "story.beat3.l04",
-      "value": "柱状図（ちゅうじょうず）を追（お）うほど、地下（ちか）から低（ひく）い響（ひび）きが伝（つた）わってくる気（き）がした。"
+      "value": "柱状図（ちゅうじょうず）と岩芯（がんしん）の記録（きろく）を机（つくえ）に並（なら）べ、地下（ちか）の歴史（れきし）を読（よ）み解（と）いていく。"
     },
     {
       "key": "story.beat3.l05",
@@ -3106,19 +3106,19 @@
     },
     {
       "key": "ui.start.new_game.title",
-      "value": "最初から始めますか？"
+      "value": "ニューゲーム"
     },
     {
       "key": "ui.start.new_game.message",
-      "value": "現在の進行状況を消して、最初から始めます。\nストーリー、調査ミッション、持っている試料の記録が消えます。"
+      "value": "現在の進行状況を上書きしますか？"
     },
     {
       "key": "ui.start.new_game.confirm",
-      "value": "最初から始める"
+      "value": "はじめから開始"
     },
     {
       "key": "ui.start.new_game.cancel",
-      "value": "戻る"
+      "value": "キャンセル"
     },
     {
       "key": "story.content_notice.title",
@@ -3194,35 +3194,275 @@
     },
     {
       "key": "ui.start.research_test",
-      "value": "研究接続（けんきゅうせつぞく）テスト"
+      "value": "研究接続テスト"
     },
     {
       "key": "ui.start.research_code.title",
-      "value": "研究参加（けんきゅうさんか）コード"
+      "value": "研究参加コード"
     },
     {
       "key": "ui.start.research_code.help",
-      "value": "研究者（けんきゅうしゃ）から受（う）け取（と）ったコードを入力（にゅうりょく）してください。通常（つうじょう）のゲームでは入力（にゅうりょく）しません。"
+      "value": "開発テスト用の参加コードを入力してください。別の参加コードに切り替えると、学習の進行状況はリセットされます。"
     },
     {
       "key": "ui.start.research_code.placeholder",
-      "value": "参加（さんか）コード"
+      "value": "参加コード"
     },
     {
       "key": "ui.start.research_code.confirm",
-      "value": "コードを確認（かくにん）"
+      "value": "コードを確認"
     },
     {
       "key": "ui.start.research_code.cancel",
-      "value": "戻（もど）る"
+      "value": "戻る"
     },
     {
       "key": "ui.start.research_code.checking",
-      "value": "コードを確認（かくにん）しています…"
+      "value": "参加コードを確認しています…"
     },
     {
       "key": "ui.start.research_code.failed",
-      "value": "コードを確認（かくにん）できませんでした。"
+      "value": "参加コードを確認してください。"
+    },
+    {
+      "key": "ui.start.subtitle",
+      "value": "地層の記録を読み解く、\n小さな科学の冒険。"
+    },
+    {
+      "key": "ui.start.continue",
+      "value": "続きから"
+    },
+    {
+      "key": "ui.start.settings",
+      "value": "設定"
+    },
+    {
+      "key": "ui.start.quit",
+      "value": "ゲーム終了"
+    },
+    {
+      "key": "ui.start.footer",
+      "value": "採集する。観察する。発見する。"
+    },
+    {
+      "key": "ui.start.field_caption",
+      "value": "野外の発見を、研究室へ。"
+    },
+    {
+      "key": "ui.start.new_game.warning",
+      "value": "現在のセーブデータ（ストーリー進行、クエスト、所持品）は削除されます。"
+    },
+    {
+      "key": "ui.common.cancel",
+      "value": "キャンセル"
+    },
+    {
+      "key": "ui.session.return_title",
+      "value": "タイトルへ戻る"
+    },
+    {
+      "key": "ui.session.return_message",
+      "value": "進行状況を保存して、タイトルへ戻ります。途中の会話はチェックポイントから再開します。"
+    },
+    {
+      "key": "ui.session.save_return",
+      "value": "保存して戻る"
+    },
+    {
+      "key": "ui.history.title",
+      "value": "会話の記録"
+    },
+    {
+      "key": "ui.history.close",
+      "value": "会話に戻る"
+    },
+    {
+      "key": "ui.history.empty",
+      "value": "まだ会話の記録がありません。"
+    },
+    {
+      "key": "ui.history.dialogue",
+      "value": "ナレーション"
+    },
+    {
+      "key": "ui.history.hint",
+      "value": "ヒント"
+    },
+    {
+      "key": "ui.history.feedback",
+      "value": "解説"
+    },
+    {
+      "key": "ui.history.choice",
+      "value": "選んだ答え"
+    },
+    {
+      "key": "ui.tool.current",
+      "value": "使用中の道具"
+    },
+    {
+      "key": "ui.tool.none",
+      "value": "道具を選んでください"
+    },
+    {
+      "key": "report.complete_title",
+      "value": "調査が完了しました！"
+    },
+    {
+      "key": "report.complete_message",
+      "value": "集めた試料から、地層の記録を読み解きました。"
+    },
+    {
+      "key": "report.wrong_attempts",
+      "value": "間違えた回数"
+    },
+    {
+      "key": "report.practice",
+      "value": "実地調査の達成"
+    },
+    {
+      "key": "report.practice_details",
+      "value": "岩石採集・岩芯採取・研究室での分析・調査報告"
+    },
+    {
+      "key": "quest.ui.progress",
+      "value": "調査の進み具合"
+    },
+    {
+      "key": "quest.step.1",
+      "value": "研究室へ向かう"
+    },
+    {
+      "key": "quest.step.2",
+      "value": "博士の説明を聞く"
+    },
+    {
+      "key": "quest.step.3",
+      "value": "異常な試料を観察する"
+    },
+    {
+      "key": "quest.step.4",
+      "value": "野外で岩石を採集する"
+    },
+    {
+      "key": "quest.step.5",
+      "value": "試料を持って研究室へ戻る"
+    },
+    {
+      "key": "quest.step.6",
+      "value": "博士と掘削の準備をする"
+    },
+    {
+      "key": "quest.step.7",
+      "value": "野外の掘削地点へ向かう"
+    },
+    {
+      "key": "quest.step.8",
+      "value": "ドリルタワーで岩芯を採取する"
+    },
+    {
+      "key": "quest.step.9",
+      "value": "研究室へ戻り、岩芯を分析する"
+    },
+    {
+      "key": "quest.step.10",
+      "value": "調査完了・報告書を確認する"
+    },
+    {
+      "key": "story.core_return.line",
+      "value": "よくやった。研究室に戻って、このサンプルを詳しく調べてみよう。"
+    },
+    {
+      "key": "backend.checking",
+      "value": "参加コードを確認しています…"
+    },
+    {
+      "key": "backend.closed",
+      "value": "研究参加の受付は現在停止しています。"
+    },
+    {
+      "key": "backend.invalid_code",
+      "value": "参加コードを確認してください。"
+    },
+    {
+      "key": "backend.network",
+      "value": "接続できませんでした。時間をおいて再試行してください。"
+    },
+    {
+      "key": "backend.bound",
+      "value": "この参加コードは別のログインに紐づいています。担当者に確認してください。"
+    },
+    {
+      "key": "backend.rate_limit",
+      "value": "確認回数が多すぎます。少し待ってから再試行してください。"
+    },
+    {
+      "key": "backend.version",
+      "value": "研究手順のバージョンが一致しません。"
+    },
+    {
+      "key": "backend.pending_upload",
+      "value": "未送信の研究記録があります。同じ参加コードで接続し、再送してから切り替えてください。"
+    },
+    {
+      "key": "ui.dialog.hint",
+      "value": "ヒント"
+    },
+    {
+      "key": "ui.session.save_failed",
+      "value": "保存できませんでした"
+    },
+    {
+      "key": "ui.session.save_retry",
+      "value": "通信とブラウザの保存設定を確認して、もう一度お試しください。進行状況を保つため、この画面で待機しています。"
+    },
+    {
+      "key": "ui.session.retry",
+      "value": "再試行"
+    },
+    {
+      "key": "tool.drill.simple.short",
+      "value": "簡易ボーリング"
+    },
+    {
+      "key": "tool.drill_tower.short",
+      "value": "ドリルタワー"
+    },
+    {
+      "key": "ui.history.all",
+      "value": "すべて"
+    },
+    {
+      "key": "ui.history.field",
+      "value": "野外調査"
+    },
+    {
+      "key": "ui.history.lab",
+      "value": "研究室"
+    },
+    {
+      "key": "survey.answer",
+      "value": "アンケートに答える"
+    },
+    {
+      "key": "survey.preparing",
+      "value": "記録を保存して、アンケートを準備しています…"
+    },
+    {
+      "key": "survey.retry",
+      "value": "接続を確認して、もう一度ボタンを押してください。"
+    },
+    {
+      "key": "survey.reenter",
+      "value": "同じ参加コードで入り直してから、お試しください。"
+    },
+    {
+      "key": "survey.opened",
+      "value": "アンケートを開きました。"
+    },
+    {
+      "key": "survey.research_only",
+      "value": "研究参加で遊ぶと、アンケートに進めます。"
     }
   ]
 }

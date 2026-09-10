@@ -1,0 +1,3 @@
+[functions.game-survey]
+# issue validates the game JWT; open/submit validate the restricted survey ticket.
+verify_jwt = false

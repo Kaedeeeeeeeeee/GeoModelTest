@@ -555,13 +555,13 @@ public class SampleCollector : MonoBehaviour
         bool addSuccess = false;
         try
         {
-            addSuccess = inventory.TryAddSample(sampleData);
+            addSuccess = inventory.TryCollectSample(sampleData);
         }
         catch (System.Exception ex)
         {
             Debug.LogError($"[SampleCollector] 添加样本到背包时发生错误: {ex.Message}");
-            // 即使出错也认为添加成功，因为样本数据已经创建
-            addSuccess = true;
+            // Never destroy the world sample when inventory insertion failed.
+            addSuccess = false;
         }
 
         if (addSuccess)

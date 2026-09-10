@@ -368,6 +368,7 @@ public class GameSceneManager : MonoBehaviour
             return;
         }
 
+        currentSceneName = SceneManager.GetActiveScene().name;
         if (sceneName == currentSceneName)
         {
             Debug.LogWarning("已经在当前场景中");
@@ -393,7 +394,8 @@ public class GameSceneManager : MonoBehaviour
         HideSceneSelectionUI();
         
         // 保存当前场景数据
-        playerData.SaveCurrentSceneData(currentSceneName);
+        if (SceneSystem.GameSession.IsGameplayScene(currentSceneName))
+            playerData.SaveCurrentSceneData(currentSceneName);
 
         if (currentSceneName == "MainScene" && sceneName != "MainScene")
         {
@@ -431,7 +433,17 @@ public class GameSceneManager : MonoBehaviour
         currentSceneName = sceneName;
         
         // 恢复场景数据
-        yield return StartCoroutine(RestoreSceneData(sceneName));
+        if (SceneSystem.GameSession.IsGameplayScene(sceneName))
+        {
+            yield return StartCoroutine(RestoreSceneData(sceneName));
+            PlayerPrefs.SetString(SceneSystem.GameSession.ResumeSceneKey, sceneName);
+            PlayerPrefs.Save();
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
         
         // 隐藏加载界面
         HideLoadingUI();

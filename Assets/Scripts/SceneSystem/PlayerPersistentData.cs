@@ -128,6 +128,8 @@ public class PlayerPersistentData : MonoBehaviour
         
         // 保存到字典
         sceneDataMap[sceneName] = sceneData;
+        PlayerPrefs.SetString("PlayerPersistentData.Scene." + sceneName, JsonUtility.ToJson(sceneData));
+        PlayerPrefs.Save();
         
         Debug.Log($"场景数据保存完成: {sceneName}");
     }
@@ -140,6 +142,15 @@ public class PlayerPersistentData : MonoBehaviour
         if (!enableDataPersistence) return;
         
         Debug.Log($"恢复场景数据: {sceneName}");
+        if (!sceneDataMap.ContainsKey(sceneName))
+        {
+            try
+            {
+                var saved = JsonUtility.FromJson<SceneData>(PlayerPrefs.GetString("PlayerPersistentData.Scene." + sceneName, ""));
+                if (saved != null) sceneDataMap[sceneName] = saved;
+            }
+            catch { Debug.LogWarning("Saved scene checkpoint could not be read; using the scene entrance."); }
+        }
         
         if (sceneDataMap.TryGetValue(sceneName, out SceneData sceneData))
         {
@@ -879,6 +890,14 @@ public class PlayerPersistentData : MonoBehaviour
     {
         sceneDataMap.Clear();
         Debug.Log("清除所有场景数据");
+    }
+
+    public void ResetRuntimeData()
+    {
+        StopAllCoroutines();
+        sceneDataMap.Clear();
+        globalSampleData.Clear();
+        LoadUnlockedToolIdsFromPrefs();
     }
 
     /// <summary>

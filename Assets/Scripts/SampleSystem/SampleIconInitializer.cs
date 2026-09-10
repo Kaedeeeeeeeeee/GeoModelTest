@@ -14,7 +14,7 @@ public class SampleIconInitializer : MonoBehaviour
     public Color outlineColor = Color.black;
     public float outlineWidth = 2f;
     
-    void Start()
+    void Awake()
     {
         InitializeSampleIconSystem();
     }

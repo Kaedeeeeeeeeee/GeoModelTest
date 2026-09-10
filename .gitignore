@@ -115,3 +115,9 @@ node_modules/
 /Text_ScreenShot/
 .playwright-cli/
 supabase/.temp/
+
+# Local remediation validation build
+/Build/RemediationWebGL/
+
+# Unity Performance Testing creates these temporary files during a build.
+/Assets/Resources/PerformanceTestRun*.json*

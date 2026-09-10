@@ -114,7 +114,7 @@ namespace Encyclopedia
                 Debug.Log("开始创建图鉴UI...");
 
             // 查找现有的UI
-            encyclopediaUI = FindObjectOfType<EncyclopediaUI>();
+            encyclopediaUI = FindFirstObjectByType<EncyclopediaUI>(FindObjectsInactive.Include);
             if (encyclopediaUI != null)
             {
                 if (showDebugInfo)
@@ -169,7 +169,7 @@ namespace Encyclopedia
                 Debug.Log("[EncyclopediaInitializer] 开始查找EncyclopediaUI组件...");
 
             // 查找创建的UI控制器
-            encyclopediaUI = FindObjectOfType<EncyclopediaUI>();
+            encyclopediaUI = FindFirstObjectByType<EncyclopediaUI>(FindObjectsInactive.Include);
 
             if (showDebugInfo)
             {

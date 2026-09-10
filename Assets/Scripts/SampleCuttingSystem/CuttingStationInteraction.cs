@@ -297,12 +297,7 @@ namespace SampleCuttingSystem
             }
 
             // 添加ESC键快速关闭功能 - 支持新旧输入系统
-            bool escPressed = Input.GetKeyDown(KeyCode.Escape);
-            var keyboard = Keyboard.current;
-            if (!escPressed && keyboard != null)
-            {
-                escPressed = keyboard.escapeKey.wasPressedThisFrame;
-            }
+            bool escPressed = currentCuttingInterface != null && Core.GameInputState.TryConsumeEscape();
 
             if (currentCuttingInterface != null && escPressed)
             {

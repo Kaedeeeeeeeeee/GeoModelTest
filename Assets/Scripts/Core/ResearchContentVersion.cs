@@ -6,8 +6,8 @@ namespace Core
     /// </summary>
     public static class ResearchContentVersion
     {
-        public const string ContentVersion = "ja-ui-story-2026-07-16-v0.1";
-        public const string StoryRoute = "story-main-v1";
+        public const string ContentVersion = "ja-ui-story-2026-09-10-v0.2";
+        public const string StoryRoute = "story-lab-analysis-v2";
         public const string CopyChecklistVersion = "v0.1";
     }
 }

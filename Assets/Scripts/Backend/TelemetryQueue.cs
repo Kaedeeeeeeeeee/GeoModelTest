@@ -30,6 +30,12 @@ namespace Backend
 
         public int Count => _events.Count + _quizAttempts.Count;
 
+        public bool HasDataForOtherParticipant(string participantId)
+        {
+            return _events.Any(value => value.participantId != participantId) ||
+                   _quizAttempts.Any(value => value.participantId != participantId);
+        }
+
         public static TelemetryEvent Create(string eventName, string sceneName, Dictionary<string, object> props = null)
         {
             return new TelemetryEvent

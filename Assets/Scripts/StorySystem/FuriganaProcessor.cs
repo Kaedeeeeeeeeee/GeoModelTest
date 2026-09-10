@@ -108,17 +108,21 @@ namespace StorySystem
         {
             float baseW = baseText.Length;                 // 基字按 1em/字
             float readW = reading.Length * ReadingCharEm;  // 读音按 ReadingCharEm/字
-            float lead = (baseW - readW) / 2f;             // 居中：读音前的留白
+            float slotW = System.Math.Max(baseW, readW);
+            float baseLead = (slotW - baseW) / 2f;
+            float lead = (slotW - readW) / 2f;             // 居中：读音前的留白
             float back = -(readW + lead);                  // 退回到基字起点
 
             var ci = CultureInfo.InvariantCulture;
-            return "<space=" + lead.ToString("0.###", ci) + "em>"
+            return "<nobr><space=" + lead.ToString("0.###", ci) + "em>"
                  + "<voffset=" + ReadingRiseEm.ToString("0.###", ci) + "em>"
                  + "<size=" + ReadingSizePct.ToString("0.#", ci) + "%>"
                  + reading
                  + "</size></voffset>"
                  + "<space=" + back.ToString("0.###", ci) + "em>"
-                 + baseText;
+                 + "<space=" + baseLead.ToString("0.###", ci) + "em>"
+                 + baseText
+                 + "<space=" + baseLead.ToString("0.###", ci) + "em></nobr>";
         }
     }
 }

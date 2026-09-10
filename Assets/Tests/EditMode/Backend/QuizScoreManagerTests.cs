@@ -30,6 +30,9 @@ public class QuizScoreManagerTests
         Assert.AreEqual(1, BackendTestReflection.GetProperty(summary, "FinalMasteredCount"));
         Assert.AreEqual(2f, (float)BackendTestReflection.GetProperty(summary, "AverageAttemptCount"), 0.001f);
         Assert.AreEqual(2, Attempts.Count);
+        Assert.AreEqual(1, BackendTestReflection.GetProperty(summary, "WrongAttemptCount"));
+        Assert.AreEqual(1, BackendTestReflection.GetProperty(summary, "WrongQuestionCount"));
+        Assert.AreEqual(true, BackendTestReflection.InvokeInstance(_manager, "HasMastered", "q.weathering_order"));
     }
 
     [Test]
@@ -55,6 +58,8 @@ public class QuizScoreManagerTests
 
         Assert.AreEqual(1, Attempts.Count);
         Assert.AreEqual(eventId, BackendTestReflection.GetField(Attempts[0], "eventId"));
+        var summary = BackendTestReflection.InvokeInstance(_manager, "BuildSummary");
+        Assert.AreEqual(1, BackendTestReflection.GetProperty(summary, "WrongAttemptCount"));
     }
 
     [Test]

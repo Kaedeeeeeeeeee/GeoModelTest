@@ -26,6 +26,8 @@ namespace StorySystem
         public int ExpectedQuestionCount { get; internal set; }
         public int AnsweredQuestionCount { get; internal set; }
         public int FirstCorrectCount { get; internal set; }
+        public int WrongAttemptCount { get; internal set; }
+        public int WrongQuestionCount { get; internal set; }
         public int FinalMasteredCount { get; internal set; }
         public int HintUsedQuestionCount { get; internal set; }
         public float AverageAttemptCount { get; internal set; }
@@ -88,6 +90,8 @@ namespace StorySystem
 
         public IReadOnlyList<string> ExpectedQuestionIds => ExpectedQuestionIdsInternal;
         public IReadOnlyList<QuizAttempt> Attempts => _state.attempts;
+        public bool HasMastered(string questionId) => _state.attempts.Any(attempt =>
+            attempt.runId == RunId && attempt.questionId == questionId && attempt.isCorrect);
         public string RunId => _state.runId;
         public int Total => ExpectedQuestionIdsInternal.Length;
         public int CorrectCount => BuildSummary().FirstCorrectCount;
@@ -162,6 +166,8 @@ namespace StorySystem
                 ExpectedQuestionCount = ExpectedQuestionIdsInternal.Length,
                 AnsweredQuestionCount = groups.Count,
                 FirstCorrectCount = groups.Count(group => group.First().isCorrect),
+                WrongAttemptCount = currentRunAttempts.Count(attempt => !attempt.isCorrect),
+                WrongQuestionCount = groups.Count(group => group.Any(attempt => !attempt.isCorrect)),
                 FinalMasteredCount = groups.Count(group => group.Last().isCorrect),
                 HintUsedQuestionCount = groups.Count(group => group.Any(attempt => attempt.usedHint)),
                 AverageAttemptCount = groups.Count == 0

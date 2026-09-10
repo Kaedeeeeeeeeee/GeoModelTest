@@ -89,7 +89,7 @@ public class InventoryUISystem : MonoBehaviour
     /// </summary>
     void HandleToolWheelInput()
     {
-        if (StoryDirector.IsStoryPlaybackActive)
+        if (Core.GameInputState.GameplayBlocked || StoryDirector.IsStoryPlaybackActive)
         {
             return;
         }
@@ -649,6 +649,13 @@ public class InventoryUISystem : MonoBehaviour
     // 调试方法：强制显示圆形布局信息
     void Update()
     {
+        if (StoryDirector.IsStoryPlaybackActive)
+        {
+            if (isWheelOpen) CloseWheel(false);
+            return;
+        }
+        if (Core.GameInputState.IsModalOpen) return;
+        if (isWheelOpen && Core.GameInputState.TryConsumeEscape()) { CloseWheel(false); return; }
         HandleInput();
         
         if (isWheelOpen)
@@ -729,12 +736,14 @@ public class InventoryUISystem : MonoBehaviour
         if (wheelUI == null) return;
         
         // 使用80%的屏幕大小
-        float screenSize = Mathf.Min(Screen.width, Screen.height);
+        var rootCanvas = GetComponentInParent<Canvas>();
+        RectTransform canvasRect = rootCanvas != null ? rootCanvas.GetComponent<RectTransform>() : null;
+        float screenSize = canvasRect != null ? Mathf.Min(canvasRect.rect.width, canvasRect.rect.height) : Mathf.Min(Screen.width, Screen.height);
         
         // 只有屏幕大小变化时才更新
         if (Mathf.Abs(screenSize - lastScreenSize) < 1f) return;
         
-        float wheelSize = screenSize * 0.9f; // 改为90%屏幕大小，进一步增大轮盘
+        float wheelSize = Mathf.Min(screenSize * 0.86f, 920f); // 改为90%屏幕大小，进一步增大轮盘
         
         RectTransform wheelRect = wheelUI.GetComponent<RectTransform>();
         if (wheelRect != null)
@@ -844,8 +853,8 @@ public class InventoryUISystem : MonoBehaviour
     void UpdateSlotPositions(float wheelSize)
     {
         // 调整为合理的参数，确保slot图标在圆圈内部且布局美观
-        float slotSize = wheelSize * 0.12f;   // slot大小为轮盘的12%，增大图标
-        float slotRadius = (wheelSize * 0.28f); // slot距离圆心28%的轮盘半径
+        float slotSize = wheelSize * 0.155f;   // slot大小为轮盘的12%，增大图标
+        float slotRadius = wheelSize * 0.34f;
         
         for (int i = 0; i < wheelSlots.Length; i++)
         {
@@ -856,13 +865,18 @@ public class InventoryUISystem : MonoBehaviour
                 Vector2 slotPos = new Vector2(Mathf.Sin(angle) * slotRadius, Mathf.Cos(angle) * slotRadius);
                 wheelSlots[i].anchoredPosition = slotPos;
                 wheelSlots[i].sizeDelta = new Vector2(slotSize, slotSize);
+                if (slotImages[i] != null)
+                {
+                    slotImages[i].rectTransform.sizeDelta = Vector2.one * slotSize * 0.76f;
+                    slotImages[i].preserveAspect = true;
+                }
                 
                 if (slotTexts[i] != null)
                 {
                     RectTransform textRect = slotTexts[i].GetComponent<RectTransform>();
-                    textRect.sizeDelta = new Vector2(slotSize * 1.8f, slotSize * 0.4f); // 文本大小随slot缩放
+                    textRect.sizeDelta = new Vector2(slotSize * 1.55f, slotSize * 0.65f);
                     textRect.anchoredPosition = new Vector2(0, -slotSize * 0.8f); // 文本位置随slot缩放
-                    slotTexts[i].fontSize = Mathf.RoundToInt(slotSize * 0.25f); // 字体大小为slot的25%，减小文字
+                    slotTexts[i].fontSize = Mathf.RoundToInt(Mathf.Clamp(slotSize * 0.18f, 20f, 26f));
                     
                     Outline outline = slotTexts[i].GetComponent<Outline>();
                     if (outline == null)
@@ -1174,8 +1188,9 @@ public class InventoryUISystem : MonoBehaviour
 
     int GetWheelSlotByAngle(Vector2 screenPoint)
     {
-        Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
-        Vector2 direction = screenPoint - screenCenter;
+        var rootCanvas = GetComponentInParent<Canvas>();
+        Camera uiCamera = rootCanvas != null && rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay ? rootCanvas.worldCamera : null;
+        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(wheelUI.GetComponent<RectTransform>(), screenPoint, uiCamera, out Vector2 direction)) return -1;
         if (direction.magnitude <= selectionRadius)
         {
             return -1;
@@ -1183,7 +1198,7 @@ public class InventoryUISystem : MonoBehaviour
 
         float angle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
         angle = (angle + 360f) % 360f;
-        int slotIndex = Mathf.FloorToInt(angle / 45f);
+        int slotIndex = Mathf.FloorToInt((angle + 22.5f) / 45f) % 8;
         return slotIndex >= 0 && slotIndex < availableTools.Count ? slotIndex : -1;
     }
     
@@ -1573,9 +1588,9 @@ public class InventoryUISystem : MonoBehaviour
                 case "999":
                     return "tool.scene_switcher.name";
                 case "1000":
-                    return "tool.drill.simple.name";
+                    return "tool.drill.simple.short";
                 case "1001":
-                    return "tool.drill_tower.name";
+                    return "tool.drill_tower.short";
                 case "1002":
                     return "tool.hammer.name";
             }
@@ -1589,10 +1604,10 @@ public class InventoryUISystem : MonoBehaviour
                 return "tool.scene_switcher.name";
             case "简易钻探":
             case "Simple Drill":
-                return "tool.drill.simple.name";
+                return "tool.drill.simple.short";
             case "钻塔工具":
             case "Drill Tower":
-                return "tool.drill_tower.name";
+                return "tool.drill_tower.short";
             case "地质锤":
             case "Geological Hammer":
                 return "tool.hammer.name";

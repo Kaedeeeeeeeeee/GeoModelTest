@@ -13,6 +13,19 @@ public class TelemetryQueueTests
     }
 
     [Test]
+    public void MissingCachedContext_ShouldStillRejectAnotherParticipantsQueuedData()
+    {
+        var queueType = BackendTestReflection.GetType("Backend.TelemetryQueue");
+        var queue = System.Activator.CreateInstance(queueType, 10);
+        BackendTestReflection.InvokeInstance(queue, "Enqueue", CreateBoundEvent(queueType, "scene_loaded"));
+        Assert.IsFalse((bool)BackendTestReflection.InvokeInstance(queue, "HasDataForOtherParticipant", "11111111-1111-4111-8111-111111111111"));
+        Assert.IsTrue((bool)BackendTestReflection.InvokeInstance(queue, "HasDataForOtherParticipant", "99999999-9999-4999-8999-999999999999"));
+        PlayerPrefs.DeleteKey("Backend.ResearchParticipantId");
+        Assert.IsTrue((bool)BackendTestReflection.InvokeStatic(BackendTestReflection.GetType("Backend.TelemetryClient"),
+            "HasPendingDataForOtherParticipant", "99999999-9999-4999-8999-999999999999"));
+    }
+
+    [Test]
     public void PeekBatch_ShouldRespectBatchSize()
     {
         var queueType = BackendTestReflection.GetType("Backend.TelemetryQueue");

@@ -366,6 +366,7 @@ public class SamplePlacer : MonoBehaviour
     /// </summary>
     void HandlePlacementInput()
     {
+        if (Core.GameInputState.GameplayBlocked) return;
         var mouse = Mouse.current;
         var keyboard = Keyboard.current;
 
@@ -386,7 +387,7 @@ public class SamplePlacer : MonoBehaviour
         
         // 右键或ESC取消
         bool cancelPressed = (mouse != null && mouse.rightButton.wasPressedThisFrame) ||
-                             (keyboard != null && keyboard.escapeKey.wasPressedThisFrame);
+                             (keyboard != null && Core.GameInputState.TryConsumeEscape());
         if (cancelPressed)
         {
             CancelPlacement();

@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 using Core;
+using UISystem;
+using UnityEngine.SceneManagement;
 using GeoModel.AudioSystem;
 
 namespace StorySystem
@@ -122,6 +124,12 @@ namespace StorySystem
         {
             // 强制日志（不受 enableDebugLog 控制），方便 WebGL 用户从 Console 直接定位
             Debug.Log($"[StoryDirector] OnSceneLoaded: {sceneName} | flags={string.Join(",", _flags)} | _isRunningCinematic={_isRunningCinematic}");
+
+            if (InvestigationProgress.IsComplete && sceneName == "Laboratory Scene")
+            {
+                PlayReport();
+                return;
+            }
 
             // 场景1：首次进入 MainScene → 地震演出 + 对白
             if (sceneName == "MainScene")
@@ -251,6 +259,12 @@ namespace StorySystem
             if (sequence != null)
             {
                 var loadedLines = sequence.ToSubtitleLines();
+                for (int i = 0; i < loadedLines.Count; i++)
+                {
+                    var line = loadedLines[i];
+                    line.ContentId = resourcePath + "#" + i;
+                    loadedLines[i] = line;
+                }
                 if (loadedLines.Count > 0) return loadedLines;
             }
 
@@ -373,7 +387,7 @@ namespace StorySystem
             continueRect.pivot = new Vector2(0.5f, 0f);
             continueRect.anchoredPosition = new Vector2(-205f, 58f);
             continueRect.sizeDelta = new Vector2(360f, 82f);
-            continueButton.onClick.AddListener(() => shouldPlay = true);
+            continueButton.onClick.AddListener(() => { if (!GameInputState.IsModalOpen) shouldPlay = true; });
 
             Button skipButton = CreateNoticeButton(
                 panelObject.transform,
@@ -386,11 +400,11 @@ namespace StorySystem
             skipRect.pivot = new Vector2(0.5f, 0f);
             skipRect.anchoredPosition = new Vector2(205f, 58f);
             skipRect.sizeDelta = new Vector2(360f, 82f);
-            skipButton.onClick.AddListener(() => shouldPlay = false);
+            skipButton.onClick.AddListener(() => { if (!GameInputState.IsModalOpen) shouldPlay = false; });
 
             while (!shouldPlay.HasValue)
             {
-                if (Input.GetKeyDown(KeyCode.Escape))
+                if (!GameInputState.IsModalOpen && GameInputState.TryConsumeEscape())
                 {
                     shouldPlay = false;
                 }
@@ -508,6 +522,14 @@ namespace StorySystem
         /// <summary>
         /// 显示结尾调查报告（A/B/C 评级 + 正解数），用于最终 beat 结束时。
         /// </summary>
+        public void CancelPlayback()
+        {
+            StopAllCoroutines();
+            StoryDirectorRunner.Instance.StopAllCoroutines();
+            _isRunningCinematic = false;
+            SubtitleUI.CancelAll();
+        }
+
         public void PlayReport(Action onComplete = null)
         {
             StartCoroutine(SubtitleUI.ShowReport(onComplete));
@@ -640,20 +662,20 @@ namespace StorySystem
         private IEnumerator Run_Laboratory_Return_Chapter4()
         {
             _isRunningCinematic = true;
-            if (enableDebugLog) Debug.Log("[StoryDirector] Run_Laboratory_Return_Chapter4 开始");
-
-            var lines = LoadStoryLines(chapter4ReturnSequenceResource, DefaultChapter4ReturnLines);
+            var controller = UnityEngine.Object.FindFirstObjectByType<FirstPersonController>();
+            bool wasEnabled = controller != null && controller.enabled;
+            if (controller != null) controller.enabled = false;
+            var lines = LoadStoryLines("Story/beat3", null);
             yield return PlayLinesWithCameraShake(lines);
-
-            var qm = QuestSystem.QuestManager.Instance;
-            if (qm != null)
-            {
-                qm.CompleteObjective("q.chapter4.return.enter_lab");
-            }
-
+            InvestigationProgress.MarkLabAnalysis();
+            yield return PlayLinesWithCameraShake(LoadStoryLines("Story/beat4", null));
+            InvestigationProgress.MarkComplete();
+            QuestSystem.QuestManager.Instance.CompleteObjective("q.chapter4.return.enter_lab");
             SetFlag("story.chapter4.return");
+            SceneSystem.GameSession.SaveCheckpoint();
             _isRunningCinematic = false;
-            if (enableDebugLog) Debug.Log("[StoryDirector] Run_Laboratory_Return_Chapter4 结束");
+            if (controller != null) controller.enabled = wasEnabled;
+            yield return SubtitleUI.ShowReport();
         }
 
     /// <summary>
@@ -795,6 +817,14 @@ namespace StorySystem
         /// </summary>
         public static bool IsDialogOpen => activeSequenceCount > 0;
 
+        public static void CancelAll()
+        {
+            foreach (var canvas in UnityEngine.Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None))
+                if (canvas.name == "SubtitleCanvas" || canvas.name == "ReportCanvas") UnityEngine.Object.Destroy(canvas.gameObject);
+            activeSequenceCount = 0;
+            inputBlockReleaseFrame = Time.frameCount + 1;
+        }
+
         /// <summary>
         /// 玩家输入是否应该被阻止（对话进行中或刚关闭的下一帧）。
         /// </summary>
@@ -846,6 +876,7 @@ namespace StorySystem
         public struct SubtitleLine
         {
             public string Speaker;
+            public string ContentId;
             public string Text;
             public bool TriggerCameraShake;
             public float ShakeAmplitudeOverride;
@@ -865,6 +896,7 @@ namespace StorySystem
             public SubtitleLine(string speaker, string text, bool triggerCameraShake = false, float shakeAmplitudeOverride = 0f)
             {
                 Speaker = speaker;
+                ContentId = null;
                 Text = text ?? string.Empty;
                 TriggerCameraShake = triggerCameraShake;
                 ShakeAmplitudeOverride = shakeAmplitudeOverride;
@@ -922,8 +954,11 @@ namespace StorySystem
 
             // 立绘槽（要在 bg 之前创建，让对话框渲染在立绘之上）
             LoadPortraits();
-            Image portraitLeft = _spritePlayer != null ? CreatePortrait(canvasGO.transform, _spritePlayer, false) : null;
-            Image portraitRight = _spriteKaede != null ? CreatePortrait(canvasGO.transform, _spriteKaede, true) : null;
+            bool phone = SceneManager.GetActiveScene().name == "MainScene";
+            Sprite leftSprite = phone ? LoadPortraitVariant("player-phone", _spritePlayer) : _spritePlayer;
+            Sprite rightSprite = phone ? LoadPortraitVariant("kaede-phone", _spriteKaede) : _spriteKaede;
+            Image portraitLeft = leftSprite != null ? CreatePortrait(canvasGO.transform, leftSprite, false) : null;
+            Image portraitRight = rightSprite != null ? CreatePortrait(canvasGO.transform, rightSprite, true) : null;
             bool leftAppeared = false;
             bool rightAppeared = false;
 
@@ -946,10 +981,12 @@ namespace StorySystem
             var bg = new GameObject("BG");
             bg.transform.SetParent(canvasGO.transform, false);
             var bgRt = bg.AddComponent<RectTransform>();
-            bgRt.anchorMin = new Vector2(0.1f, 0.08f);
-            bgRt.anchorMax = new Vector2(0.9f, 0.22f);
+            bgRt.anchorMin = new Vector2(0.08f, 0.035f);
+            bgRt.anchorMax = new Vector2(0.92f, 0.34f);
+            bgRt.offsetMin = Vector2.zero;
+            bgRt.offsetMax = Vector2.zero;
             var bgImg = bg.AddComponent<Image>();
-            bgImg.color = new Color(0f, 0f, 0f, 0.4f);
+            bgImg.color = GameUI.Surface;
 
             var button = bg.AddComponent<Button>();
             button.transition = Selectable.Transition.None;
@@ -968,9 +1005,11 @@ namespace StorySystem
             txt.fontSize = 34;
             txt.color = Color.white;
             txt.alignment = TextAlignmentOptions.TopLeft;
-            txt.lineSpacing = RubyLineSpacing; // 给头顶注音留行距
-            tr.offsetMin = new Vector2(24f, 32f);
-            tr.offsetMax = new Vector2(-24f, -64f);
+            txt.lineSpacing = RubyLineSpacing;
+            txt.raycastTarget = false;
+            var pager = new DialoguePager(txt); // 给头顶注音留行距
+            tr.offsetMin = new Vector2(36f, 48f);
+            tr.offsetMax = new Vector2(-36f, -68f);
 
             var speakerGO = new GameObject("Speaker");
             speakerGO.transform.SetParent(bg.transform, false);
@@ -984,8 +1023,17 @@ namespace StorySystem
             var speakerTxt = speakerGO.AddComponent<TextMeshProUGUI>();
             ApplyTmpFont(speakerTxt);
             speakerTxt.fontSize = 24;
-            speakerTxt.color = new Color(1f, 1f, 1f, 0.85f);
+            speakerTxt.color = GameUI.Accent;
+            speakerTxt.raycastTarget = false;
             speakerTxt.alignment = TextAlignmentOptions.TopLeft;
+            void ShowSpeaker(string speaker, string kind = "dialogue")
+            {
+                string fallback = kind == "dialogue"
+                    ? LocalizedOr("story.speaker.narration", "ナレーション")
+                    : LocalizedOr("ui.history." + kind, kind == "hint" ? "ヒント" : "フィードバック");
+                speakerTxt.text = FuriganaProcessor.Process(string.IsNullOrWhiteSpace(speaker) ? fallback : speaker);
+                speakerGO.SetActive(true);
+            }
 
             var hintGO = new GameObject("Hint");
             hintGO.transform.SetParent(bg.transform, false);
@@ -1002,9 +1050,17 @@ namespace StorySystem
             hintTxt.alignment = TextAlignmentOptions.Center;
             string hintContinue = FuriganaProcessor.Process(LocalizedOr("ui.dialog.continue", "ダイアログをクリックして続ける"));
             hintTxt.text = hintContinue;
+            hintTxt.raycastTarget = false;
+            GameUI.Button(bg.transform, "History", GameUI.L("ui.history.title"),
+                new Vector2(0.82f, 0.80f), new Vector2(0.98f, 0.96f), StoryHistoryUI.Show);
 
             bool advanceRequested = false;
-            void RequestAdvance() => advanceRequested = true;
+            void RequestAdvance()
+            {
+                if (GameInputState.IsModalOpen) return;
+                advanceRequested = pager.Advance();
+                hintTxt.text = hintContinue + (pager.PageCount > 1 ? $"  {pager.Page}/{pager.PageCount}" : "");
+            }
             void SetDialogAdvanceEnabled(bool enabled)
             {
                 button.interactable = enabled;
@@ -1016,7 +1072,14 @@ namespace StorySystem
             for (int i = 0; i < lines.Count; i++)
             {
                 var line = lines[i];
+                if (StoryCheckpoint.IsPassed(line.ContentId)) continue;
+                if (line.HasChoices && QuizScoreManager.Instance.HasMastered(line.QuestionId))
+                {
+                    StoryCheckpoint.Acknowledge(line.ContentId);
+                    continue;
+                }
                 onLineDisplayed?.Invoke(line, i);
+                StoryHistory.Append(line.Speaker, line.Text, "dialogue", line.ContentId ?? line.QuestionId);
 
                 // 立绘 alpha 渐变：当前说话者全显示，已露过脸但不在说话则半透明
                 var spKind = ClassifySpeaker(line.Speaker);
@@ -1060,9 +1123,8 @@ namespace StorySystem
                     }
                 }
 
-                speakerGO.SetActive(!string.IsNullOrEmpty(line.Speaker));
-                speakerTxt.text = FuriganaProcessor.Process(line.Speaker ?? string.Empty);
-                txt.text = FuriganaProcessor.Process(line.Text ?? string.Empty);
+                ShowSpeaker(line.Speaker);
+                pager.SetText(line.Text);
                 advanceRequested = false;
                 yield return null; // 避免前一次点击连带跳过
 
@@ -1073,7 +1135,7 @@ namespace StorySystem
                     var disabledIdx = new HashSet<int>();
                     bool correctlyAnswered = false;
                     bool usedHint = false;
-                    double questionShownAt = Time.realtimeSinceStartupAsDouble;
+                    double questionShownAt = GameInputState.ActiveTime;
                     SetDialogAdvanceEnabled(false); // 选择期间屏蔽背景点击推进
 
                     Backend.TelemetryClient.Instance?.Track("quiz_question_shown", new Dictionary<string, object>
@@ -1087,20 +1149,30 @@ namespace StorySystem
                         SetDialogAdvanceEnabled(false);
 
                         // 每次循环（含重答）恢复 speaker + prompt
-                        speakerGO.SetActive(!string.IsNullOrEmpty(line.Speaker));
-                        speakerTxt.text = FuriganaProcessor.Process(line.Speaker ?? string.Empty);
-                        txt.text = FuriganaProcessor.Process(line.Text ?? string.Empty);
+                        ShowSpeaker(line.Speaker);
+                        pager.SetText(line.Text);
+
+                        // Read every prompt page before exposing the answer choices.
+                        SetDialogAdvanceEnabled(true);
+                        advanceRequested = false;
+                        while (pager.Page < pager.PageCount)
+                        {
+                            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)) RequestAdvance();
+                            yield return null;
+                        }
+                        SetDialogAdvanceEnabled(false);
 
                         int picked = -1;
                         bool showHintRequested = false;
                         var choicePanel = BuildChoicePanel(
                             canvasGO.transform, line.Choices, disabledIdx,
-                            idx => picked = idx,
-                            line.HasHint ? () => showHintRequested = true : (System.Action)null);
+                            idx => { if (!GameInputState.IsModalOpen) picked = idx; },
+                            line.HasHint ? () => { if (!GameInputState.IsModalOpen) showHintRequested = true; } : (System.Action)null);
                         hintTxt.text = FuriganaProcessor.Process(LocalizedOr("ui.dialog.choose", "答えをえらんでね"));
 
                         while (picked < 0 && !showHintRequested)
                         {
+                            if (GameInputState.IsModalOpen) { yield return null; continue; }
                             if (Input.GetKeyDown(KeyCode.Alpha1) && line.Choices.Count >= 1 && !disabledIdx.Contains(0)) picked = 0;
                             else if (Input.GetKeyDown(KeyCode.Alpha2) && line.Choices.Count >= 2 && !disabledIdx.Contains(1)) picked = 1;
                             else if (Input.GetKeyDown(KeyCode.Alpha3) && line.Choices.Count >= 3 && !disabledIdx.Contains(2)) picked = 2;
@@ -1120,8 +1192,9 @@ namespace StorySystem
                                 ["questionVersion"] = line.QuestionVersion
                             });
                             SetDialogAdvanceEnabled(true);
-                            speakerGO.SetActive(false);
-                            txt.text = FuriganaProcessor.Process(line.Hint);
+                            ShowSpeaker(line.Speaker, "hint");
+                            pager.SetText(line.Hint);
+                            StoryHistory.Append(line.Speaker, line.Hint, "hint", line.QuestionId);
                             hintTxt.text = hintContinue;
                             advanceRequested = false;
                             yield return null;
@@ -1129,8 +1202,7 @@ namespace StorySystem
                             {
                                 if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
                                 {
-                                    advanceRequested = true;
-                                    break;
+                                    RequestAdvance();
                                 }
                                 yield return null;
                             }
@@ -1140,7 +1212,7 @@ namespace StorySystem
 
                         var chosen = line.Choices[Mathf.Clamp(picked, 0, line.Choices.Count - 1)];
                         long responseTimeMs = Math.Max(0L, (long)Math.Round(
-                            (Time.realtimeSinceStartupAsDouble - questionShownAt) * 1000d));
+                            (GameInputState.ActiveTime - questionShownAt) * 1000d));
                         QuizAttempt attempt = QuizScoreManager.Instance.Record(
                             line.QuestionId,
                             line.QuestionVersion,
@@ -1159,8 +1231,10 @@ namespace StorySystem
                             : LocalizedOr(chosen.IsCorrect ? "quiz.correct" : "quiz.incorrect",
                                           chosen.IsCorrect ? "正解（せいかい）！" : "ざんねん、もう一度（いちど）かんがえてみよう。");
 
-                        speakerGO.SetActive(false);
-                        txt.text = FuriganaProcessor.Process(feedback);
+                        ShowSpeaker(line.Speaker, "feedback");
+                        pager.SetText(feedback);
+                        StoryHistory.Append(line.Speaker, chosen.Text, "choice", chosen.ChoiceId);
+                        StoryHistory.Append(line.Speaker, feedback, "feedback", line.QuestionId);
                         hintTxt.text = hintContinue;
                         SetDialogAdvanceEnabled(true);
                         advanceRequested = false;
@@ -1169,8 +1243,7 @@ namespace StorySystem
                         {
                             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
                             {
-                                advanceRequested = true;
-                                break;
+                                RequestAdvance();
                             }
                             yield return null;
                         }
@@ -1182,6 +1255,7 @@ namespace StorySystem
                     }
 
                     SetDialogAdvanceEnabled(true);
+                    StoryCheckpoint.Acknowledge(line.ContentId);
                     continue;
                 }
 
@@ -1189,11 +1263,11 @@ namespace StorySystem
                 {
                     if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
                     {
-                        advanceRequested = true;
-                        break;
+                        RequestAdvance();
                     }
                     yield return null;
                 }
+                StoryCheckpoint.Acknowledge(line.ContentId);
             }
 
             button.onClick.RemoveListener(RequestAdvance);
@@ -1311,6 +1385,17 @@ namespace StorySystem
             }
         }
 
+        private static readonly Dictionary<string, Sprite> PortraitVariants = new Dictionary<string, Sprite>();
+        private static Sprite LoadPortraitVariant(string name, Sprite fallback)
+        {
+            if (PortraitVariants.TryGetValue(name, out var cached)) return cached;
+            var texture = Resources.Load<Texture2D>("Tachie/" + name);
+            if (texture == null) return fallback;
+            var sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+            PortraitVariants[name] = sprite;
+            return sprite;
+        }
+
         private static SpeakerKind ClassifySpeaker(string speaker)
         {
             if (string.IsNullOrEmpty(speaker)) return SpeakerKind.Other;
@@ -1340,8 +1425,8 @@ namespace StorySystem
             rt.anchorMin = new Vector2(right ? 1f : 0f, 0f);
             rt.anchorMax = new Vector2(right ? 1f : 0f, 0f);
             rt.pivot = new Vector2(right ? 1f : 0f, 0f);
-            rt.anchoredPosition = new Vector2(right ? -40f : 40f, 240f);
-            rt.sizeDelta = new Vector2(480f, 600f);
+            rt.anchoredPosition = new Vector2(right ? -40f : 40f, 370f);
+            rt.sizeDelta = new Vector2(390f, 490f);
             go.AddComponent<RectMask2D>();
 
             var inner = new GameObject("Image");
@@ -1351,7 +1436,7 @@ namespace StorySystem
             irt.anchorMax = new Vector2(1f, 1f);
             irt.pivot = new Vector2(0.5f, 1f);
             irt.anchoredPosition = Vector2.zero;
-            irt.sizeDelta = new Vector2(0f, 720f);
+            irt.sizeDelta = new Vector2(0f, 600f);
             var img = inner.AddComponent<Image>();
             img.sprite = sprite;
             img.preserveAspect = true;
@@ -1550,8 +1635,8 @@ namespace StorySystem
             var panel = new GameObject("ChoicePanel");
             panel.transform.SetParent(parent, false);
             var rt = panel.AddComponent<RectTransform>();
-            rt.anchorMin = new Vector2(0.15f, 0.26f);
-            rt.anchorMax = new Vector2(0.85f, 0.64f);
+            rt.anchorMin = new Vector2(0.15f, 0.37f);
+            rt.anchorMax = new Vector2(0.85f, 0.83f);
             rt.offsetMin = Vector2.zero;
             rt.offsetMax = Vector2.zero;
 
@@ -1572,8 +1657,8 @@ namespace StorySystem
                 img.color = new Color(0.12f, 0.16f, 0.22f, 0.92f);
 
                 var le = btnGO.AddComponent<LayoutElement>();
-                le.minHeight = 52f;
-                le.preferredHeight = 56f;
+                le.minHeight = 68f;
+                le.preferredHeight = 74f;
 
                 bool isDisabled = disabledIndices != null && disabledIndices.Contains(idx);
                 var btn = btnGO.AddComponent<Button>();
@@ -1604,6 +1689,9 @@ namespace StorySystem
                 label.alignment = TextAlignmentOptions.Center;
                 label.lineSpacing = RubyLineSpacing;
                 label.text = FuriganaProcessor.Process($"{idx + 1}. {choices[idx].Text}");
+                label.textWrappingMode = TextWrappingModes.Normal;
+                float availableWidth = ((RectTransform)parent).rect.width * 0.70f - 36f;
+                le.preferredHeight = Mathf.Max(74f, label.GetPreferredValues(label.text, availableWidth, 0).y + 28f);
             }
 
             // D: 可选「ヒント」按钮 (黄色, 小字号) — 仅当传入 onHintClicked
@@ -1637,7 +1725,7 @@ namespace StorySystem
                 hintLabel.fontSize = 22;
                 hintLabel.color = new Color(0.20f, 0.15f, 0.05f, 1f);
                 hintLabel.alignment = TextAlignmentOptions.Center;
-                hintLabel.text = "ヒント (?)";
+                hintLabel.text = LocalizedOr("ui.dialog.hint", "ヒント") + " (?)";
             }
 
             return panel;
@@ -1648,73 +1736,7 @@ namespace StorySystem
         /// </summary>
         public static IEnumerator ShowReport(System.Action onComplete = null)
         {
-            MarkDialogOpened();
-
-            var score = QuizScoreManager.Instance;
-            QuizSummary summary = score.BuildSummary();
-            string grade = score.Grade;
-
-            var canvasGO = new GameObject("ReportCanvas");
-            var canvas = canvasGO.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 32767;
-            var scaler = canvasGO.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            canvasGO.AddComponent<GraphicRaycaster>();
-            EnsureEventSystem(canvasGO.transform);
-
-            var dim = new GameObject("Dim");
-            dim.transform.SetParent(canvasGO.transform, false);
-            var dimRt = dim.AddComponent<RectTransform>();
-            dimRt.anchorMin = Vector2.zero;
-            dimRt.anchorMax = Vector2.one;
-            dimRt.offsetMin = Vector2.zero;
-            dimRt.offsetMax = Vector2.zero;
-            var dimImg = dim.AddComponent<Image>();
-            dimImg.color = new Color(0f, 0f, 0f, 0.75f);
-            bool advance = false;
-            var dimBtn = dim.AddComponent<Button>();
-            dimBtn.transition = Selectable.Transition.None;
-            dimBtn.targetGraphic = dimImg;
-            dimBtn.onClick.AddListener(() => advance = true);
-
-            var card = new GameObject("Card");
-            card.transform.SetParent(canvasGO.transform, false);
-            var cardRt = card.AddComponent<RectTransform>();
-            cardRt.anchorMin = new Vector2(0.22f, 0.12f);
-            cardRt.anchorMax = new Vector2(0.78f, 0.88f);
-            cardRt.offsetMin = Vector2.zero;
-            cardRt.offsetMax = Vector2.zero;
-            var cardImg = card.AddComponent<Image>();
-            cardImg.color = new Color(0.08f, 0.10f, 0.14f, 0.96f);
-
-            CreateReportText(card.transform, LocalizedOr("report.title", "ちょうさ報告（ほうこく）"), 40, new Vector2(0f, 0.84f), new Vector2(1f, 0.98f));
-            CreateReportText(card.transform, $"{LocalizedOr("report.grade", "はじめの答えによる評価（ひょうか）")}: {grade}", 48, new Vector2(0f, 0.68f), new Vector2(1f, 0.84f));
-            CreateReportText(card.transform,
-                $"{LocalizedOr("report.first_correct", "1回目（かいめ）に正解（せいかい）")}: {summary.FirstCorrectCount} / {summary.ExpectedQuestionCount} ({AsPercent(summary.FirstCorrectRate)})",
-                28, new Vector2(0f, 0.53f), new Vector2(1f, 0.68f));
-            CreateReportText(card.transform,
-                $"{LocalizedOr("report.final_mastery", "最後（さいご）に正解（せいかい）できた問題（もんだい）")}: {summary.FinalMasteredCount} / {summary.ExpectedQuestionCount} ({AsPercent(summary.FinalMasteryRate)})",
-                28, new Vector2(0f, 0.40f), new Vector2(1f, 0.53f));
-            CreateReportText(card.transform,
-                $"{LocalizedOr("report.completion", "答（こた）えた問題（もんだい）")}: {summary.AnsweredQuestionCount} / {summary.ExpectedQuestionCount} ({AsPercent(summary.CompletionRate)})",
-                28, new Vector2(0f, 0.27f), new Vector2(1f, 0.40f));
-            CreateReportText(card.transform,
-                $"{LocalizedOr("report.average_attempts", "平均（へいきん）の回答回数（かいすう）")}: {summary.AverageAttemptCount:F1}    {LocalizedOr("report.hint_usage", "ヒントを使（つか）った割合（わりあい）")}: {AsPercent(summary.HintUsageRate)}",
-                24, new Vector2(0f, 0.15f), new Vector2(1f, 0.27f));
-            CreateReportText(card.transform, LocalizedOr("ui.dialog.continue", "ダイアログをクリックして続ける"), 21, new Vector2(0f, 0.03f), new Vector2(1f, 0.13f));
-
-            yield return null;
-            while (!advance)
-            {
-                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)) break;
-                yield return null;
-            }
-
-            MarkDialogClosed();
-            StoryDirectorRunner.Instance.Run(DestroyCanvasNextFrame(canvasGO));
-            onComplete?.Invoke();
+            return InvestigationReport.Show(onComplete);
         }
 
         private static void CreateReportText(Transform parent, string content, int fontSize, Vector2 anchorMin, Vector2 anchorMax)

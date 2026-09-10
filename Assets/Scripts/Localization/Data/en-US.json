@@ -9,6 +9,50 @@
       "value": "Language"
     },
     {
+      "key": "ui.settings.audio",
+      "value": "Audio"
+    },
+    {
+      "key": "ui.settings.master_volume",
+      "value": "Master Volume"
+    },
+    {
+      "key": "ui.settings.bgm_volume",
+      "value": "Music Volume"
+    },
+    {
+      "key": "ui.settings.sfx_volume",
+      "value": "SFX Volume"
+    },
+    {
+      "key": "ui.settings.ui_volume",
+      "value": "UI Volume"
+    },
+    {
+      "key": "ui.settings.gameplay",
+      "value": "Gameplay"
+    },
+    {
+      "key": "ui.settings.look_sensitivity",
+      "value": "Look Sensitivity"
+    },
+    {
+      "key": "ui.settings.quality",
+      "value": "Quality"
+    },
+    {
+      "key": "ui.settings.auto_quality",
+      "value": "Auto Quality"
+    },
+    {
+      "key": "ui.settings.auto",
+      "value": "Auto"
+    },
+    {
+      "key": "ui.settings.manual",
+      "value": "Manual"
+    },
+    {
       "key": "ui.button.close",
       "value": "Close"
     },
@@ -31,6 +75,18 @@
     {
       "key": "ui.button.settings",
       "value": "Settings"
+    },
+    {
+      "key": "ui.mobile_menu.title",
+      "value": "Menu"
+    },
+    {
+      "key": "ui.mobile_menu.resume",
+      "value": "Resume"
+    },
+    {
+      "key": "ui.mobile_menu.quit",
+      "value": "Exit Game"
     },
     {
       "key": "warehouse.title",
@@ -89,6 +145,10 @@
       "value": "[F] Open Warehouse"
     },
     {
+      "key": "cutting_station.interaction.prompt",
+      "value": "[F] Use Sample Cutting Station"
+    },
+    {
       "key": "tool.drill.name",
       "value": "Drill Tool"
     },
@@ -102,7 +162,7 @@
     },
     {
       "key": "tool.hammer.name",
-      "value": "Geological Hammer"
+      "value": "Rock Hammer"
     },
     {
       "key": "tool.drone.name",
@@ -253,24 +313,2960 @@
       "value": "[EMPTY KEY]"
     },
     {
+      "key": "sample.inventory.title",
+      "value": "Sample Inventory"
+    },
+    {
+      "key": "sample.detail.title",
+      "value": "Sample Details"
+    },
+    {
+      "key": "sample.detail.placeholder",
+      "value": "Select a sample to view details"
+    },
+    {
+      "key": "sample.button.take_out",
+      "value": "Take Out"
+    },
+    {
+      "key": "sample.button.discard",
+      "value": "Discard"
+    },
+    {
       "key": "tool.scene_switcher.name",
       "value": "Scene Switcher"
     },
     {
-      "key": "quest.ui.completed",
-      "value": "Completed"
+      "key": "sample.collection.interact",
+      "value": "[E] Collect {0}"
+    },
+    {
+      "key": "sample.collection.retrieve",
+      "value": "[E] Retrieve {0}"
+    },
+    {
+      "key": "sample.info.id",
+      "value": "Sample ID: {0}"
+    },
+    {
+      "key": "sample.info.name",
+      "value": "Name: {0}"
+    },
+    {
+      "key": "sample.info.collection_time",
+      "value": "Collection Time: {0}"
+    },
+    {
+      "key": "sample.info.collection_position",
+      "value": "Collection Position: ({0}, {1}, {2})"
+    },
+    {
+      "key": "sample.info.collection_tool",
+      "value": "Collection Tool: {0}"
+    },
+    {
+      "key": "sample.info.collection_depth",
+      "value": "Collection Depth: {0}m - {1}m"
+    },
+    {
+      "key": "sample.info.layer_count",
+      "value": "Geological Layers: {0}"
+    },
+    {
+      "key": "sample.info.current_status",
+      "value": "Current Status: {0}"
+    },
+    {
+      "key": "sample.info.layer_details",
+      "value": "Layer Details:"
+    },
+    {
+      "key": "sample.info.no_layer_data",
+      "value": "No layer data"
+    },
+    {
+      "key": "sample.info.layer_item",
+      "value": "  {0}. {1} - Thickness: {2}m"
+    },
+    {
+      "key": "sample.status.inventory",
+      "value": "In Inventory"
+    },
+    {
+      "key": "sample.status.world",
+      "value": "In World"
+    },
+    {
+      "key": "sample.message.collected",
+      "value": "Sample collected: {0}"
+    },
+    {
+      "key": "sample.message.inventory_full",
+      "value": "Inventory is full or cannot add sample!"
+    },
+    {
+      "key": "sample.message.no_inventory",
+      "value": "Sample inventory system not found!"
+    },
+    {
+      "key": "sample.description.template",
+      "value": "Geological sample collected using {0}"
+    },
+    {
+      "key": "tool.unknown.name",
+      "value": "Unknown Tool"
+    },
+    {
+      "key": "scene.selection.title",
+      "value": "Scene Selection"
+    },
+    {
+      "key": "scene.main.name",
+      "value": "Outdoor"
+    },
+    {
+      "key": "scene.laboratory.name",
+      "value": "Laboratory"
+    },
+    {
+      "key": "scene.unknown.name",
+      "value": "Unknown Scene"
+    },
+    {
+      "key": "scene.button.current",
+      "value": "{0} (Current)"
+    },
+    {
+      "key": "sample.info.depth_world",
+      "value": "Collection Depth: {0}m - {1}m (World Coordinates)"
+    },
+    {
+      "key": "sample.info.depth_world_relative",
+      "value": "Collection Depth: {0}m - {1}m (Relative: {2}m - {3}m)"
+    },
+    {
+      "key": "sample.drill_tower.description",
+      "value": "Drill Tower Sample #{0}\n{1}\nThickness: {2}m"
+    },
+    {
+      "key": "encyclopedia.system_status.title",
+      "value": "System Status"
     },
     {
       "key": "quest.lab.intro.title",
-      "value": "Laboratory Onboarding"
+      "value": "Lab Introduction"
     },
     {
       "key": "quest.lab.intro.desc",
-      "value": "Follow the guide and obtain basic tools."
+      "value": "Follow the guide to get familiar with the lab and collect basic tools"
     },
     {
       "key": "quest.lab.intro.obj1",
-      "value": "Obtain basic tools"
+      "value": "Follow the prompts to complete the lab intro"
+    },
+    {
+      "key": "quest.lab.drkaede.title",
+      "value": "Quest 2: Talk to Dr. Kaede"
+    },
+    {
+      "key": "quest.lab.drkaede.desc",
+      "value": "Speak with Dr. Kaede in the laboratory to learn the next steps."
+    },
+    {
+      "key": "quest.lab.drkaede.obj1",
+      "value": "Talk to Dr. Kaede"
+    },
+    {
+      "key": "quest.lab.drkaede.prompt",
+      "value": "[E] Talk to Dr. Kaede"
+    },
+    {
+      "key": "quest.lab.anomaly.title",
+      "value": "Quest 3: Anomalous Sample"
+    },
+    {
+      "key": "quest.lab.anomaly.desc",
+      "value": "Work with Dr. Kaede to investigate the anomalous sample clues."
+    },
+    {
+      "key": "quest.lab.anomaly.obj1",
+      "value": "Discuss the anomalous sample with Dr. Kaede"
+    },
+    {
+      "key": "quest.lab.anomaly.prompt",
+      "value": "[E] Ask about the anomalous sample"
+    },
+    {
+      "key": "quest.field.phase.title",
+      "value": "3.2 Try the Phase Shifter"
+    },
+    {
+      "key": "quest.field.phase.desc",
+      "value": "Use the Phase Shifter to travel to the field site and prepare for the next sequence."
+    },
+    {
+      "key": "quest.field.phase.obj1",
+      "value": "Use the Phase Shifter to travel to the field scene."
+    },
+    {
+      "key": "quest.field.phase.obj2",
+      "value": "3.3 Use the geologic hammer to collect samples."
+    },
+    {
+      "key": "quest.lab.return.title",
+      "value": "3.3 Return to G-Lab"
+    },
+    {
+      "key": "quest.lab.return.desc",
+      "value": "Use the Phase Shifter to head back to the laboratory and report in."
+    },
+    {
+      "key": "quest.lab.return.obj1",
+      "value": "Switch back to the laboratory scene."
+    },
+    {
+      "key": "quest.chapter4.kaede.title",
+      "value": "quest4.1 Talk with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter4.kaede.desc",
+      "value": "Report the latest findings to Dr. Kaede and receive the next orders."
+    },
+    {
+      "key": "quest.chapter4.kaede.obj1",
+      "value": "Speak with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter4.kaede.prompt",
+      "value": "[E] Speak with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter4.field.title",
+      "value": "quest4.2 Go to Field"
+    },
+    {
+      "key": "quest.chapter4.field.desc",
+      "value": "Use the Phase Shifter to travel to the field site."
+    },
+    {
+      "key": "quest.chapter4.field.obj1",
+      "value": "Go to Field"
+    },
+    {
+      "key": "quest.chapter4.sample.title",
+      "value": "quest4.3 Collect a Boring Sample"
+    },
+    {
+      "key": "quest.chapter4.sample.desc",
+      "value": "Head to the marked site and collect the boring sample using the recommended collector or the drill tower."
+    },
+    {
+      "key": "quest.chapter4.sample.obj1",
+      "value": "Use the suggested collector or drill tower to gather the boring sample at the target."
+    },
+    {
+      "key": "quest.chapter4.return.title",
+      "value": "quest4.4 Return to G-Lab"
+    },
+    {
+      "key": "quest.chapter4.return.desc",
+      "value": "Bring the sample back to G-Lab and prepare it for analysis."
+    },
+    {
+      "key": "quest.chapter4.return.obj1",
+      "value": "Return to G-Lab."
+    },
+    {
+      "key": "quest.chapter5.kaede.title",
+      "value": "quest5.1: Talk with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter5.kaede.desc",
+      "value": "Report the latest status to Dr. Kaede and receive the next mission briefing."
+    },
+    {
+      "key": "quest.chapter5.kaede.obj1",
+      "value": "Speak with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter5.kaede.prompt",
+      "value": "[E] Speak with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter5.field.title",
+      "value": "quest5.2: Head to the Field"
+    },
+    {
+      "key": "quest.chapter5.field.desc",
+      "value": "Use the Phase Shifter to reach the field site and prepare the drone for deployment."
+    },
+    {
+      "key": "quest.chapter5.field.obj1",
+      "value": "Travel to the field scene."
+    },
+    {
+      "key": "quest.chapter5.return.title",
+      "value": "quest5.2: Return to G-Lab"
+    },
+    {
+      "key": "quest.chapter5.return.desc",
+      "value": "Bring your findings back to G-Lab and get ready to report in."
+    },
+    {
+      "key": "quest.chapter5.return.obj1",
+      "value": "Return to G-Lab."
+    },
+    {
+      "key": "quest.chapter6.kaede.title",
+      "value": "quest6: Talk with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter6.kaede.desc",
+      "value": "Deliver the final report to Dr. Kaede and discuss the next steps."
+    },
+    {
+      "key": "quest.chapter6.kaede.obj1",
+      "value": "Speak with Dr. Kaede"
+    },
+    {
+      "key": "quest.chapter6.kaede.prompt",
+      "value": "[E] Speak with Dr. Kaede"
+    },
+    {
+      "key": "quest.ui.completed",
+      "value": "Quest Completed"
+    },
+    {
+      "key": "encyclopedia.data_system.label",
+      "value": "Data System"
+    },
+    {
+      "key": "encyclopedia.collection_system.label",
+      "value": "Collection System"
+    },
+    {
+      "key": "encyclopedia.status.loaded",
+      "value": "Loaded"
+    },
+    {
+      "key": "encyclopedia.status.not_initialized",
+      "value": "Not Initialized"
+    },
+    {
+      "key": "encyclopedia.status.running",
+      "value": "Running"
+    },
+    {
+      "key": "encyclopedia.status.data_error",
+      "value": "Data Error"
+    },
+    {
+      "key": "encyclopedia.progress.overall",
+      "value": "Overall"
+    },
+    {
+      "key": "encyclopedia.progress.minerals",
+      "value": "Minerals"
+    },
+    {
+      "key": "encyclopedia.progress.fossils",
+      "value": "Fossils"
+    },
+    {
+      "key": "encyclopedia.progress.discovery",
+      "value": "Discovery"
+    },
+    {
+      "key": "encyclopedia.current_layer.title",
+      "value": "Current Layer: {0}"
+    },
+    {
+      "key": "encyclopedia.current_layer.total_entries",
+      "value": "Total Entries"
+    },
+    {
+      "key": "encyclopedia.current_layer.minerals",
+      "value": "Minerals"
+    },
+    {
+      "key": "encyclopedia.current_layer.fossils",
+      "value": "Fossils"
+    },
+    {
+      "key": "encyclopedia.detail.title",
+      "value": "Entry Details"
+    },
+    {
+      "key": "encyclopedia.detail.basic_info",
+      "value": "Basic Information"
+    },
+    {
+      "key": "encyclopedia.detail.name",
+      "value": "Name"
+    },
+    {
+      "key": "encyclopedia.detail.type",
+      "value": "Type"
+    },
+    {
+      "key": "encyclopedia.detail.layer",
+      "value": "Layer"
+    },
+    {
+      "key": "encyclopedia.detail.rock_type",
+      "value": "Rock Type"
+    },
+    {
+      "key": "encyclopedia.detail.percentage",
+      "value": "Percentage"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_probability",
+      "value": "Discovery Probability"
+    },
+    {
+      "key": "encyclopedia.detail.rarity",
+      "value": "Rarity"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_status",
+      "value": "Discovery Status"
+    },
+    {
+      "key": "encyclopedia.detail.discovered",
+      "value": "Discovered"
+    },
+    {
+      "key": "encyclopedia.detail.not_discovered",
+      "value": "Not Discovered"
+    },
+    {
+      "key": "encyclopedia.detail.description",
+      "value": "Description"
+    },
+    {
+      "key": "encyclopedia.detail.appearance",
+      "value": "Appearance"
+    },
+    {
+      "key": "encyclopedia.detail.physical_properties",
+      "value": "Physical Properties"
+    },
+    {
+      "key": "encyclopedia.detail.mohs_hardness",
+      "value": "Mohs Hardness"
+    },
+    {
+      "key": "encyclopedia.detail.density",
+      "value": "Density"
+    },
+    {
+      "key": "encyclopedia.detail.uv_fluorescence",
+      "value": "UV Fluorescence"
+    },
+    {
+      "key": "encyclopedia.detail.magnetism",
+      "value": "Magnetism"
+    },
+    {
+      "key": "encyclopedia.detail.polarized_color",
+      "value": "Polarized Color"
+    },
+    {
+      "key": "encyclopedia.detail.acid_reaction",
+      "value": "Acid Reaction"
+    },
+    {
+      "key": "encyclopedia.detail.acid_reaction_yes",
+      "value": "Reactive"
+    },
+    {
+      "key": "encyclopedia.detail.acid_reaction_no",
+      "value": "Non-reactive"
+    },
+    {
+      "key": "encyclopedia.detail.collection_info",
+      "value": "Collection Information"
+    },
+    {
+      "key": "encyclopedia.detail.first_discovered",
+      "value": "First Discovered"
+    },
+    {
+      "key": "encyclopedia.detail.discovery_count",
+      "value": "Discovery Count"
+    },
+    {
+      "key": "encyclopedia.detail.times",
+      "value": "times"
+    },
+    {
+      "key": "encyclopedia.type.mineral",
+      "value": "Mineral"
+    },
+    {
+      "key": "encyclopedia.type.fossil",
+      "value": "Fossil"
+    },
+    {
+      "key": "encyclopedia.rarity.common",
+      "value": "Common"
+    },
+    {
+      "key": "encyclopedia.rarity.uncommon",
+      "value": "Uncommon"
+    },
+    {
+      "key": "encyclopedia.rarity.rare",
+      "value": "Rare"
+    },
+    {
+      "key": "encyclopedia.rarity.unknown",
+      "value": "Unknown"
+    },
+    {
+      "key": "encyclopedia.entry_list.title",
+      "value": "Entry List"
+    },
+    {
+      "key": "rock.conglomerate",
+      "value": "Conglomerate"
+    },
+    {
+      "key": "rock.volcanic_ash",
+      "value": "Volcanic Ash"
+    },
+    {
+      "key": "rock.siltstone_sandstone",
+      "value": "Siltstone/Sandstone"
+    },
+    {
+      "key": "rock.sandstone_siltstone",
+      "value": "Sandstone/Siltstone"
+    },
+    {
+      "key": "rock.dacitic_welded_tuff",
+      "value": "Dacitic Welded Tuff"
+    },
+    {
+      "key": "rock.siltstone_fine_sandstone",
+      "value": "Siltstone/Fine Sandstone"
+    },
+    {
+      "key": "rock.tuff",
+      "value": "Tuff"
+    },
+    {
+      "key": "rock.tuffaceous_sandstone",
+      "value": "Tuffaceous Sandstone"
+    },
+    {
+      "key": "rock.siltstone",
+      "value": "Siltstone"
+    },
+    {
+      "key": "encyclopedia.system.title",
+      "value": "Geological Encyclopedia System"
+    },
+    {
+      "key": "encyclopedia.layer.aoba_mountain",
+      "value": "Aoba Mountain Formation"
+    },
+    {
+      "key": "encyclopedia.layer.dainenji",
+      "value": "Dainenji Formation"
+    },
+    {
+      "key": "encyclopedia.layer.mukoyama",
+      "value": "Mukoyama Formation"
+    },
+    {
+      "key": "encyclopedia.layer.hirose_river_tuff",
+      "value": "Hirose River Tuff Member"
+    },
+    {
+      "key": "encyclopedia.layer.ryunokuchi",
+      "value": "Ryunokuchi Formation"
+    },
+    {
+      "key": "encyclopedia.layer.kameoka",
+      "value": "Kameoka Formation"
+    },
+    {
+      "key": "encyclopedia.property.none",
+      "value": "None"
+    },
+    {
+      "key": "encyclopedia.property.non_magnetic",
+      "value": "Non-magnetic"
+    },
+    {
+      "key": "encyclopedia.property.colorless_green",
+      "value": "Colorless/Green"
+    },
+    {
+      "key": "encyclopedia.property.non_reactive",
+      "value": "Non-reactive"
+    },
+    {
+      "key": "encyclopedia.property.diamagnetic",
+      "value": "None (Diamagnetic)"
+    },
+    {
+      "key": "encyclopedia.property.colorless",
+      "value": "Colorless"
+    },
+    {
+      "key": "encyclopedia.property.weak",
+      "value": "Weak"
+    },
+    {
+      "key": "encyclopedia.property.strong",
+      "value": "Strong"
+    },
+    {
+      "key": "mineral.description.plagioclase",
+      "value": "Usually white or gray, sometimes with pale blue or pale green tints; vitreous luster."
+    },
+    {
+      "key": "mineral.description.pyroxene",
+      "value": "Dark green, brown to black colors, prismatic crystal form, vitreous to dull luster."
+    },
+    {
+      "key": "mineral.description.amphibole",
+      "value": "Colors are mostly black, dark green or dark brown, with vitreous luster."
+    },
+    {
+      "key": "mineral.description.magnetite_simple",
+      "value": "Usually black or gray with brownish tones, metallic luster."
+    },
+    {
+      "key": "mineral.description.magnetite_detailed",
+      "value": "Usually black or gray with brownish tones, metallic luster; uneven fracture, black streak."
+    },
+    {
+      "key": "mineral.description.olivine",
+      "value": "Colors range from olive green to yellowish brown, vitreous luster, white streak; high-iron samples may oxidize to red on surface."
+    },
+    {
+      "key": "mineral.description.quartz",
+      "value": "Occurs in colorless, pink, orange, white, green, yellow, blue, purple or dark brown varieties; conchoidal fracture, vitreous luster, white streak."
+    },
+    {
+      "key": "mineral.description.feldspar",
+      "value": "Colors can be pink, white, gray, brown or blue; vitreous luster, white streak."
+    },
+    {
+      "key": "mineral.description.biotite",
+      "value": "Colors black to brown or yellow, vitreous to pearly luster, white streak; crystal form commonly pseudo-hexagonal tabular."
+    },
+    {
+      "key": "mineral.description.zircon_short",
+      "value": "Colors vary including dark brown, black, gray, light brown, reddish brown, orange, pink; colorless streak, resinous to adamantine luster; conchoidal to uneven fracture, crystals commonly short prismatic or water-worn grains."
+    },
+    {
+      "key": "mineral.description.zircon_long",
+      "value": "Colors vary including dark brown, black, gray, light brown, reddish brown, orange, pink; colorless streak, resinous to adamantine luster; conchoidal to uneven fracture, crystals commonly short prismatic or water-worn grains."
+    },
+    {
+      "key": "mineral.description.volcanic_glass",
+      "value": "Usually black, also green or brown; typical conchoidal fracture, smooth glassy texture, vitreous luster."
+    },
+    {
+      "key": "mineral.description.hypersthene",
+      "value": "Colors gray, brown or green; uneven fracture, vitreous to pearly luster, grayish-white or greenish-gray streak, surface with coppery-red metallic luster."
+    },
+    {
+      "key": "mineral.description.garnet",
+      "value": "Colors cover almost entire spectrum, commonly red; crystals are rhombic dodecahedra or cubes, conchoidal to uneven fracture, vitreous or resinous luster, white streak."
+    },
+    {
+      "key": "mineral.description.clay_minerals",
+      "value": "Fine-grained mineral aggregates mainly of hydrous aluminum silicates, soft texture, plastic when moist; colors mostly white, gray or light brown, earthy luster, commonly occur as earthy or powdery aggregates."
+    },
+    {
+      "key": "mineral.description.heavy_minerals",
+      "value": "Heavy minerals refer to aggregates of high-density minerals (such as zircon, titanomagnetite, garnet, etc.), commonly found in sands; usually dark colors, fine grain size, lustrous."
+    },
+    {
+      "key": "mineral.description.orthopyroxene",
+      "value": "Colors gray, brown or green; vitreous to pearly luster, grayish-white or greenish-gray streak, surface with coppery-red metallic luster."
+    },
+    {
+      "key": "mineral.description.illite_alteration_product",
+      "value": "Colors grayish-white, silvery-white or greenish-gray; aggregates occur as mica-like thin sheets, pearly to earthy luster; white streak; translucent."
+    },
+    {
+      "key": "mineral.description.pumice",
+      "value": "Pumice is a light-colored, porous volcanic rock containing numerous vesicles; light enough to float on water, usually white or light gray; an extrusive igneous rock."
+    },
+    {
+      "key": "mineral.description.volcanic_ash",
+      "value": "Volcanic ash consists of fine-grained volcanic pyroclastic material produced during volcanic eruptions; fine particles, usually gray to dark gray in color."
+    },
+    {
+      "key": "mineral.description.carbonaceous_matter",
+      "value": "Carbonaceous matter consists of carbon-bearing organic or inorganic compounds; usually black or dark brown in color with characteristic carbonaceous luster."
+    },
+    {
+      "key": "encyclopedia.property.colorless_fade",
+      "value": "Colorless/No fading"
+    },
+    {
+      "key": "encyclopedia.property.mostly_non_fluorescent",
+      "value": "Most do not fluoresce"
+    },
+    {
+      "key": "encyclopedia.property.mostly_non_fluorescent_quartz",
+      "value": "Most do not fluoresce (some quartz may fluoresce)"
+    },
+    {
+      "key": "encyclopedia.property.weak_magnetic",
+      "value": "Weak magnetic"
+    },
+    {
+      "key": "encyclopedia.property.weak_magnetic_paramagnetic",
+      "value": "Weak magnetic (paramagnetic)"
+    },
+    {
+      "key": "encyclopedia.property.strong_magnetic",
+      "value": "Strong magnetic"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism",
+      "value": "Strong pleochroism"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism_green_brown",
+      "value": "Strong pleochroism: green to dark green or brown"
+    },
+    {
+      "key": "encyclopedia.property.no_pleochroism",
+      "value": "No pleochroism"
+    },
+    {
+      "key": "encyclopedia.property.weak_pleochroism",
+      "value": "Weak pleochroism"
+    },
+    {
+      "key": "encyclopedia.property.complex_pleochroism_xyz",
+      "value": "X=light green/light brownish yellow, Y=light brown/light yellowish green/purple, Z=light green/grayish green/purple"
+    },
+    {
+      "key": "encyclopedia.property.opaque",
+      "value": "Opaque"
+    },
+    {
+      "key": "encyclopedia.property.variable",
+      "value": "Variable"
+    },
+    {
+      "key": "encyclopedia.property.variable_composition_dependent",
+      "value": "Variable/composition dependent"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism_opaque",
+      "value": "Strong pleochroism/opaque"
+    },
+    {
+      "key": "encyclopedia.property.strong_pleochroism_brown_green",
+      "value": "Strong pleochroism (brown/green)"
+    },
+    {
+      "key": "encyclopedia.property.none_light_color",
+      "value": "None/light color"
+    },
+    {
+      "key": "encyclopedia.property.none_glassy",
+      "value": "None/glassy"
+    },
+    {
+      "key": "encyclopedia.property.no_color_change",
+      "value": "No color change"
+    },
+    {
+      "key": "encyclopedia.property.colorless_no_change",
+      "value": "Colorless/no change"
+    },
+    {
+      "key": "encyclopedia.property.none_glassy_quality",
+      "value": "None (glassy)"
+    },
+    {
+      "key": "encyclopedia.property.mg_rich_fe_rich_pleochroism",
+      "value": "None (Mg-rich); Fe-rich samples α=γ pale yellow to β orange-yellow"
+    },
+    {
+      "key": "encyclopedia.property.gray_pink_green_pleochroism",
+      "value": "Gray to pink/green pleochroism"
+    },
+    {
+      "key": "encyclopedia.property.pink_green_pleochroism",
+      "value": "Pink to green pleochroism"
+    },
+    {
+      "key": "fossil.description.plant_remains",
+      "value": "Plant remains fossils discovered in this formation, preserving ancient plant tissue structures."
+    },
+    {
+      "key": "fossil.description.planktonic_diatoms",
+      "value": "Planktonic diatom fossils discovered in this formation, important indicators of ancient marine environments."
+    },
+    {
+      "key": "fossil.description.foraminifera",
+      "value": "Foraminifera fossils discovered in this formation, indicators of ancient ocean depth and temperature."
+    },
+    {
+      "key": "fossil.description.shellfish",
+      "value": "Shellfish fossils discovered in this formation, reflecting ancient marine or lacustrine environments."
+    },
+    {
+      "key": "fossil.description.freshwater_shellfish",
+      "value": "Freshwater shellfish fossils discovered in this formation, indicating ancient freshwater lake environments."
+    },
+    {
+      "key": "fossil.description.plant_leaf_fossils",
+      "value": "Plant leaf fossils discovered in this formation, preserving morphological features of ancient plant leaves."
+    },
+    {
+      "key": "fossil.description.pollen_fossils",
+      "value": "Pollen fossils discovered in this formation, important evidence for reconstructing ancient vegetation and paleoclimate."
+    },
+    {
+      "key": "fossil.description.fish_fossils",
+      "value": "Fish fossils discovered in this formation, reflecting ancient aquatic ecosystems."
+    },
+    {
+      "key": "fossil.description.silicified_wood",
+      "value": "Silicified wood fossils discovered in this formation, direct evidence of ancient forest environments."
+    },
+    {
+      "key": "fossil.description.sendai_clam",
+      "value": "Sendai clam fossils discovered in this formation, endemic paleobiological species of this region."
+    },
+    {
+      "key": "fossil.description.takahashi_scallop",
+      "value": "Takahashi scallop fossils discovered in this formation, indicating temperate marine environments."
+    },
+    {
+      "key": "fossil.description.cetacean_fossils",
+      "value": "Cetacean fossils discovered in this formation, precious remains of ancient marine megafauna."
+    },
+    {
+      "key": "fossil.description.ancient_coral",
+      "value": "Ancient coral fossils discovered in this formation, indicating warm shallow marine environments."
+    },
+    {
+      "key": "fossil.description.ancient_octopus",
+      "value": "Ancient octopus fossils discovered in this formation, important evidence of cephalopod evolution."
+    },
+    {
+      "key": "fossil.description.ancient_starfish",
+      "value": "Ancient starfish fossils discovered in this formation, reflecting ancient benthic ecosystems."
+    },
+    {
+      "key": "fossil.description.ammonite",
+      "value": "Ammonite fossils discovered in this formation, index fossils of Mesozoic marine environments."
+    },
+    {
+      "key": "fossil.description.trilobite",
+      "value": "Trilobite fossils discovered in this formation, representatives of Paleozoic marine life."
+    },
+    {
+      "key": "fossil.description.generic",
+      "value": "Fossils discovered in this formation, providing important information about ancient life and environments."
+    },
+    {
+      "key": "cutting_system.warehouse.title",
+      "value": "Warehouse (100 Slots)"
+    },
+    {
+      "key": "cutting_system.cutting_area.title",
+      "value": "Sample Cutting Station"
+    },
+    {
+      "key": "cutting_system.instruction.drag_sample",
+      "value": "Drag multi-layer geological samples\nfrom the left to here\n\nStart sample cutting operation\n\nSupported sample types:\n• Multi-layer drill samples\n• Geological exploration samples"
+    },
+    {
+      "key": "cutting_system.instruction.cutting_in_progress",
+      "value": "Cutting: {0}\n\nWatch the moving cutting line\nPress Space/Touch screen to cut\n\n⚠️ Cutting failure will destroy the sample"
+    },
+    {
+      "key": "cutting_system.instruction.multi_layer_required",
+      "value": "Only multi-layer samples can be cut"
+    },
+    {
+      "key": "cutting_system.button.close",
+      "value": "Close"
+    },
+    {
+      "key": "cutting_system.cutting_line.instruction",
+      "value": "Press Space/Touch Screen\nto Cut"
+    },
+    {
+      "key": "cutting_system.cutting_complete",
+      "value": "Cutting Complete"
+    },
+    {
+      "key": "cutting_system.cutting_failed",
+      "value": "Cutting Failed"
+    },
+    {
+      "key": "cutting_system.cutting_progress",
+      "value": "Cutting Progress: {0}/{1}"
+    },
+    {
+      "key": "cutting_system.analyzing_sample",
+      "value": "Analyzing Sample..."
+    },
+    {
+      "key": "cutting_system.success_message",
+      "value": "✅ Cutting Successful!\n\nSingle-layer samples added to backpack\nYou can continue cutting other samples"
+    },
+    {
+      "key": "cutting_system.failure_message",
+      "value": "❌ Cutting Failed\n\nSample has been destroyed\nPlease select a new sample for cutting"
+    },
+    {
+      "key": "cutting_system.initialization_failed",
+      "value": "Cutting system initialization failed"
+    },
+    {
+      "key": "drill_tower.drilling",
+      "value": "Drilling..."
+    },
+    {
+      "key": "drill_tower.max_depth",
+      "value": "Maximum drilling depth reached"
+    },
+    {
+      "key": "drill_tower.recall_prompt",
+      "value": "Press G to recall drill tower"
+    },
+    {
+      "key": "drill_tower.drill_prompt",
+      "value": "Press F for drill #{0}\n({1:F0}m-{2:F0}m)"
+    },
+    {
+      "key": "cutting_system.all_cuts_complete",
+      "value": "All cuts completed!"
+    },
+    {
+      "key": "encyclopedia.ui.title",
+      "value": "Geological Encyclopedia"
+    },
+    {
+      "key": "encyclopedia.ui.collection_progress",
+      "value": "Collection Progress: {0}/{1} ({2})"
+    },
+    {
+      "key": "encyclopedia.ui.minerals_progress",
+      "value": "Minerals: {0}/{1} ({2})"
+    },
+    {
+      "key": "encyclopedia.ui.fossils_progress",
+      "value": "Fossils: {0}/{1} ({2})"
+    },
+    {
+      "key": "encyclopedia.ui.search_placeholder",
+      "value": "Search..."
+    },
+    {
+      "key": "encyclopedia.ui.clear_filters",
+      "value": "Clear"
+    },
+    {
+      "key": "encyclopedia.ui.filter_all",
+      "value": "All"
+    },
+    {
+      "key": "encyclopedia.ui.layer_name_template",
+      "value": "Layer Name"
+    },
+    {
+      "key": "encyclopedia.ui.entry_name_template",
+      "value": "Entry Name"
+    },
+    {
+      "key": "encyclopedia.ui.rarity_template",
+      "value": "Rarity"
+    },
+    {
+      "key": "encyclopedia.ui.statistics_template",
+      "value": "Collection Statistics:\nMinerals: 0/0\nFossils: 0/0"
+    },
+    {
+      "key": "encyclopedia.ui.detail_info",
+      "value": "Detailed Information"
+    },
+    {
+      "key": "encyclopedia.ui.detail_description",
+      "value": "Description"
+    },
+    {
+      "key": "encyclopedia.ui.detail_properties",
+      "value": "Properties"
+    },
+    {
+      "key": "encyclopedia.ui.viewer_reset",
+      "value": "Reset"
+    },
+    {
+      "key": "encyclopedia.ui.close_button",
+      "value": "×"
+    },
+    {
+      "key": "encyclopedia.ui.filter.all",
+      "value": "All"
+    },
+    {
+      "key": "encyclopedia.ui.filter.mineral",
+      "value": "Mineral"
+    },
+    {
+      "key": "encyclopedia.ui.filter.fossil",
+      "value": "Fossil"
+    },
+    {
+      "key": "encyclopedia.ui.rarity.common",
+      "value": "Common"
+    },
+    {
+      "key": "encyclopedia.ui.rarity.uncommon",
+      "value": "Uncommon"
+    },
+    {
+      "key": "encyclopedia.ui.rarity.rare",
+      "value": "Rare"
+    },
+    {
+      "key": "encyclopedia.detail.undiscovered",
+      "value": "Detailed properties shown after discovery"
+    },
+    {
+      "key": "encyclopedia.detail.rock",
+      "value": "Rock"
+    },
+    {
+      "key": "encyclopedia.detail.content",
+      "value": "Content"
+    },
+    {
+      "key": "encyclopedia.layer.unknown",
+      "value": "Unknown Layer"
+    },
+    {
+      "key": "encyclopedia.ui.layer_section_title",
+      "value": "Geological Layers"
+    },
+    {
+      "key": "story.quest1_1.line01",
+      "value": "It's lunch break; blue sky and birdsong spill through the classroom windows."
+    },
+    {
+      "key": "story.quest1_1.line02",
+      "value": "Hey, were you even listening in science class today?"
+    },
+    {
+      "key": "story.quest1_1.line03",
+      "value": "That earthquake talk was kind of scary, right?"
+    },
+    {
+      "key": "story.quest1_1.line04",
+      "value": "Yeah, but when the teacher called it the \"Earth's breath,\" it sounded kind of romantic, didn't it?"
+    },
+    {
+      "key": "story.quest1_1.line05",
+      "value": "Romantic? Seriously? (laughs) You're such a weirdo."
+    },
+    {
+      "key": "story.quest1_1.line06",
+      "value": "Still, imagining Earth as a living thing is kind of interesting."
+    },
+    {
+      "key": "story.quest1_1.line07",
+      "value": "If it's really breathing, we're just tiny creatures living on top of it."
+    },
+    {
+      "key": "story.quest1_1.line08",
+      "value": "Breathe or not, we're already specks to begin with."
+    },
+    {
+      "key": "story.quest1_1.line09",
+      "value": "...Huh? Did it just shake?"
+    },
+    {
+      "key": "story.quest1_1.line10",
+      "value": "Yeah, but it'll stop if we wait a bit, right?"
+    },
+    {
+      "key": "story.quest1_1.line11",
+      "value": "Wait... why isn't it stopping...?"
+    },
+    {
+      "key": "story.quest1_1.line12",
+      "value": "Whoa! The bookshelf fell!"
+    },
+    {
+      "key": "story.quest1_1.line13",
+      "value": "No way!? I've never felt it this strong—!"
+    },
+    {
+      "key": "story.quest1_1.line14",
+      "value": "Get under the desks! Hurry!"
+    },
+    {
+      "key": "story.quest1_1.line15",
+      "value": "[The shaking subsides.]"
+    },
+    {
+      "key": "story.quest1_1.line16",
+      "value": "The tremor grows wilder—blackboards crash down, ceiling lights shatter, and screams fill the room."
+    },
+    {
+      "key": "story.quest1_1.line17",
+      "value": "Kyaa! The ceiling! Somebody help!"
+    },
+    {
+      "key": "story.quest1_1.line18",
+      "value": "This door won't open! Somebody!"
+    },
+    {
+      "key": "story.quest1_1.line19",
+      "value": "A violent crash erupts; windows shatter and the walls begin to crumble."
+    },
+    {
+      "key": "story.quest1_1.line20",
+      "value": "No...!"
+    },
+    {
+      "key": "story.quest1_1.line21",
+      "value": "In that instant, a slab from the ceiling grazes Minato's shoulder; she cries out and collapses unconscious."
+    },
+    {
+      "key": "story.quest1_1.line22",
+      "value": "Minato!? Hang on! Minato!"
+    },
+    {
+      "key": "story.quest1_1.line23",
+      "value": "His hands shaking, the protagonist grips hers. Amid the roar, only his heartbeat rings clear."
+    },
+    {
+      "key": "story.quest1_1.line24",
+      "value": "(I have to save her. Someone, please...!)"
+    },
+    {
+      "key": "story.quest1_1.line25",
+      "value": "Then, a blinding light erupts from his hand, swallowing the collapsing classroom."
+    },
+    {
+      "key": "story.quest1_2.line01",
+      "value": "Sight warps and sound fades. When {name} opens their eyes again, they're inside a stark white facility."
+    },
+    {
+      "key": "story.quest1_2.line02",
+      "value": "Where... are we? Minato...! Are you okay?"
+    },
+    {
+      "key": "story.quest1_2.line03",
+      "value": "...Y-yeah... This isn't school, is it...?"
+    },
+    {
+      "key": "story.quest1_2.line04",
+      "value": "He looks up to see a man standing before them."
+    },
+    {
+      "key": "story.quest1_2.line05",
+      "value": "......"
+    },
+    {
+      "key": "story.quest1_2.line06",
+      "value": "And this place is...?"
+    },
+    {
+      "key": "story.quest1_2.line07",
+      "value": "Welcome to G-Lab."
+    },
+    {
+      "key": "story.quest2_1.line01",
+      "value": "Inside the white room, countless monitors glow blue while machinery hums in the stillness."
+    },
+    {
+      "key": "story.quest2_1.line02",
+      "value": "Calm down. This is G-Lab—a facility dedicated to geology and crustal shifts."
+    },
+    {
+      "key": "story.quest2_1.line03",
+      "value": "You call it a lab... so can we go home now?"
+    },
+    {
+      "key": "story.quest2_1.line04",
+      "value": "You can, but first I need you to see a video."
+    },
+    {
+      "key": "story.quest2_1.line05",
+      "value": "Kaede presses a remote and news footage flares onto the wall."
+    },
+    {
+      "key": "story.quest2_1.line06",
+      "value": "\"Breaking news: a quake in downtown Sendai has toppled numerous buildings, and aftershocks continue—\""
+    },
+    {
+      "key": "story.quest2_1.line07",
+      "value": "No way... that's our city, isn't it...?"
+    },
+    {
+      "key": "story.quest2_1.line08",
+      "value": "...Is my house okay...? Mom...!"
+    },
+    {
+      "key": "story.quest2_1.line09",
+      "value": "He fumbles for his phone, which starts to vibrate."
+    },
+    {
+      "key": "story.quest2_1.line10",
+      "value": "Huh...!? It's Mom...!"
+    },
+    {
+      "key": "story.quest2_1.line11",
+      "value": "[Incoming call]"
+    },
+    {
+      "key": "story.quest2_1.line12",
+      "value": "Hello!? Are you okay!? I saw the news and nearly panicked to death...!"
+    },
+    {
+      "key": "story.quest2_1.line13",
+      "value": "Yeah! I'm safe! I'm taking shelter... Are you alright!?"
+    },
+    {
+      "key": "story.quest2_1.line14",
+      "value": "The house took some damage, but we're alright. I'm so relieved...!"
+    },
+    {
+      "key": "story.quest2_1.line15",
+      "value": "Relief softens her voice after a brief silence."
+    },
+    {
+      "key": "story.quest2_1.line16",
+      "value": "Come home soon, okay? Where are you?"
+    },
+    {
+      "key": "story.quest2_1.line17",
+      "value": "Just as he opens his mouth, Kaede steps in and gently takes the phone."
+    },
+    {
+      "key": "story.quest2_1.line18",
+      "value": "H-hey, Kaede!?"
+    },
+    {
+      "key": "story.quest2_1.line19",
+      "value": "—Hello, pardon the intrusion. I'm Kaede, a researcher at G-Lab."
+    },
+    {
+      "key": "story.quest2_1.line20",
+      "value": "Uh? I-I see...?"
+    },
+    {
+      "key": "story.quest2_1.line21",
+      "value": "During the quake your child exhibited an unusual response. We'd like to request short-term cooperation to investigate."
+    },
+    {
+      "key": "story.quest2_1.line22",
+      "value": "What? You want a middle-schooler involved in research...?"
+    },
+    {
+      "key": "story.quest2_1.line23",
+      "value": "It will be in a controlled environment. This could help prevent future quakes. If his \"sense\" ties to crustal changes, it might save lives."
+    },
+    {
+      "key": "story.quest2_1.line24",
+      "value": "Kaede's tone stays calm, yet earnest heat seeps through."
+    },
+    {
+      "key": "story.quest2_1.line25",
+      "value": "...If it's that important... but it won't be dangerous, right?"
+    },
+    {
+      "key": "story.quest2_1.line26",
+      "value": "Rest assured, we'll take full responsibility for his safety and accommodations."
+    },
+    {
+      "key": "story.quest2_1.line27",
+      "value": "After a pause, his mother's sigh comes through."
+    },
+    {
+      "key": "story.quest2_1.line28",
+      "value": "...Alright. But please let him rest properly."
+    },
+    {
+      "key": "story.quest2_1.line29",
+      "value": "Thank you. We'll take good care of him."
+    },
+    {
+      "key": "story.quest2_1.line30",
+      "value": "Kaede hands the phone back."
+    },
+    {
+      "key": "story.quest2_1.line31",
+      "value": ".........Uh. Wait, what just happened?"
+    },
+    {
+      "key": "story.quest2_1.line32",
+      "value": "Your mom's surprisingly quick on the uptake. (laughs)"
+    },
+    {
+      "key": "story.quest2_1.line33",
+      "value": "I didn't know my parents would agree that fast!?"
+    },
+    {
+      "key": "story.quest2_1.line34",
+      "value": "Heh, that helps. We'll be counting on you."
+    },
+    {
+      "key": "story.quest2_1.line35",
+      "value": "Now then, let me explain what comes next."
+    },
+    {
+      "key": "story.quest2_1.line36",
+      "value": "Kaede hands them a pair of devices."
+    },
+    {
+      "key": "story.quest2_1.line37",
+      "value": "This is a rock hammer for collecting samples."
+    },
+    {
+      "key": "story.quest2_1.line38",
+      "value": "And this is the Phase Shifter—it stabilizes your ability."
+    },
+    {
+      "key": "story.quest2_1.line39",
+      "value": "Phase Shifter...?"
+    },
+    {
+      "key": "story.quest2_1.line40",
+      "value": "In short, it keeps your spatial hops under control so you can travel safely between G-Lab and outside."
+    },
+    {
+      "key": "story.quest2_1.line41",
+      "value": "So we're really going to be doing geo research now..."
+    },
+    {
+      "key": "story.quest2_1.line42",
+      "value": "Of course; it's a job that saves lives... What's wrong, not up for it?"
+    },
+    {
+      "key": "story.quest2_1.line43",
+      "value": "Huh? Not happening!"
+    },
+    {
+      "key": "story.quest2_1.line44",
+      "value": "Wow, Kaede knows exactly how to rile you up."
+    },
+    {
+      "key": "story.quest2_1.line45",
+      "value": "Heh, as long as you're motivated."
+    },
+    {
+      "key": "story.quest2_1.line46",
+      "value": "Then let's kick off your first mission: use the rock hammer to collect thin-section samples."
+    },
+    {
+      "key": "story.quest3_1.line01",
+      "value": "Ready? Then try using the Phase Shifter."
+    },
+    {
+      "key": "story.quest3_1.line02",
+      "value": "Is this really going to help...? I'm more worried about staying alive."
+    },
+    {
+      "key": "story.quest3_1.line03",
+      "value": "Knew you'd chicken out."
+    },
+    {
+      "key": "story.quest3_1.line04",
+      "value": "Relax. I promised you and your mom we'd keep you safe."
+    },
+    {
+      "key": "story.quest3_1.line05",
+      "value": "Alright, alright... guess I'm doing this."
+    },
+    {
+      "key": "story.quest3_1.line06",
+      "value": "Activate the Phase Shifter."
+    },
+    {
+      "key": "story.quest3_2.line01",
+      "value": "When {name} opens their eyes again, they're already outdoors."
+    },
+    {
+      "key": "story.quest3_2.line02",
+      "value": "You arrived safely. Let's start the collection mission."
+    },
+    {
+      "key": "story.quest3_2.line03",
+      "value": "See the markers on the ground? Follow them and grab the samples."
+    },
+    {
+      "key": "story.quest3_3.line01",
+      "value": "Wind scours the desolate ground."
+    },
+    {
+      "key": "story.quest3_3.line02",
+      "value": "{name} stands at the outcrop near the mountain base, gear case on their back as the terminal light flickers to connect with the lab."
+    },
+    {
+      "key": "story.quest3_3.line03",
+      "value": "Lab here. Audio and video okay? Sounds windy over there."
+    },
+    {
+      "key": "story.quest3_3.line04",
+      "value": "Loud and clear. Still a bit dusty, and the sky's gray... definitely feels post-quake."
+    },
+    {
+      "key": "story.quest3_3.line05",
+      "value": "Feed's up. Whoa, you're covered in mud. Did you bring rubber boots?"
+    },
+    {
+      "key": "story.quest3_3.line06",
+      "value": "...I did, but I'm already ankle-deep. Ugh, washing these will be a pain."
+    },
+    {
+      "key": "story.quest3_3.line07",
+      "value": "Focus. That's the closest outcrop to the hypocenter, so get us a sample."
+    },
+    {
+      "key": "story.quest3_3.line08",
+      "value": "{name} pulls out the rock hammer, tapping carefully as the dry clinks vanish into the wind."
+    },
+    {
+      "key": "story.quest3_3.line09",
+      "value": "He crouches, prying fragments from the fissure into small cases while a crow caws somewhere in the distance."
+    },
+    {
+      "key": "story.quest3_3.line10",
+      "value": "Ooh, look at those bands. That powdery part totally looks like crushed cookies."
+    },
+    {
+      "key": "story.quest3_3.line11",
+      "value": "Earth desserts, huh... but it feels kinda soft for rock."
+    },
+    {
+      "key": "story.quest3_3.line12",
+      "value": "Interesting. Might be what shattered during the quake. Bring it back for thin sections."
+    },
+    {
+      "key": "story.quest3_3.line13",
+      "value": "As the case clicks shut, the ground lets out a low groan. The wind dies, and the air turns heavy."
+    },
+    {
+      "key": "story.quest3_3.line14",
+      "value": "...Did it just shake?"
+    },
+    {
+      "key": "story.quest3_3.line15",
+      "value": "No... probably just nerves—"
+    },
+    {
+      "key": "story.quest3_3.line16",
+      "value": "[Ground rumbling]"
+    },
+    {
+      "key": "story.quest3_3.line17",
+      "value": "He doesn't finish before the ground erupts, the roar splitting his ears as the rock crumbles beneath him."
+    },
+    {
+      "key": "story.quest3_3.line18",
+      "value": "Lab to field! {name}, evacuate now! The fault's moving!"
+    },
+    {
+      "key": "story.quest3_3.line19",
+      "value": "Whoa...! The Phase Shifter... where is it...!"
+    },
+    {
+      "key": "story.quest3_3.line20",
+      "value": "Staggering through the shaking, he claws for the device at his waist as alarms blare and the sky splits with thunder."
+    },
+    {
+      "key": "story.quest3_3.line21",
+      "value": "{name}! Hurry! The cliff—!"
+    },
+    {
+      "key": "story.quest3_3.line22",
+      "value": "[Distant collapse]"
+    },
+    {
+      "key": "story.quest3_3.line23",
+      "value": "Come on, please... work!"
+    },
+    {
+      "key": "story.quest3_3.line24",
+      "value": "[Teleport flash]"
+    },
+    {
+      "key": "story.quest3_3.line25",
+      "value": "White light engulfs him. A heartbeat later, the deafening rumble is gone, leaving only silence and the hum of machinery."
+    },
+    {
+      "key": "story.quest3_4.line01",
+      "value": "When he comes to, he's back in the G-Lab transfer room, panting as he sets the sample on the table."
+    },
+    {
+      "key": "story.quest3_4.line02",
+      "value": "Hah... hah... I'm back... This is... the thin section I grabbed."
+    },
+    {
+      "key": "story.quest3_4.line03",
+      "value": "{name}! Are you okay!?"
+    },
+    {
+      "key": "story.quest3_4.line04",
+      "value": "..."
+    },
+    {
+      "key": "story.quest3_4.line05",
+      "value": "……"
+    },
+    {
+      "key": "story.quest3_4.line06",
+      "value": "………"
+    },
+    {
+      "key": "story.quest3_4.line07",
+      "value": "...I'm not scared at all!!"
+    },
+    {
+      "key": "story.quest3_4.line08",
+      "value": "Who could've imagined two huge quakes in a single day!"
+    },
+    {
+      "key": "story.quest3_4.line09",
+      "value": "It was rough... but I'm glad it was you out there, {name}."
+    },
+    {
+      "key": "story.quest3_4.line10",
+      "value": "If we sent someone who couldn't use the Phase Shifter, I don't even want to imagine the outcome."
+    },
+    {
+      "key": "story.quest3_4.line11",
+      "value": "You wrapped up a dangerous mission. Nice work."
+    },
+    {
+      "key": "story.quest3_4.line12",
+      "value": "Now let's analyze the sample."
+    },
+    {
+      "key": "story.quest3_4.line13",
+      "value": "The feed shifts to the lit lab. Through the monitor, the microscopic world comes into view."
+    },
+    {
+      "key": "story.quest3_4.line14",
+      "value": "Wow, everything's crushed so fine... Is that stress marks?"
+    },
+    {
+      "key": "story.quest3_4.line15",
+      "value": "Right. The question is when that stress happened."
+    },
+    {
+      "key": "story.quest3_4.line16",
+      "value": "Wasn't it during the quake?"
+    },
+    {
+      "key": "story.quest3_4.line17",
+      "value": "Maybe. Yet the deformation looks a bit \"too fresh.\""
+    },
+    {
+      "key": "story.quest3_4.line18",
+      "value": "What do you mean by too fresh?"
+    },
+    {
+      "key": "story.quest3_4.line19",
+      "value": "We assume the quake ended, but what if something underground is still shifting...?"
+    },
+    {
+      "key": "story.quest3_4.line20",
+      "value": "...Then next we investigate below ground, right?"
+    },
+    {
+      "key": "story.quest3_4.line21",
+      "value": "Exactly. Let's prep a boring survey. The deeper we drill, the more current movement we can read."
+    },
+    {
+      "key": "story.quest3_4.line22",
+      "value": "The call drops, leaving only mountain winds. He exhales and looks over the distant city, sensing Earth is still quietly shifting beneath the calm."
+    },
+    {
+      "key": "story.quest4_1.line01",
+      "value": "Boring rig prepped! You're up next, {name}!"
+    },
+    {
+      "key": "story.quest4_1.line02",
+      "value": "...We have to head out again? Just thinking about that cliff makes my legs shake."
+    },
+    {
+      "key": "story.quest4_1.line03",
+      "value": "Being scared is good; it means you'll be careful. We've added triple safety this time."
+    },
+    {
+      "key": "story.quest4_1.line04",
+      "value": "And the Phase Shifter's been upgraded—99.8% transfer accuracy!"
+    },
+    {
+      "key": "story.quest4_1.line05",
+      "value": "That remaining 0.2% sounds scary... but fine, I trust you."
+    },
+    {
+      "key": "story.quest4_1.line06",
+      "value": "We'll drill directly beneath the offset layer from last time, about 50 meters down."
+    },
+    {
+      "key": "story.quest4_1.line07",
+      "value": "The transfer device fires up, white light wrapping him as the scenery shifts in a blink."
+    },
+    {
+      "key": "story.quest4_2.line01",
+      "value": "Unlike the previous outcrop, the ground is eerily still—no birds, not even a breeze."
+    },
+    {
+      "key": "story.quest4_2.line02",
+      "value": "He's standing just north of where the cliff collapsed; the cracked earth is dry with faint scorch marks."
+    },
+    {
+      "key": "story.quest4_2.line03",
+      "value": "...The air feels different. It's like the world is mute."
+    },
+    {
+      "key": "story.quest4_2.line04",
+      "value": "Feed's in. Yikes, it's so quiet it's creepy."
+    },
+    {
+      "key": "story.quest4_2.line05",
+      "value": "This spot sits right above that shifted layer, close to the heart of the tremor."
+    },
+    {
+      "key": "story.quest4_2.line06",
+      "value": "Copy. I'll grab the samples and head back."
+    },
+    {
+      "key": "story.quest4_2.line07",
+      "value": "He opens the kit, secures the device, and a sliver of light through the gray clouds highlights the fissures."
+    },
+    {
+      "key": "story.quest4_2.line08",
+      "value": "...Hey, that line looks longer now."
+    },
+    {
+      "key": "story.quest4_2.line09",
+      "value": "Might not be your imagination. The soil looks wetter too."
+    },
+    {
+      "key": "story.quest4_2.line10",
+      "value": "Maybe subsurface water is moving. Either way, safety first."
+    },
+    {
+      "key": "story.quest4_2.line11",
+      "value": "He carefully scoops the topsoil into the sample container when a low sound echoes, as if something underground sighed."
+    },
+    {
+      "key": "story.quest4_2.line12",
+      "value": "...Did you hear that?"
+    },
+    {
+      "key": "story.quest4_2.line13",
+      "value": "Yeah, the mic picked it up too. Definitely not wind."
+    },
+    {
+      "key": "story.quest4_2.line14",
+      "value": "Stay alert. Once it's secured, return immediately."
+    },
+    {
+      "key": "story.quest4_2.line15",
+      "value": "{name} nods, packs up the gear, and activates the Phase Shifter back to G-Lab."
+    },
+    {
+      "key": "story.quest4_3.line01",
+      "value": "The rig's vibration stops; the core pulled from underground glints coldly."
+    },
+    {
+      "key": "story.quest4_3.line02",
+      "value": "Sample acquired! Sent the log from the recommended unit too."
+    },
+    {
+      "key": "story.quest4_3.line03",
+      "value": "Nice work. Seal it on-site and keep it at temperature; log the pressure too."
+    },
+    {
+      "key": "story.quest4_3.line04",
+      "value": "Roger. Prepping to return."
+    },
+    {
+      "key": "story.quest4_3.line05",
+      "value": "Only the cooling fans whisper while the sky blushing faintly overhead."
+    },
+    {
+      "key": "story.quest4_4.line01",
+      "value": "Welcome back! You didn't fall off a cliff, right?"
+    },
+    {
+      "key": "story.quest4_4.line02",
+      "value": "Haha, barely. My boots are mud again though."
+    },
+    {
+      "key": "story.quest4_4.line03",
+      "value": "Glad you're safe. Phase Shifter logs look clean too."
+    },
+    {
+      "key": "story.quest4_4.line04",
+      "value": "Here's the sample. Felt kind of odd, though..."
+    },
+    {
+      "key": "story.quest4_4.line05",
+      "value": "I see. Let's take a look."
+    },
+    {
+      "key": "story.quest4_4.line06",
+      "value": "The sample rests on the analyzer as scanner light sweeps by."
+    },
+    {
+      "key": "story.quest4_4.line07",
+      "value": "...Look, Sensei, down here. Only the lower grains got crushed."
+    },
+    {
+      "key": "story.quest4_4.line08",
+      "value": "You're right... and the grains align. Classic lateral shearing."
+    },
+    {
+      "key": "story.quest4_4.line09",
+      "value": "So something beneath the surface slipped?"
+    },
+    {
+      "key": "story.quest4_4.line10",
+      "value": "Exactly—and we didn't see this right after the quake."
+    },
+    {
+      "key": "story.quest4_4.line11",
+      "value": "Then does that mean it's still moving?"
+    },
+    {
+      "key": "story.quest4_4.line12",
+      "value": "The data on the monitor trembles, the graph warps, and red zones widen."
+    },
+    {
+      "key": "story.quest4_4.line13",
+      "value": "...That's the fault \"breathing.\" The ground under Sendai might not be asleep."
+    },
+    {
+      "key": "story.quest4_4.line14",
+      "value": "...The fault is alive...?"
+    },
+    {
+      "key": "story.quest4_4.line15",
+      "value": "A \"breathing fault\" looks calm on the surface but still loads and releases stress underneath—it's active."
+    },
+    {
+      "key": "story.quest4_4.line16",
+      "value": "It might lie dormant for decades but it's still alive, so we can't let our guard down."
+    },
+    {
+      "key": "story.quest4_4.line17",
+      "value": "...The earth feeling alive is both terrifying and a little heartbreaking."
+    },
+    {
+      "key": "story.quest4_4.line18",
+      "value": "The room goes still as the sunset sinks between the buildings outside."
+    },
+    {
+      "key": "story.quest4_4.line19",
+      "value": "Still, we need clearer data to prove what's happening beneath these strata."
+    },
+    {
+      "key": "story.quest4_4.line20",
+      "value": "Surface observations alone won't cut it anymore. The \"breathing\" may be deeper down."
+    },
+    {
+      "key": "story.quest4_4.line21",
+      "value": "So next we literally look underground?"
+    },
+    {
+      "key": "story.quest4_4.line22",
+      "value": "Right. Places people can't reach need mechanical eyes—unmanned probe drones."
+    },
+    {
+      "key": "story.quest4_4.line23",
+      "value": "Using drones to chase faults sounds exciting... but is it safe?"
+    },
+    {
+      "key": "story.quest4_4.line24",
+      "value": "Can't say zero risk, but it's safer than field sampling—you won't have to go outside."
+    },
+    {
+      "key": "story.quest4_4.line25",
+      "value": "But this mission is just as important; it could save lives too."
+    },
+    {
+      "key": "story.quest4_4.line26",
+      "value": "All three gaze at the red line on the map, stretching beneath Sendai as if guarding untold truths."
+    },
+    {
+      "key": "story.quest5_1.line01",
+      "value": "Night settles over G-Lab as rain starts outside; distant lightning flashes while monitor glow bathes the lab."
+    },
+    {
+      "key": "story.quest5_1.line02",
+      "value": "The new drone unit is ready. It's not a normal drone—it's the Phase Radar Swarm prototype."
+    },
+    {
+      "key": "story.quest5_1.line03",
+      "value": "Phase radar swarm?"
+    },
+    {
+      "key": "story.quest5_1.line04",
+      "value": "Right. A dozen mini drones slip into cracks and waterways, mapping underground structures with EM waves."
+    },
+    {
+      "key": "story.quest5_1.line05",
+      "value": "So basically we can scan the inside of the earth! Like a planetary CT."
+    },
+    {
+      "key": "story.quest5_1.line06",
+      "value": "...That's amazing. So we'll actually see the fault's shape?"
+    },
+    {
+      "key": "story.quest5_1.line07",
+      "value": "In theory. But if the signal's too strong, groundwater reflects it and adds noise, so be careful."
+    },
+    {
+      "key": "story.quest5_1.line08",
+      "value": "{name}, we're counting on you to pilot them."
+    },
+    {
+      "key": "story.quest5_1.line09",
+      "value": "Got it... Wait, I have to control all dozen by myself?"
+    },
+    {
+      "key": "story.quest5_1.line10",
+      "value": "Of course. Let's give it a shot!"
+    },
+    {
+      "key": "story.quest5_1.line11",
+      "value": "(Inner voice) Kaede-sensei is so pushy..."
+    },
+    {
+      "key": "story.quest5_1.line12",
+      "value": "...Did the ground just shake?"
+    },
+    {
+      "key": "story.quest5_2.line01",
+      "value": "Drone activation sequence start. A dozen mini drones blink blue as they rise."
+    },
+    {
+      "key": "story.quest5_2.line02",
+      "value": "Wow... gorgeous. Like a flock of fireflies."
+    },
+    {
+      "key": "story.quest5_2.line03",
+      "value": "Totally. Can't believe we're flying all of them... I'm nervous now."
+    },
+    {
+      "key": "story.quest5_2.line04",
+      "value": "Hehe, commander debut. Don't crash them, okay?"
+    },
+    {
+      "key": "story.quest5_2.line05",
+      "value": "Jokes aside. Drone swarm, begin linking to the subsurface radar system."
+    },
+    {
+      "key": "story.quest5_2.line06",
+      "value": "Communication lines streak across the monitors as each drone slips into cracks, their blue lights disappearing underground."
+    },
+    {
+      "key": "story.quest5_2.line07",
+      "value": "Checking signals from drones 1 through 8 first."
+    },
+    {
+      "key": "story.quest5_2.line08",
+      "value": "Depth 10 meters... 15... Uh-oh, drone 9's throwing noise!"
+    },
+    {
+      "key": "story.quest5_2.line09",
+      "value": "Feed's up! ...What is that? A red line running under the ground?"
+    },
+    {
+      "key": "story.quest5_2.line10",
+      "value": "...That's the fault plane. But it's way shallower than expected."
+    },
+    {
+      "key": "story.quest5_2.line11",
+      "value": "If it's that shallow... doesn't that put it near the city's infrastructure?"
+    },
+    {
+      "key": "story.quest5_2.line12",
+      "value": "The display switches to a Sendai map, fault lines crawling beneath the city."
+    },
+    {
+      "key": "story.quest5_2.line13",
+      "value": "...It stretches all the way under Sendai Station."
+    },
+    {
+      "key": "story.quest5_2.line14",
+      "value": "And it branches! Two lines? No, three?"
+    },
+    {
+      "key": "story.quest5_2.line15",
+      "value": "...Branch faults. I didn't expect them to spread this far..."
+    },
+    {
+      "key": "story.quest5_2.line16",
+      "value": "The waveform suddenly spikes and red alerts flash."
+    },
+    {
+      "key": "story.quest5_2.line17",
+      "value": "What is that!? The waveform's moving—in real time!"
+    },
+    {
+      "key": "story.quest5_2.line18",
+      "value": "No way... is it still slipping!?"
+    },
+    {
+      "key": "story.quest5_2.line19",
+      "value": "Hold on... Sensei, it looks like a seismogram, and the period's short."
+    },
+    {
+      "key": "story.quest5_2.line20",
+      "value": "A short period means stress is building. This isn't a warning—it's the next quake beginning."
+    },
+    {
+      "key": "story.quest5_2.line21",
+      "value": "On the map, the red lines spread across Sendai with G-Lab blinking at the center."
+    },
+    {
+      "key": "story.quest5_2.line22",
+      "value": "No way... we're right on top of the fault!?"
+    },
+    {
+      "key": "story.quest5_2.line23",
+      "value": "...Not just G-Lab. All of central Sendai is sitting on this awakening fault."
+    },
+    {
+      "key": "story.quest5_2.line24",
+      "value": "Then... the next thing coming is the main shock..."
+    },
+    {
+      "key": "story.quest5_2.line25",
+      "value": "Thunder cracks and rain lashes harder outside as the lab lights flicker."
+    },
+    {
+      "key": "story.quest5_2.line26",
+      "value": "...Everyone, listen. We can't hide this anymore. We have to tell the government and the public."
+    },
+    {
+      "key": "story.quest5_2.line27",
+      "value": "Exactly. This research can save lives!"
+    },
+    {
+      "key": "story.quest5_2.line28",
+      "value": "...Understood. Our next mission is to warn them."
+    },
+    {
+      "key": "story.quest5_2.line29",
+      "value": "The three nod in silence. On the monitor, the pulsing red fault line glows as if the earth itself is breathing."
+    },
+    {
+      "key": "story.speaker.classmate",
+      "value": "Classmate"
+    },
+    {
+      "key": "story.speaker.drkaede",
+      "value": "Dr. Kaede"
+    },
+    {
+      "key": "story.speaker.minato",
+      "value": "Minato"
+    },
+    {
+      "key": "story.speaker.mother",
+      "value": "Mother"
+    },
+    {
+      "key": "story.speaker.narration",
+      "value": "Narration"
+    },
+    {
+      "key": "story.speaker.news",
+      "value": "News Broadcast"
+    },
+    {
+      "key": "story.speaker.protagonist",
+      "value": "Protagonist"
+    },
+    {
+      "key": "story.speaker.sfx",
+      "value": "SFX"
+    },
+    {
+      "key": "story.speaker.student_a",
+      "value": "Student A"
+    },
+    {
+      "key": "story.speaker.student_b",
+      "value": "Student B"
+    },
+    {
+      "key": "ui.dialog.continue",
+      "value": "Click to continue"
+    },
+    {
+      "key": "ui.dialog.choose",
+      "value": "Choose an answer"
+    },
+    {
+      "key": "quiz.correct",
+      "value": "Correct!"
+    },
+    {
+      "key": "quiz.incorrect",
+      "value": "Not quite — give it another think."
+    },
+    {
+      "key": "report.title",
+      "value": "Field Report"
+    },
+    {
+      "key": "report.grade",
+      "value": "First-answer grade"
+    },
+    {
+      "key": "report.score",
+      "value": "Correct"
+    },
+    {
+      "key": "report.first_correct",
+      "value": "Correct on first try"
+    },
+    {
+      "key": "report.final_mastery",
+      "value": "Eventually correct"
+    },
+    {
+      "key": "report.completion",
+      "value": "Questions answered"
+    },
+    {
+      "key": "report.average_attempts",
+      "value": "Average attempts"
+    },
+    {
+      "key": "report.hint_usage",
+      "value": "Hint usage"
+    },
+    {
+      "key": "story.beat1.l01",
+      "value": "A classroom at lunch break. Suddenly, a violent shaking strikes."
+    },
+    {
+      "key": "story.beat1.l02",
+      "value": "Whoa...!? An earthquake...! Everyone, get under your desks!"
+    },
+    {
+      "key": "story.beat1.l03",
+      "value": "The shaking grows stronger, the ceiling collapses. A white light swallows your vision——."
+    },
+    {
+      "key": "story.beat1.l04",
+      "value": "When you wake, you are in a white laboratory you have never seen before."
+    },
+    {
+      "key": "story.beat1.l05",
+      "value": "Awake? This is G-Lab — a disaster-prevention institute that studies the earth to protect this town. I'm Kaede, a researcher here."
+    },
+    {
+      "key": "story.beat1.l06",
+      "value": "That earthquake stirred a 'power' inside you. Don't overthink it — it's the power to read the strata. Just someone who can truly listen to the voice of the land. That's all."
+    },
+    {
+      "key": "story.beat1.l07",
+      "value": "Thank you. To read this 'book' called the strata, first you need to know how it was written."
+    },
+    {
+      "key": "story.beat1.q1.prompt",
+      "value": "From mountain rock to a stratum — what's the correct order?"
+    },
+    {
+      "key": "story.beat1.q1.a",
+      "value": "Weathering → Erosion → Transport → Deposition"
+    },
+    {
+      "key": "story.beat1.q1.b",
+      "value": "Deposition → Transport → Erosion → Weathering"
+    },
+    {
+      "key": "story.beat1.q1.c",
+      "value": "Erosion → Weathering → Deposition → Transport"
+    },
+    {
+      "key": "story.beat1.q1.fb_ok",
+      "value": "Correct! Rock crumbles, is scraped away, carried, then piles up. That order is the basics."
+    },
+    {
+      "key": "story.beat1.l08",
+      "value": "Looking good! Then out to the field — let's turn the land's very first page with your own hands."
+    },
+    {
+      "key": "story.beat2.l01",
+      "value": "A field outcrop. Striped strata are visible in the ground cracked open by the quake."
+    },
+    {
+      "key": "story.beat2.l02",
+      "value": "Take a sample with the hammer, then check the grain size under the microscope."
+    },
+    {
+      "key": "story.beat2.q1.prompt",
+      "value": "So — this sample's grains are smaller than 0.06mm, smooth to the touch. What is it?"
+    },
+    {
+      "key": "story.beat2.q1.a",
+      "value": "Mudstone"
+    },
+    {
+      "key": "story.beat2.q1.b",
+      "value": "Sandstone"
+    },
+    {
+      "key": "story.beat2.q1.c",
+      "value": "Conglomerate"
+    },
+    {
+      "key": "story.beat2.q1.fb_ok",
+      "value": "Correct! The finer the grains, the farther from the river mouth and the deeper the sea where they settled. Which means this place was once a quiet, deep seabed."
+    },
+    {
+      "key": "story.beat2.q2.prompt",
+      "value": "The next sample — dilute hydrochloric acid produced bubbles (CO₂). What is it?"
+    },
+    {
+      "key": "story.beat2.q2.a",
+      "value": "Limestone"
+    },
+    {
+      "key": "story.beat2.q2.b",
+      "value": "Chert"
+    },
+    {
+      "key": "story.beat2.q2.c",
+      "value": "Tuff"
+    },
+    {
+      "key": "story.beat2.q2.fb_ok",
+      "value": "Right. Limestone forms from shells and coral, and releases carbon dioxide with acid. In other words, this was once a warm, shallow sea."
+    },
+    {
+      "key": "story.beat2.q3.prompt",
+      "value": "One more. So hard a nail can't even scratch it. What is it?"
+    },
+    {
+      "key": "story.beat2.q3.a",
+      "value": "Chert"
+    },
+    {
+      "key": "story.beat2.q3.b",
+      "value": "Mudstone"
+    },
+    {
+      "key": "story.beat2.q3.c",
+      "value": "Conglomerate"
+    },
+    {
+      "key": "story.beat2.q3.fb_ok",
+      "value": "Correct! Chert forms from the shells of tiny sea creatures and is very hard — built up by an ancient ocean over millions of years."
+    },
+    {
+      "key": "story.beat2.l03",
+      "value": "You noticed? That's the very thing that's been bothering me. Let's dig deeper and make sure."
+    },
+    {
+      "key": "story.beat3.l01",
+      "value": "Back in the laboratory, let’s compare the collected core with the geological column."
+    },
+    {
+      "key": "story.beat3.l02",
+      "value": "A fossil was found inside the rock from one of the deeper samples."
+    },
+    {
+      "key": "story.beat3.q1.prompt",
+      "value": "...So, what environment do you think this layer formed in?"
+    },
+    {
+      "key": "story.beat3.q1.a",
+      "value": "A warm, shallow sea"
+    },
+    {
+      "key": "story.beat3.q1.b",
+      "value": "A cold, deep sea"
+    },
+    {
+      "key": "story.beat3.q1.c",
+      "value": "Where river and sea water mix"
+    },
+    {
+      "key": "story.beat3.q1.fb_ok",
+      "value": "Correct! The fossil told us the environment of the time."
+    },
+    {
+      "key": "story.beat3.q2.prompt",
+      "value": "A fossil like coral that tells us the environment a layer formed in — what's it called?"
+    },
+    {
+      "key": "story.beat3.q2.a",
+      "value": "Facies fossil"
+    },
+    {
+      "key": "story.beat3.q2.b",
+      "value": "Index fossil"
+    },
+    {
+      "key": "story.beat3.q2.fb_ok",
+      "value": "Right. A facies fossil indicates environment. A clam (Shijimi) means where river and sea mix."
+    },
+    {
+      "key": "story.beat3.q3.prompt",
+      "value": "...So, which era did this layer form in?"
+    },
+    {
+      "key": "story.beat3.q3.a",
+      "value": "Mesozoic"
+    },
+    {
+      "key": "story.beat3.q3.b",
+      "value": "Paleozoic"
+    },
+    {
+      "key": "story.beat3.q3.c",
+      "value": "Cenozoic"
+    },
+    {
+      "key": "story.beat3.q3.fb_ok",
+      "value": "Correct! The ammonite is a Mesozoic index fossil. The trilobite would be Paleozoic."
+    },
+    {
+      "key": "story.beat3.q4.prompt",
+      "value": "A fossil like the ammonite — what's it called?"
+    },
+    {
+      "key": "story.beat3.q4.a",
+      "value": "Index fossil"
+    },
+    {
+      "key": "story.beat3.q4.b",
+      "value": "Facies fossil"
+    },
+    {
+      "key": "story.beat3.q4.fb_ok",
+      "value": "Yes. Organisms that lived widely but thrived only briefly make good index fossils."
+    },
+    {
+      "key": "story.beat3.q5.prompt",
+      "value": "The column has a layer of tuff, formed from compacted volcanic ash. What happened back then?"
+    },
+    {
+      "key": "story.beat3.q5.a",
+      "value": "A volcano erupted nearby"
+    },
+    {
+      "key": "story.beat3.q5.b",
+      "value": "A large earthquake occurred"
+    },
+    {
+      "key": "story.beat3.q5.c",
+      "value": "The sea dried up"
+    },
+    {
+      "key": "story.beat3.q5.fb_ok",
+      "value": "Correct! A tuff layer is evidence of a volcanic eruption in that era."
+    },
+    {
+      "key": "story.beat4.l01",
+      "value": "Lastly, let's compare the columns from sites A, B and C."
+    },
+    {
+      "key": "story.beat4.q1.prompt",
+      "value": "So — the ash layer is deeper the farther east we go. Which way do the strata tilt?"
+    },
+    {
+      "key": "story.beat4.q1.a",
+      "value": "East"
+    },
+    {
+      "key": "story.beat4.q1.b",
+      "value": "West"
+    },
+    {
+      "key": "story.beat4.q1.c",
+      "value": "North"
+    },
+    {
+      "key": "story.beat4.q1.fb_ok",
+      "value": "Correct! The direction where the same layer deepens is the way the strata tilt and drop. The ash layer sinks toward the east — so this whole area is tilting and sinking eastward."
+    },
+    {
+      "key": "story.beat4.q2.prompt",
+      "value": "Look at the cliff. The strata bend like waves! What do we call this kind of bending?"
+    },
+    {
+      "key": "story.beat4.q2.a",
+      "value": "Fold"
+    },
+    {
+      "key": "story.beat4.q2.b",
+      "value": "Fault"
+    },
+    {
+      "key": "story.beat4.q2.c",
+      "value": "Conformity"
+    },
+    {
+      "key": "story.beat4.q2.fb_ok",
+      "value": "Right. Strata bent by compression from both sides is called a fold. And the fact it's still bent means a 'pushing force' is pressing down there even now."
+    },
+    {
+      "key": "story.beat4.l02",
+      "value": "'The voice of the Earth' was never some mysterious power, was it? Read the strata one layer at a time, and anyone at all can hear it."
+    },
+    {
+      "key": "story.beat4.l03",
+      "value": "Let's sum up today's survey and write the report."
+    },
+    {
+      "key": "story.beat1.l09",
+      "value": "I'll be honest with you. That earthquake — it probably 'isn't over' yet."
+    },
+    {
+      "key": "story.beat1.l10",
+      "value": "...That classroom — I don't want it to go through that again. I'll do it."
+    },
+    {
+      "key": "story.beat2.l04",
+      "value": "The cliff's strata had locked tens of thousands of years into stripes of stone."
+    },
+    {
+      "key": "story.beat2.l05",
+      "value": "Heh, sharp eye. You've got the makings of a field geologist."
+    },
+    {
+      "key": "story.beat2.l06",
+      "value": "Even plain 'rocks' can be this different...!"
+    },
+    {
+      "key": "story.beat3.l03",
+      "value": "Whoa, a real fossil...! A creature from tens of millions of years ago, right before my eyes."
+    },
+    {
+      "key": "story.beat3.l04",
+      "value": "With the geological column and core records on the bench, we begin to piece together the history underground."
+    },
+    {
+      "key": "story.beat3.l05",
+      "value": "Data from a machine that huge has real weight to it...!"
+    },
+    {
+      "key": "story.beat4.l04",
+      "value": "See it now? Where the stress builds up — that's where the 'next one' is most likely to strike."
+    },
+    {
+      "key": "story.beat4.l05",
+      "value": "The Earth's voice... I think I heard it — just a little."
+    },
+    {
+      "key": "story.bridge.q21.l01",
+      "value": "The next morning. The G-Lab research room."
+    },
+    {
+      "key": "story.bridge.q21.l02",
+      "value": "Good morning! Your first mission. Head to the outcrop north of town and bring back a sample."
+    },
+    {
+      "key": "story.bridge.q21.l03",
+      "value": "Use the Phase Shifter to travel. Switch tools with the Tab key."
+    },
+    {
+      "key": "story.bridge.q31.l01",
+      "value": "At the outcrop, watch the grain size and how each rock reacts to acid — that'll tell you what it is."
+    },
+    {
+      "key": "story.bridge.q31.l02",
+      "value": "Got it — I'll go observe!"
+    },
+    {
+      "key": "story.bridge.q32.l01",
+      "value": "In an instant the smell of wind and earth surrounds you. You're outside."
+    },
+    {
+      "key": "story.bridge.q32.l02",
+      "value": "We're here. Crack the rock with the hammer and take a sample."
+    },
+    {
+      "key": "story.bridge.q34.l01",
+      "value": "Back at G-Lab. Your fresh samples line the desk."
+    },
+    {
+      "key": "story.bridge.q34.l02",
+      "value": "Let's put the thin section under the microscope. ...The grains are crushed very fine."
+    },
+    {
+      "key": "story.bridge.q34.l03",
+      "value": "These fractures may not be scars from surface shaking alone."
+    },
+    {
+      "key": "story.bridge.q34.l04",
+      "value": "So something deeper might still be moving?"
+    },
+    {
+      "key": "story.bridge.q34.l05",
+      "value": "Possibly. A thin section only tells us what changed near the surface."
+    },
+    {
+      "key": "story.bridge.q34.l06",
+      "value": "A column sample by depth would let us compare which layer has fresh displacement or stress marks."
+    },
+    {
+      "key": "story.bridge.q34.l07",
+      "value": "That's why we use the drill tower next: not to repeat the same collection, but to get deeper evidence."
+    },
+    {
+      "key": "story.bridge.q41.l01",
+      "value": "The drill tower samples at every depth — it shows the layering clearly."
+    },
+    {
+      "key": "story.bridge.q41.l02",
+      "value": "If a fossil comes out, let me know. It's a clue to when the layer formed."
+    },
+    {
+      "key": "story.bridge.q41.l03",
+      "value": "A fossil...! Kind of exciting, honestly."
+    },
+    {
+      "key": "story.beat3.q1.teach1",
+      "value": "You know, a fossil is like a little 'time capsule.'"
+    },
+    {
+      "key": "story.beat3.q1.teach2",
+      "value": "Every living thing has its own habitat. So a fossil tells us the environment of its time."
+    },
+    {
+      "key": "story.beat3.q1.teach3",
+      "value": "Take this coral. Even today, it only grows in warm, shallow seas."
+    },
+    {
+      "key": "story.beat3.q3.teach1",
+      "value": "And from another layer — an ammonite fossil!"
+    },
+    {
+      "key": "story.beat3.q3.teach2",
+      "value": "Earth's history is divided roughly into Paleozoic → Mesozoic → Cenozoic."
+    },
+    {
+      "key": "story.beat3.q3.teach3",
+      "value": "Ammonites only thrived in the Mesozoic — the same era as the dinosaurs."
+    },
+    {
+      "key": "story.beat3.q4.teach1",
+      "value": "Organisms that lived widely but only for a short time make great year-markers."
+    },
+    {
+      "key": "story.beat4.q1.teach1",
+      "value": "If you find 'the same layer' in several places, it becomes a marker — we call it a 'key bed.' An ash layer is very distinct, a great key bed."
+    },
+    {
+      "key": "story.beat4.q1.teach2",
+      "value": "If the key bed gets deeper as you go in some direction? That means the whole strata is tilting downward in that direction."
+    },
+    {
+      "key": "story.beat4.q2.teach1",
+      "value": "Strata should stack straight by default. But squeeze them from both sides and they bend like that."
+    },
+    {
+      "key": "story.beat1.q1.teach1",
+      "value": "The strata, you see, are a 'diary' written by the land. From mountain rock to a stratum, there are four 'processes' — weathering, erosion, transport, and deposition."
+    },
+    {
+      "key": "story.beat1.q1.teach2",
+      "value": "Weathering = becoming brittle, erosion = being worn away, transport = being carried, deposition = piling up."
+    },
+    {
+      "key": "story.beat2.q1.teach1",
+      "value": "Sedimentary rocks are named by grain size. Largest to smallest: conglomerate (>2mm), sandstone, mudstone (<0.06mm)."
+    },
+    {
+      "key": "story.beat2.q1.teach2",
+      "value": "Plus two special ones — limestone fizzes with acid, and chert is so hard not even a nail can scratch it."
+    },
+    {
+      "key": "story.beat1.q1.fb_ng_b",
+      "value": "Order's reversed! Rock has to crumble first before it can be eroded."
+    },
+    {
+      "key": "story.beat1.q1.fb_ng_c",
+      "value": "Close. The flow is crumble → eroded → transported → deposited. Transport isn't last."
+    },
+    {
+      "key": "story.beat2.q1.fb_ng_b",
+      "value": "Sandstone grains are a bit larger (0.06–2mm). That smooth feel is your clue."
+    },
+    {
+      "key": "story.beat2.q1.fb_ng_c",
+      "value": "Conglomerate grains are >2mm — visibly chunky to the eye."
+    },
+    {
+      "key": "story.beat2.q2.fb_ng_b",
+      "value": "Chert doesn't react with acid. Bubbling is the hallmark of limestone."
+    },
+    {
+      "key": "story.beat2.q2.fb_ng_c",
+      "value": "Tuff comes from volcanic ash and doesn't react with acid either."
+    },
+    {
+      "key": "story.beat2.q3.fb_ng_b",
+      "value": "Mudstone is actually quite soft. The 'a nail can't scratch it' hardness belongs to a different rock."
+    },
+    {
+      "key": "story.beat2.q3.fb_ng_c",
+      "value": "Conglomerate is just bound grains — a nail digs right in."
+    },
+    {
+      "key": "story.beat3.q1.fb_ng_b",
+      "value": "Coral lives in symbiosis with photosynthetic algae, so it can't grow in cold deep seas."
+    },
+    {
+      "key": "story.beat3.q1.fb_ng_c",
+      "value": "That's where the clam (Shijimi) lives. Coral prefers salty open seas."
+    },
+    {
+      "key": "story.beat3.q2.fb_ng_b",
+      "value": "Index fossils tell us the 'era.' Fossils that show 'environment' have a different name."
+    },
+    {
+      "key": "story.beat3.q3.fb_ng_b",
+      "value": "The Paleozoic is the era of trilobites and fusulinids. Ammonites came a bit later."
+    },
+    {
+      "key": "story.beat3.q3.fb_ng_c",
+      "value": "The Cenozoic is the era of Vicarya and the Naumann elephant. Ammonites went extinct before then."
+    },
+    {
+      "key": "story.beat3.q4.fb_ng_b",
+      "value": "Facies fossils tell us the 'environment.' Fossils that pin down the 'era' have a different name."
+    },
+    {
+      "key": "story.beat3.q5.fb_ng_b",
+      "value": "Earthquakes shake rocks but don't create a layer of volcanic ash."
+    },
+    {
+      "key": "story.beat3.q5.fb_ng_c",
+      "value": "A dried sea leaves rocks like rock salt. Volcanic ash still comes from volcanoes."
+    },
+    {
+      "key": "story.beat4.q1.fb_ng_b",
+      "value": "Other way! If the same layer is deeper to the east, the whole strata tilts down toward the east."
+    },
+    {
+      "key": "story.beat4.q1.fb_ng_c",
+      "value": "Depth doesn't change north–south. Look at the east–west difference."
+    },
+    {
+      "key": "story.beat4.q2.fb_ng_b",
+      "value": "A fault is where strata 'break apart.' Bending is a different phenomenon."
+    },
+    {
+      "key": "story.beat4.q2.fb_ng_c",
+      "value": "Conformity is when strata stack continuously. A wave-like bend isn't that."
+    },
+    {
+      "key": "story.beat1.q1.hint",
+      "value": "Brittle → eroded → carried → piled up — recall the natural flow."
+    },
+    {
+      "key": "story.beat2.q1.hint",
+      "value": "Among the three rock types by grain size, which has the finest grain?"
+    },
+    {
+      "key": "story.beat2.q2.hint",
+      "value": "Few rocks react with acid. What rock is made of shells and coral?"
+    },
+    {
+      "key": "story.beat2.q3.hint",
+      "value": "What very hard rock is made from the shells of tiny sea organisms?"
+    },
+    {
+      "key": "story.beat3.q1.hint",
+      "value": "What kind of sea do living corals grow in today?"
+    },
+    {
+      "key": "story.beat3.q2.hint",
+      "value": "'Environment-indicating fossil' — 3 kanji."
+    },
+    {
+      "key": "story.beat3.q3.hint",
+      "value": "Which era's fossils thrived alongside the dinosaurs?"
+    },
+    {
+      "key": "story.beat3.q4.hint",
+      "value": "'Era-indicating fossil' — 3 kanji."
+    },
+    {
+      "key": "story.beat3.q5.hint",
+      "value": "Tuff comes from volcanic ash. Where does volcanic ash come from?"
+    },
+    {
+      "key": "story.beat4.q1.hint",
+      "value": "Which direction the same layer gets deeper = which way the whole strata tilts down."
+    },
+    {
+      "key": "story.beat4.q2.hint",
+      "value": "Strata bent like waves under compression from both sides."
+    },
+    {
+      "key": "story.beat1.l11",
+      "value": "But the ground has cracked open, and the strata — usually hidden under grass and trees — are showing their face right now. Read them while we can, and we get ahead of it: when, and where, the next one will come."
+    },
+    {
+      "key": "story.beat3.l09",
+      "value": "An aftershock. But this one isn't a 'record' — it's proof it's still moving right now. ...Let's hurry."
+    },
+    {
+      "key": "story.beat4.l07",
+      "value": "...Yes. This isn't 'homework' anymore — it's a 'warning.' Let's go tell everyone."
+    },
+    {
+      "key": "story.beat4.l06",
+      "value": "Then... the danger is right here. Just west of the school."
+    },
+    {
+      "key": "story.beat2.l07",
+      "value": "Wait... this cliff — aren't the layer lines a little 'warped'? They're not straight."
+    },
+    {
+      "key": "story.beat3.l06",
+      "value": "So this place really did transform dramatically over time — shallow sea, deep sea, then a volcano... the strata recorded every bit of it."
+    },
+    {
+      "key": "story.beat3.l07",
+      "value": "—A low rumble. Underfoot, the ground swayed again, just slightly."
+    },
+    {
+      "key": "story.beat3.l08",
+      "value": "That just now — an earthquake...? Smaller than before, but still..."
+    },
+    {
+      "key": "story.beat1.l16",
+      "value": "But I can't do this alone — not enough hands, not enough eyes. And the ground beneath this land — it's best read by you, who actually live here."
+    },
+    {
+      "key": "story.beat1.l14",
+      "value": "A transfer... device?"
+    },
+    {
+      "key": "story.beat1.l15",
+      "value": "But this device only reaches around the institute, and it can move just one person at a time. It can't save the whole town."
+    },
+    {
+      "key": "story.beat1.l12",
+      "value": "The classroom was caving in just now... where is this? How did I... get here?"
+    },
+    {
+      "key": "story.beat1.l13",
+      "value": "Easy now. The instant the ceiling came down, I pulled you out of that classroom with the institute's 'transfer device.' That white light you saw — that was it."
+    },
+    {
+      "key": "ui.start.research",
+      "value": "Join the study"
+    },
+    {
+      "key": "ui.start.research_test",
+      "value": "Research connection test"
+    },
+    {
+      "key": "ui.start.research_code.title",
+      "value": "Research participation code"
+    },
+    {
+      "key": "ui.start.research_code.help",
+      "value": "Enter a development participation code. Switching to a different code resets the current learning progress."
+    },
+    {
+      "key": "ui.start.research_code.placeholder",
+      "value": "Participation code"
+    },
+    {
+      "key": "ui.start.research_code.confirm",
+      "value": "Verify code"
+    },
+    {
+      "key": "ui.start.research_code.cancel",
+      "value": "Back"
+    },
+    {
+      "key": "ui.start.research_code.checking",
+      "value": "Checking your participation code…"
+    },
+    {
+      "key": "ui.start.research_code.failed",
+      "value": "Please check your participation code."
+    },
+    {
+      "key": "ui.start.subtitle",
+      "value": "Read the layers.\nDiscover the story beneath."
+    },
+    {
+      "key": "ui.start.continue",
+      "value": "Continue"
+    },
+    {
+      "key": "ui.start.settings",
+      "value": "Settings"
+    },
+    {
+      "key": "ui.start.quit",
+      "value": "Exit game"
+    },
+    {
+      "key": "ui.start.footer",
+      "value": "Collect. Observe. Discover."
+    },
+    {
+      "key": "ui.start.field_caption",
+      "value": "Bring your field discoveries to the lab."
+    },
+    {
+      "key": "ui.start.new_game.title",
+      "value": "New game"
+    },
+    {
+      "key": "ui.start.new_game.message",
+      "value": "Overwrite your current progress?"
+    },
+    {
+      "key": "ui.start.new_game.warning",
+      "value": "Your story progress, quests, inventory and current results will be cleared."
+    },
+    {
+      "key": "ui.start.new_game.confirm",
+      "value": "Start new game"
+    },
+    {
+      "key": "ui.start.new_game.cancel",
+      "value": "Cancel"
+    },
+    {
+      "key": "ui.common.cancel",
+      "value": "Cancel"
+    },
+    {
+      "key": "ui.session.return_title",
+      "value": "Return to title"
+    },
+    {
+      "key": "ui.session.return_message",
+      "value": "Save your progress and return to the title. Unfinished dialogue resumes from its checkpoint."
+    },
+    {
+      "key": "ui.session.save_return",
+      "value": "Save and return"
+    },
+    {
+      "key": "ui.history.title",
+      "value": "Dialogue log"
+    },
+    {
+      "key": "ui.history.close",
+      "value": "Back"
+    },
+    {
+      "key": "ui.history.empty",
+      "value": "No dialogue has been recorded yet."
+    },
+    {
+      "key": "ui.history.dialogue",
+      "value": "Narration"
+    },
+    {
+      "key": "ui.history.hint",
+      "value": "Hint"
+    },
+    {
+      "key": "ui.history.feedback",
+      "value": "Explanation"
+    },
+    {
+      "key": "ui.history.choice",
+      "value": "Your answer"
+    },
+    {
+      "key": "ui.tool.current",
+      "value": "Equipped tool"
+    },
+    {
+      "key": "ui.tool.none",
+      "value": "Select a tool"
+    },
+    {
+      "key": "report.complete_title",
+      "value": "Investigation complete!"
+    },
+    {
+      "key": "report.complete_message",
+      "value": "Your samples and observations revealed the story in the layers."
+    },
+    {
+      "key": "report.wrong_attempts",
+      "value": "Incorrect attempts"
+    },
+    {
+      "key": "report.practice",
+      "value": "Fieldwork milestones"
+    },
+    {
+      "key": "report.practice_details",
+      "value": "Rock sample · Drill core · Lab analysis · Final report"
+    },
+    {
+      "key": "quest.ui.progress",
+      "value": "Investigation"
+    },
+    {
+      "key": "quest.step.1",
+      "value": "Reach the laboratory"
+    },
+    {
+      "key": "quest.step.2",
+      "value": "Talk to Dr. Kaede"
+    },
+    {
+      "key": "quest.step.3",
+      "value": "Examine the unusual sample"
+    },
+    {
+      "key": "quest.step.4",
+      "value": "Collect rocks in the field"
+    },
+    {
+      "key": "quest.step.5",
+      "value": "Bring your sample to the lab"
+    },
+    {
+      "key": "quest.step.6",
+      "value": "Prepare the drilling investigation"
+    },
+    {
+      "key": "quest.step.7",
+      "value": "Reach the drilling site"
+    },
+    {
+      "key": "quest.step.8",
+      "value": "Collect a core with the drill tower"
+    },
+    {
+      "key": "quest.step.9",
+      "value": "Return to the lab and analyse the core"
+    },
+    {
+      "key": "quest.step.10",
+      "value": "Investigation complete — view report"
+    },
+    {
+      "key": "story.core_return.line",
+      "value": "Well done. Let’s return to the laboratory and examine this sample closely."
+    },
+    {
+      "key": "backend.checking",
+      "value": "Checking your participation code…"
+    },
+    {
+      "key": "backend.closed",
+      "value": "Research participation is currently closed."
+    },
+    {
+      "key": "backend.invalid_code",
+      "value": "Please check your participation code."
+    },
+    {
+      "key": "backend.network",
+      "value": "Unable to connect. Please try again shortly."
+    },
+    {
+      "key": "backend.bound",
+      "value": "This code is bound to another sign-in. Please contact the study organizer."
+    },
+    {
+      "key": "backend.rate_limit",
+      "value": "Too many attempts. Please wait and try again."
+    },
+    {
+      "key": "backend.version",
+      "value": "The study protocol version does not match."
+    },
+    {
+      "key": "backend.pending_upload",
+      "value": "Previous research records are pending. Reconnect using the same participation code and retry before switching."
+    },
+    {
+      "key": "ui.dialog.hint",
+      "value": "Hint"
+    },
+    {
+      "key": "ui.session.save_failed",
+      "value": "Save did not complete"
+    },
+    {
+      "key": "ui.session.save_retry",
+      "value": "Check your connection and browser storage settings, then retry. Your progress is still available on this screen."
+    },
+    {
+      "key": "ui.session.retry",
+      "value": "Retry"
+    },
+    {
+      "key": "tool.drill.simple.short",
+      "value": "Hand drill"
+    },
+    {
+      "key": "tool.drill_tower.short",
+      "value": "Drill tower"
+    },
+    {
+      "key": "ui.history.all",
+      "value": "All"
+    },
+    {
+      "key": "ui.history.field",
+      "value": "Fieldwork"
+    },
+    {
+      "key": "ui.history.lab",
+      "value": "Laboratory"
+    },
+    {
+      "key": "survey.answer",
+      "value": "Answer the survey"
+    },
+    {
+      "key": "survey.preparing",
+      "value": "Saving your game record and preparing the survey…"
+    },
+    {
+      "key": "survey.retry",
+      "value": "Check your connection, then press the button again."
+    },
+    {
+      "key": "survey.reenter",
+      "value": "Enter again with the same participation code, then retry."
+    },
+    {
+      "key": "survey.opened",
+      "value": "The survey is open."
+    },
+    {
+      "key": "survey.research_only",
+      "value": "Play in research mode to answer the survey."
     }
   ]
 }

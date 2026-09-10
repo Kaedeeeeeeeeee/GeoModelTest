@@ -1137,12 +1137,13 @@ public class WarehouseUI : MonoBehaviour
     /// </summary>
     void HandleInput()
     {
+        if (Core.GameInputState.GameplayBlocked) return;
         if (!isWarehouseOpen) return;
         
         var keyboard = Keyboard.current;
 
         // ESC键处理
-        if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
+        if (keyboard != null && Core.GameInputState.TryConsumeEscape())
         {
             // 如果确认对话框正在显示，先关闭对话框
             if (confirmDialogPanel != null && confirmDialogPanel.activeInHierarchy)

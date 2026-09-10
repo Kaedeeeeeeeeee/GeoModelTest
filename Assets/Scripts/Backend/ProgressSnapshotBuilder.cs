@@ -51,6 +51,15 @@ namespace Backend
             snapshot.payload["inventoryMax"] = inventoryCounts.max;
             snapshot.payload["warehouseMax"] = warehouseCounts.max;
             snapshot.payload["encyclopedia"] = encyclopediaCounts.payload;
+            snapshot.payload["investigationComplete"] = InvestigationProgress.IsComplete;
+            snapshot.payload["runId"] = QuizScoreManager.Instance.RunId;
+            snapshot.payload["practiceCompleted"] = InvestigationProgress.ActivityCount;
+            snapshot.payload["practiceTotal"] = InvestigationProgress.ActivityTotal;
+            var quiz = QuizScoreManager.Instance.BuildSummary();
+            snapshot.payload["quizFirstCorrect"] = quiz.FirstCorrectCount;
+            snapshot.payload["quizWrongAttempts"] = quiz.WrongAttemptCount;
+            snapshot.payload["quizFinalMastery"] = quiz.FinalMasteredCount;
+            snapshot.payload["quizTotal"] = quiz.ExpectedQuestionCount;
 
             return snapshot;
         }

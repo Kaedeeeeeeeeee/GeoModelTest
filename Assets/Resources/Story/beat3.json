@@ -1,11 +1,11 @@
 {
-    "scene": "Beat3 - 柱状図と化石",
-    "background": "field_day",
-    "bgm": "field_theme",
+    "scene": "Beat3 - Laboratory core and fossil analysis",
+    "background": "laboratory",
+    "bgm": "lab_theme",
     "dialogues": [
         {
             "speaker": "Dr.Kaede",
-            "text": "ドリルタワーのサンプルが取（と）れたね。深（ふか）さごとの記録（きろく）を「柱状図（ちゅうじょうず）」で見（み）ていこう。",
+            "text": "研究室（けんきゅうしつ）に戻（もど）ったね。採取（さいしゅ）した岩芯（がんしん）を「柱状図（ちゅうじょうず）」と比（くら）べて調（しら）べよう。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.l01"
         },
@@ -48,7 +48,7 @@
         },
         {
             "speaker": "ナレーション",
-            "text": "柱状図（ちゅうじょうず）を追（お）うほど、地下（ちか）から低（ひく）い響（ひび）きが伝（つた）わってくる気（き）がした。",
+            "text": "柱状図（ちゅうじょうず）と岩芯（がんしん）の記録（きろく）を机（つくえ）に並（なら）べ、地下（ちか）の歴史（れきし）を読（よ）み解（と）いていく。",
             "speakerKey": "story.speaker.narration",
             "textKey": "story.beat3.l04"
         },

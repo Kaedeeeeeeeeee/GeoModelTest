@@ -28,6 +28,7 @@ public class SampleInventory : MonoBehaviour
     
     // 事件系统
     public System.Action<SampleItem> OnSampleAdded;
+    public System.Action<SampleItem> OnSampleCollected;
     public System.Action<SampleItem> OnSampleRemoved;
     public System.Action OnInventoryChanged;
     
@@ -174,6 +175,18 @@ public class SampleInventory : MonoBehaviour
         }
         
         return false;
+    }
+
+    /// <summary>Successful first pickup only; restoring or transferring inventory never raises collection progress.</summary>
+    public bool TryCollectSample(SampleItem sample)
+    {
+        bool collected = TryAddSample(sample);
+        if (collected)
+        {
+            try { OnSampleCollected?.Invoke(sample); }
+            catch (System.Exception error) { Debug.LogException(error); }
+        }
+        return collected;
     }
     
     /// <summary>

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 /// <summary>
 /// 设置管理器 - 管理ESC键触发的设置界面
 /// </summary>
+[DefaultExecutionOrder(1000)]
 public class SettingsManager : MonoBehaviour
 {
     #region 单例模式
@@ -76,6 +77,9 @@ public class SettingsManager : MonoBehaviour
     
     // 私有成员
     private bool isSettingsOpen = false;
+    private Core.GameInputState.Scope inputScope;
+    private Button returnTitleButton;
+    private bool uiInitialized;
     private FirstPersonController playerController;
     private GamePerformanceSettings performanceSettings;
     private float originalTimeScale = 1f;
@@ -102,29 +106,23 @@ public class SettingsManager : MonoBehaviour
     
     void Start()
     {
-        performanceSettings = GamePerformanceSettings.Instance;
-
-        // 如果没有设置界面，创建一个
-        if (settingsPanel == null)
-        {
-            CreateSettingsUI();
-        }
-        
-        // 设置按钮事件
-        SetupButtonEvents();
-        
-        // 初始隐藏设置界面
-        CloseSettings();
+        EnsureUI();
     }
-    
+
+    private void EnsureUI()
+    {
+        if (uiInitialized) return;
+        performanceSettings = GamePerformanceSettings.Instance;
+        if (settingsPanel == null) CreateSettingsUI();
+        SetupButtonEvents();
+        uiInitialized = true;
+        settingsPanel.SetActive(false);
+        settingsCanvas.gameObject.SetActive(false);
+    }
+
     void Update()
     {
-        // 监听ESC键
-        var keyboard = Keyboard.current;
-        if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
-        {
-            ToggleSettings();
-        }
+        if (!Core.GameInputState.IsModalOpen && Core.GameInputState.TryConsumeEscape()) OpenSettings();
     }
     #endregion
     
@@ -152,6 +150,7 @@ public class SettingsManager : MonoBehaviour
         if (isSettingsOpen)
             return;
         
+        EnsureUI();
         Debug.Log("打开设置界面");
         FindPlayerController();
         RefreshSettingsControlValues();
@@ -170,63 +169,22 @@ public class SettingsManager : MonoBehaviour
         if (settingsCanvas != null)
             settingsCanvas.gameObject.SetActive(true);
         
-        // 暂停游戏
-        if (pauseGameWhenOpen)
-        {
-            originalTimeScale = Time.timeScale;
-            Time.timeScale = 0f;
-        }
-        
-        // 禁用玩家控制
-        if (disablePlayerControlWhenOpen && playerController != null)
-        {
-            playerController.enabled = false;
-        }
-        
+        inputScope = Core.GameInputState.Acquire(CloseSettings);
+        if (returnTitleButton != null)
+            returnTitleButton.gameObject.SetActive(SceneSystem.GameSession.IsGameplayScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name));
         isSettingsOpen = true;
-        
-        // 设置鼠标状态
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
     }
-    
-    /// <summary>
-    /// 关闭设置界面
-    /// </summary>
+
     public void CloseSettings()
     {
-        if (!isSettingsOpen && settingsPanel != null && !settingsPanel.activeInHierarchy)
-            return;
-        
-        Debug.Log("关闭设置界面");
-        
-        // 隐藏设置面板
-        if (settingsPanel != null)
-            settingsPanel.SetActive(false);
-        
-        if (settingsCanvas != null)
-            settingsCanvas.gameObject.SetActive(false);
-
+        if (!isSettingsOpen) return;
+        if (settingsPanel != null) settingsPanel.SetActive(false);
+        if (settingsCanvas != null) settingsCanvas.gameObject.SetActive(false);
         settingsCanvasScope?.Dispose();
         settingsCanvasScope = null;
-        
-        // 恢复游戏
-        if (pauseGameWhenOpen)
-        {
-            Time.timeScale = originalTimeScale;
-        }
-        
-        // 恢复玩家控制
-        if (disablePlayerControlWhenOpen && playerController != null)
-        {
-            playerController.enabled = true;
-        }
-        
+        inputScope?.Dispose();
+        inputScope = null;
         isSettingsOpen = false;
-        
-        // 恢复鼠标状态
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
     #endregion
     
@@ -280,7 +238,7 @@ public class SettingsManager : MonoBehaviour
     private void CreateMainPanel()
     {
         GameObject panelObj = new GameObject("SettingsPanel");
-        panelObj.transform.SetParent(settingsCanvas.transform);
+        panelObj.transform.SetParent(settingsCanvas.transform, false);
         
         // 设置RectTransform
         RectTransform panelRect = panelObj.AddComponent<RectTransform>();
@@ -303,7 +261,7 @@ public class SettingsManager : MonoBehaviour
     {
         // 创建内容区域
         GameObject contentObj = new GameObject("Content");
-        contentObj.transform.SetParent(settingsPanel.transform);
+        contentObj.transform.SetParent(settingsPanel.transform, false);
         
         RectTransform contentRect = contentObj.AddComponent<RectTransform>();
         contentRect.anchorMin = new Vector2(0.14f, 0.06f);
@@ -313,7 +271,7 @@ public class SettingsManager : MonoBehaviour
         
         // 添加内容背景
         Image contentBg = contentObj.AddComponent<Image>();
-        contentBg.color = new Color(0.2f, 0.2f, 0.2f, 1f);
+        contentBg.color = UISystem.GameUI.Surface;
         contentObj.AddComponent<RectMask2D>();
         
         // 创建标题
@@ -333,6 +291,15 @@ public class SettingsManager : MonoBehaviour
 
         // 创建关闭按钮
         CreateCloseButton(contentObj);
+        closeButton.GetComponent<RectTransform>().anchorMin = new Vector2(0.39f, 0.04f);
+        closeButton.GetComponent<RectTransform>().anchorMax = new Vector2(0.64f, 0.10f);
+        returnTitleButton = UISystem.GameUI.Button(contentObj.transform, "ReturnToTitle", UISystem.GameUI.L("ui.session.return_title"),
+            new Vector2(0.67f, 0.04f), new Vector2(0.95f, 0.10f), () => SceneSystem.GameSession.Instance.ConfirmReturnToTitle());
+        var returnLoc = returnTitleButton.GetComponentInChildren<Text>().gameObject.AddComponent<LocalizedText>();
+        returnLoc.TextKey = "ui.session.return_title";
+        var history = UISystem.GameUI.Button(contentObj.transform, "StoryHistory", UISystem.GameUI.L("ui.history.title"),
+            new Vector2(0.70f, 0.91f), new Vector2(0.95f, 0.97f), StorySystem.StoryHistoryUI.Show);
+        history.GetComponentInChildren<Text>().gameObject.AddComponent<LocalizedText>().TextKey = "ui.history.title";
     }
     
     /// <summary>
@@ -341,7 +308,7 @@ public class SettingsManager : MonoBehaviour
     private void CreateTitle(GameObject parent)
     {
         GameObject titleObj = new GameObject("Title");
-        titleObj.transform.SetParent(parent.transform);
+        titleObj.transform.SetParent(parent.transform, false);
         
         RectTransform titleRect = titleObj.AddComponent<RectTransform>();
         titleRect.anchorMin = new Vector2(0.1f, 0.92f);
@@ -368,7 +335,7 @@ public class SettingsManager : MonoBehaviour
     private void CreateLanguageLabel(GameObject parent)
     {
         GameObject labelObj = new GameObject("LanguageLabel");
-        labelObj.transform.SetParent(parent.transform);
+        labelObj.transform.SetParent(parent.transform, false);
         
         RectTransform labelRect = labelObj.AddComponent<RectTransform>();
         labelRect.anchorMin = new Vector2(0.1f, 0.85f);
@@ -415,7 +382,7 @@ public class SettingsManager : MonoBehaviour
     private Button CreateLanguageButton(GameObject parent, string name, string text, Vector2 anchorMin, Vector2 anchorMax)
     {
         GameObject buttonObj = new GameObject(name);
-        buttonObj.transform.SetParent(parent.transform);
+        buttonObj.transform.SetParent(parent.transform, false);
         
         RectTransform buttonRect = buttonObj.AddComponent<RectTransform>();
         buttonRect.anchorMin = anchorMin;
@@ -440,7 +407,7 @@ public class SettingsManager : MonoBehaviour
         
         // 创建按钮文本
         GameObject textObj = new GameObject("Text");
-        textObj.transform.SetParent(buttonObj.transform);
+        textObj.transform.SetParent(buttonObj.transform, false);
         
         RectTransform textRect = textObj.AddComponent<RectTransform>();
         textRect.anchorMin = Vector2.zero;
@@ -468,7 +435,7 @@ public class SettingsManager : MonoBehaviour
     {
         // 音频区标题
         GameObject headerObj = new GameObject("AudioSectionLabel");
-        headerObj.transform.SetParent(parent.transform);
+        headerObj.transform.SetParent(parent.transform, false);
         RectTransform headerRect = headerObj.AddComponent<RectTransform>();
         headerRect.anchorMin = new Vector2(0.1f, 0.68f);
         headerRect.anchorMax = new Vector2(0.9f, 0.72f);
@@ -509,7 +476,7 @@ public class SettingsManager : MonoBehaviour
     {
         // 标签
         GameObject labelObj = new GameObject($"{name}_Label");
-        labelObj.transform.SetParent(parent.transform);
+        labelObj.transform.SetParent(parent.transform, false);
         RectTransform labelRect = labelObj.AddComponent<RectTransform>();
         labelRect.anchorMin = new Vector2(0.05f, yMin);
         labelRect.anchorMax = new Vector2(0.38f, yMax);
@@ -519,10 +486,10 @@ public class SettingsManager : MonoBehaviour
         labelText = labelObj.AddComponent<Text>();
         labelText.text = fallbackText;
         labelText.font = UIFontResolver.GetUIFont();
-        labelText.fontSize = 16;
+        labelText.fontSize = 24;
         labelText.resizeTextForBestFit = true;
-        labelText.resizeTextMinSize = 11;
-        labelText.resizeTextMaxSize = 16;
+        labelText.resizeTextMinSize = 20;
+        labelText.resizeTextMaxSize = 24;
         labelText.color = Color.white;
         labelText.alignment = TextAnchor.MiddleLeft;
 
@@ -531,7 +498,7 @@ public class SettingsManager : MonoBehaviour
 
         // 滑条容器
         GameObject sliderObj = new GameObject($"{name}_Slider");
-        sliderObj.transform.SetParent(parent.transform);
+        sliderObj.transform.SetParent(parent.transform, false);
         RectTransform sliderRect = sliderObj.AddComponent<RectTransform>();
         sliderRect.anchorMin = new Vector2(0.40f, yMin);
         sliderRect.anchorMax = new Vector2(0.95f, yMax);
@@ -545,7 +512,7 @@ public class SettingsManager : MonoBehaviour
 
         // Background
         GameObject bgObj = new GameObject("Background");
-        bgObj.transform.SetParent(sliderObj.transform);
+        bgObj.transform.SetParent(sliderObj.transform, false);
         RectTransform bgRect = bgObj.AddComponent<RectTransform>();
         bgRect.anchorMin = new Vector2(0f, 0.3f);
         bgRect.anchorMax = new Vector2(1f, 0.7f);
@@ -556,7 +523,7 @@ public class SettingsManager : MonoBehaviour
 
         // Fill Area + Fill
         GameObject fillAreaObj = new GameObject("Fill Area");
-        fillAreaObj.transform.SetParent(sliderObj.transform);
+        fillAreaObj.transform.SetParent(sliderObj.transform, false);
         RectTransform fillAreaRect = fillAreaObj.AddComponent<RectTransform>();
         fillAreaRect.anchorMin = new Vector2(0f, 0.3f);
         fillAreaRect.anchorMax = new Vector2(1f, 0.7f);
@@ -564,18 +531,18 @@ public class SettingsManager : MonoBehaviour
         fillAreaRect.offsetMax = new Vector2(-15f, 0f);
 
         GameObject fillObj = new GameObject("Fill");
-        fillObj.transform.SetParent(fillAreaObj.transform);
+        fillObj.transform.SetParent(fillAreaObj.transform, false);
         RectTransform fillRect = fillObj.AddComponent<RectTransform>();
         fillRect.anchorMin = Vector2.zero;
         fillRect.anchorMax = Vector2.one;
         fillRect.offsetMin = Vector2.zero;
         fillRect.offsetMax = Vector2.zero;
         Image fillImg = fillObj.AddComponent<Image>();
-        fillImg.color = new Color(0.4f, 0.7f, 0.95f, 1f);
+        fillImg.color = UISystem.GameUI.Accent;
 
         // Handle Slide Area + Handle
         GameObject handleAreaObj = new GameObject("Handle Slide Area");
-        handleAreaObj.transform.SetParent(sliderObj.transform);
+        handleAreaObj.transform.SetParent(sliderObj.transform, false);
         RectTransform handleAreaRect = handleAreaObj.AddComponent<RectTransform>();
         handleAreaRect.anchorMin = Vector2.zero;
         handleAreaRect.anchorMax = Vector2.one;
@@ -583,11 +550,14 @@ public class SettingsManager : MonoBehaviour
         handleAreaRect.offsetMax = new Vector2(-10f, 0f);
 
         GameObject handleObj = new GameObject("Handle");
-        handleObj.transform.SetParent(handleAreaObj.transform);
+        handleObj.transform.SetParent(handleAreaObj.transform, false);
         RectTransform handleRect = handleObj.AddComponent<RectTransform>();
+        handleRect.anchorMin = new Vector2(0.5f, 0f);
+        handleRect.anchorMax = new Vector2(0.5f, 1f);
+        handleRect.anchoredPosition = Vector2.zero;
         handleRect.sizeDelta = new Vector2(18f, 0f);
         Image handleImg = handleObj.AddComponent<Image>();
-        handleImg.color = new Color(0.7f, 0.85f, 1f, 1f);
+        handleImg.color = Color.white;
 
         slider.fillRect = fillRect;
         slider.handleRect = handleRect;
@@ -602,7 +572,7 @@ public class SettingsManager : MonoBehaviour
     private void CreateGameplaySection(GameObject parent)
     {
         GameObject headerObj = new GameObject("GameplaySectionLabel");
-        headerObj.transform.SetParent(parent.transform);
+        headerObj.transform.SetParent(parent.transform, false);
         RectTransform headerRect = headerObj.AddComponent<RectTransform>();
         headerRect.anchorMin = new Vector2(0.1f, 0.28f);
         headerRect.anchorMax = new Vector2(0.9f, 0.32f);
@@ -639,7 +609,7 @@ public class SettingsManager : MonoBehaviour
                                            bool wholeNumbers, out Text labelText)
     {
         GameObject labelObj = new GameObject($"{name}_Label");
-        labelObj.transform.SetParent(parent.transform);
+        labelObj.transform.SetParent(parent.transform, false);
         RectTransform labelRect = labelObj.AddComponent<RectTransform>();
         labelRect.anchorMin = new Vector2(0.05f, yMin);
         labelRect.anchorMax = new Vector2(0.38f, yMax);
@@ -649,15 +619,15 @@ public class SettingsManager : MonoBehaviour
         labelText = labelObj.AddComponent<Text>();
         labelText.text = fallbackText;
         labelText.font = UIFontResolver.GetUIFont();
-        labelText.fontSize = 16;
+        labelText.fontSize = 24;
         labelText.resizeTextForBestFit = true;
-        labelText.resizeTextMinSize = 11;
-        labelText.resizeTextMaxSize = 16;
+        labelText.resizeTextMinSize = 20;
+        labelText.resizeTextMaxSize = 24;
         labelText.color = Color.white;
         labelText.alignment = TextAnchor.MiddleLeft;
 
         GameObject sliderObj = new GameObject($"{name}_Slider");
-        sliderObj.transform.SetParent(parent.transform);
+        sliderObj.transform.SetParent(parent.transform, false);
         RectTransform sliderRect = sliderObj.AddComponent<RectTransform>();
         sliderRect.anchorMin = new Vector2(0.40f, yMin);
         sliderRect.anchorMax = new Vector2(0.95f, yMax);
@@ -671,7 +641,7 @@ public class SettingsManager : MonoBehaviour
         slider.wholeNumbers = wholeNumbers;
 
         GameObject bgObj = new GameObject("Background");
-        bgObj.transform.SetParent(sliderObj.transform);
+        bgObj.transform.SetParent(sliderObj.transform, false);
         RectTransform bgRect = bgObj.AddComponent<RectTransform>();
         bgRect.anchorMin = new Vector2(0f, 0.3f);
         bgRect.anchorMax = new Vector2(1f, 0.7f);
@@ -681,7 +651,7 @@ public class SettingsManager : MonoBehaviour
         bgImg.color = new Color(0.15f, 0.15f, 0.15f, 1f);
 
         GameObject fillAreaObj = new GameObject("Fill Area");
-        fillAreaObj.transform.SetParent(sliderObj.transform);
+        fillAreaObj.transform.SetParent(sliderObj.transform, false);
         RectTransform fillAreaRect = fillAreaObj.AddComponent<RectTransform>();
         fillAreaRect.anchorMin = new Vector2(0f, 0.3f);
         fillAreaRect.anchorMax = new Vector2(1f, 0.7f);
@@ -689,17 +659,17 @@ public class SettingsManager : MonoBehaviour
         fillAreaRect.offsetMax = new Vector2(-15f, 0f);
 
         GameObject fillObj = new GameObject("Fill");
-        fillObj.transform.SetParent(fillAreaObj.transform);
+        fillObj.transform.SetParent(fillAreaObj.transform, false);
         RectTransform fillRect = fillObj.AddComponent<RectTransform>();
         fillRect.anchorMin = Vector2.zero;
         fillRect.anchorMax = Vector2.one;
         fillRect.offsetMin = Vector2.zero;
         fillRect.offsetMax = Vector2.zero;
         Image fillImg = fillObj.AddComponent<Image>();
-        fillImg.color = new Color(0.4f, 0.7f, 0.95f, 1f);
+        fillImg.color = UISystem.GameUI.Accent;
 
         GameObject handleAreaObj = new GameObject("Handle Slide Area");
-        handleAreaObj.transform.SetParent(sliderObj.transform);
+        handleAreaObj.transform.SetParent(sliderObj.transform, false);
         RectTransform handleAreaRect = handleAreaObj.AddComponent<RectTransform>();
         handleAreaRect.anchorMin = Vector2.zero;
         handleAreaRect.anchorMax = Vector2.one;
@@ -707,11 +677,14 @@ public class SettingsManager : MonoBehaviour
         handleAreaRect.offsetMax = new Vector2(-10f, 0f);
 
         GameObject handleObj = new GameObject("Handle");
-        handleObj.transform.SetParent(handleAreaObj.transform);
+        handleObj.transform.SetParent(handleAreaObj.transform, false);
         RectTransform handleRect = handleObj.AddComponent<RectTransform>();
+        handleRect.anchorMin = new Vector2(0.5f, 0f);
+        handleRect.anchorMax = new Vector2(0.5f, 1f);
+        handleRect.anchoredPosition = Vector2.zero;
         handleRect.sizeDelta = new Vector2(18f, 0f);
         Image handleImg = handleObj.AddComponent<Image>();
-        handleImg.color = new Color(0.7f, 0.85f, 1f, 1f);
+        handleImg.color = Color.white;
 
         slider.fillRect = fillRect;
         slider.handleRect = handleRect;
@@ -726,7 +699,7 @@ public class SettingsManager : MonoBehaviour
     private void CreateCloseButton(GameObject parent)
     {
         GameObject buttonObj = new GameObject("CloseButton");
-        buttonObj.transform.SetParent(parent.transform);
+        buttonObj.transform.SetParent(parent.transform, false);
         
         RectTransform buttonRect = buttonObj.AddComponent<RectTransform>();
         buttonRect.anchorMin = new Vector2(0.38f, 0.04f);
@@ -749,7 +722,7 @@ public class SettingsManager : MonoBehaviour
         
         // 创建按钮文本
         GameObject textObj = new GameObject("Text");
-        textObj.transform.SetParent(buttonObj.transform);
+        textObj.transform.SetParent(buttonObj.transform, false);
         
         RectTransform textRect = textObj.AddComponent<RectTransform>();
         textRect.anchorMin = Vector2.zero;

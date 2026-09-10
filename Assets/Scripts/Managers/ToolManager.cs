@@ -14,6 +14,7 @@ public class ToolManager : MonoBehaviour
     
     void Start()
     {
+        UISystem.CurrentToolHUD.Attach(this);
         if (toolHolder == null)
         {
             toolHolder = transform;
@@ -170,6 +171,7 @@ public class ToolManager : MonoBehaviour
             currentTool.Unequip();
             currentTool = null;
             currentToolIndex = -1;
+            GameEventBus.RaiseToolEquipped("", "");
         }
     }
     

@@ -18,6 +18,14 @@ public static class ProgressResetService
     public static void ResetAll()
     {
         StorySystem.QuizScoreManager.Instance.StartNewRun();
+        PlayerPrefs.DeleteKey(SceneSystem.GameSession.ResumeSceneKey);
+        StorySystem.StoryHistory.Reset();
+        StorySystem.StoryCheckpoint.Reset();
+        StorySystem.InvestigationProgress.Reset();
+        PlayerPrefs.DeleteKey(Backend.SurveyCompletionStore.StorageKey);
+        PlayerPrefs.DeleteKey("Backend.SurveyTicket.v1");
+        PlayerPrefs.DeleteKey("PlayerPersistentData.Scene.MainScene");
+        PlayerPrefs.DeleteKey("PlayerPersistentData.Scene.Laboratory Scene");
 
         // 1) 清 PlayerPrefs 存档
         PlayerPrefs.DeleteKey(InventoryPrefsKey);
@@ -27,6 +35,9 @@ public static class ProgressResetService
         PlayerPrefs.DeleteKey(ClassRoomHiddenKey);
         PlayerPrefs.DeleteKey(StoryFlagsKey);
         PlayerPrefs.Save();
+
+        var persistent = Object.FindFirstObjectByType<PlayerPersistentData>();
+        if (persistent != null) persistent.ResetRuntimeData();
 
         // 2) 清仓库文件
         var path = Path.Combine(Application.persistentDataPath, "warehouse_data.json");

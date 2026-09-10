@@ -87,6 +87,11 @@ public class FirstPersonController : MonoBehaviour
 
     void Update()
     {
+        if (controller == null || !controller.enabled || !controller.gameObject.activeInHierarchy || Core.GameInputState.GameplayBlocked)
+        {
+            SuppressPlayerInputs();
+            return;
+        }
         bool blockInput = StoryDirector.SubtitleUI.IsPlayerInputBlocked;
         if (blockInput)
         {
@@ -137,11 +142,12 @@ public class FirstPersonController : MonoBehaviour
             lastMobileInputMode = currentMobileInputMode;
         }
 
-        // 注释掉复杂的强制解锁逻辑，改用ESC键手动控制
+        // Modal input and Escape are owned by GameInputState / SettingsManager.
     }
 
     void HandleInput()
     {
+        if (Core.GameInputState.GameplayBlocked) { SuppressPlayerInputs(); return; }
         if (ShouldUseMobileInputOnly())
         {
             HandleMobileInput();
@@ -250,11 +256,7 @@ public class FirstPersonController : MonoBehaviour
                 DebugHandPositions();
             }
 
-            // ESC键切换鼠标锁定状态（方便调试和退出）
-            if (keyboard.escapeKey.wasPressedThisFrame)
-            {
-                ToggleCursorLock();
-            }
+
         }
 
         // 鼠标视角控制 - 简化逻辑
@@ -535,6 +537,7 @@ public class FirstPersonController : MonoBehaviour
     void InitializeHandAnchors()
     {
         // 创建或设置右手锚点
+        if (rightHandOffset.y < -0.6f) rightHandOffset = new Vector3(0.22f, -0.24f, 0.45f);
         if (rightHandAnchor == null)
         {
             GameObject rightHand = new GameObject("RightHandAnchor");

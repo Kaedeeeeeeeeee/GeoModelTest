@@ -15,6 +15,7 @@ namespace Backend
     public sealed class TelemetryClient : MonoBehaviour
     {
         private const string PendingSnapshotPrefsKey = "Backend.PendingProgressSnapshot.v2";
+        public const string PendingSessionEndPrefsKey = "Backend.PendingSessionEnd.v1";
 
         public static TelemetryClient Instance { get; private set; }
 
@@ -65,31 +66,37 @@ namespace Backend
 
             if (settings == null || !settings.EnableBackend || !settings.HasClientConfig)
             {
-                completed?.Invoke(false, "研究用サーバーの設定がありません。");
+                completed?.Invoke(false, UISystem.GameUI.L("backend.closed"));
                 yield break;
             }
 
             if (!settings.CanShowResearchEntry)
             {
-                completed?.Invoke(false, "研究参加の受付は現在停止しています。");
+                completed?.Invoke(false, UISystem.GameUI.L("backend.closed"));
                 yield break;
             }
 
-            string normalizedCode = participantCode?.Trim() ?? string.Empty;
-            if (normalizedCode.Length < 8 || normalizedCode.Length > 64)
+            string normalizedCode = participantCode?.Trim().ToUpperInvariant() ?? string.Empty;
+            if (!System.Text.RegularExpressions.Regex.IsMatch(normalizedCode, "^[A-Z0-9-]{8,64}$"))
             {
-                completed?.Invoke(false, "参加コードを確認してください。");
+                completed?.Invoke(false, UISystem.GameUI.L("backend.invalid_code"));
                 yield break;
             }
 
             _settings = settings;
             _installId = BackendSessionStore.GetOrCreateInstallId();
+            string previousParticipantId = PlayerPrefs.GetString(BackendSessionStore.ResearchParticipantIdKey, "");
+            if (!BackendAuthProfiles.SelectCode(settings.SupabaseUrl, normalizedCode, out bool changedParticipant))
+            {
+                completed?.Invoke(false, UISystem.GameUI.L("backend.pending_upload"));
+                yield break;
+            }
 
             bool signedIn = false;
             yield return EnsureSignedIn(value => signedIn = value);
             if (!signedIn)
             {
-                completed?.Invoke(false, "サーバーに接続できませんでした。時間をおいて再試行してください。");
+                completed?.Invoke(false, UISystem.GameUI.L("backend.network"));
                 yield break;
             }
 
@@ -105,7 +112,7 @@ namespace Backend
                 !Guid.TryParse(participation.studyId, out _))
             {
                 completed?.Invoke(false, string.IsNullOrWhiteSpace(participationError)
-                    ? "参加コードを確認できませんでした。"
+                    ? UISystem.GameUI.L("backend.invalid_code")
                     : participationError);
                 yield break;
             }
@@ -118,8 +125,36 @@ namespace Backend
                 protocolVersion = participation.protocolVersion
             };
 
-            ClearStaleParticipantDataIfNeeded(context.participantId);
+            if (HasPendingDataForOtherParticipant(context.participantId))
+            {
+                completed?.Invoke(false, UISystem.GameUI.L("backend.pending_upload"));
+                yield break;
+            }
             BackendSessionStore.SaveResearchContext(context);
+            BackendAuthProfiles.MarkVerified();
+            if (changedParticipant || (!string.IsNullOrEmpty(previousParticipantId) && previousParticipantId != context.participantId))
+                ProgressResetService.ResetAll();
+            if (PlayerPrefs.HasKey(PendingSessionEndPrefsKey))
+            {
+                _researchContext = context;
+                _sessionId = BackendSessionStore.CreateSessionId();
+                _queue = new TelemetryQueue(settings.MaxPersistedEvents);
+                _initialized = true;
+                while (_queue.Count > 0)
+                {
+                    bool uploaded = false;
+                    yield return FlushAsync(false, done: value => uploaded = value);
+                    if (!uploaded) break;
+                }
+                if (_queue.Count == 0) yield return SendPendingSessionEnd();
+                _initialized = false;
+                if (PlayerPrefs.HasKey(PendingSessionEndPrefsKey))
+                {
+                    completed?.Invoke(false, UISystem.GameUI.L("backend.pending_upload"));
+                    yield break;
+                }
+                ClearPendingSnapshot();
+            }
             InitializeAuthorized(settings, context);
             completed?.Invoke(true, string.Empty);
         }
@@ -219,11 +254,25 @@ namespace Backend
             }
         }
 
+        public IEnumerator FlushForSurvey(Action<bool> completed)
+        {
+            while (_flushRunning) yield return null;
+            if (!_initialized || _ending) { completed(false); yield break; }
+            CaptureProgressSnapshot();
+            do
+            {
+                while (_flushRunning) yield return null;
+                bool posted = false;
+                yield return FlushAsync(false, done: value => posted = value);
+                if (!posted) { completed(false); yield break; }
+            } while (_initialized && (_queue.Count > 0 || _snapshotDirty));
+            completed(_initialized);
+        }
+
         public void EndResearchSession(string reason, Action completed = null)
         {
             if (!_initialized)
             {
-                ClearResearchIdentity();
                 completed?.Invoke();
                 return;
             }
@@ -248,6 +297,12 @@ namespace Backend
                 yield return null;
             }
 
+            // Persist the bound final snapshot before networking. Offline exit can be retried
+            // after the same participant explicitly re-enters research mode.
+            var finalRequest = BuildSessionEndRequest(reason);
+            PlayerPrefs.SetString(PendingSessionEndPrefsKey, JsonConvert.SerializeObject(finalRequest, BackendJson.Settings));
+            PlayerPrefs.Save();
+
             // Send all full batches first so the final request can reliably close the session.
             while (_initialized && _queue != null && _queue.Count > 0)
             {
@@ -259,16 +314,16 @@ namespace Backend
                 }
             }
 
-            if (_initialized)
+            if (_initialized && _queue.Count == 0)
             {
-                yield return FlushAsync(true, reason);
+                yield return SendPendingSessionEnd();
             }
 
             _initialized = false;
             UnsubscribeEvents();
-            _queue?.Clear();
-            ClearPendingSnapshot();
-            ClearResearchIdentity();
+            _queue?.Persist();
+            // Keep credentials and participant binding, but stop all collection immediately.
+            _researchContext = null;
             Action callbacks = _endCompletionCallbacks;
             _endCompletionCallbacks = null;
             callbacks?.Invoke();
@@ -389,6 +444,12 @@ namespace Backend
             }
 
             TelemetryBatch batch = _queue.PeekBatch(_settings.MaxBatchSize);
+            if (batch.Count == 0 && PlayerPrefs.HasKey(PendingSessionEndPrefsKey))
+            {
+                _flushRunning = true;
+                yield return SendPendingSessionEnd();
+                _flushRunning = false;
+            }
             if (batch.Count == 0 && !_snapshotDirty && !sessionEnd)
             {
                 done?.Invoke(true);
@@ -453,6 +514,7 @@ namespace Backend
             if (_researchAccessRevoked)
             {
                 _queue.Clear();
+                PlayerPrefs.DeleteKey(PendingSessionEndPrefsKey);
                 ClearPendingSnapshot();
                 _snapshotDirty = false;
                 _initialized = false;
@@ -493,11 +555,9 @@ namespace Backend
             {
                 bool refreshed = false;
                 yield return RefreshAuth(refreshToken, value => refreshed = value);
-                if (refreshed)
-                {
-                    done(true);
-                    yield break;
-                }
+                // Never silently replace a bound identity when refresh fails (including offline).
+                done(refreshed);
+                yield break;
             }
 
             yield return SignInAnonymously(done);
@@ -556,7 +616,7 @@ namespace Backend
         {
             if (!BackendSessionStore.TryGetValidAccessToken(out string accessToken))
             {
-                failure("認証情報を確認できませんでした。");
+                failure(UISystem.GameUI.L("backend.network"));
                 yield break;
             }
 
@@ -575,6 +635,8 @@ namespace Backend
             if (!IsSuccess(request))
             {
                 ResearchParticipationResponse errorResponse = null;
+                if (request.responseCode == 401)
+                    PlayerPrefs.SetString(BackendSessionStore.AccessTokenExpiresAtKey, "0");
                 try
                 {
                     errorResponse = JsonConvert.DeserializeObject<ResearchParticipationResponse>(request.downloadHandler?.text, BackendJson.Settings);
@@ -584,7 +646,7 @@ namespace Backend
                     // Use the generic message below.
                 }
 
-                failure(errorResponse?.error ?? "参加コードを確認できませんでした。");
+                failure(ParticipationErrorMessage(request.responseCode, errorResponse?.error));
                 yield break;
             }
 
@@ -595,8 +657,21 @@ namespace Backend
             catch (Exception ex)
             {
                 LogWarning($"Participation response parse failed: {ex.Message}");
-                failure("サーバーの応答を読み取れませんでした。");
+                failure(UISystem.GameUI.L("backend.network"));
             }
+        }
+
+        public static string ParticipationErrorMessage(long status, string serverMessage = null)
+        {
+            string key = status switch
+            {
+                400 or 404 => "backend.invalid_code",
+                403 => "backend.closed",
+                409 => serverMessage != null && serverMessage.Contains("バージョン") ? "backend.version" : "backend.bound",
+                429 => "backend.rate_limit",
+                _ => "backend.network"
+            };
+            return UISystem.GameUI.L(key);
         }
 
         private IEnumerator PostIngest(IngestRequest payload, Action<bool> done)
@@ -613,12 +688,16 @@ namespace Backend
             yield return request.SendWebRequest();
 
             bool success = IsSuccess(request);
+            if (success && payload.progressSnapshot != null)
+                SurveyCompletionStore.Remember(payload.progressSnapshot, _settings.SupabaseUrl);
             if (!success)
             {
-                if (request.responseCode == 401 || request.responseCode == 403)
+                if (request.responseCode == 403)
                 {
                     _researchAccessRevoked = true;
                 }
+                if (request.responseCode == 401)
+                    PlayerPrefs.SetString(BackendSessionStore.AccessTokenExpiresAtKey, "0");
                 LogWarning($"Ingest failed: HTTP {request.responseCode} {request.error} {TruncateResponse(request.downloadHandler?.text)}");
             }
             else if (_settings.VerboseLogging)
@@ -763,17 +842,64 @@ namespace Backend
             PlayerPrefs.Save();
         }
 
-        private static void ClearStaleParticipantDataIfNeeded(string participantId)
+        private static bool HasPendingDataForOtherParticipant(string participantId)
         {
+            var queue = new TelemetryQueue(1000);
+            if (queue.HasDataForOtherParticipant(participantId)) return true;
+            string pendingEnd = PlayerPrefs.GetString(PendingSessionEndPrefsKey, "");
+            if (!string.IsNullOrEmpty(pendingEnd))
+            {
+                try
+                {
+                    var request = JsonConvert.DeserializeObject<IngestRequest>(pendingEnd, BackendJson.Settings);
+                    if (request == null || request.participantId != participantId) return true;
+                }
+                catch { return true; }
+            }
             string previousParticipantId = PlayerPrefs.GetString(BackendSessionStore.ResearchParticipantIdKey, string.Empty);
             if (string.IsNullOrEmpty(previousParticipantId) || previousParticipantId == participantId)
             {
-                return;
+                return false;
             }
 
-            PlayerPrefs.DeleteKey(TelemetryQueue.PendingEventsPrefsKey);
-            ClearPendingSnapshot();
-            BackendSessionStore.ClearResearchContext();
+            return queue.Count > 0 || PlayerPrefs.HasKey(PendingSessionEndPrefsKey);
+        }
+
+        private IngestRequest BuildSessionEndRequest(string reason)
+        {
+            return new IngestRequest
+            {
+                installId = _installId, participantId = _researchContext.participantId,
+                studyId = _researchContext.studyId, condition = _researchContext.condition,
+                protocolVersion = _researchContext.protocolVersion, sessionId = _sessionId,
+                gameVersion = Application.version, platform = Application.platform.ToString(),
+                buildTarget = GetBuildTarget(), language = Application.systemLanguage.ToString(),
+                currentScene = SceneManager.GetActiveScene().name,
+                contentVersion = ResearchContentVersion.ContentVersion, storyRoute = ResearchContentVersion.StoryRoute,
+                events = new List<TelemetryEvent>(), quizAttempts = new List<QuizAttemptUpload>(),
+                progressSnapshot = BuildBoundProgressSnapshot(),
+                sessionEnd = new SessionEndPayload { endedAt = DateTimeOffset.UtcNow.ToString("o"), reason = reason }
+            };
+        }
+
+        private IEnumerator SendPendingSessionEnd()
+        {
+            string json = PlayerPrefs.GetString(PendingSessionEndPrefsKey, "");
+            if (string.IsNullOrEmpty(json)) yield break;
+            IngestRequest request = null;
+            try { request = JsonConvert.DeserializeObject<IngestRequest>(json, BackendJson.Settings); }
+            catch { LogWarning("Pending session end could not be read; retained for recovery."); }
+            if (request == null || request.participantId != _researchContext.participantId) yield break;
+            bool authenticated = false;
+            yield return EnsureSignedIn(value => authenticated = value);
+            if (!authenticated) yield break;
+            bool posted = false;
+            yield return PostIngest(request, value => posted = value);
+            if (posted && PlayerPrefs.GetString(PendingSessionEndPrefsKey, "") == json)
+            {
+                PlayerPrefs.DeleteKey(PendingSessionEndPrefsKey);
+                PlayerPrefs.Save();
+            }
         }
 
         private static void ClearResearchIdentity()

@@ -1,0 +1,12 @@
+{
+  "scene": "Core collection — return to laboratory",
+  "background": "field_day",
+  "dialogues": [
+    {
+      "speaker": "Dr.Kaede",
+      "speakerKey": "story.speaker.drkaede",
+      "textKey": "story.core_return.line",
+      "text": "よくやった。研究室に戻って、このサンプルを詳しく調べてみよう。"
+    }
+  ]
+}

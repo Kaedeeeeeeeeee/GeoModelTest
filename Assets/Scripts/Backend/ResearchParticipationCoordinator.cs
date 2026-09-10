@@ -46,7 +46,7 @@ namespace Backend
         {
             if (IsActivating)
             {
-                completed?.Invoke(false, "参加コードを確認しています。少し待ってください。");
+                completed?.Invoke(false, UISystem.GameUI.L("backend.checking"));
                 return;
             }
 
@@ -58,8 +58,7 @@ namespace Backend
             TelemetryClient client = TelemetryClient.Instance;
             if (client == null || !client.IsResearchActive)
             {
-                BackendSessionStore.ClearResearchContext();
-                BackendSessionStore.ClearAuthSession();
+                // Ending an opt-in session must not discard the anonymous identity needed for re-entry.
                 completed?.Invoke();
                 return;
             }
@@ -74,11 +73,19 @@ namespace Backend
             if (settings == null || !settings.CanShowResearchEntry)
             {
                 IsActivating = false;
-                completed?.Invoke(false, "研究参加の受付は現在停止しています。");
+                completed?.Invoke(false, UISystem.GameUI.L("backend.closed"));
                 yield break;
             }
 
             TelemetryClient client = BackendBootstrap.CreateResearchClient();
+            if (client.IsResearchActive && !BackendAuthProfiles.IsCurrentCode(settings.SupabaseUrl, participantCode ?? ""))
+            {
+                bool ended = false;
+                client.EndResearchSession("participant_switch", () => ended = true);
+                while (!ended) yield return null;
+                yield return null; // Let the previous client be destroyed before creating its replacement.
+                client = BackendBootstrap.CreateResearchClient();
+            }
             bool success = false;
             string message = string.Empty;
             yield return client.ActivateForResearch(settings, participantCode, (value, error) =>

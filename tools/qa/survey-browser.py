@@ -1,0 +1,76 @@
+"""Real local survey UI checks. Run survey-smoke.py first for a fresh ticket."""
+import json
+from pathlib import Path
+from playwright.sync_api import sync_playwright, expect
+
+root = Path(__file__).resolve().parents[2]
+fixture = json.loads((root/'Logs/remediation/survey/fixture.json').read_text())
+shots = root/'Docs/reports/2026-09-11-survey/screenshots'
+shots.mkdir(parents=True, exist_ok=True)
+results = []
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    context = browser.new_context(viewport={'width':1280,'height':1000})
+    page = context.new_page()
+    errors, submissions = [], []
+    page.on('pageerror', lambda error: errors.append(str(error)))
+    page.on('request', lambda request: submissions.append(request.post_data_json) if request.method=='POST' and request.post_data_json.get('action')=='submit' else None)
+    page.goto('http://127.0.0.1:55883/#ticket='+fixture['ticket'])
+    page.wait_for_load_state('networkidle')
+    expect(page.locator('#questionnaire')).to_be_visible()
+    assert '#' not in page.url
+    assert page.locator('input:not([type=radio])').count()==0
+    results.append('Valid ticket opens the survey; URL is scrubbed and no participant field exists')
+    page.screenshot(path=str(shots/'02-survey-desktop.png'), full_page=True)
+    page.locator('#next').click()
+    expect(page.locator('#form-error')).to_be_visible()
+    assert page.locator('#step-label').inner_text().startswith('1 /')
+    results.append('Unanswered required questions block advancing and explain the skip choice')
+    page.locator('input[name=q1][value="4"]').check()
+    page.locator('input[name=q2][value="skip"]').check()
+    page.set_viewport_size({'width':390,'height':844})
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+    page.screenshot(path=str(shots/'03-survey-mobile.png'), full_page=True)
+    results.append('390px mobile layout fits without horizontal overflow')
+    page.locator('#next').click()
+    page.reload()
+    expect(page.locator('#step-label')).to_have_text('2 / 5 ページ')
+    page.locator('#previous').click()
+    expect(page.locator('input[name=q1][value="4"]')).to_be_checked()
+    expect(page.locator('input[name=q2][value="skip"]')).to_be_checked()
+    results.append('Refresh and back retain per-ticket draft answers and the current page')
+    page.locator('#next').click()
+    for ids in ([3,4,5,6],[7,8,9,10],[11,12]):
+        for n in ids: page.locator(f'input[name=q{n}][value="'+('none' if n==12 else '3')+'"]').check()
+        page.locator('#next').click()
+    page.set_viewport_size({'width':1280,'height':1000})
+    page.locator('textarea[name=q13]').fill('地層を調べる場面が印象に残りました。（動作確認用）')
+    page.screenshot(path=str(shots/'04-survey-final-page.png'), full_page=True)
+    context.set_offline(True)
+    page.locator('#next').click()
+    expect(page.locator('#form-error')).to_contain_text('送信を確認できませんでした')
+    expect(page.locator('textarea[name=q13]')).not_to_be_empty()
+    expect(page.locator('#complete')).to_be_hidden()
+    results.append('Offline submission preserves answers and never displays a false success')
+    context.set_offline(False)
+    page.locator('#next').click()
+    expect(page.locator('#complete')).to_be_visible(timeout=25000)
+    page.screenshot(path=str(shots/'05-survey-complete.png'), full_page=True)
+    assert all(set(s)=={'action','answers'} for s in submissions)
+    assert page.evaluate('Object.keys(sessionStorage).every(k=>!k.startsWith("geomodel.survey.draft."))')
+    results.append('Retry is acknowledged by the real backend; no identity is submitted and draft is cleared')
+    page.reload()
+    expect(page.locator('#complete')).to_be_visible()
+    results.append('Reopening a submitted ticket shows the existing completion')
+    other = browser.new_context()
+    bad = other.new_page()
+    bad.goto('http://127.0.0.1:55883/')
+    expect(bad.locator('#access-error')).to_be_visible()
+    results.append('A fresh browser without a ticket cannot answer')
+    assert not errors, errors
+    results.append('No JavaScript page errors')
+    other.close()
+    context.close()
+    browser.close()
+(root/'Logs/remediation/survey/browser-results.json').write_text(json.dumps(results,indent=2))
+print(f'{len(results)} real survey browser checks passed')

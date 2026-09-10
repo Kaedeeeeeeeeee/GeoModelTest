@@ -696,6 +696,7 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     void HandleInput()
     {
+        if (Core.GameInputState.GameplayBlocked) return;
         var keyboard = Keyboard.current;
 
         // 检查输入系统是否正常
@@ -710,7 +711,7 @@ public class InventoryUI : MonoBehaviour
             ToggleInventory();
         }
         
-        if (isInventoryOpen && keyboard.escapeKey.wasPressedThisFrame)
+        if (isInventoryOpen && Core.GameInputState.TryConsumeEscape())
         {
             Debug.Log("[InventoryUI] 检测到ESC键按下，关闭背包");
             CloseInventory();

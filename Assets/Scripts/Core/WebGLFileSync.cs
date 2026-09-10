@@ -12,7 +12,25 @@ public static class WebGLFileSync
 #if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")]
     private static extern void GeoModelTest_SyncFsToIDB();
+    [DllImport("__Internal")]
+    private static extern int GeoModelTest_SyncStatus();
 #endif
+
+    public static System.Collections.IEnumerator FlushAndWait(System.Action<bool> completed = null)
+    {
+        Flush();
+#if UNITY_WEBGL && !UNITY_EDITOR
+        float deadline = Time.realtimeSinceStartup + 8f;
+        while (GeoModelTest_SyncStatus() == 1 && Time.realtimeSinceStartup < deadline)
+            yield return null;
+        if (GeoModelTest_SyncStatus() != 2)
+            Debug.LogWarning("[WebGLFileSync] File synchronization did not complete successfully.");
+        completed?.Invoke(GeoModelTest_SyncStatus() == 2);
+#else
+        completed?.Invoke(true);
+        yield break;
+#endif
+    }
 
     /// <summary>
     /// 触发一次 IDB 同步。WebGL 下应在每次关键 File.Write/Delete 后调用。

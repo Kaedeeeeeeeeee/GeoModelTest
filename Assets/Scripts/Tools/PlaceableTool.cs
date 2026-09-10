@@ -121,7 +121,7 @@ public abstract class PlaceableTool : CollectionTool
             }
             
             bool cancelPressed = (mouse != null && mouse.rightButton.wasPressedThisFrame) ||
-                                 (keyboard != null && keyboard.escapeKey.wasPressedThisFrame);
+                                 (keyboard != null && Core.GameInputState.TryConsumeEscape());
             if (cancelPressed)
             {
                 ExitPlacementMode();
