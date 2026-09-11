@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class FirstControlExperienceTests
 {
     private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
-    private const string GuideKey = "FirstControlGuide.Completed.v1";
+    private const string GuideKey = "FirstControlGuide.Completed.v2";
     private readonly List<GameObject> _objects = new List<GameObject>();
     private UnityEngine.Object _settings;
     private string _settingsJson;

@@ -3342,27 +3342,27 @@
     },
     {
       "key": "ui.guide.desktop.move",
-      "value": "W、A、S、D 键"
+      "value": "W：前进　S：后退\nA：向左　D：向右"
     },
     {
       "key": "ui.guide.desktop.look",
-      "value": "移动鼠标"
+      "value": "移动鼠标\n看向想观察的方向"
     },
     {
       "key": "ui.guide.desktop.interact",
-      "value": "靠近后按 E / F 键\n（以画面提示为准）"
+      "value": "靠近人物或物品\n按画面提示的 E / F 键"
     },
     {
       "key": "ui.guide.desktop.tools",
-      "value": "按 Tab 键打开并选择道具"
+      "value": "按 Tab 打开道具\n点击选择要使用的道具"
     },
     {
       "key": "ui.guide.touch.move",
-      "value": "拖动左下角摇杆"
+      "value": "拖动左下角的摇杆"
     },
     {
       "key": "ui.guide.touch.look",
-      "value": "滑动画面右侧"
+      "value": "在画面右侧空白处\n滑动手指"
     },
     {
       "key": "ui.guide.touch.interact",
@@ -3370,15 +3370,19 @@
     },
     {
       "key": "ui.guide.touch.tools",
-      "value": "点击“道具”并选择"
+      "value": "点击左上的“道具”\n选择要使用的道具"
     },
     {
       "key": "ui.guide.hint",
-      "value": "先试着移动一下吧，探索时也可以查看画面的操作提示。"
+      "value": "点击“明白了”后，先试着移动一下吧。"
     },
     {
       "key": "ui.guide.begin",
       "value": "明白了，开始调查"
+    },
+    {
+      "key": "ui.guide.touch.map",
+      "value": "手指应该放在哪里？"
     }
   ]
 }

@@ -3342,27 +3342,27 @@
     },
     {
       "key": "ui.guide.desktop.move",
-      "value": "W, A, S, D keys"
+      "value": "W: forward · S: back\nA: left · D: right"
     },
     {
       "key": "ui.guide.desktop.look",
-      "value": "Move the mouse"
+      "value": "Move the mouse\nto look around"
     },
     {
       "key": "ui.guide.desktop.interact",
-      "value": "Approach and press E / F\nFollow the on-screen prompt"
+      "value": "Get close, then press\nthe E / F key shown"
     },
     {
       "key": "ui.guide.desktop.tools",
-      "value": "Press Tab and choose a tool"
+      "value": "Press Tab to open tools\nClick a tool to select it"
     },
     {
       "key": "ui.guide.touch.move",
-      "value": "Move the bottom-left stick"
+      "value": "Move the stick\nat the bottom left"
     },
     {
       "key": "ui.guide.touch.look",
-      "value": "Swipe the right side"
+      "value": "Swipe an empty area\non the right"
     },
     {
       "key": "ui.guide.touch.interact",
@@ -3370,15 +3370,19 @@
     },
     {
       "key": "ui.guide.touch.tools",
-      "value": "Tap Tools and choose"
+      "value": "Tap Tools at the top left\nChoose a tool"
     },
     {
       "key": "ui.guide.hint",
-      "value": "Try moving around. Follow the on-screen prompts as you explore."
+      "value": "When you are ready, close this guide and try moving."
     },
     {
       "key": "ui.guide.begin",
       "value": "Got it — start exploring"
+    },
+    {
+      "key": "ui.guide.touch.map",
+      "value": "Where do I touch?"
     }
   ]
 }

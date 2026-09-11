@@ -3522,27 +3522,27 @@
     },
     {
       "key": "ui.guide.desktop.move",
-      "value": "W・A・S・D キー"
+      "value": "W：前へ　S：後ろへ\nA：左へ　D：右へ"
     },
     {
       "key": "ui.guide.desktop.look",
-      "value": "マウスを動かす"
+      "value": "マウスを動かして\n見たい方向を向く"
     },
     {
       "key": "ui.guide.desktop.interact",
-      "value": "近づいて E / F キー\n（画面の案内を確認）"
+      "value": "人やものに近づいて\n画面に出た E / F を押す"
     },
     {
       "key": "ui.guide.desktop.tools",
-      "value": "Tab キーで開き、道具を選ぶ"
+      "value": "Tab で道具を開く\n使う道具をクリック"
     },
     {
       "key": "ui.guide.touch.move",
-      "value": "左下のスティックを動かす"
+      "value": "左下のスティックを\n動かす"
     },
     {
       "key": "ui.guide.touch.look",
-      "value": "画面の右側をスワイプ"
+      "value": "右側の空いている場所を\nスワイプ"
     },
     {
       "key": "ui.guide.touch.interact",
@@ -3550,15 +3550,19 @@
     },
     {
       "key": "ui.guide.touch.tools",
-      "value": "「道具」をタップして選ぶ"
+      "value": "左上の「道具」をタップ\n使う道具を選ぶ"
     },
     {
       "key": "ui.guide.hint",
-      "value": "まずは動いてみましょう。操作は画面の案内でも確認できます。"
+      "value": "「わかった」を押したら、まずは動いてみよう。"
     },
     {
       "key": "ui.guide.begin",
       "value": "わかった・調査を始める"
+    },
+    {
+      "key": "ui.guide.touch.map",
+      "value": "画面のどこをさわる？"
     }
   ]
 }
