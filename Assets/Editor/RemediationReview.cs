@@ -131,6 +131,12 @@ public static class RemediationReview
                 foreach (string key in new[] { "Backend.PendingTelemetry", "Backend.PendingSessionEnd.v1", "Backend.PendingProgressSnapshot.v2", "Backend.CurrentCodeHash.v1", "Backend.CurrentCodeVerified.v1", "Backend.LastVerifiedCodeHash.v1", "Backend.AccessToken", "Backend.RefreshToken", "Backend.UserId", "Backend.AccessTokenExpiresAtUnix", "Backend.ResearchParticipantId", "Backend.ResearchStudyId", "Backend.ResearchCondition", "Backend.ResearchProtocolVersion" }) PlayerPrefs.DeleteKey(key);
                 PlayerPrefs.Save();
                 break;
+            case "survey_release_review":
+                // Explicit editor-only observation hook. Uses the real configured
+                // backend and a separately issued QA code entered through the UI.
+                Directory.CreateDirectory("Logs/research-launch");
+                Backend.SurveyGateway.ReviewOpenUrl = url => File.WriteAllText("Logs/research-launch/opened-url.txt", url);
+                break;
             case "end_research": Backend.ResearchParticipationCoordinator.Instance.EndSession("local_review"); break;
             case "settings": SettingsManager.Instance.OpenSettings(); break;
             case "close_settings": SettingsManager.Instance.CloseSettings(); break;

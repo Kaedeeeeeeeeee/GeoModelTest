@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.116.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -8,7 +8,8 @@ const corsHeaders = {
 };
 
 const maxBodyBytes = 4096;
-const maxAttemptsPerMinute = 10;
+const maxAttemptsPerMinute = 120;
+const maxIdentityAttemptsPerMinute = 10;
 
 type JsonRecord = Record<string, unknown>;
 
@@ -99,8 +100,16 @@ serve(async (req) => {
     return fail(429, "確認回数が多すぎます。少し待ってから再試行してください。");
   }
 
+  const identityRate = await supabase.rpc("consume_research_rate_limit", {
+    p_bucket_key: await hmacSha256Hex(codePepper, `identity:${userData.user.id}`),
+    p_limit: maxIdentityAttemptsPerMinute,
+    p_window_seconds: 60,
+  });
+  if (identityRate.error) return fail(500, "参加コードを確認できませんでした。");
+  if (identityRate.data !== true) return fail(429, "確認回数が多すぎます。少し待ってから再試行してください。");
+
   const codeHash = await hmacSha256Hex(codePepper, participantCode);
-  const { data, error } = await supabase.rpc("activate_development_participant", {
+  const { data, error } = await supabase.rpc("activate_research_participant", {
     p_code_hash: codeHash,
     p_user_id: userData.user.id,
   });

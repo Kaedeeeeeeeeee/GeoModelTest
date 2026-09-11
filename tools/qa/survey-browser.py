@@ -1,11 +1,18 @@
-"""Real local survey UI checks. Run survey-smoke.py first for a fresh ticket."""
+"""Survey UI checks against a fresh QA ticket, including offline retry."""
+import argparse
 import json
 from pathlib import Path
 from playwright.sync_api import sync_playwright, expect
 
 root = Path(__file__).resolve().parents[2]
-fixture = json.loads((root/'Logs/remediation/survey/fixture.json').read_text())
-shots = root/'Docs/reports/2026-09-11-survey/screenshots'
+parser = argparse.ArgumentParser()
+parser.add_argument('--fixture', default=str(root/'Logs/remediation/survey/fixture.json'))
+parser.add_argument('--url', default='http://127.0.0.1:55883/')
+parser.add_argument('--screenshots', default=str(root/'Docs/reports/2026-09-11-survey/screenshots'))
+parser.add_argument('--results', default=str(root/'Logs/remediation/survey/browser-results.json'))
+args = parser.parse_args()
+fixture = json.loads(Path(args.fixture).read_text())
+shots = Path(args.screenshots)
 shots.mkdir(parents=True, exist_ok=True)
 results = []
 with sync_playwright() as p:
@@ -15,7 +22,7 @@ with sync_playwright() as p:
     errors, submissions = [], []
     page.on('pageerror', lambda error: errors.append(str(error)))
     page.on('request', lambda request: submissions.append(request.post_data_json) if request.method=='POST' and request.post_data_json.get('action')=='submit' else None)
-    page.goto('http://127.0.0.1:55883/#ticket='+fixture['ticket'])
+    page.goto(args.url+'#ticket='+fixture['ticket'])
     page.wait_for_load_state('networkidle')
     expect(page.locator('#questionnaire')).to_be_visible()
     assert '#' not in page.url
@@ -64,7 +71,7 @@ with sync_playwright() as p:
     results.append('Reopening a submitted ticket shows the existing completion')
     other = browser.new_context()
     bad = other.new_page()
-    bad.goto('http://127.0.0.1:55883/')
+    bad.goto(args.url)
     expect(bad.locator('#access-error')).to_be_visible()
     results.append('A fresh browser without a ticket cannot answer')
     assert not errors, errors
@@ -72,5 +79,5 @@ with sync_playwright() as p:
     other.close()
     context.close()
     browser.close()
-(root/'Logs/remediation/survey/browser-results.json').write_text(json.dumps(results,indent=2))
+Path(args.results).write_text(json.dumps(results,indent=2))
 print(f'{len(results)} real survey browser checks passed')

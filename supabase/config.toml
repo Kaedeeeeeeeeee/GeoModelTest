@@ -1,3 +1,9 @@
+[functions.research-participation]
+verify_jwt = true
+
+[functions.game-ingest-v2]
+verify_jwt = true
+
 [functions.game-survey]
 # issue validates the game JWT; open/submit validate the restricted survey ticket.
 verify_jwt = false

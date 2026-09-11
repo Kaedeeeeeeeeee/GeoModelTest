@@ -20,8 +20,23 @@ public class BackendGateTests
     [Test]
     public void BackendSettings_ShouldKeepProductionResearchEntryLockedByDefault()
     {
+        var settings = ScriptableObject.CreateInstance(BackendTestReflection.GetType("Backend.BackendSettings"));
+        try
+        {
+            Assert.IsFalse((bool)BackendTestReflection.GetProperty(settings, "EnableProductionResearchEntry"));
+        }
+        finally
+        {
+            Object.DestroyImmediate(settings);
+        }
+    }
+
+    [Test]
+    public void PublishedResearchEntry_ShouldUseParticipantBoundIngest()
+    {
         Object settings = Resources.Load("BackendSettings");
         Assert.IsNotNull(settings);
-        Assert.IsFalse((bool)BackendTestReflection.GetProperty(settings, "EnableProductionResearchEntry"));
+        Assert.IsTrue((bool)BackendTestReflection.GetProperty(settings, "CanShowResearchEntry"));
+        Assert.AreEqual("game-ingest-v2", BackendTestReflection.GetProperty(settings, "IngestFunctionName"));
     }
 }

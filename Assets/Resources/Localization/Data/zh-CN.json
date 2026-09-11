@@ -2982,7 +2982,7 @@
     },
     {
       "key": "ui.start.research_test",
-      "value": "研究连接测试"
+      "value": "参加研究"
     },
     {
       "key": "ui.start.research_code.title",
@@ -2990,7 +2990,7 @@
     },
     {
       "key": "ui.start.research_code.help",
-      "value": "请输入开发测试用参与码。切换到其他参与码时，将重置当前学习进度。"
+      "value": "请输入发放给你的参加代码。切换到其他参加代码会重置学习进度。"
     },
     {
       "key": "ui.start.research_code.placeholder",

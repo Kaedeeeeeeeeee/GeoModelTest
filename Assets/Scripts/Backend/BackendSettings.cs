@@ -9,7 +9,7 @@ namespace Backend
         [SerializeField] private bool enableBackend = false;
         [SerializeField] private string supabaseUrl = "";
         [SerializeField] private string publishableKey = "";
-        [SerializeField] private string ingestFunctionName = "game-ingest";
+        [SerializeField] private string ingestFunctionName = "game-ingest-v2";
         [SerializeField] private string participationFunctionName = "research-participation";
 
         [Header("Research entry")]
@@ -28,7 +28,7 @@ namespace Backend
         public bool EnableBackend => enableBackend;
         public string SupabaseUrl => string.IsNullOrWhiteSpace(supabaseUrl) ? "" : supabaseUrl.TrimEnd('/');
         public string PublishableKey => publishableKey ?? "";
-        public string IngestFunctionName => string.IsNullOrWhiteSpace(ingestFunctionName) ? "game-ingest" : ingestFunctionName.Trim();
+        public string IngestFunctionName => string.IsNullOrWhiteSpace(ingestFunctionName) ? "game-ingest-v2" : ingestFunctionName.Trim();
         public string ParticipationFunctionName => string.IsNullOrWhiteSpace(participationFunctionName) ? "research-participation" : participationFunctionName.Trim();
         public bool EnableProductionResearchEntry => enableProductionResearchEntry;
         public bool EnableDevelopmentResearchEntry => enableDevelopmentResearchEntry;

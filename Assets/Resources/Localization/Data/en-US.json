@@ -2982,7 +2982,7 @@
     },
     {
       "key": "ui.start.research_test",
-      "value": "Research connection test"
+      "value": "Join research"
     },
     {
       "key": "ui.start.research_code.title",
@@ -2990,7 +2990,7 @@
     },
     {
       "key": "ui.start.research_code.help",
-      "value": "Enter a development participation code. Switching to a different code resets the current learning progress."
+      "value": "Enter the participation code you received. Switching to a different code resets learning progress."
     },
     {
       "key": "ui.start.research_code.placeholder",

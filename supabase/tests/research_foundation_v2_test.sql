@@ -195,10 +195,17 @@ update public.game_sessions
 set last_heartbeat_at = now() - interval '121 seconds', ended_at = null, end_reason = null
 where id = '33333333-3333-4333-8333-333333333333';
 
+-- Other local QA sessions may also be stale. Capture the eligible set before
+-- invoking the function rather than assuming an otherwise empty database.
+create temporary table expected_stale_count as
+select count(*)::integer n from public.game_sessions
+where participant_id is not null and ended_at is null
+  and last_heartbeat_at < now() - interval '120 seconds';
+
 select is(
   public.infer_stale_research_sessions(now() - interval '120 seconds'),
-  1,
-  'stale heartbeat closes one research session'
+  (select n from expected_stale_count),
+  'stale heartbeat closes exactly the eligible research sessions'
 );
 select is(
   (select end_reason from public.game_sessions where id = '33333333-3333-4333-8333-333333333333'),

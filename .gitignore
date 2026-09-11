@@ -110,6 +110,7 @@ crashlytics-build.properties
 
 # Node dependencies (art-pipeline tooling)
 node_modules/
+__pycache__/
 
 # Dev screenshots
 /Text_ScreenShot/

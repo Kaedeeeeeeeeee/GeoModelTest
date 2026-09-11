@@ -66,12 +66,12 @@ now = datetime.datetime.now(datetime.timezone.utc).isoformat()
 binding = dict(participantId=participant, studyId=study, condition="A", sessionId=session)
 payload = dict(binding, installId=install, protocolVersion="protocol-v1",gameVersion="qa",platform="Editor",buildTarget="StandaloneOSX",language="Japanese",currentScene="MainScene",contentVersion="qa",storyRoute="qa",events=[dict(binding,id=event,name="session_started",occurredAt=now,sceneName="MainScene",props={})],quizAttempts=[dict(binding,eventId=attempt,runId=run,questionId="q.weathering_order",questionVersion="story-formative-v1",choiceId="wrong",attemptIndex=1,isCorrect=False,usedHint=False,responseTimeMs=1200,occurredAt=now,gameVersion="qa",contentVersion="qa",storyRoute="qa")])
 for label in ["ingest accepts bound events", "duplicate retry accepted"]:
-    check(label, request("/functions/v1/game-ingest", payload, refreshed["access_token"])[0], 200)
+    check(label, request("/functions/v1/game-ingest-v2", payload, refreshed["access_token"])[0], 200)
 check("duplicate retry stores one answer", sql(f"select count(*) from quiz_attempts where event_id='{attempt}';"), "1")
-check("cross-user ingest rejected", request("/functions/v1/game-ingest", payload, another["access_token"])[0], 403)
+check("cross-user ingest rejected", request("/functions/v1/game-ingest-v2", payload, another["access_token"])[0], 403)
 payload["events"], payload["quizAttempts"] = [], []
 payload["sessionEnd"] = {"endedAt":now,"reason":"teaching_completed"}
-check("session end accepted", request("/functions/v1/game-ingest", payload, refreshed["access_token"])[0], 200)
+check("session end accepted", request("/functions/v1/game-ingest-v2", payload, refreshed["access_token"])[0], 200)
 check("re-entry after session end", activate(code, refreshed["access_token"])[0], 200)
 (ROOT / "Logs/remediation/backend-http-results.json").write_text(json.dumps(results, indent=2))
 print(f"{len(results)} local HTTP checks passed; no production database accessed.")

@@ -37,11 +37,11 @@ _,other=req('/auth/v1/signup',{})
 now=datetime.datetime.now(datetime.timezone.utc).isoformat()
 binding=dict(participantId=participant,studyId=study,condition='A',sessionId=session)
 payload=dict(binding,installId=install,protocolVersion='survey-qa',gameVersion='qa',platform='Editor',buildTarget='StandaloneOSX',language='Japanese',currentScene='Laboratory Scene',contentVersion='survey-qa',storyRoute='story-lab-analysis-v2',events=[dict(binding,id=uid(),name='session_started',occurredAt=now,props={})],quizAttempts=[])
-http,_=req('/functions/v1/game-ingest',payload,auth['access_token']);check('real game session ingested',http,200)
+http,_=req('/functions/v1/game-ingest-v2',payload,auth['access_token']);check('real game session ingested',http,200)
 http,_=survey('issue',auth['access_token'],sessionId=session,runId=run);check('unfinished game rejected',http,409)
 payload['events']=[]
 payload['progressSnapshot']=dict(binding,eventId=uid(),currentScene='Laboratory Scene',updatedAt=now,payload=dict(runId=run,investigationComplete=True))
-http,_=req('/functions/v1/game-ingest',payload,auth['access_token']);check('completion snapshot ingested',http,200)
+http,_=req('/functions/v1/game-ingest-v2',payload,auth['access_token']);check('completion snapshot ingested',http,200)
 check('foreign identity cannot issue a ticket',survey('issue',other['access_token'],sessionId=session,runId=run)[0],403)
 check('foreign run cannot be substituted',survey('issue',auth['access_token'],sessionId=session,runId=uid())[0],409)
 http,issued=survey('issue',auth['access_token'],sessionId=session,runId=run);check('completed owner receives scoped ticket',http,200)
@@ -71,7 +71,7 @@ check('withdrawn participant ticket rejected',survey('open',second['ticket'])[0]
 sql(f"update study_participants set withdrawn_at=null where id='{participant}'")
 # Fresh, unfinished questionnaire for the browser test. Create its record through the real ingest API.
 browser_run=uid();payload['progressSnapshot']['eventId']=uid();payload['progressSnapshot']['payload']['runId']=browser_run
-req('/functions/v1/game-ingest',payload,auth['access_token'])
+req('/functions/v1/game-ingest-v2',payload,auth['access_token'])
 _,browser_link=survey('issue',auth['access_token'],sessionId=session,runId=browser_run)
 (out/'fixture.json').write_text(json.dumps(dict(url=url,key=key,code=code,participant=participant,study=study,run=browser_run,session=session,ticket=browser_link['ticket'],auth=auth),indent=2))
 (out/'http-results.json').write_text(json.dumps(dict(passed=True,checks=checks),indent=2))

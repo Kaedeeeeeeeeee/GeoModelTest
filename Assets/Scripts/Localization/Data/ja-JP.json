@@ -3178,7 +3178,7 @@
     },
     {
       "key": "ui.start.research_test",
-      "value": "研究接続テスト"
+      "value": "研究に参加"
     },
     {
       "key": "ui.start.research_code.title",
@@ -3186,7 +3186,7 @@
     },
     {
       "key": "ui.start.research_code.help",
-      "value": "開発テスト用の参加コードを入力してください。別の参加コードに切り替えると、学習の進行状況はリセットされます。"
+      "value": "配布された参加コードを入力してください。別の参加コードに切り替えると、学習の進行状況はリセットされます。"
     },
     {
       "key": "ui.start.research_code.placeholder",
