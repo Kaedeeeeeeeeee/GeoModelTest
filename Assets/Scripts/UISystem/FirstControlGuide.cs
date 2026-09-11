@@ -76,15 +76,18 @@ namespace UISystem
                         new Vector2(0.025f, 0.10f), new Vector2(0.43f, 0.90f));
                 }
                 float textX = touch ? 0.16f : 0.47f;
-                var label = GameUI.Label(cell.transform, "Action", GameUI.L("ui.guide." + actions[i]), touch ? 24 : 26,
-                    new Vector2(textX, touch ? 0.63f : 0.66f), new Vector2(0.97f, 0.94f));
-                label.color = color;
+                if (!touch)
+                {
+                    var label = GameUI.Label(cell.transform, "Action", GameUI.L("ui.guide." + actions[i]), 26,
+                        new Vector2(textX, 0.66f), new Vector2(0.97f, 0.94f));
+                    label.color = color;
+                }
                 var detail = GameUI.Label(cell.transform, "Instruction",
-                    GameUI.L("ui.guide." + (touch ? "touch." : "desktop.") + actions[i]), 26,
-                    new Vector2(textX, touch ? 0.10f : 0.18f), new Vector2(0.97f, 0.63f));
+                    GameUI.L("ui.guide." + (touch ? "touch." : "desktop.") + actions[i]), touch ? 28 : 26,
+                    new Vector2(textX, touch ? 0.06f : 0.18f), new Vector2(0.97f, touch ? 0.94f : 0.63f));
                 detail.resizeTextForBestFit = true;
-                detail.resizeTextMinSize = 22;
-                detail.resizeTextMaxSize = 26;
+                detail.resizeTextMinSize = touch ? 24 : 22;
+                detail.resizeTextMaxSize = touch ? 28 : 26;
             }
             GameUI.Label(card.transform, "Hint", GameUI.L("ui.guide.hint"), 22,
                 new Vector2(0.04f, 0.12f), new Vector2(0.96f, 0.17f), TextAnchor.MiddleCenter);

@@ -71,6 +71,14 @@ public class FirstControlExperienceTests
         var move = canvas.transform.Find("GuideCard/move/Instruction").GetComponent<Text>().text;
         var expected = Call("UISystem.GameUI", "L", null, "ui.guide.touch.move");
         Assert.AreEqual(expected, move);
+        yield return null;
+        Canvas.ForceUpdateCanvases();
+        foreach (string action in new[] { "move", "look", "interact", "tools" })
+        {
+            var instruction = canvas.transform.Find("GuideCard/" + action + "/Instruction").GetComponent<Text>();
+            Assert.LessOrEqual(instruction.preferredHeight, instruction.rectTransform.rect.height + 1f,
+                action + ": the full touch instruction must fit without losing its second line.");
+        }
         var nested = (IDisposable)Call("Core.GameInputState", "Acquire", null, new object[] { null });
         Call("UISystem.FirstControlGuide", "CloseCurrent");
         Assert.AreEqual(0f, Time.timeScale);

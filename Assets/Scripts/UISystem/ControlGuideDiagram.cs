@@ -85,7 +85,7 @@ namespace UISystem
                     Marker("3", 0.94f, 0.43f, InteractionColor);
                     Marker("4", 0.33f, 0.72f, ToolColor);
                     PhoneLabel("ToolsLabel", "ui.mobile_controls.tools", 0.19f, 0.60f, 0.17f, 0.12f);
-                    PhoneLabel("InteractLabel", "ui.mobile_controls.interact", 0.80f, 0.285f, 0.17f, 0.12f);
+                    PhoneLabel("InteractLabel", "ui.mobile_controls.interact", 0.78f, 0.285f, 0.15f, 0.12f);
                     PhoneLabel("UseLabel", "ui.mobile_controls.secondary", 0.65f, 0.17f, 0.17f, 0.12f);
                     break;
             }
@@ -146,7 +146,7 @@ namespace UISystem
             // These labels and regions match the shipped mobile controls.
             Rounded(0.19f, 0.60f, 0.17f, 0.12f, 0.04f, ToolColor * new Color(0.45f, 0.45f, 0.45f, 1));
             Circle(P(0.33f, 0.72f), 0.047f, GameUI.Surface);
-            Rounded(0.80f, 0.285f, 0.17f, 0.12f, 0.04f, new Color(0.41f, 0.31f, 0.18f));
+            Rounded(0.78f, 0.285f, 0.15f, 0.12f, 0.04f, new Color(0.41f, 0.31f, 0.18f));
             Rounded(0.65f, 0.17f, 0.17f, 0.12f, 0.04f, new Color(0.41f, 0.31f, 0.18f));
             Circle(P(0.94f, 0.43f), 0.047f, GameUI.Surface);
         }
