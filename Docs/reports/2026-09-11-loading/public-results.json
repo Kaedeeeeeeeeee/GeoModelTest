@@ -1,0 +1,23 @@
+{
+  "version": "2026.09.11-loading",
+  "frame": "https://html-classic.itch.zone/html/17462165-1967075/index.html?v=1789093007",
+  "page": "https://kaedeeeeeeeeee.itch.io/geo-model-geological-drilling-simulator",
+  "errors": [],
+  "itchBuild": 1967075,
+  "manifestMatches": true,
+  "webAssetsMatch": [
+    "TemplateData/loading.js",
+    "TemplateData/style.css"
+  ],
+  "dataBytes": 181736968,
+  "dataEncoding": "gzip",
+  "gameplayChecks": [
+    "opening dialogue and laboratory transition",
+    "six-tool selection wheel",
+    "field scene transition",
+    "drone placement, control, ascent and recall",
+    "drill-car placement, control, core sampling and recall"
+  ],
+  "gameplayJavaScriptErrors": [],
+  "researchRequests": []
+}

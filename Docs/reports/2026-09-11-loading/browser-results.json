@@ -1,0 +1,189 @@
+[
+  {
+    "case": "normal-and-cached-reload",
+    "state": "ready",
+    "status": "ゲームを起動しています…",
+    "progress": "100%",
+    "ready": true,
+    "fetchRestored": true,
+    "errors": []
+  },
+  {
+    "case": "corrupt-cache",
+    "failure": {
+      "state": "failed",
+      "status": "ゲームのデータを読み込めませんでした。",
+      "progress": "90%",
+      "ready": false,
+      "fetchRestored": false
+    },
+    "afterRetry": {
+      "state": "ready",
+      "status": "ゲームを起動しています…",
+      "progress": "100%",
+      "ready": true,
+      "fetchRestored": true
+    },
+    "savedStatePreserved": true,
+    "errors": [
+      "Unknown data format (id=\"<html>Damaged ca\")"
+    ]
+  },
+  {
+    "case": "fail-ui",
+    "failure": {
+      "state": null,
+      "status": "読み込めませんでした。接続を確認して、もう一度お試しください。",
+      "progress": "0%",
+      "ready": false,
+      "fetchRestored": true
+    },
+    "afterRetry": {
+      "state": "ready",
+      "status": "ゲームを起動しています…",
+      "progress": "100%",
+      "ready": true,
+      "fetchRestored": true
+    },
+    "savedStatePreserved": true,
+    "errors": []
+  },
+  {
+    "case": "fail-loader",
+    "failure": {
+      "state": "failed",
+      "status": "ゲームのデータを読み込めませんでした。",
+      "progress": "0%",
+      "ready": false,
+      "fetchRestored": false
+    },
+    "afterRetry": {
+      "state": "ready",
+      "status": "ゲームを起動しています…",
+      "progress": "100%",
+      "ready": true,
+      "fetchRestored": true
+    },
+    "savedStatePreserved": true,
+    "errors": []
+  },
+  {
+    "case": "fail-data",
+    "failure": {
+      "state": "failed",
+      "status": "ゲームのデータを読み込めませんでした。",
+      "progress": "0%",
+      "ready": false,
+      "fetchRestored": false
+    },
+    "afterRetry": {
+      "state": "ready",
+      "status": "ゲームを起動しています…",
+      "progress": "100%",
+      "ready": true,
+      "fetchRestored": true
+    },
+    "savedStatePreserved": true,
+    "errors": []
+  },
+  {
+    "case": "invalid-data",
+    "failure": {
+      "state": "failed",
+      "status": "ゲームのデータを読み込めませんでした。",
+      "progress": "90%",
+      "ready": false,
+      "fetchRestored": false
+    },
+    "afterRetry": {
+      "state": "ready",
+      "status": "ゲームを起動しています…",
+      "progress": "100%",
+      "ready": true,
+      "fetchRestored": true
+    },
+    "savedStatePreserved": true,
+    "errors": [
+      "Unknown data format (id=\"<html>Temporary \")"
+    ]
+  },
+  {
+    "case": "fail-twice",
+    "failure": {
+      "state": "failed",
+      "status": "ゲームのデータを読み込めませんでした。",
+      "progress": "0%",
+      "ready": false,
+      "fetchRestored": false
+    },
+    "afterRetry": {
+      "state": "ready",
+      "status": "ゲームを起動しています…",
+      "progress": "100%",
+      "ready": true,
+      "fetchRestored": true
+    },
+    "savedStatePreserved": true,
+    "errors": [
+      "unityFramework is not defined"
+    ]
+  },
+  {
+    "case": "disconnect",
+    "failure": {
+      "state": "failed",
+      "status": "ゲームのデータを読み込めませんでした。",
+      "progress": "6%",
+      "ready": false,
+      "fetchRestored": false
+    },
+    "afterRetry": {
+      "state": "ready",
+      "status": "ゲームを起動しています…",
+      "progress": "100%",
+      "ready": true,
+      "fetchRestored": true
+    },
+    "savedStatePreserved": true,
+    "errors": []
+  },
+  {
+    "case": "stall",
+    "during": {
+      "state": "downloading",
+      "status": "データが届くのを待っています…",
+      "progress": "18%",
+      "ready": false,
+      "fetchRestored": false
+    },
+    "afterResume": {
+      "state": "ready",
+      "status": "ゲームを起動しています…",
+      "progress": "100%",
+      "ready": true,
+      "fetchRestored": true
+    },
+    "errors": []
+  },
+  {
+    "case": "timeout",
+    "failure": {
+      "state": "failed",
+      "status": "ゲームのデータを読み込めませんでした。",
+      "progress": "18%",
+      "ready": false,
+      "fetchRestored": false
+    },
+    "afterRetry": {
+      "state": "ready",
+      "status": "ゲームを起動しています…",
+      "progress": "100%",
+      "ready": true,
+      "fetchRestored": true
+    },
+    "savedStatePreserved": true,
+    "errors": [
+      "Cannot read properties of undefined (reading 'subarray')"
+    ]
+  }
+]

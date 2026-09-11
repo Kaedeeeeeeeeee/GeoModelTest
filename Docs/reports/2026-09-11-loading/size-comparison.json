@@ -1,0 +1,10 @@
+{
+  "beforeVersion": "2026.09.11-research",
+  "afterVersion": "2026.09.11-loading",
+  "beforeBytes": 215354878,
+  "afterBytes": 197992301,
+  "savedBytes": 17362577,
+  "reductionPercent": 8.06,
+  "beforeUncompressedDataBytes": 232366795,
+  "afterUncompressedDataBytes": 208157620
+}
