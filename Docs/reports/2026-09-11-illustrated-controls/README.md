@@ -31,3 +31,11 @@
 ![电脑 Tab 打开道具](desktop-tab-tools.png)
 
 ![手机关闭引导后的移动](mobile-after-move.png)
+
+新引导确认后，再次刷新并继续存档，没有重复显示引导。
+
+## 线上发布
+
+itch.io HTML5 构建 `1968320`。公开入口指向此构建，线上 manifest 与本地一致；四个核心资源解压后的 SHA-256 均与本地一致，公开 CDN 构建成功启动到标题画面，运行时版本为 `2026.09.11-illustrated-controls`。
+
+[线上资源核对记录](published-verification.json)

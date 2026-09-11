@@ -1,0 +1,29 @@
+{
+  "version": "2026.09.11-illustrated-controls",
+  "sourceCommit": "86b7c0a576ca05c553b0a3f447fdd72dc3311b55",
+  "buildId": 1968320,
+  "embed": "https://html-classic.itch.zone/html/17462165-1968320/index.html?v=1789133245",
+  "verified": [
+    {
+      "path": "Build/WebGL.data.unityweb",
+      "decodedBytes": 130869687,
+      "sha256": "d49e345bf192ed7de7a2fccd801a8478e555e4d3405d4d77ade509383cb960d2"
+    },
+    {
+      "path": "Build/WebGL.framework.js.unityweb",
+      "decodedBytes": 507890,
+      "sha256": "c50ff64a00728f192ee881005c00e60409a80c0db5206c6da4f48b706f0d8f83"
+    },
+    {
+      "path": "Build/WebGL.loader.js",
+      "decodedBytes": 47338,
+      "sha256": "7374c7c3ce14c62cd50b039b3a01a7aec6f02e7b434660cf16fb2fa208804d6d"
+    },
+    {
+      "path": "Build/WebGL.wasm.unityweb",
+      "decodedBytes": 66963652,
+      "sha256": "c0080f8ec062257d1df88e77b80c8bf4aff776909bec631dd33022bec186588a"
+    }
+  ],
+  "at": "2026-09-11T13:27:34.514Z"
+}
