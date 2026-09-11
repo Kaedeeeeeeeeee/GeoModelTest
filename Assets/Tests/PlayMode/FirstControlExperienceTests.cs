@@ -81,6 +81,36 @@ public class FirstControlExperienceTests
     }
 
     [UnityTest]
+    public IEnumerator Player_ShouldAcceptJoystickCreatedAfterPlayerAndGuide()
+    {
+        PlayerPrefs.SetInt(GuideKey, 1);
+        Time.timeScale = 1f;
+        var host = New("LateMobilePlayer");
+        var controller = host.AddComponent<CharacterController>();
+        var camera = New("LateMobileCamera").AddComponent<Camera>();
+        camera.transform.SetParent(host.transform);
+        var player = (Behaviour)host.AddComponent(T("FirstPersonController"));
+        yield return null;
+        Set(player, "mobileInputManager", null);
+        var input = (Behaviour)New("LateMobileInput").AddComponent(T("MobileInputManager"));
+        Set(input, "currentInputMode", Enum.Parse(T("MobileInputManager+InputMode"), "Mobile"));
+        yield return null;
+
+        Call("UISystem.FirstControlGuide", "Show", null, true);
+        var guide = GameObject.Find("FirstControlGuide");
+        guide.transform.Find("GuideCard/Begin").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        yield return null;
+        var before = host.transform.position;
+        Call("MobileInputManager", "SetMoveInput", input, Vector2.up);
+        for (int i = 0; i < 5; i++) yield return null;
+        Assert.Greater(host.transform.position.z - before.z, 0.01f,
+            "The first movement after the guide must use a manager created after the player.");
+        Assert.IsTrue(controller.enabled);
+        player.enabled = false;
+    }
+
+    [UnityTest]
     public IEnumerator PublishedWarehouseGate_ShouldHideLegacyUIAndPreserveScenery()
     {
         Assert.IsFalse((bool)T("Core.ResearchExperienceSettings").GetProperty("WarehouseInteractionEnabled").GetValue(null));

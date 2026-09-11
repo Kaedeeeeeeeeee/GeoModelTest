@@ -153,6 +153,11 @@ public class FirstPersonController : MonoBehaviour
     void HandleInput()
     {
         if (Core.GameInputState.GameplayBlocked) { SuppressPlayerInputs(); return; }
+        // Scene helpers can create the mobile input manager after this player's Start.
+        if (enableMobileInput && mobileInputManager == null && MobileInputManager.Instance != null)
+        {
+            InitializeMobileInput();
+        }
         if (ShouldUseMobileInputOnly())
         {
             HandleMobileInput();
