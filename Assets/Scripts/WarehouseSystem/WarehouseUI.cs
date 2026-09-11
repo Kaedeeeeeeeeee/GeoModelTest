@@ -45,6 +45,8 @@ public class WarehouseUI : MonoBehaviour
     // 私有成员
     private bool isWarehouseOpen = false;
     private FirstPersonController fpController;
+    private Core.GameInputState.Scope inputScope;
+    private ModalCanvasLayerGuard.Scope layerScope;
     
     // 单例模式
     public static WarehouseUI Instance { get; private set; }
@@ -63,6 +65,12 @@ public class WarehouseUI : MonoBehaviour
     
     void Start()
     {
+        if (!Core.ResearchExperienceSettings.WarehouseInteractionEnabled)
+        {
+            ForceHideWarehouseInterface();
+            enabled = false;
+            return;
+        }
         InitializeWarehouseUI();
         SetupUIComponents();
         SetupEventListeners();
@@ -545,6 +553,11 @@ public class WarehouseUI : MonoBehaviour
     /// </summary>
     void SetupEventListeners()
     {
+        if (closeButton != null)
+        {
+            closeButton.onClick.RemoveListener(CloseWarehouseInterface);
+            closeButton.onClick.AddListener(CloseWarehouseInterface);
+        }
         if (multiSelectButton != null)
         {
             multiSelectButton.onClick.AddListener(ToggleMultiSelectMode);
@@ -620,7 +633,8 @@ public class WarehouseUI : MonoBehaviour
     /// </summary>
     public void OpenWarehouseInterface()
     {
-        if (isWarehouseOpen) return;
+        if (!Core.ResearchExperienceSettings.WarehouseInteractionEnabled ||
+            Core.GameInputState.GameplayBlocked || isWarehouseOpen) return;
 
         isWarehouseOpen = true;
 
@@ -653,6 +667,8 @@ public class WarehouseUI : MonoBehaviour
     /// </summary>
     public void CloseWarehouseInterface()
     {
+        bool wasOpen = isWarehouseOpen;
+        isWarehouseOpen = false;
         // 强制隐藏整个Canvas（无论当前状态如何）
         if (warehouseCanvas != null)
         {
@@ -666,9 +682,7 @@ public class WarehouseUI : MonoBehaviour
         }
 
         // 如果仓库已经是关闭状态，就不需要执行其他操作
-        if (!isWarehouseOpen) return;
-
-        isWarehouseOpen = false;
+        if (!wasOpen) return;
 
         // 仓库关闭音效
         GeoModel.AudioSystem.AudioManager.Instance.PlayUI(GeoModel.AudioSystem.AudioKeys.UI.PanelClose);
@@ -693,7 +707,7 @@ public class WarehouseUI : MonoBehaviour
     /// </summary>
     public void ForceHideWarehouseInterface()
     {
-        isWarehouseOpen = false;
+        CloseWarehouseInterface();
         
         // 强制隐藏整个Canvas
         if (warehouseCanvas != null)
@@ -712,9 +726,6 @@ public class WarehouseUI : MonoBehaviour
         {
             multiSelectSystem.ExitMultiSelectMode();
         }
-        
-        // 恢复玩家控制
-        EnablePlayerControls();
         
         Debug.Log("仓库界面已强制隐藏");
     }
@@ -1137,25 +1148,17 @@ public class WarehouseUI : MonoBehaviour
     /// </summary>
     void HandleInput()
     {
-        if (Core.GameInputState.GameplayBlocked) return;
-        if (!isWarehouseOpen) return;
-        
-        var keyboard = Keyboard.current;
+        if (isWarehouseOpen && !Core.ResearchExperienceSettings.WarehouseInteractionEnabled)
+            CloseWarehouseInterface();
+    }
 
-        // ESC键处理
-        if (keyboard != null && Core.GameInputState.TryConsumeEscape())
+    void HandleEscape()
+    {
+        if (confirmDialogPanel != null && confirmDialogPanel.activeInHierarchy)
         {
-            // 如果确认对话框正在显示，先关闭对话框
-            if (confirmDialogPanel != null && confirmDialogPanel.activeInHierarchy)
-            {
-                HideConfirmDialog();
-            }
-            else
-            {
-                // 否则关闭仓库界面
-                CloseWarehouseInterface();
-            }
+            HideConfirmDialog();
         }
+        else CloseWarehouseInterface();
     }
     
     /// <summary>
@@ -1163,14 +1166,8 @@ public class WarehouseUI : MonoBehaviour
     /// </summary>
     void DisablePlayerControls()
     {
-        if (fpController != null)
-        {
-            fpController.enableMouseLook = false;
-        }
-        
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        Time.timeScale = 1f; // 不暂停游戏
+        inputScope = Core.GameInputState.Acquire(HandleEscape);
+        if (warehouseCanvas != null) layerScope = ModalCanvasLayerGuard.Activate(warehouseCanvas);
     }
     
     /// <summary>
@@ -1178,13 +1175,10 @@ public class WarehouseUI : MonoBehaviour
     /// </summary>
     void EnablePlayerControls()
     {
-        if (fpController != null)
-        {
-            fpController.enableMouseLook = true;
-        }
-        
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        layerScope?.Dispose();
+        layerScope = null;
+        inputScope?.Dispose();
+        inputScope = null;
     }
     
     /// <summary>
@@ -1347,6 +1341,8 @@ public class WarehouseUI : MonoBehaviour
     
     void OnDestroy()
     {
+        EnablePlayerControls();
+        if (Instance == this) Instance = null;
         // 取消事件订阅
         if (multiSelectSystem != null)
         {

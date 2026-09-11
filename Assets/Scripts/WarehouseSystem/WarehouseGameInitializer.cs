@@ -101,12 +101,12 @@ public class WarehouseGameInitializer : MonoBehaviour
         {
             // 按场景控制是否启用仓库功能（MainScene 不启用触发器与UI）
             string sceneName = SceneManager.GetActiveScene().name;
-            bool allowWarehouseInThisScene = !(sceneName == "MainScene");
+            bool allowWarehouseInThisScene = Core.ResearchExperienceSettings.WarehouseInteractionEnabled && sceneName != "MainScene";
             if (!allowWarehouseInThisScene)
             {
                 createWarehouseTrigger = false;
                 createWarehouseUI = false;
-                Debug.Log("[Warehouse] 当前为 MainScene，禁用仓库触发器与UI创建");
+                Debug.Log("[Warehouse] 本次体验不开放仓库交互，保留数据存储。");
 
                 // 场景中如已有触发器（预放置或遗留），主动清理
                 var existingTriggers = FindObjectsByType<WarehouseTrigger>(FindObjectsSortMode.None);
@@ -114,7 +114,7 @@ public class WarehouseGameInitializer : MonoBehaviour
                 {
                     if (t != null)
                     {
-                        Destroy(t.gameObject);
+                        t.DisableInteraction();
                     }
                 }
                 Debug.Log("[Warehouse] 已清理 MainScene 中的仓库触发器实例");

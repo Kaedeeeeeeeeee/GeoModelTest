@@ -3311,6 +3311,74 @@
     {
       "key": "vehicle.place_hint",
       "value": "Aim at open ground a little farther away"
+    },
+    {
+      "key": "ui.guide.title",
+      "value": "Your first controls"
+    },
+    {
+      "key": "ui.guide.desktop",
+      "value": "Computer controls"
+    },
+    {
+      "key": "ui.guide.touch",
+      "value": "Phone and tablet controls"
+    },
+    {
+      "key": "ui.guide.move",
+      "value": "Move"
+    },
+    {
+      "key": "ui.guide.look",
+      "value": "Look around"
+    },
+    {
+      "key": "ui.guide.interact",
+      "value": "Talk and interact"
+    },
+    {
+      "key": "ui.guide.tools",
+      "value": "Choose a tool"
+    },
+    {
+      "key": "ui.guide.desktop.move",
+      "value": "W, A, S, D keys"
+    },
+    {
+      "key": "ui.guide.desktop.look",
+      "value": "Move the mouse"
+    },
+    {
+      "key": "ui.guide.desktop.interact",
+      "value": "Approach and press E / F\nFollow the on-screen prompt"
+    },
+    {
+      "key": "ui.guide.desktop.tools",
+      "value": "Press Tab and choose a tool"
+    },
+    {
+      "key": "ui.guide.touch.move",
+      "value": "Move the bottom-left stick"
+    },
+    {
+      "key": "ui.guide.touch.look",
+      "value": "Swipe the right side"
+    },
+    {
+      "key": "ui.guide.touch.interact",
+      "value": "Approach and tap\nInspect / Use"
+    },
+    {
+      "key": "ui.guide.touch.tools",
+      "value": "Tap Tools and choose"
+    },
+    {
+      "key": "ui.guide.hint",
+      "value": "Try moving around. Follow the on-screen prompts as you explore."
+    },
+    {
+      "key": "ui.guide.begin",
+      "value": "Got it — start exploring"
     }
   ]
 }

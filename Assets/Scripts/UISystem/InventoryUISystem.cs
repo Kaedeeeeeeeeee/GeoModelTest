@@ -202,6 +202,7 @@ public class InventoryUISystem : MonoBehaviour
     /// </summary>
     void HandleWarehouseInput()
     {
+        if (!Core.ResearchExperienceSettings.WarehouseInteractionEnabled || Core.GameInputState.GameplayBlocked) return;
         // Debug.Log("[InventoryUISystem] 收到仓库输入事件");
 
         // 查找并打开仓库UI

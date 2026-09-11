@@ -93,6 +93,11 @@ public class FirstPersonController : MonoBehaviour
             return;
         }
         bool blockInput = StoryDirector.SubtitleUI.IsPlayerInputBlocked;
+        if (!blockInput && UISystem.FirstControlGuide.TryShowForFirstControl())
+        {
+            SuppressPlayerInputs();
+            return;
+        }
         if (blockInput)
         {
             SuppressPlayerInputs();

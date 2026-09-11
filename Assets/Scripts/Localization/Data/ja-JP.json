@@ -3491,6 +3491,74 @@
     {
       "key": "vehicle.place_hint",
       "value": "少し先の床や地面を選んでください"
+    },
+    {
+      "key": "ui.guide.title",
+      "value": "はじめの操作"
+    },
+    {
+      "key": "ui.guide.desktop",
+      "value": "パソコンの操作"
+    },
+    {
+      "key": "ui.guide.touch",
+      "value": "スマートフォン・タブレットの操作"
+    },
+    {
+      "key": "ui.guide.move",
+      "value": "移動する"
+    },
+    {
+      "key": "ui.guide.look",
+      "value": "まわりを見る"
+    },
+    {
+      "key": "ui.guide.interact",
+      "value": "話す・調べる"
+    },
+    {
+      "key": "ui.guide.tools",
+      "value": "道具を選ぶ"
+    },
+    {
+      "key": "ui.guide.desktop.move",
+      "value": "W・A・S・D キー"
+    },
+    {
+      "key": "ui.guide.desktop.look",
+      "value": "マウスを動かす"
+    },
+    {
+      "key": "ui.guide.desktop.interact",
+      "value": "近づいて E / F キー\n（画面の案内を確認）"
+    },
+    {
+      "key": "ui.guide.desktop.tools",
+      "value": "Tab キーで開き、道具を選ぶ"
+    },
+    {
+      "key": "ui.guide.touch.move",
+      "value": "左下のスティックを動かす"
+    },
+    {
+      "key": "ui.guide.touch.look",
+      "value": "画面の右側をスワイプ"
+    },
+    {
+      "key": "ui.guide.touch.interact",
+      "value": "近づいて「調べる」「使う」\nをタップ"
+    },
+    {
+      "key": "ui.guide.touch.tools",
+      "value": "「道具」をタップして選ぶ"
+    },
+    {
+      "key": "ui.guide.hint",
+      "value": "まずは動いてみましょう。操作は画面の案内でも確認できます。"
+    },
+    {
+      "key": "ui.guide.begin",
+      "value": "わかった・調査を始める"
     }
   ]
 }

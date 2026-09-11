@@ -17,6 +17,8 @@ public static class ProgressResetService
 
     public static void ResetAll()
     {
+        UISystem.FirstControlGuide.CloseCurrent();
+        PlayerPrefs.DeleteKey(UISystem.FirstControlGuide.CompletedKey);
         StorySystem.QuizScoreManager.Instance.StartNewRun();
         PlayerPrefs.DeleteKey(SceneSystem.GameSession.ResumeSceneKey);
         StorySystem.StoryHistory.Reset();

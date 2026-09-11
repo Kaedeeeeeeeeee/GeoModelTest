@@ -38,6 +38,11 @@ public class WarehouseTrigger : MonoBehaviour
     
     void Start()
     {
+        if (!Core.ResearchExperienceSettings.WarehouseInteractionEnabled)
+        {
+            DisableInteraction();
+            return;
+        }
         // 强制确保使用正确的位置
         EnsureCorrectPosition();
         
@@ -79,6 +84,12 @@ public class WarehouseTrigger : MonoBehaviour
     
     void Update()
     {
+        if (!Core.ResearchExperienceSettings.WarehouseInteractionEnabled)
+        {
+            DisableInteraction();
+            return;
+        }
+        if (Core.GameInputState.GameplayBlocked) return;
         CheckPlayerInteraction();
         HandleInput();
         UpdatePromptPosition();
@@ -90,6 +101,15 @@ public class WarehouseTrigger : MonoBehaviour
         {
             ApplyTransformSettings();
         }
+    }
+
+    public void DisableInteraction()
+    {
+        playerInRange = false;
+        if (interactionPrompt != null) interactionPrompt.SetActive(false);
+        if (promptCanvas != null) promptCanvas.gameObject.SetActive(false);
+        DisableHighlight();
+        enabled = false;
     }
     
     /// <summary>
@@ -487,6 +507,7 @@ public class WarehouseTrigger : MonoBehaviour
     /// </summary>
     void OpenWarehouse()
     {
+        if (!Core.ResearchExperienceSettings.WarehouseInteractionEnabled || Core.GameInputState.GameplayBlocked) return;
         Debug.Log("F键按下 - 准备打开仓库界面");
         
         // 查找或创建仓库UI

@@ -3311,6 +3311,74 @@
     {
       "key": "vehicle.place_hint",
       "value": "请选择稍远处的地面"
+    },
+    {
+      "key": "ui.guide.title",
+      "value": "开始操作前"
+    },
+    {
+      "key": "ui.guide.desktop",
+      "value": "电脑操作"
+    },
+    {
+      "key": "ui.guide.touch",
+      "value": "手机和平板操作"
+    },
+    {
+      "key": "ui.guide.move",
+      "value": "移动"
+    },
+    {
+      "key": "ui.guide.look",
+      "value": "环顾四周"
+    },
+    {
+      "key": "ui.guide.interact",
+      "value": "对话与互动"
+    },
+    {
+      "key": "ui.guide.tools",
+      "value": "选择道具"
+    },
+    {
+      "key": "ui.guide.desktop.move",
+      "value": "W、A、S、D 键"
+    },
+    {
+      "key": "ui.guide.desktop.look",
+      "value": "移动鼠标"
+    },
+    {
+      "key": "ui.guide.desktop.interact",
+      "value": "靠近后按 E / F 键\n（以画面提示为准）"
+    },
+    {
+      "key": "ui.guide.desktop.tools",
+      "value": "按 Tab 键打开并选择道具"
+    },
+    {
+      "key": "ui.guide.touch.move",
+      "value": "拖动左下角摇杆"
+    },
+    {
+      "key": "ui.guide.touch.look",
+      "value": "滑动画面右侧"
+    },
+    {
+      "key": "ui.guide.touch.interact",
+      "value": "靠近后点击“调查”或“使用”"
+    },
+    {
+      "key": "ui.guide.touch.tools",
+      "value": "点击“道具”并选择"
+    },
+    {
+      "key": "ui.guide.hint",
+      "value": "先试着移动一下吧，探索时也可以查看画面的操作提示。"
+    },
+    {
+      "key": "ui.guide.begin",
+      "value": "明白了，开始调查"
     }
   ]
 }

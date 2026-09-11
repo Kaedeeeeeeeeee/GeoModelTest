@@ -38,6 +38,9 @@ namespace StorySystem
         public static bool IsStoryPlaybackActive =>
             (_instance != null && _instance._isRunningCinematic) || SubtitleUI.IsPlayerInputBlocked;
 
+        public static bool HasFinishedLabIntroduction =>
+            _instance != null && _instance.HasFlag("story.lab.intro");
+
         private HashSet<string> _flags;
         [SerializeField] private bool enableDebugLog = true;
         [SerializeField] private string mainRescueSequenceResource = "Story/quest1.1";
