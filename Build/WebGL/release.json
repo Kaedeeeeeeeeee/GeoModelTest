@@ -1,25 +1,25 @@
 {
-  "version": "2026.09.11-loading",
-  "sourceCommit": "f72d4cb3dde24e6524fcf2c2ffd4d66f2f96780b",
+  "version": "2026.09.11-geoquest",
+  "sourceCommit": "156bbc9b3d7f72556155b920f886aea0d68ce54f",
   "unity": "6000.0.51f1",
   "buildType": "release",
-  "builtAt": "2026-09-11T02:11:47.362862+00:00",
+  "builtAt": "2026-09-11T02:34:26.178137+00:00",
   "assets": {
     "Build/WebGL.data.unityweb": {
-      "bytes": 181736968,
-      "sha256": "ab4a85050bf516a0c06af7ed2ee0f95907431a4bc9cc6943872c45b19071f566"
+      "bytes": 181734951,
+      "sha256": "923feef22d8a0a80351a86a8911e376ca252c144d9f8c93ed3e1d4eea44f53ab"
     },
     "Build/WebGL.framework.js.unityweb": {
       "bytes": 97091,
-      "sha256": "466e5f1ee6e88c5df620a69406dc80b213a7f0a222dc332a65bad2bf0117e627"
+      "sha256": "a3a99d2aed477a1b618994734b8ad7bc6a8db3584f47458ead31667e6be49d6d"
     },
     "Build/WebGL.loader.js": {
       "bytes": 47338,
       "sha256": "79de00bc8ff9b5cdf37c2bc3fcd8350df54ca1b1e496c0c3ae113e7429e567fa"
     },
     "Build/WebGL.wasm.unityweb": {
-      "bytes": 16110904,
-      "sha256": "89112a98a01917e4f9491b22756ba2004bf0f0de737bf18be25984ebe6612b31"
+      "bytes": 16110720,
+      "sha256": "8efc0f536dae3dddf5c40db76512188f4a7ae08ddf0c47e3a7639d15271aaaa6"
     }
   },
   "webAssets": {
