@@ -1,0 +1,22 @@
+{
+  "result": "Passed",
+  "passed": "15",
+  "failed": "0",
+  "cases": [
+    "GuideButton_ShouldPauseThenRestoreAndRememberCompletion",
+    "Player_ShouldAcceptJoystickCreatedAfterPlayerAndGuide",
+    "PublishedWarehouseGate_ShouldHideLegacyUIAndPreserveScenery",
+    "TouchGuide_ShouldUseTouchInstructionsAndSurviveNestedModal",
+    "WarehouseCloseButton_ShouldRestoreControlsIfFeatureIsReenabled",
+    "WarehouseEscapeCallback_ShouldRestoreControlsIfFeatureIsReenabled",
+    "Escape_ShouldBeConsumedOnceBySettingsAndModalRouter",
+    "HistoryOverSettings_ShouldPreservePauseUntilSettingsCloses",
+    "NestedModals_ShouldRestoreOriginalTimeOnlyAfterLastClose",
+    "DrillCar_ShouldMoveWithMobileInputAndRestorePlayerAfterRecall",
+    "Drone_ShouldMoveWithMobileInputAndRestorePlayerAfterRecall",
+    "PackagedVehicle_ShouldHaveRealMeshAndController(\"Drone\")",
+    "PackagedVehicle_ShouldHaveRealMeshAndController(\"DrillCar\")",
+    "ToolWheel_ShouldResolveVehicleNamesById(\"Drone\",\"1100\",\"tool.drone.name\")",
+    "ToolWheel_ShouldResolveVehicleNamesById(\"DrillCar\",\"1101\",\"tool.drill_car.name\")"
+  ]
+}
