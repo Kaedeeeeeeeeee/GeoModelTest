@@ -1,0 +1,18 @@
+[
+  {
+    "mode": "desktop",
+    "version": "2026.09.11-geoquest",
+    "documentTitle": "ジオクエスト",
+    "frame": "http://127.0.0.1:55888/normal/",
+    "pageErrors": [],
+    "researchRequests": []
+  },
+  {
+    "mode": "mobile",
+    "version": "2026.09.11-geoquest",
+    "documentTitle": "ジオクエスト",
+    "frame": "http://127.0.0.1:55888/normal/",
+    "pageErrors": [],
+    "researchRequests": []
+  }
+]
