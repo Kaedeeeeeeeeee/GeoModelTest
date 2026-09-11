@@ -1,0 +1,38 @@
+{
+  "verifiedAt": "2026-09-11T08:26:31.866348+00:00",
+  "page": "https://kaedeeeeeeeeee.itch.io/geo-model-geological-drilling-simulator",
+  "frame": "https://html-classic.itch.zone/html/17462165-1967721/index.html?v=1789115136",
+  "state": {
+    "version": "2026.09.11-performance",
+    "quality": 1,
+    "manual": false,
+    "canvas": [
+      1280,
+      720
+    ],
+    "buffer": [
+      1280,
+      720
+    ],
+    "dpr": 2
+  },
+  "manifestMatches": true,
+  "checkedAssets": [
+    "Build/WebGL.framework.js.unityweb",
+    "Build/WebGL.loader.js",
+    "TemplateData/loading.js",
+    "TemplateData/performance.js",
+    "TemplateData/style.css",
+    "StreamingAssets/Survey/config.js",
+    "StreamingAssets/Survey/index.html",
+    "StreamingAssets/Survey/preview.css",
+    "StreamingAssets/Survey/preview.html",
+    "StreamingAssets/Survey/preview.js",
+    "StreamingAssets/Survey/questions.js",
+    "StreamingAssets/Survey/questions.json",
+    "StreamingAssets/Survey/survey.css",
+    "StreamingAssets/Survey/survey.js"
+  ],
+  "pageErrors": [],
+  "researchRequests": []
+}

@@ -1,0 +1,198 @@
+[
+  {
+    "device": "retina-desktop",
+    "passed": true,
+    "checks": [
+      {
+        "version": "2026.09.11-performance",
+        "quality": 1,
+        "manual": false,
+        "canvas": [
+          1280,
+          720
+        ],
+        "buffer": [
+          1280,
+          720
+        ],
+        "css": [
+          1200,
+          675
+        ],
+        "dpr": 2
+      },
+      {
+        "version": "2026.09.11-performance",
+        "quality": 0,
+        "manual": true,
+        "canvas": [
+          960,
+          540
+        ],
+        "buffer": [
+          960,
+          540
+        ],
+        "css": [
+          1200,
+          675
+        ],
+        "dpr": 2
+      },
+      {
+        "version": "2026.09.11-performance",
+        "quality": 3,
+        "manual": true,
+        "canvas": [
+          1280,
+          720
+        ],
+        "buffer": [
+          1280,
+          720
+        ],
+        "css": [
+          1200,
+          675
+        ],
+        "dpr": 2
+      },
+      {
+        "version": "2026.09.11-performance",
+        "quality": 3,
+        "manual": true,
+        "canvas": [
+          1280,
+          720
+        ],
+        "buffer": [
+          1280,
+          720
+        ],
+        "css": [
+          1200,
+          675
+        ],
+        "dpr": 2
+      },
+      {
+        "version": "2026.09.11-performance",
+        "quality": 1,
+        "manual": false,
+        "canvas": [
+          1280,
+          720
+        ],
+        "buffer": [
+          1280,
+          720
+        ],
+        "css": [
+          1200,
+          675
+        ],
+        "dpr": 2
+      }
+    ],
+    "pageErrors": [],
+    "researchRequests": []
+  },
+  {
+    "device": "tablet",
+    "passed": true,
+    "checks": [
+      {
+        "version": "2026.09.11-performance",
+        "quality": 1,
+        "manual": false,
+        "canvas": [
+          1280,
+          720
+        ],
+        "buffer": [
+          1280,
+          720
+        ],
+        "css": [
+          1024,
+          576
+        ],
+        "dpr": 2
+      },
+      {
+        "version": "2026.09.11-performance",
+        "quality": 0,
+        "manual": true,
+        "canvas": [
+          960,
+          540
+        ],
+        "buffer": [
+          960,
+          540
+        ],
+        "css": [
+          1024,
+          576
+        ],
+        "dpr": 2
+      },
+      {
+        "version": "2026.09.11-performance",
+        "quality": 3,
+        "manual": true,
+        "canvas": [
+          1280,
+          720
+        ],
+        "buffer": [
+          1280,
+          720
+        ],
+        "css": [
+          1024,
+          576
+        ],
+        "dpr": 2
+      },
+      {
+        "version": "2026.09.11-performance",
+        "quality": 3,
+        "manual": true,
+        "canvas": [
+          1280,
+          720
+        ],
+        "buffer": [
+          1280,
+          720
+        ],
+        "css": [
+          1024,
+          576
+        ],
+        "dpr": 2
+      },
+      {
+        "version": "2026.09.11-performance",
+        "quality": 1,
+        "manual": false,
+        "canvas": [
+          1280,
+          720
+        ],
+        "buffer": [
+          1280,
+          720
+        ],
+        "css": [
+          1024,
+          576
+        ],
+        "dpr": 2
+      }
+    ],
+    "pageErrors": [],
+    "researchRequests": []
+  }
+]

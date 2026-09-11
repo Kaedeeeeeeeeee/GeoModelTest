@@ -1,0 +1,5 @@
+{
+    "name": "GeoModel.Performance.EditModeTests",
+    "optionalUnityReferences": ["TestAssemblies"],
+    "includePlatforms": ["Editor"]
+}

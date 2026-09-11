@@ -38,10 +38,10 @@ html, body {
 
 /*
  * Letterbox 适配：
- * canvas 的 DOM 属性 width=1920 height=1080 决定 WebGL 渲染目标分辨率（不变）。
+ * canvas 的内部渲染尺寸由 performance.js 控制，最高为 1280×720。
  * 下面的 CSS 控制显示尺寸：先按窗口宽度算 16:9 高度；如果算出的高度超过窗口高度，
  * 改用 max-height 限制并按 16:9 反算宽度。结果就是窗口里居中显示一块固定 16:9
- * 的画面，多余空间是黑边（letterbox）。游戏内 UI 始终按 1920×1080 渲染，绝不变形。
+ * 的画面，多余空间是黑边（letterbox）。CanvasScaler 继续按参考分辨率等比排版。
  */
 #unity-canvas {
   width: min(

@@ -109,6 +109,23 @@ public class SettingsManager : MonoBehaviour
         EnsureUI();
     }
 
+    void OnEnable()
+    {
+        GamePerformanceSettings.QualityChanged += OnQualityChanged;
+    }
+
+    void OnDisable()
+    {
+        GamePerformanceSettings.QualityChanged -= OnQualityChanged;
+    }
+
+    private void OnQualityChanged(int qualityLevel, bool manual)
+    {
+        if (!uiInitialized) return;
+        RefreshQualitySlider();
+        UpdateGameplaySettingsLabels();
+    }
+
     private void EnsureUI()
     {
         if (uiInitialized) return;
@@ -876,9 +893,7 @@ public class SettingsManager : MonoBehaviour
             performanceSettings = GamePerformanceSettings.Instance;
         }
 
-        return performanceSettings.IsManualQualityEnabled
-            ? performanceSettings.SavedManualQualityLevel
-            : performanceSettings.GetRecommendedQualityLevel();
+        return performanceSettings.CurrentQualityLevel;
     }
 
     private void UpdateGameplaySettingsLabels()

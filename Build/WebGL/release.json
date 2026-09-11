@@ -1,25 +1,26 @@
 {
-  "version": "2026.09.11-survey-return",
-  "sourceCommit": "2bf13f69c0c4f92e6557d596f0cc55cc2980316a",
+  "version": "2026.09.11-performance",
+  "sourceBaseCommit": "057f172a8cadac03e03db2cc66209a0af58af2cf",
+  "sourceHasUncommittedChanges": true,
   "unity": "6000.0.51f1",
   "buildType": "release",
-  "builtAt": "2026-09-11T06:53:42.771147+00:00",
+  "builtAt": "2026-09-11T08:09:20.465921+00:00",
   "assets": {
     "Build/WebGL.data.unityweb": {
-      "bytes": 181739866,
-      "sha256": "7f57103bcce6267a88209ffb93c64addc89a1a4116fa907496af0e293bfe122a"
+      "bytes": 107312657,
+      "sha256": "7d22cb6f92f5a498af811f2588a42827d9b4f87f5099092ab9c0fc3b96d6316d"
     },
     "Build/WebGL.framework.js.unityweb": {
-      "bytes": 97091,
-      "sha256": "ad2cd0b96f8cf229902fde3c6073e379d0d26b3c57f1a04b574e71079943703e"
+      "bytes": 97275,
+      "sha256": "e82a03526085fe8043106e8d2aa84cfc78833bda1c0d76b273220d62a3bfc386"
     },
     "Build/WebGL.loader.js": {
       "bytes": 47338,
-      "sha256": "e656677176140534ddbb65ae62e4171f3b4d05c5c201154a4a66dcb2198924ab"
+      "sha256": "d14cdf2f9873dc6233d1fac816e4253326e502928a6a7ce628415ec564dcb62e"
     },
     "Build/WebGL.wasm.unityweb": {
-      "bytes": 16107899,
-      "sha256": "ce06936f7bc0821fb3e9d874e9f08c85cabf6a37f634137b36b64e53e19744ce"
+      "bytes": 16119284,
+      "sha256": "6931796633cd96ce29b94b368b117a8273951ca0d9a3edb81ff616fe0b4ca276"
     }
   },
   "webAssets": {
@@ -27,9 +28,13 @@
       "bytes": 12153,
       "sha256": "d8720b2a9023ccc6562b8d89da01a74b22d8df1f1d8dfd0e538490686755d05d"
     },
+    "TemplateData/performance.js": {
+      "bytes": 1277,
+      "sha256": "0e36abece3c0aeb0a3fe0ae50fdc480fb71ed6783c8664b8ce549329fbf63bc9"
+    },
     "TemplateData/style.css": {
-      "bytes": 5032,
-      "sha256": "b7578fc598014751398102e63229c225c66a6c030b6a3e564dd989262f4c80dd"
+      "bytes": 5010,
+      "sha256": "457635e457520fda8f884ed77c14463d67fdc13bbae6ab74635086d16e2f97d2"
     }
   },
   "surveyAssets": {

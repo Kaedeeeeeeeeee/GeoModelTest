@@ -1,5 +1,7 @@
 using System;
+using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Runtime holder for player-facing performance and control settings.
@@ -16,6 +18,13 @@ public class GamePerformanceSettings : MonoBehaviour
     public const float MaxLookSensitivity = 18f;
 
     private static GamePerformanceSettings instance;
+    private AutomaticQualityPolicy _automaticQuality;
+    private bool _isMobile;
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [DllImport("__Internal")] private static extern int GeoModel_IsPerformanceSampleEligible();
+    [DllImport("__Internal")] private static extern void GeoModel_SetRenderResolution(int width, int height, int quality, int manual);
+#endif
 
     public static event Action<float> LookSensitivityChanged;
     public static event Action<int, bool> QualityChanged;
@@ -50,6 +59,8 @@ public class GamePerformanceSettings : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+            _isMobile = MobileInputManager.IsRuntimeMobileDevice();
+            SceneManager.sceneLoaded += OnSceneLoaded;
             ApplyQualityPreference(false);
         }
         else if (instance != this)
@@ -61,6 +72,48 @@ public class GamePerformanceSettings : MonoBehaviour
     public bool IsManualQualityEnabled => PlayerPrefs.GetInt(ManualQualityEnabledKey, 0) == 1;
 
     public int CurrentQualityLevel => QualitySettings.GetQualityLevel();
+    public float MeasuredFramesPerSecond => _automaticQuality?.AverageFps ?? 0f;
+    public int MicroscopePreviewSize => CurrentQualityLevel <= FindQualityLevel("Low", 1) ? 512 : 1024;
+    public int MicroscopeAntiAliasing => CurrentQualityLevel <= FindQualityLevel("Medium", 2) ? 1 : 2;
+
+    private void Update()
+    {
+        if (IsManualQualityEnabled || _automaticQuality == null) return;
+
+        bool eligible = Application.isFocused && Time.timeScale > 0f &&
+            !Core.GameInputState.GameplayBlocked && !GameSceneManager.IsLoadingScene &&
+            !StorySystem.StoryDirector.IsStoryPlaybackActive &&
+            SceneManager.GetActiveScene().name != "StartScene";
+#if UNITY_WEBGL && !UNITY_EDITOR
+        eligible = eligible && GeoModel_IsPerformanceSampleEligible() == 1;
+#endif
+        int nextLevel = _automaticQuality.Sample(Time.unscaledDeltaTime, eligible);
+        if (nextLevel != CurrentQualityLevel)
+        {
+            ApplyQualityLevel(nextLevel, true);
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        _automaticQuality?.Suspend();
+    }
+
+    private void OnApplicationFocus(bool focused)
+    {
+        _automaticQuality?.Suspend();
+    }
+
+    private void OnApplicationPause(bool paused)
+    {
+        _automaticQuality?.Suspend();
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        if (instance == this) instance = null;
+    }
 
     public int SavedManualQualityLevel
     {
@@ -85,7 +138,7 @@ public class GamePerformanceSettings : MonoBehaviour
     {
         PlayerPrefs.SetInt(ManualQualityEnabledKey, 0);
         PlayerPrefs.Save();
-
+        _automaticQuality = null;
         ApplyQualityPreference(true);
     }
 
@@ -102,23 +155,11 @@ public class GamePerformanceSettings : MonoBehaviour
             return 0;
         }
 
-        bool isMobile = MobileInputManager.IsRuntimeMobileDevice();
-        if (isMobile)
+        if (_automaticQuality == null)
         {
-            if (IsLowEndDevice())
-            {
-                return FindQualityLevel("Very Low", 0);
-            }
-
-            if (IsLikelyTablet() && SystemInfo.systemMemorySize >= 4000)
-            {
-                return FindQualityLevel("Medium", Mathf.Min(2, QualitySettings.names.Length - 1));
-            }
-
-            return FindQualityLevel("Low", Mathf.Min(1, QualitySettings.names.Length - 1));
+            _automaticQuality = new AutomaticQualityPolicy(FindQualityLevel("Low", 1));
         }
-
-        return FindQualityLevel("High", Mathf.Min(3, QualitySettings.names.Length - 1));
+        return _automaticQuality.CurrentLevel;
     }
 
     public string GetQualityDisplayName(int qualityLevel)
@@ -166,13 +207,18 @@ public class GamePerformanceSettings : MonoBehaviour
 
     private void ApplyRuntimeQualityOverrides(int qualityLevel)
     {
-        bool isMobile = MobileInputManager.IsRuntimeMobileDevice();
         QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = isMobile ? GetMobileTargetFrameRate(qualityLevel) : 60;
+        Application.targetFrameRate = !IsManualQualityEnabled || _isMobile || qualityLevel <= FindQualityLevel("Medium", 2) ? 30 : 60;
 
-        float renderScale = GetRenderScale(qualityLevel, isMobile);
-        QualitySettings.resolutionScalingFixedDPIFactor = renderScale;
-        ScalableBufferManager.ResizeBuffers(renderScale, renderScale);
+        bool veryLow = qualityLevel <= FindQualityLevel("Very Low", 0);
+#if UNITY_WEBGL && !UNITY_EDITOR
+        // ScalableBufferManager is not the WebGL canvas resolution control.
+        GeoModel_SetRenderResolution(veryLow ? 960 : 1280, veryLow ? 540 : 720,
+            qualityLevel, IsManualQualityEnabled ? 1 : 0);
+#else
+        QualitySettings.resolutionScalingFixedDPIFactor = _isMobile ? (veryLow ? 0.6f : 0.72f) : 1f;
+#endif
+        QualitySettings.globalTextureMipmapLimit = veryLow ? 2 : qualityLevel <= FindQualityLevel("Low", 1) ? 1 : 0;
 
         if (qualityLevel <= FindQualityLevel("Very Low", 0))
         {
@@ -191,45 +237,10 @@ public class GamePerformanceSettings : MonoBehaviour
         else if (qualityLevel <= FindQualityLevel("Medium", Mathf.Min(2, QualitySettings.names.Length - 1)))
         {
             QualitySettings.pixelLightCount = Mathf.Min(QualitySettings.pixelLightCount, 1);
-            QualitySettings.shadows = ShadowQuality.HardOnly;
-            QualitySettings.shadowDistance = Mathf.Min(QualitySettings.shadowDistance, isMobile ? 20f : 35f);
+            QualitySettings.shadows = ShadowQuality.Disable;
+            QualitySettings.shadowDistance = 0f;
             QualitySettings.antiAliasing = 0;
         }
-    }
-
-    private int GetMobileTargetFrameRate(int qualityLevel)
-    {
-        int lowLevel = FindQualityLevel("Low", Mathf.Min(1, QualitySettings.names.Length - 1));
-        return qualityLevel <= lowLevel ? 30 : 45;
-    }
-
-    private float GetRenderScale(int qualityLevel, bool isMobile)
-    {
-        if (!isMobile)
-        {
-            return 1f;
-        }
-
-        int veryLow = FindQualityLevel("Very Low", 0);
-        int low = FindQualityLevel("Low", Mathf.Min(1, QualitySettings.names.Length - 1));
-        int medium = FindQualityLevel("Medium", Mathf.Min(2, QualitySettings.names.Length - 1));
-
-        if (qualityLevel <= veryLow)
-        {
-            return 0.6f;
-        }
-
-        if (qualityLevel <= low)
-        {
-            return 0.72f;
-        }
-
-        if (qualityLevel <= medium)
-        {
-            return 0.85f;
-        }
-
-        return 1f;
     }
 
     private int FindQualityLevel(string qualityName, int fallback)
@@ -259,18 +270,4 @@ public class GamePerformanceSettings : MonoBehaviour
         return Mathf.Clamp(qualityLevel, 0, maxLevel);
     }
 
-    private bool IsLowEndDevice()
-    {
-        bool lowMemory = SystemInfo.systemMemorySize > 0 && SystemInfo.systemMemorySize < 3000;
-        bool lowCpu = SystemInfo.processorCount > 0 && SystemInfo.processorCount < 4;
-        bool lowGpuMemory = SystemInfo.graphicsMemorySize > 0 && SystemInfo.graphicsMemorySize < 512;
-        return lowMemory || lowCpu || lowGpuMemory;
-    }
-
-    private bool IsLikelyTablet()
-    {
-        float diagonalPixels = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height);
-        float dpi = Screen.dpi > 0f ? Screen.dpi : 160f;
-        return diagonalPixels / dpi >= 7f;
-    }
 }

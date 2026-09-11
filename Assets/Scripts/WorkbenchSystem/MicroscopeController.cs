@@ -29,7 +29,7 @@ namespace WorkbenchSystem
         [Header("Camera/Preview")]
         public Camera microscopeCamera;
         public RenderTexture renderTexture;
-        public int previewSize = 2048;
+        public int previewSize = 1024;
         public float rotateSpeed = 80f;
         public float zoomSpeed = 1.5f;
         public float minZoom = 0.25f;
@@ -37,7 +37,7 @@ namespace WorkbenchSystem
         public float baseModelScale = 0.6f;
         public float scatterRadius = 0.65f;
         public float spawnDepthOffset = 1.2f;
-        public int previewAntiAliasing = 8;
+        public int previewAntiAliasing = 2;
 
         [Header("UI Controls")]
         public float uiZoomStep = 0.22f;
@@ -61,6 +61,8 @@ namespace WorkbenchSystem
         private GameObject previewSample;
         private Light previewLight;
         private bool isActive;
+        private bool _ownsRenderTexture;
+        private bool _ownsPreviewCamera;
         private int previewLayer;
         private Renderer[] highlightRenderers;
         private bool isHighlighted;
@@ -93,7 +95,29 @@ namespace WorkbenchSystem
 
         void OnEnable()
         {
-            Debug.LogWarning("[Microscope] OnEnable");
+            GamePerformanceSettings.QualityChanged += OnQualityChanged;
+            if (microscopeCamera != null)
+            {
+                ApplyPreviewQuality();
+                EnableCamera(isActive);
+            }
+        }
+
+        void OnDisable()
+        {
+            GamePerformanceSettings.QualityChanged -= OnQualityChanged;
+            EnableCamera(false);
+        }
+
+        void OnDestroy()
+        {
+            ReleaseOwnedRenderTexture();
+            if (_ownsPreviewCamera && microscopeCamera != null) Destroy(microscopeCamera.gameObject);
+        }
+
+        private void OnQualityChanged(int qualityLevel, bool manual)
+        {
+            if (microscopeCamera != null) ApplyPreviewQuality();
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -203,6 +227,7 @@ namespace WorkbenchSystem
                 var camObj = new GameObject("MicroscopeCamera");
                 camObj.transform.SetParent(null, false);
                 microscopeCamera = camObj.AddComponent<Camera>();
+                _ownsPreviewCamera = true;
                 microscopeCamera.transform.position = Vector3.zero;
                 microscopeCamera.transform.rotation = Quaternion.identity;
                 microscopeCamera.nearClipPlane = 0.01f;
@@ -219,22 +244,46 @@ namespace WorkbenchSystem
             microscopeCamera.backgroundColor = new Color(0.97f, 0.97f, 0.97f, 1f);
             microscopeCamera.cullingMask = 1 << previewLayer;
 
-            if (renderTexture == null)
-            {
-                renderTexture = new RenderTexture(previewSize, previewSize, 24, RenderTextureFormat.ARGB32);
-                renderTexture.antiAliasing = Mathf.Max(1, previewAntiAliasing);
-                renderTexture.useMipMap = false;
-                renderTexture.filterMode = FilterMode.Point;
-                renderTexture.name = "MicroscopeRT";
-            }
-            microscopeCamera.targetTexture = renderTexture;
-            if (previewImage != null)
-            {
-                previewImage.texture = renderTexture;
-            }
+            microscopeCamera.allowHDR = false;
+            ApplyPreviewQuality();
 
             EnsurePreviewRig();
             EnableCamera(false);
+        }
+
+        private void ApplyPreviewQuality()
+        {
+            var settings = GamePerformanceSettings.Instance;
+            int size = Mathf.Clamp(previewSize, 128, settings.MicroscopePreviewSize);
+            int samples = previewAntiAliasing > 1 ? settings.MicroscopeAntiAliasing : 1;
+            if (renderTexture == null || renderTexture.width != size || renderTexture.height != size ||
+                renderTexture.antiAliasing != samples)
+            {
+                ReleaseOwnedRenderTexture();
+                renderTexture = new RenderTexture(size, size, 16, RenderTextureFormat.ARGB32)
+                {
+                    antiAliasing = samples,
+                    useMipMap = false,
+                    filterMode = FilterMode.Bilinear,
+                    name = "MicroscopeRT"
+                };
+                _ownsRenderTexture = true;
+            }
+            microscopeCamera.targetTexture = renderTexture;
+            if (previewImage != null) previewImage.texture = renderTexture;
+        }
+
+        private void ReleaseOwnedRenderTexture()
+        {
+            if (microscopeCamera != null) microscopeCamera.targetTexture = null;
+            if (previewImage != null && previewImage.texture == renderTexture) previewImage.texture = null;
+            if (_ownsRenderTexture && renderTexture != null)
+            {
+                renderTexture.Release();
+                Destroy(renderTexture);
+            }
+            renderTexture = null;
+            _ownsRenderTexture = false;
         }
 
         void EnsurePreviewRig()

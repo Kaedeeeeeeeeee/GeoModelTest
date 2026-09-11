@@ -23,6 +23,7 @@ public class GameSceneManager : MonoBehaviour
     private string currentSceneName;
     private PlayerPersistentData playerData;
     private bool isSceneLoading = false;
+    public static bool IsLoadingScene => instance != null && instance.isSceneLoading;
     private const string ClassRoomHiddenKey = "MainScene.ClassRoom.Hidden";
     
     public static GameSceneManager Instance

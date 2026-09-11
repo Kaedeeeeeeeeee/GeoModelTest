@@ -417,9 +417,7 @@ public class MobileUIAdapter : MonoBehaviour
     /// </summary>
     bool IsLowEndDevice()
     {
-        return SystemInfo.systemMemorySize < 2000 || // 小于2GB内存
-               SystemInfo.processorCount < 4 ||       // 少于4核CPU
-               SystemInfo.graphicsMemorySize < 512;   // 少于512MB显存
+        return GamePerformanceSettings.Instance.CurrentQualityLevel == 0;
     }
     
     /// <summary>
@@ -626,7 +624,7 @@ public static class AnimationOptimizer
     public static void ReduceAnimations()
     {
         // 减少动画效果以提高性能
-        Time.timeScale = 1.0f; // 确保时间比例正常
+        // Quality/layout changes must preserve the pause or modal state.
         
         // 可以在这里添加更多动画优化逻辑
         Debug.Log("[AnimationOptimizer] 动画优化已应用");

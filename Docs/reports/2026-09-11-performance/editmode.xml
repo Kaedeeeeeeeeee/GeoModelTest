@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="14" result="Passed" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.039965">
+  <test-suite type="TestSuite" id="1000" name="GeoModelTest" fullname="GeoModelTest" runstate="Runnable" testcasecount="57" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.039965" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1075" name="GeoModel.Performance.EditModeTests.dll" fullname="/Users/user/Unity/GeoModelTest/Library/ScriptAssemblies/GeoModel.Performance.EditModeTests.dll" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.033289" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="59717" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1058" name="AutomaticQualityPolicyTests" fullname="AutomaticQualityPolicyTests" classname="AutomaticQualityPolicyTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.024037" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1064" name="Sample_Should_IgnoreFrames_When_GameplayIsPausedOrHidden" fullname="AutomaticQualityPolicyTests.Sample_Should_IgnoreFrames_When_GameplayIsPausedOrHidden" methodname="Sample_Should_IgnoreFrames_When_GameplayIsPausedOrHidden" classname="AutomaticQualityPolicyTests" runstate="Runnable" seed="1770381237" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.011572" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1067" name="Sample_Should_IgnoreInvalidTimes_When_TimingIsUnavailable" fullname="AutomaticQualityPolicyTests.Sample_Should_IgnoreInvalidTimes_When_TimingIsUnavailable" methodname="Sample_Should_IgnoreInvalidTimes_When_TimingIsUnavailable" classname="AutomaticQualityPolicyTests" runstate="Runnable" seed="1428294650" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.000270" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1060" name="Sample_Should_IgnoreSlowFrames_When_SceneIsWarmingUp" fullname="AutomaticQualityPolicyTests.Sample_Should_IgnoreSlowFrames_When_SceneIsWarmingUp" methodname="Sample_Should_IgnoreSlowFrames_When_SceneIsWarmingUp" classname="AutomaticQualityPolicyTests" runstate="Runnable" seed="972239071" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.000125" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1059" name="Sample_Should_KeepLow_When_GameplayIsFastForSeveralMinutes" fullname="AutomaticQualityPolicyTests.Sample_Should_KeepLow_When_GameplayIsFastForSeveralMinutes" methodname="Sample_Should_KeepLow_When_GameplayIsFastForSeveralMinutes" classname="AutomaticQualityPolicyTests" runstate="Runnable" seed="1710973763" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.000527" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1063" name="Sample_Should_KeepQuality_When_OnlyOneLoadStallOccurs" fullname="AutomaticQualityPolicyTests.Sample_Should_KeepQuality_When_OnlyOneLoadStallOccurs" methodname="Sample_Should_KeepQuality_When_OnlyOneLoadStallOccurs" classname="AutomaticQualityPolicyTests" runstate="Runnable" seed="722691765" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.000135" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1061" name="Sample_Should_LowerQuality_When_GameplayStaysBelowTarget" fullname="AutomaticQualityPolicyTests.Sample_Should_LowerQuality_When_GameplayStaysBelowTarget" methodname="Sample_Should_LowerQuality_When_GameplayStaysBelowTarget" classname="AutomaticQualityPolicyTests" runstate="Runnable" seed="2029552229" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.000550" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1062" name="Sample_Should_LowerQualityEarlier_When_FrameRateIsSeverelyLow" fullname="AutomaticQualityPolicyTests.Sample_Should_LowerQualityEarlier_When_FrameRateIsSeverelyLow" methodname="Sample_Should_LowerQualityEarlier_When_FrameRateIsSeverelyLow" classname="AutomaticQualityPolicyTests" runstate="Runnable" seed="112205928" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.000117" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1066" name="Sample_Should_NeverGoBelowMinimum_When_DeviceRemainsSlow" fullname="AutomaticQualityPolicyTests.Sample_Should_NeverGoBelowMinimum_When_DeviceRemainsSlow" methodname="Sample_Should_NeverGoBelowMinimum_When_DeviceRemainsSlow" classname="AutomaticQualityPolicyTests" runstate="Runnable" seed="1588875984" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.000130" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1065" name="Sample_Should_ResetSlowStreak_When_PerformanceRecovers" fullname="AutomaticQualityPolicyTests.Sample_Should_ResetSlowStreak_When_PerformanceRecovers" methodname="Sample_Should_ResetSlowStreak_When_PerformanceRecovers" classname="AutomaticQualityPolicyTests" runstate="Runnable" seed="96195132" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.000118" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1068" name="WebGLTextureSettingsTests" fullname="WebGLTextureSettingsTests" classname="WebGLTextureSettingsTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.008161" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1069" name="EnvironmentTextures_Should_UseWebOverrides_When_BuiltForSchoolBrowsers" fullname="WebGLTextureSettingsTests.EnvironmentTextures_Should_UseWebOverrides_When_BuiltForSchoolBrowsers" methodname="EnvironmentTextures_Should_UseWebOverrides_When_BuiltForSchoolBrowsers" classname="WebGLTextureSettingsTests" runstate="Runnable" seed="711316482" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.005337" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1074" name="PropTextures_Should_CapAt1024_When_BuiltForWeb" fullname="WebGLTextureSettingsTests.PropTextures_Should_CapAt1024_When_BuiltForWeb" classname="WebGLTextureSettingsTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.001618" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1070" name="PropTextures_Should_CapAt1024_When_BuiltForWeb(&quot;Assets/Model/Drone/Polygonal_Drone_Desig_0701040626_texture.png&quot;)" fullname="WebGLTextureSettingsTests.PropTextures_Should_CapAt1024_When_BuiltForWeb(&quot;Assets/Model/Drone/Polygonal_Drone_Desig_0701040626_texture.png&quot;)" methodname="PropTextures_Should_CapAt1024_When_BuiltForWeb" classname="WebGLTextureSettingsTests" runstate="Runnable" seed="750121522" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.000362" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1071" name="PropTextures_Should_CapAt1024_When_BuiltForWeb(&quot;Assets/Model/Microscope/Microscope_on_Transpa_1203043229_texture.png&quot;)" fullname="WebGLTextureSettingsTests.PropTextures_Should_CapAt1024_When_BuiltForWeb(&quot;Assets/Model/Microscope/Microscope_on_Transpa_1203043229_texture.png&quot;)" methodname="PropTextures_Should_CapAt1024_When_BuiltForWeb" classname="WebGLTextureSettingsTests" runstate="Runnable" seed="1058721218" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.000152" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1072" name="PropTextures_Should_CapAt1024_When_BuiltForWeb(&quot;Assets/Model/Drill/Retro_Drill_Bot_0628054134_texture.png&quot;)" fullname="WebGLTextureSettingsTests.PropTextures_Should_CapAt1024_When_BuiltForWeb(&quot;Assets/Model/Drill/Retro_Drill_Bot_0628054134_texture.png&quot;)" methodname="PropTextures_Should_CapAt1024_When_BuiltForWeb" classname="WebGLTextureSettingsTests" runstate="Runnable" seed="1991581642" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.000142" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1073" name="PropTextures_Should_CapAt1024_When_BuiltForWeb(&quot;Assets/Model/Hammer/Geometric_Hammer_0714042033_texture.png&quot;)" fullname="WebGLTextureSettingsTests.PropTextures_Should_CapAt1024_When_BuiltForWeb(&quot;Assets/Model/Hammer/Geometric_Hammer_0714042033_texture.png&quot;)" methodname="PropTextures_Should_CapAt1024_When_BuiltForWeb" classname="WebGLTextureSettingsTests" runstate="Runnable" seed="1640486237" result="Passed" start-time="2026-09-11 08:04:34Z" end-time="2026-09-11 08:04:34Z" duration="0.000136" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: /Users/user/Library/Application Support/ZHANGSHIFENG/GeoModelTest/TestResults.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
