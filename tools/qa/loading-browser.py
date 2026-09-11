@@ -8,6 +8,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--url', default='http://127.0.0.1:55888')
 parser.add_argument('--output', default='Logs/loading-improvements/browser')
 parser.add_argument('--long', action='store_true', help='Also verify the real 90-second inactivity timeout')
+parser.add_argument('--case', help='Run only one scenario')
 args = parser.parse_args()
 out = Path(args.output)
 out.mkdir(parents=True, exist_ok=True)
@@ -15,8 +16,9 @@ results = []
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True, args=['--use-angle=metal', '--use-gl=angle', '--enable-gpu'])
-    scenarios = ['normal', 'fail-ui', 'fail-loader', 'fail-data', 'invalid-data', 'fail-twice', 'disconnect', 'stall']
+    scenarios = ['normal', 'corrupt-cache', 'fail-ui', 'fail-loader', 'fail-data', 'invalid-data', 'fail-twice', 'disconnect', 'stall']
     if args.long: scenarios.append('timeout')
+    if args.case: scenarios = [args.case]
     try:
         for scenario in scenarios:
             mobile = scenario in ('fail-data', 'stall')
@@ -61,6 +63,17 @@ with sync_playwright() as p:
                 ready()
                 results.append({'case':scenario, 'during':during, 'afterResume':state(), 'errors':errors})
             else:
+                if scenario == 'corrupt-cache':
+                    ready()
+                    # Simulate damaged cached bytes with unchanged HTTP validators.
+                    page.evaluate('''async () => {
+                        const cache=await caches.open('UnityCache_'+config.companyName+'_'+config.productName);
+                        const url=new URL(config.dataUrl,document.baseURI).href;
+                        const original=await cache.match(url);
+                        if(!original) throw new Error('Expected real Unity data cache');
+                        await cache.put(url,new Response('<html>Damaged cached data</html>',{headers:original.headers}));
+                    }''')
+                    page.reload(wait_until='domcontentloaded')
                 page.locator('#loading-retry').wait_for(state='visible', timeout=100000 if scenario=='timeout' else 20000)
                 if scenario == 'timeout':
                     page.wait_for_function("document.getElementById('unity-loading-bar').dataset.state === 'failed'", timeout=100000)
@@ -88,6 +101,9 @@ with sync_playwright() as p:
                     if scenario == 'fail-twice' and attempt == 0:
                         page.wait_for_function("document.getElementById('unity-loading-bar').dataset.state === 'failed'")
                 ready()
+                if scenario == 'corrupt-cache':
+                    page.reload(wait_until='domcontentloaded')
+                    ready()
                 preserved = page.evaluate('''async () => {
                     const value=await new Promise(resolve=>{const r=indexedDB.open('qa-saved-progress',1);
                         r.onsuccess=()=>{const db=r.result,q=db.transaction('saves').objectStore('saves').get('current');

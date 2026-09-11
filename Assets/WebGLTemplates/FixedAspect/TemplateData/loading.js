@@ -28,6 +28,22 @@
       } catch (_) { /* Storage can be unavailable in an embedded/private browser. */ }
       if (freshDownload) config.cacheControl = function () { return 'no-store'; };
 
+      async function discardFailedResponses() {
+        if (!freshDownload) return;
+        try {
+          if (!window.caches) return;
+          // Unity 6000.0 stores downloaded responses here, separately from IDBFS saves.
+          // Remove only this build's URLs so a later ordinary reload cannot reuse
+          // corrupt bytes after a successful cache-bypassing retry.
+          var name = 'UnityCache_' + config.companyName + '_' + config.productName;
+          if (!await caches.has(name)) return;
+          var cache = await caches.open(name);
+          await Promise.all(Array.from(resourceUrls).map(function (url) { return cache.delete(url); }));
+        } catch (error) {
+          console.warn('[G-LAB loading] Could not discard cached build responses', error);
+        }
+      }
+
       document.getElementById('loading-version').textContent = config.productVersion;
       panel.dataset.state = phase;
 
@@ -219,7 +235,9 @@
           cleanup();
         }).catch(function (error) { fail('startup', error); });
       };
-      document.body.appendChild(script);
+      discardFailedResponses().then(function () {
+        if (active()) document.body.appendChild(script);
+      });
       return {
         fail: fail,
         handleBanner: function (message, type) {
