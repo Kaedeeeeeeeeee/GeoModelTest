@@ -1,0 +1,94 @@
+{
+  "oldMain": "3f51ed4",
+  "integratedRelease": "aa8884b",
+  "developmentCommits": 25,
+  "claudeBase": "8c36731bb426481e0e033fe113f7de36652a4f6e",
+  "patchSha256": "295f2d64c61141bc2b96dcc5d7ae009451ff233a93a3fdccbf093b9a18d0a553",
+  "archiveSourcePaths": 26,
+  "archiveApplyVerified": true,
+  "legacySettings": [
+    {
+      "path": "ProjectSettings/AudioManager.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/ClusterInputManager.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/DynamicsManager.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/EditorSettings.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/GraphicsSettings.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/InputManager.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/MemorySettings.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/MultiplayerManager.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/NavMeshAreas.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/PackageManagerSettings.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/Physics2DSettings.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/PresetManager.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/ShaderGraphSettings 2.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/TimeManager.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/VFXManager.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/VersionControlSettings.asset",
+      "bytes_equal_to_old_commit": true
+    },
+    {
+      "path": "ProjectSettings/XRSettings.asset",
+      "bytes_equal_to_old_commit": true
+    }
+  ],
+  "ghPages": "034ba08",
+  "equivalentMainCommit": "3e7248c",
+  "checks": {
+    "localizationUniqueEntries": {
+      "en-US": 828,
+      "ja-JP": 873,
+      "zh-CN": 828
+    },
+    "releaseVersion": "2026.09.11-survey-return",
+    "releaseAssetHashesVerified": 4,
+    "runtimeUnchangedFrom": "aa8884b",
+    "gitLfsFsck": "passed",
+    "claudeCommitIncluded": true,
+    "developmentCommitIncluded": true
+  }
+}

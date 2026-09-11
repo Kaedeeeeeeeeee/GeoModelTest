@@ -123,3 +123,6 @@ supabase/.temp/
 
 # Unity Performance Testing creates these temporary files during a build.
 /Assets/Resources/PerformanceTestRun*.json*
+
+# Local document render previews and downloaded preview fonts.
+/tmp/

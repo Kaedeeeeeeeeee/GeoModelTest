@@ -1,0 +1,1243 @@
+diff --git a/Assets/Resources/Localization/Data/en-US.json b/Assets/Resources/Localization/Data/en-US.json
+index 4ae6541..585ef84 100644
+--- a/Assets/Resources/Localization/Data/en-US.json
++++ b/Assets/Resources/Localization/Data/en-US.json
+@@ -8,6 +8,14 @@
+       "key": "ui.settings.language",
+       "value": "Language"
+     },
++    {
++      "key": "ui.settings.back_to_main",
++      "value": "Back to Main Menu"
++    },
++    {
++      "key": "ui.microscope.prompt",
++      "value": "Press F to view microscope"
++    },
+     {
+       "key": "ui.button.close",
+       "value": "Close"
+diff --git a/Assets/Resources/Localization/Data/ja-JP.json b/Assets/Resources/Localization/Data/ja-JP.json
+index b48ca8e..5f4c2c2 100644
+--- a/Assets/Resources/Localization/Data/ja-JP.json
++++ b/Assets/Resources/Localization/Data/ja-JP.json
+@@ -8,6 +8,14 @@
+       "key": "ui.settings.language",
+       "value": "言語"
+     },
++    {
++      "key": "ui.settings.back_to_main",
++      "value": "メインメニューに戻る"
++    },
++    {
++      "key": "ui.microscope.prompt",
++      "value": "Fキーで顕微鏡を見る"
++    },
+     {
+       "key": "ui.button.close",
+       "value": "閉じる"
+diff --git a/Assets/Resources/Localization/Data/zh-CN.json b/Assets/Resources/Localization/Data/zh-CN.json
+index 3dbe66f..0c295c3 100644
+--- a/Assets/Resources/Localization/Data/zh-CN.json
++++ b/Assets/Resources/Localization/Data/zh-CN.json
+@@ -8,6 +8,14 @@
+       "key": "ui.settings.language",
+       "value": "语言"
+     },
++    {
++      "key": "ui.settings.back_to_main",
++      "value": "返回主菜单"
++    },
++    {
++      "key": "ui.microscope.prompt",
++      "value": "按 F 查看显微镜"
++    },
+     {
+       "key": "ui.button.close",
+       "value": "关闭"
+diff --git a/Assets/Model/Drill/Drill Car.prefab b/Assets/Resources/Model/Drill/Drill Car.prefab
+similarity index 100%
+rename from Assets/Model/Drill/Drill Car.prefab
+rename to Assets/Resources/Model/Drill/Drill Car.prefab
+diff --git a/Assets/Model/Drill/Drill Car.prefab.meta b/Assets/Resources/Model/Drill/Drill Car.prefab.meta
+similarity index 100%
+rename from Assets/Model/Drill/Drill Car.prefab.meta
+rename to Assets/Resources/Model/Drill/Drill Car.prefab.meta
+diff --git a/Assets/Model/Drone/Drone.prefab b/Assets/Resources/Model/Drone/Drone.prefab
+similarity index 100%
+rename from Assets/Model/Drone/Drone.prefab
+rename to Assets/Resources/Model/Drone/Drone.prefab
+diff --git a/Assets/Model/Drone/Drone.prefab.meta b/Assets/Resources/Model/Drone/Drone.prefab.meta
+similarity index 100%
+rename from Assets/Model/Drone/Drone.prefab.meta
+rename to Assets/Resources/Model/Drone/Drone.prefab.meta
+diff --git a/Assets/Model/Hammer/Hammer.prefab b/Assets/Resources/Model/Hammer/Hammer.prefab
+similarity index 100%
+rename from Assets/Model/Hammer/Hammer.prefab
+rename to Assets/Resources/Model/Hammer/Hammer.prefab
+diff --git a/Assets/Model/Hammer/Hammer.prefab.meta b/Assets/Resources/Model/Hammer/Hammer.prefab.meta
+similarity index 100%
+rename from Assets/Model/Hammer/Hammer.prefab.meta
+rename to Assets/Resources/Model/Hammer/Hammer.prefab.meta
+diff --git a/Assets/Resources/Model/Player/Lily.prefab b/Assets/Resources/Model/Player/Lily.prefab
+index cc69908..7d1d6d1 100644
+--- a/Assets/Resources/Model/Player/Lily.prefab
++++ b/Assets/Resources/Model/Player/Lily.prefab
+@@ -129,7 +129,7 @@ Transform:
+   serializedVersion: 2
+   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+   m_LocalPosition: {x: 53.96, y: 10.29, z: 60.13}
+-  m_LocalScale: {x: 1, y: 1, z: 1}
++  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+   m_ConstrainProportionsScale: 0
+   m_Children:
+   - {fileID: 8331854130899069569}
+@@ -223,7 +223,7 @@ MonoBehaviour:
+   runSpeed: 10
+   jumpHeight: 1
+   gravity: -15
+-  mouseSensitivity: 50
++  mouseSensitivity: 10
+   maxLookAngle: 80
+   enableMouseLook: 1
+   groundCheck: {fileID: 7758242101776804750}
+diff --git a/Assets/Scripts/Controllers/FirstPersonController.cs b/Assets/Scripts/Controllers/FirstPersonController.cs
+index c087292..fd52f78 100644
+--- a/Assets/Scripts/Controllers/FirstPersonController.cs
++++ b/Assets/Scripts/Controllers/FirstPersonController.cs
+@@ -101,9 +101,28 @@ public class FirstPersonController : MonoBehaviour
+         {
+             HandleLook();
+         }
+-        
++
+         // 检测桌面测试模式状态变化，动态更新鼠标锁定状态
+         CheckDesktopTestModeChange();
++
++        // WebGL PointerLock 修复：浏览器要求用户先 gesture 才会真正 acquire pointer lock。
++        // SetCursorLockState 在 Start 调用时通常没有 user gesture → 锁定请求被浏览器拒绝
++        // → 光标 visible=false 但实际可移动到屏幕边缘卡住，破坏 FPS 视角体验。
++        // 每帧持续 enforce → 用户首次点击/按键的下一帧即重新尝试锁定，最终成功。
++        // 排除：桌面测试模式（虚拟按键需要鼠标）、ESC 设置面板打开、Tab 轮盘打开
++        // （Tab 时 InventoryUISystem 已把 enableMouseLook 设 false，下面的 if 自动跳过）。
++        if (enableMouseLook && Cursor.lockState != CursorLockMode.Locked)
++        {
++            bool isDesktopTest = MobileCursorManager.Instance != null
++                && MobileCursorManager.IsDesktopTestMode();
++            bool isSettingsOpen = SettingsManager.Instance != null
++                && SettingsManager.Instance.IsSettingsOpen;
++            if (!isDesktopTest && !isSettingsOpen)
++            {
++                Cursor.lockState = CursorLockMode.Locked;
++                Cursor.visible = false;
++            }
++        }
+     }
+     
+     private bool lastDesktopTestMode = false;
+@@ -237,8 +256,12 @@ public class FirstPersonController : MonoBehaviour
+                 DebugHandPositions();
+             }
+ 
+-            // ESC键切换鼠标锁定状态（方便调试和退出）
+-            if (Keyboard.current.escapeKey.wasPressedThisFrame)
++            // ESC键切换鼠标锁定状态（仅当 SettingsManager 不在场时作为兜底）。
++            // 否则 SettingsManager 也监听 ESC 来开关设置面板，两个 handler 同帧响应：
++            //   - SettingsManager.CloseSettings 设 lockState=Locked + visible=false
++            //   - FirstPersonController.ToggleCursorLock 看到 Locked → 反向 toggle 成 None + visible=true
++            //   → ESC 关闭设置后鼠标不消失。让 SettingsManager 独占 ESC 即可。
++            if (Keyboard.current.escapeKey.wasPressedThisFrame && SettingsManager.Instance == null)
+             {
+                 ToggleCursorLock();
+             }
+@@ -299,13 +322,22 @@ public class FirstPersonController : MonoBehaviour
+     void HandleLook()
+     {
+         if (playerCamera == null) return;
+-        
++
++        // 视角禁用时清零 lookInput 并直接返回。
++        // 之前 bug：HandleInput 在 enableMouseLook=false 时跳过赋值，
++        // 但 lookInput 保留上次值 → HandleLook 仍用旧值持续转视角（Tab 期间能转）。
++        if (!enableMouseLook)
++        {
++            lookInput = Vector2.zero;
++            return;
++        }
++
+         float mouseX = lookInput.x * mouseSensitivity * Time.deltaTime;
+         float mouseY = lookInput.y * mouseSensitivity * Time.deltaTime;
+-        
++
+         xRotation -= mouseY;
+         xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);
+-        
++
+         playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+         transform.Rotate(Vector3.up * mouseX);
+     }
+diff --git a/Assets/Scripts/Core/ProgressResetService.cs b/Assets/Scripts/Core/ProgressResetService.cs
+index c15db83..d74b069 100644
+--- a/Assets/Scripts/Core/ProgressResetService.cs
++++ b/Assets/Scripts/Core/ProgressResetService.cs
+@@ -47,6 +47,12 @@ public static class ProgressResetService
+         var sd = Object.FindFirstObjectByType<StorySystem.StoryDirector>();
+         if (sd != null) sd.ReloadFlags();
+ 
++        // 4b) 同理，QuestManager 也是 DontDestroyOnLoad 单例：清档时它内存里仍持有
++        //     旧档的 _completedQuests / _completedObjectives 以及每个 Quest.status，
++        //     必须主动让它重置，否则左上角 HUD 会继续显示老任务的进度。
++        var qm = Object.FindFirstObjectByType<QuestSystem.QuestManager>();
++        if (qm != null) qm.ReloadQuests();
++
+         // 5) 可选：刷新UI
+         var ui = Object.FindFirstObjectByType<InventoryUISystem>();
+         if (ui != null) ui.RefreshTools();
+diff --git a/Assets/Scripts/Localization/SettingsManager.cs b/Assets/Scripts/Localization/SettingsManager.cs
+index 4a7fcda..10ef551 100644
+--- a/Assets/Scripts/Localization/SettingsManager.cs
++++ b/Assets/Scripts/Localization/SettingsManager.cs
+@@ -1,6 +1,7 @@
+ using UnityEngine;
+ using UnityEngine.UI;
+ using UnityEngine.InputSystem;
++using UnityEngine.SceneManagement;
+ 
+ /// <summary>
+ /// 设置管理器 - 管理ESC键触发的设置界面
+@@ -37,24 +38,30 @@ public class SettingsManager : MonoBehaviour
+     public Button chineseButton;
+     public Button englishButton;
+     public Button japaneseButton;
++    public Button backToMainButton;
+     public Button closeButton;
+-    
++
+     [Header("UI文本组件")]
+     public Text titleText;
+     public Text languageLabel;
+     public Text chineseText;
+     public Text englishText;
+     public Text japaneseText;
++    public Text backToMainText;
+     public Text closeText;
+-    
++
+     [Header("设置")]
+     public bool pauseGameWhenOpen = true;
+     public bool disablePlayerControlWhenOpen = true;
++    public string startSceneName = "StartScene"; // "返回主菜单" 跳转的场景
+     
+     // 私有成员
+     private bool isSettingsOpen = false;
+     private FirstPersonController playerController;
+     private float originalTimeScale = 1f;
++    // 追踪是否由 SettingsManager 自己冻结过 timeScale，
++    // 让 Update safety net 只恢复"自己制造的"卡死，不破坏 GameSceneManager 等合法暂停
++    private bool _frozenTimeByMe = false;
+     
+     #region Unity生命周期
+     void Awake()
+@@ -97,6 +104,30 @@ public class SettingsManager : MonoBehaviour
+         {
+             ToggleSettings();
+         }
++
++        if (isSettingsOpen)
++        {
++            // 设置面板打开期间持续 enforce 鼠标可见 + 解锁，
++            // 防止 FirstPersonController / MobileCursorManager / InventoryUISystem
++            // 等其它脚本每帧把 cursor 重新锁回去。
++            if (Cursor.lockState != CursorLockMode.None || !Cursor.visible)
++            {
++                Cursor.lockState = CursorLockMode.None;
++                Cursor.visible = true;
++            }
++        }
++        // 关于 player.enabled：不在这里强制 enable —— WorkbenchController/DroneController
++        // 等会合法地把 player.enabled=false（坐工作台/操控无人机时禁用走路）。
++        // BackToMainMenu 已经显式 enable，正常 ESC→Close→Open 配对也已恢复。
++
++        // Time.timeScale safety net：仅恢复"自己制造的"卡死，不破坏 GameSceneManager
++        // 等其它合法 timeScale=0 的暂停（如场景选择 UI）。
++        if (_frozenTimeByMe && !isSettingsOpen && Time.timeScale == 0f)
++        {
++            Debug.LogWarning("[SettingsManager] 检测到 timeScale 卡 0 (settings 已关但未恢复) → 兜底恢复 1");
++            Time.timeScale = 1f;
++            _frozenTimeByMe = false;
++        }
+     }
+     #endregion
+     
+@@ -138,6 +169,7 @@ public class SettingsManager : MonoBehaviour
+         {
+             originalTimeScale = Time.timeScale;
+             Time.timeScale = 0f;
++            _frozenTimeByMe = true;
+         }
+         
+         // 禁用玩家控制
+@@ -175,6 +207,7 @@ public class SettingsManager : MonoBehaviour
+         {
+             Time.timeScale = originalTimeScale;
+         }
++        _frozenTimeByMe = false;
+         
+         // 恢复玩家控制
+         if (disablePlayerControlWhenOpen && playerController != null)
+@@ -282,7 +315,10 @@ public class SettingsManager : MonoBehaviour
+         
+         // 创建语言按钮
+         CreateLanguageButtons(contentObj);
+-        
++
++        // 创建"返回主菜单"按钮
++        CreateBackToMainButton(contentObj);
++
+         // 创建关闭按钮
+         CreateCloseButton(contentObj);
+     }
+@@ -410,6 +446,56 @@ public class SettingsManager : MonoBehaviour
+         return button;
+     }
+     
++    /// <summary>
++    /// 创建"返回主菜单"按钮（蓝灰色，避免与红色"关闭"按钮颜色相撞导致误击）
++    /// </summary>
++    private void CreateBackToMainButton(GameObject parent)
++    {
++        GameObject buttonObj = new GameObject("BackToMainButton");
++        buttonObj.transform.SetParent(parent.transform);
++
++        RectTransform buttonRect = buttonObj.AddComponent<RectTransform>();
++        buttonRect.anchorMin = new Vector2(0.30f, 0.22f);
++        buttonRect.anchorMax = new Vector2(0.70f, 0.34f);
++        buttonRect.offsetMin = Vector2.zero;
++        buttonRect.offsetMax = Vector2.zero;
++
++        // 重要：先 Image 再 Button（或显式绑 targetGraphic），否则运行时
++        // Button.targetGraphic == null → 不响应点击。Editor 里 Inspector 创建会
++        // 自动通过 OnValidate 绑定，但代码 AddComponent 不会触发 OnValidate。
++        Image buttonImage = buttonObj.AddComponent<Image>();
++        buttonImage.color = new Color(0.25f, 0.40f, 0.55f, 0.85f);
++
++        backToMainButton = buttonObj.AddComponent<Button>();
++        backToMainButton.targetGraphic = buttonImage; // 显式绑定，保险
++
++        ColorBlock colors = backToMainButton.colors;
++        colors.normalColor = new Color(0.25f, 0.40f, 0.55f, 0.85f);
++        colors.highlightedColor = new Color(0.35f, 0.50f, 0.65f, 0.95f);
++        colors.pressedColor = new Color(0.15f, 0.30f, 0.45f, 1f);
++        backToMainButton.colors = colors;
++
++        // 创建按钮文本
++        GameObject textObj = new GameObject("Text");
++        textObj.transform.SetParent(buttonObj.transform);
++
++        RectTransform textRect = textObj.AddComponent<RectTransform>();
++        textRect.anchorMin = Vector2.zero;
++        textRect.anchorMax = Vector2.one;
++        textRect.offsetMin = Vector2.zero;
++        textRect.offsetMax = Vector2.zero;
++
++        backToMainText = textObj.AddComponent<Text>();
++        backToMainText.text = "返回主菜单";
++        backToMainText.font = UIFontResolver.GetUIFont();
++        backToMainText.fontSize = 22;
++        backToMainText.color = Color.white;
++        backToMainText.alignment = TextAnchor.MiddleCenter;
++
++        LocalizedText localizedBack = textObj.AddComponent<LocalizedText>();
++        localizedBack.TextKey = "ui.settings.back_to_main";
++    }
++
+     /// <summary>
+     /// 创建关闭按钮
+     /// </summary>
+@@ -417,10 +503,10 @@ public class SettingsManager : MonoBehaviour
+     {
+         GameObject buttonObj = new GameObject("CloseButton");
+         buttonObj.transform.SetParent(parent.transform);
+-        
++
+         RectTransform buttonRect = buttonObj.AddComponent<RectTransform>();
+-        buttonRect.anchorMin = new Vector2(0.35f, 0.1f);
+-        buttonRect.anchorMax = new Vector2(0.65f, 0.25f);
++        buttonRect.anchorMin = new Vector2(0.35f, 0.06f);
++        buttonRect.anchorMax = new Vector2(0.65f, 0.18f);
+         buttonRect.offsetMin = Vector2.zero;
+         buttonRect.offsetMax = Vector2.zero;
+         
+@@ -481,11 +567,51 @@ public class SettingsManager : MonoBehaviour
+             japaneseButton.onClick.AddListener(() => SwitchLanguage(LanguageSettings.Language.Japanese));
+         }
+         
++        if (backToMainButton != null)
++        {
++            backToMainButton.onClick.AddListener(BackToMainMenu);
++        }
++
+         if (closeButton != null)
+         {
+             closeButton.onClick.AddListener(CloseSettings);
+         }
+     }
++
++    /// <summary>
++    /// 返回主菜单（StartScene）。
++    /// 切场景前必须恢复 Time.timeScale 与 Cursor 状态，
++    /// 否则 StartScene 会被冻结/光标错乱。
++    /// SettingsManager 自身是 DontDestroyOnLoad，会跨场景存活；
++    /// 跨场景后 playerController 引用会失效，但 StartScene 没有玩家，无影响。
++    /// </summary>
++    public void BackToMainMenu()
++    {
++        Debug.Log($"[SettingsManager] 返回主菜单：加载场景 '{startSceneName}'");
++
++        // 先关 UI（隐藏面板，复位标志位）
++        if (settingsPanel != null) settingsPanel.SetActive(false);
++        if (settingsCanvas != null) settingsCanvas.gameObject.SetActive(false);
++        isSettingsOpen = false;
++
++        // 强制恢复时间到 1（不依赖 originalTimeScale，防止它意外为 0/未初始化）
++        Time.timeScale = 1f;
++        _frozenTimeByMe = false;
++
++        // 强制 enable 旧 player（防 OpenSettings 设的 enabled=false 残留；
++        // 切场景后旧 player 会销毁，但稳妥起见保险一下）
++        if (playerController != null)
++        {
++            playerController.enabled = true;
++        }
++
++        // 解锁鼠标，让 StartMenu 能交互
++        Cursor.lockState = CursorLockMode.None;
++        Cursor.visible = true;
++
++        // 同步加载（与 StartMenuBootstrap 切到 MainScene 的方式一致）
++        SceneManager.LoadScene(startSceneName);
++    }
+     
+     /// <summary>
+     /// 切换语言
+diff --git a/Assets/Scripts/Managers/GameInitializer.cs b/Assets/Scripts/Managers/GameInitializer.cs
+index fc3c725..249b0ad 100644
+--- a/Assets/Scripts/Managers/GameInitializer.cs
++++ b/Assets/Scripts/Managers/GameInitializer.cs
+@@ -246,6 +246,20 @@ public class GameInitializer : MonoBehaviour
+                 droneTool = lily.AddComponent<DroneTool>();
+                 droneTool.toolID = "1100";
+                 droneTool.toolName = "无人机";
++
++                // WebGL 安全：从 Resources 加载无人机预制体
++                // 之前完全没设置 prefabToPlace → WebGL 上拿出无人机后预览创建失败 → 看似"拿不出来"
++                GameObject dronePrefab = Resources.Load<GameObject>("Model/Drone/Drone");
++                if (dronePrefab != null)
++                {
++                    droneTool.prefabToPlace = dronePrefab;
++                    if (enableDebugMode) Debug.Log("已设置Drone预制体: Resources/Model/Drone/Drone");
++                }
++                else
++                {
++                    Debug.LogError("未找到Drone预制体（Resources/Model/Drone/Drone），无人机工具无法正常放置");
++                }
++
+                 if (enableDebugMode) Debug.Log("已添加无人机工具");
+             }
+             
+@@ -267,43 +281,17 @@ public class GameInitializer : MonoBehaviour
+                 drillCarTool.toolID = "1101";
+                 drillCarTool.toolName = "钻探车";
+                 
+-                // 尝试找到DrillCar预制体
+-                #if UNITY_EDITOR
+-                string[] searchTerms = {"DrillCar", "Drill Car", "DrillCar t:Prefab", "Drill Car t:Prefab"};
+-                GameObject carPrefab = null;
+-                string foundPath = "";
+-                
+-                foreach (string searchTerm in searchTerms)
+-                {
+-                    string[] guids = UnityEditor.AssetDatabase.FindAssets(searchTerm);
+-                    foreach (string guid in guids)
+-                    {
+-                        string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+-                        if (path.EndsWith(".prefab"))
+-                        {
+-                            GameObject testPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path);
+-                            if (testPrefab != null && (testPrefab.name.Contains("Drill") || testPrefab.name.Contains("Car")))
+-                            {
+-                                carPrefab = testPrefab;
+-                                foundPath = path;
+-                                break;
+-                            }
+-                        }
+-                    }
+-                    if (carPrefab != null) break;
+-                }
+-                
++                // WebGL 安全：从 Resources 加载钻探车预制体（注意原文件名带空格："Drill Car"）
++                GameObject carPrefab = Resources.Load<GameObject>("Model/Drill/Drill Car");
+                 if (carPrefab != null)
+                 {
+-                    // 设置预制体字段
+                     drillCarTool.prefabToPlace = carPrefab;
+-                    if (enableDebugMode) Debug.Log($"已设置DrillCar预制体: {foundPath}");
++                    if (enableDebugMode) Debug.Log("已设置DrillCar预制体: Resources/Model/Drill/Drill Car");
+                 }
+                 else
+                 {
+-                    Debug.LogWarning("未找到DrillCar预制体");
++                    Debug.LogError("未找到DrillCar预制体（Resources/Model/Drill/Drill Car），钻探车工具无法正常放置");
+                 }
+-                #endif
+                 
+                 Debug.Log("已添加钻探车工具");
+             }
+@@ -316,43 +304,17 @@ public class GameInitializer : MonoBehaviour
+                 hammerTool.toolID = "1002";
+                 hammerTool.toolName = "地质锤";
+                 
+-                // 尝试找到Hammer预制体
+-                #if UNITY_EDITOR
+-                string[] hammerSearchTerms = {"Hammer", "hammer", "Hammer t:Prefab"};
+-                GameObject hammerPrefab = null;
+-                string hammerFoundPath = "";
+-                
+-                foreach (string searchTerm in hammerSearchTerms)
+-                {
+-                    string[] guids = UnityEditor.AssetDatabase.FindAssets(searchTerm);
+-                    foreach (string guid in guids)
+-                    {
+-                        string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+-                        if (path.EndsWith(".prefab") && path.Contains("Hammer"))
+-                        {
+-                            GameObject testPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path);
+-                            if (testPrefab != null && testPrefab.name.Contains("Hammer"))
+-                            {
+-                                hammerPrefab = testPrefab;
+-                                hammerFoundPath = path;
+-                                break;
+-                            }
+-                        }
+-                    }
+-                    if (hammerPrefab != null) break;
+-                }
+-                
++                // WebGL 安全：从 Resources 加载锤子预制体（路径相对 Assets/Resources/，不带扩展名）
++                GameObject hammerPrefab = Resources.Load<GameObject>("Model/Hammer/Hammer");
+                 if (hammerPrefab != null)
+                 {
+-                    // 设置锤子预制体字段
+                     hammerTool.hammerPrefab = hammerPrefab;
+-                    Debug.Log($"已设置Hammer预制体: {hammerFoundPath}");
++                    if (enableDebugMode) Debug.Log("已设置Hammer预制体: Resources/Model/Hammer/Hammer");
+                 }
+                 else
+                 {
+-                    Debug.LogWarning("未找到Hammer预制体，锤子工具可能无法正常显示");
++                    Debug.LogError("未找到Hammer预制体（Resources/Model/Hammer/Hammer），锤子工具无法正常显示");
+                 }
+-                #endif
+                 
+                 Debug.Log("已添加地质锤工具");
+             }
+diff --git a/Assets/Scripts/Managers/ToolUnlockService.cs b/Assets/Scripts/Managers/ToolUnlockService.cs
+index b9c2f73..54f6445 100644
+--- a/Assets/Scripts/Managers/ToolUnlockService.cs
++++ b/Assets/Scripts/Managers/ToolUnlockService.cs
+@@ -126,7 +126,17 @@ public static class ToolUnlockService_Internal
+         var hammer = toolManager.gameObject.AddComponent<HammerTool>();
+         hammer.toolID = "1002";
+         hammer.toolName = "地质锤";
+-        // 其余字段使用 HammerTool 内部默认逻辑；无预制体时仍可工作
++
++        // WebGL 安全：从 Resources 加载锤子预制体，否则装备时手中不会显示锤子模型
++        var prefab = Resources.Load<GameObject>("Model/Hammer/Hammer");
++        if (prefab != null)
++        {
++            hammer.hammerPrefab = prefab;
++        }
++        else
++        {
++            Debug.LogError("[ToolUnlockService] 未找到Hammer预制体（Resources/Model/Hammer/Hammer）");
++        }
+ 
+         return hammer;
+     }
+diff --git a/Assets/Scripts/QuestSystem/QuestManager.cs b/Assets/Scripts/QuestSystem/QuestManager.cs
+index bd98d91..79efb3a 100644
+--- a/Assets/Scripts/QuestSystem/QuestManager.cs
++++ b/Assets/Scripts/QuestSystem/QuestManager.cs
+@@ -488,6 +488,48 @@ namespace QuestSystem
+             }
+         }
+ 
++        /// <summary>
++        /// New Game / 一键清档后由 ProgressResetService 调用。
++        /// QuestManager 是 DontDestroyOnLoad 单例，Awake 在游戏全程只跑一次；
++        /// 清档时 PlayerPrefs 已被清空，但内存里 _completedQuests / _completedObjectives
++        /// 以及每个 Quest.status 仍持有旧档数据，必须在这里主动重置。
++        /// 重置后由后续场景加载触发 OnSceneLoaded → 自动启动 q.lab.intro，
++        /// 进而通过 OnQuestStarted 事件刷新 QuestUI。
++        /// </summary>
++        public void ReloadQuests()
++        {
++            // 1) 重读已被 ProgressResetService 清空的 PlayerPrefs（结果应为空集合）
++            _completedQuests = QuestPersistence.LoadCompletedQuests();
++            _completedObjectives = QuestPersistence.LoadCompletedObjectives();
++
++            // 2) 重置依赖剧情进度的内部 flag（避免新档残留旧档的剧情触发标记）
++            var storyFlags = ProgressPersistence.LoadFlags();
++            _chapter4SampleIntroPlayed = storyFlags.Contains("story.chapter4.sample_intro");
++            _chapter4SampleCutscenePending = false;
++            _chapter4SampleCutscenePlayed = false;
++            _chapter4FieldIntroPending = false;
++            _fieldPhaseSampleCutscenePending = false;
++            _fieldPhaseTargetIndex = 0;
++
++            // 3) 重置所有已注册任务的 runtime state（不重建 Quest 实例，避免破坏 UI/外部持有的引用）
++            foreach (var q in _quests.Values)
++            {
++                if (q == null) continue;
++                q.status = QuestStatus.NotStarted;
++                if (q.objectives != null)
++                {
++                    foreach (var obj in q.objectives)
++                    {
++                        if (obj != null) obj.completed = false;
++                    }
++                }
++                // 从已清空的 PlayerPrefs 重新恢复（实际不会恢复任何东西，仅保持与 Awake 一致的写法）
++                RestoreQuestRuntimeState(q);
++            }
++
++            if (debugLog) Debug.Log($"[QuestManager] ReloadQuests 完成，已重置 {_quests.Count} 个任务的运行时状态");
++        }
++
+         private void TryBindSampleEvents()
+         {
+             var inv = SampleInventory.Instance;
+diff --git a/Assets/Scripts/SceneSystem/StartMenuBootstrap.cs b/Assets/Scripts/SceneSystem/StartMenuBootstrap.cs
+index f6aa82c..ad7145f 100644
+--- a/Assets/Scripts/SceneSystem/StartMenuBootstrap.cs
++++ b/Assets/Scripts/SceneSystem/StartMenuBootstrap.cs
+@@ -1,6 +1,7 @@
+ using UnityEngine;
+ using UnityEngine.UI;
+ using UnityEngine.EventSystems;
++using UnityEngine.SceneManagement;
+ 
+ namespace SceneSystem
+ {
+@@ -44,19 +45,39 @@ namespace SceneSystem
+ 
+         private void Awake()
+         {
+-            // 仅在 StartScene 构建 UI
++            // Bootstrap 是 DontDestroyOnLoad（在 EnsureOnStartScene 里设置），
++            // 跨场景存活，但它构建的 UI Canvas 不是 DontDestroyOnLoad，
++            // 切到 MainScene 时会被销毁。回到 StartScene 时 Awake 不再触发，
++            // 必须靠 sceneLoaded 事件重建 UI（修复"返回主菜单后空场景"bug）。
++            SceneManager.sceneLoaded += OnSceneLoaded;
++
++            // 当前若已经在 StartScene，立即建 UI（首次进入游戏走这里）
+             var active = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+-            if (active.name != _startSceneName)
++            if (active.name == _startSceneName)
+             {
+-                return;
++                BuildUI();
+             }
+ 
+-            BuildUI();
+-
+             // 预创建 SettingsManager，确保其 Start 在用户点击前已执行，从而生成设置UI
+             var _ = SettingsManager.Instance;
+         }
+ 
++        private void OnDestroy()
++        {
++            SceneManager.sceneLoaded -= OnSceneLoaded;
++        }
++
++        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
++        {
++            if (scene.name != _startSceneName) return;
++            // _canvas 是 Unity Object 引用：切场景后旧 canvas 被销毁，引用变 Unity-null
++            if (_canvas == null)
++            {
++                Debug.Log("[StartMenuBootstrap] 重新进入 StartScene，重建主菜单 UI");
++                BuildUI();
++            }
++        }
++
+         private void BuildUI()
+         {
+             EnsureEventSystem();
+diff --git a/Assets/Scripts/Tools/CollectionTargetMarker.cs b/Assets/Scripts/Tools/CollectionTargetMarker.cs
+index 7d1bd82..26d59b3 100644
+--- a/Assets/Scripts/Tools/CollectionTargetMarker.cs
++++ b/Assets/Scripts/Tools/CollectionTargetMarker.cs
+@@ -76,27 +76,31 @@ public class CollectionTargetMarker : MonoBehaviour
+     
+     /// <summary>
+     /// 创建线条材质
++    /// 注意：原先使用 "Legacy Shaders/Transparent/Diffuse"，但该 shader 不在
++    /// ProjectSettings/GraphicsSettings 的 AlwaysIncludedShaders 列表里，
++    /// WebGL build 时会被 stripped → Shader.Find 返回 null → new Material(null)
++    /// 抛 ArgumentNullException → 后续 PlayHammerHit 不执行，玩家点击锤子"无反应"。
++    /// 改用 Sprites/Default（被 m_SpritesDefaultMaterial 引用，WebGL 必带），
++    /// 失败时再 fallback 到 Standard，最后兜底返回 null 让调用者识别。
+     /// </summary>
+     Material CreateLineMaterial(Color color)
+     {
+-        // 使用支持透明度的着色器
+-        Material material = new Material(Shader.Find("Legacy Shaders/Transparent/Diffuse"));
+-        if (material.shader == null)
++        Shader shader = Shader.Find("Sprites/Default");
++        if (shader == null) shader = Shader.Find("Standard");
++        if (shader == null)
+         {
+-            // 备用方案
+-            material = new Material(Shader.Find("Sprites/Default"));
++            Debug.LogError("[CollectionTargetMarker] 找不到任何可用 shader (Sprites/Default / Standard 都为 null)");
++            return null;
+         }
+-        
++
++        Material material = new Material(shader);
+         material.color = color;
+-        material.SetFloat("_ZWrite", 0);
+         material.renderQueue = 3000; // 确保在地面之上渲染
+-        
+-        // 启用透明度混合
+-        if (material.HasProperty("_Mode"))
+-        {
+-            material.SetFloat("_Mode", 3); // Transparent mode
+-        }
+-        
++
++        // 这些属性只在 Standard 上存在，Sprites/Default 上 HasProperty 会返回 false
++        if (material.HasProperty("_ZWrite")) material.SetFloat("_ZWrite", 0);
++        if (material.HasProperty("_Mode")) material.SetFloat("_Mode", 3); // Transparent mode
++
+         return material;
+     }
+     
+diff --git a/Assets/Scripts/UISystem/InventoryUISystem.cs b/Assets/Scripts/UISystem/InventoryUISystem.cs
+index 38e94d6..57bd45c 100644
+--- a/Assets/Scripts/UISystem/InventoryUISystem.cs
++++ b/Assets/Scripts/UISystem/InventoryUISystem.cs
+@@ -252,12 +252,61 @@ public class InventoryUISystem : MonoBehaviour
+         }
+     }
+ 
++    // 程序化生成的圆形 sprite，整个轮盘 + 所有 slot 共享一份，避免 8 个独立 texture
++    private Sprite _cachedCircleSprite;
++
++    /// <summary>
++    /// 程序化生成高分辨率圆形 sprite，带柔和边缘 + 微弱的内部渐变（呼吸感）。
++    /// - 512x512 高分辨率，缩放后边缘平滑无锯齿
++    /// - 边缘 6px 柔和渐变（不是硬边）
++    /// - 内部从中心到边缘 alpha 微微变化，营造"呼吸感"
++    /// 不依赖外部贴图，跨平台一致。
++    /// </summary>
++    private Sprite GetCircleSprite()
++    {
++        if (_cachedCircleSprite != null) return _cachedCircleSprite;
++
++        const int size = 512;
++        const float softness = 6f; // 边缘柔化像素数
++        Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
++        tex.wrapMode = TextureWrapMode.Clamp;
++        tex.filterMode = FilterMode.Bilinear;
++
++        float center = (size - 1) * 0.5f;
++        float radius = size * 0.5f - softness;
++        Color[] pixels = new Color[size * size];
++        for (int y = 0; y < size; y++)
++        {
++            for (int x = 0; x < size; x++)
++            {
++                float dx = x - center;
++                float dy = y - center;
++                float dist = Mathf.Sqrt(dx * dx + dy * dy);
++
++                // 边缘柔化：在 radius 之外的 softness 像素内 alpha 从 1 渐变到 0
++                float edgeAlpha = Mathf.Clamp01((radius - dist) / softness);
++
++                // 内部径向渐变（呼吸感）：中心 alpha=1.0，边缘内侧降到 0.78
++                float t = Mathf.Clamp01(dist / radius);
++                float innerFade = Mathf.Lerp(1.0f, 0.78f, t * t); // 二次曲线，过渡更自然
++
++                float alpha = edgeAlpha * innerFade;
++                pixels[y * size + x] = new Color(1f, 1f, 1f, alpha);
++            }
++        }
++        tex.SetPixels(pixels);
++        tex.Apply();
++
++        _cachedCircleSprite = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f));
++        return _cachedCircleSprite;
++    }
++
+     void CreateWheelUI()
+     {
+         // 创建圆形轮盘背景
+         GameObject wheelBG = new GameObject("WheelBackground");
+         wheelBG.transform.SetParent(transform);
+-        
++
+         RectTransform bgRect = wheelBG.AddComponent<RectTransform>();
+         bgRect.sizeDelta = new Vector2(300, 300);
+         bgRect.anchorMin = new Vector2(0.5f, 0.5f);
+@@ -265,24 +314,13 @@ public class InventoryUISystem : MonoBehaviour
+         bgRect.pivot = new Vector2(0.5f, 0.5f);
+         bgRect.anchoredPosition = Vector2.zero;
+         bgRect.localPosition = Vector3.zero;
+-        
+-        // 创建圆形背景图像 - 使用自定义图片
++
++        // 圆形背景：用程序化 sprite，颜色由 SetupWheelAppearance/wheelBackgroundColor 控制
+         UnityEngine.UI.Image bgImage = wheelBG.AddComponent<UnityEngine.UI.Image>();
+-        
+-        // 尝试加载自定义背景图片
+-        Sprite customBgSprite = LoadCustomBackgroundSprite();
+-        if (customBgSprite != null)
+-        {
+-            bgImage.sprite = customBgSprite;
+-            bgImage.color = Color.white; // 保持原图颜色
+-        }
+-        else
+-        {
+-            // 如果加载失败，使用默认颜色
+-            bgImage.color = new Color(0.1f, 0.1f, 0.1f, 0.95f);
+-        }
+-        
++        bgImage.sprite = GetCircleSprite();
++        bgImage.color = new Color(0.08f, 0.08f, 0.10f, 0.85f);
+         bgImage.type = UnityEngine.UI.Image.Type.Simple;
++        bgImage.preserveAspect = true;
+         
+         // 初始化数组
+         wheelSlots = new RectTransform[8];
+@@ -302,9 +340,12 @@ public class InventoryUISystem : MonoBehaviour
+             slotRect.anchorMax = new Vector2(0.5f, 0.5f);
+             slotRect.pivot = new Vector2(0.5f, 0.5f);
+             
+-            // 添加槽位背景
++            // 添加槽位背景（圆形，与轮盘整体风格一致）
+             UnityEngine.UI.Image slotBG = slot.AddComponent<UnityEngine.UI.Image>();
++            slotBG.sprite = GetCircleSprite();
+             slotBG.color = new Color(0.3f, 0.3f, 0.3f, 0.7f);
++            slotBG.type = UnityEngine.UI.Image.Type.Simple;
++            slotBG.preserveAspect = true;
+             
+             // 创建工具图标
+             GameObject iconObj = new GameObject("Icon");
+@@ -550,6 +591,18 @@ public class InventoryUISystem : MonoBehaviour
+         if (isWheelOpen)
+         {
+             UpdateSelection();
++
++            // Tab 打开期间持续 enforce 鼠标可见 + 禁用视角，
++            // 防止 FirstPersonController / MobileCursorManager 等其它脚本每帧覆盖。
++            if (Cursor.lockState != CursorLockMode.None || !Cursor.visible)
++            {
++                Cursor.lockState = CursorLockMode.None;
++                Cursor.visible = true;
++            }
++            if (fpController != null && fpController.enableMouseLook)
++            {
++                fpController.enableMouseLook = false;
++            }
+         }
+         
+         // 持续的安全检查：确保UI状态与isWheelOpen一致
+@@ -640,7 +693,10 @@ public class InventoryUISystem : MonoBehaviour
+             // Debug.Log($"[InventoryUISystem] 轮盘位置 - anchoredPosition: {wheelRect.anchoredPosition}, localPosition: {wheelRect.localPosition}");
+         }
+         
+-        selectionRadius = wheelSize * 0.2f;
++        // 死区半径：鼠标在中心 5% 半径内不选任何 slot；
++        // 守望先锋式手感——稍微偏离中心即按方向选中 icon。
++        // 之前是 0.2f (20%) 几乎贴着 icon 边缘 (28%)，用户必须把鼠标推到 icon 附近才能选中。
++        selectionRadius = wheelSize * 0.05f;
+         
+         UpdateSlotPositions(wheelSize);
+         UpdateSeparators(wheelSize);
+@@ -887,6 +943,7 @@ public class InventoryUISystem : MonoBehaviour
+         }
+ 
+         Cursor.lockState = CursorLockMode.None;
++        Cursor.visible = true; // 之前漏掉了 → 鼠标 unlock 但不可见
+ 
+         // 只禁用鼠标视角控制，保留键盘移动
+         if (fpController != null)
+@@ -1009,9 +1066,13 @@ public class InventoryUISystem : MonoBehaviour
+         {
+             float angle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
+             angle = (angle + 360f) % 360f;
+-            
+-            int newSelectedSlot = Mathf.FloorToInt(angle / 45f);
+-            newSelectedSlot = Mathf.Clamp(newSelectedSlot, 0, 7);
++
++            // 守望先锋式扇区映射：让 icon 落在扇区中心而非边界。
++            // slot 0 (icon 在 12 点 = 0°) 的扇区是 -22.5° ~ +22.5° (跨 0°)；
++            // 之前 FloorToInt(angle/45) 会让 slot 0 扇区是 0°~45° (icon 在边界)，
++            // 导致鼠标偏右一点就误判到 slot 1 / 偏左一点就跳到 slot 7。
++            int newSelectedSlot = Mathf.FloorToInt(((angle + 22.5f) % 360f) / 45f);
++            newSelectedSlot = ((newSelectedSlot % 8) + 8) % 8;
+             
+             if (newSelectedSlot != selectedSlot)
+             {
+diff --git a/Assets/Scripts/WorkbenchSystem/MicroscopeController.cs b/Assets/Scripts/WorkbenchSystem/MicroscopeController.cs
+index 234fad8..d89c5f9 100644
+--- a/Assets/Scripts/WorkbenchSystem/MicroscopeController.cs
++++ b/Assets/Scripts/WorkbenchSystem/MicroscopeController.cs
+@@ -89,6 +89,20 @@ namespace WorkbenchSystem
+             BuildSampleList();
+             HideUI();
+             CacheRenderers();
++            EnsureProximityInteractor();
++        }
++
++        /// <summary>
++        /// 自动添加靠近+按F互动组件。原本的 WorkbenchController 从未挂在场景任何对象上，
++        /// 导致显微镜无法用 F 键打开。这里 ensure 一个轻量交互组件兜底。
++        /// </summary>
++        void EnsureProximityInteractor()
++        {
++            if (GetComponent<MicroscopeProximityInteractor>() == null)
++            {
++                gameObject.AddComponent<MicroscopeProximityInteractor>();
++                Debug.Log("[Microscope] EnsureProximityInteractor: 已自动添加 MicroscopeProximityInteractor");
++            }
+         }
+ 
+         void OnEnable()
+diff --git a/CLAUDE.md b/CLAUDE.md
+index d418909..8e4d865 100644
+--- a/CLAUDE.md
++++ b/CLAUDE.md
+@@ -569,5 +569,84 @@ LocalizationManager.Instance.SwitchLanguage(LanguageSettings.Language.English);
+ ```
+ 
+ ---
+-Last updated: 2025-07-19
+-Project status: Complete multi-language internationalization system (v1.8) with warehouse management (v1.7)
+\ No newline at end of file
++
++## Deployment — itch.io (WebGL)
++
++游戏部署在 **itch.io**：
++- 公开页：https://kaedeeeeeeeeee.itch.io/geo-model-geological-drilling-simulator
++- 编辑页：https://itch.io/game/edit/4530959
++- itch.io username: `kaedeeeeeeeeee`
++- game slug: `geo-model-geological-drilling-simulator`
++- channel: `html5`（WebGL 浏览器版）
++
++### 推送新版本（每次更新走这一条）
++
++```bash
++butler push Build/WebGL kaedeeeeeeeeee/geo-model-geological-drilling-simulator:html5
++```
++
++butler 会做**增量上传**（只传 diff），第一次全量推 ~190 MiB，之后秒级完成。
++推完后 itch.io 后台自动处理（解压 + 病毒扫描），1-2 分钟内生效。
++玩家刷新游戏页面即可看到新版本（建议浏览器 Cmd+Shift+R 强刷绕过 CDN 缓存）。
++
++### 查询推送状态
++
++```bash
++butler status kaedeeeeeeeeee/geo-model-geological-drilling-simulator:html5
++```
++
++### 安装 butler（新机器/未装时）
++
++```bash
++# macOS arm64（Apple Silicon）—— 旧的 brew tap itchio/butler 已废弃，
++# 改用官方下载二进制
++cd /tmp && curl -fsSL -o butler.zip "https://broth.itch.zone/butler/darwin-arm64/LATEST/archive/default" \
++  && unzip -o -q butler.zip && chmod +x butler && mv butler /usr/local/bin/butler
++
++# 一次性登录（浏览器授权，token 存在 ~/.config/itch/butler_creds）
++butler login
++```
++
++其它平台：把 URL 里的 `darwin-arm64` 换成 `darwin-amd64`（Intel Mac）/ `linux-amd64` / `windows-amd64`。
++
++### itch.io edit 页面必须设置（首次部署）
++
++游戏 edit 页面（https://itch.io/game/edit/4530959）的 **Embed options** 区域：
++- ✅ **This file will be played in the browser**（butler 推 `:html5` channel 会自动勾）
++- ✅ **SharedArrayBuffer support**（必须勾！Unity WebGL build 用了 SharedArrayBuffer，不勾游戏跑不起来 —— 项目根目录的 `vercel.json` 也设了 COEP/COOP 同样原因）
++- ✅ **Mobile friendly** / **Fullscreen button** 按需
++- **Viewport dimensions**：推荐 `1920 × 1080` 或 `1280 × 720`
++
++### 完整发布流程（Editor 关闭 → 浏览器测试）
++
++```bash
++# 1. 关闭 Unity Editor（避免 batchmode build 冲突）
++# 2. 打 WebGL build（约 4-5 分钟增量 / 30+ 分钟冷构建）
++/Applications/Unity/Hub/Editor/6000.0.51f1/Unity.app/Contents/MacOS/Unity \
++  -batchmode -nographics -quit \
++  -projectPath "$(pwd)" \
++  -executeMethod WebGLBuildSetup.BuildWebGL \
++  -logFile "$(pwd)/Logs/webgl-build.log"
++
++# 3. 检查 build 成功
++grep -E "构建结果|构建成功" Logs/webgl-build.log | tail -3
++
++# 4. 推送到 itch.io
++butler push Build/WebGL kaedeeeeeeeeee/geo-model-geological-drilling-simulator:html5
++
++# 5. 浏览器验证（强刷绕缓存）
++open https://kaedeeeeeeeeee.itch.io/geo-model-geological-drilling-simulator
++```
++
++### 本地预览（不上传）
++
++```bash
++cd Build/WebGL && python3 -m http.server 8000
++# 浏览器开 http://localhost:8000
++```
++
++注意 file:// 直接打开不行（CORS 限制），必须 HTTP server。
++
++---
++Last updated: 2026-05-08
++Project status: Complete multi-language internationalization system (v1.8) with warehouse management (v1.7); itch.io WebGL deployment via butler.
+\ No newline at end of file
+diff --git a/Assets/Resources/Model/Drill.meta b/Assets/Resources/Model/Drill.meta
+new file mode 100644
+index 0000000..c01e528
+--- /dev/null
++++ b/Assets/Resources/Model/Drill.meta
+@@ -0,0 +1,8 @@
++fileFormatVersion: 2
++guid: 121396aa0d70c4d5da00f3e6cc1b99e5
++folderAsset: yes
++DefaultImporter:
++  externalObjects: {}
++  userData: 
++  assetBundleName: 
++  assetBundleVariant: 
+diff --git a/Assets/Resources/Model/Drone.meta b/Assets/Resources/Model/Drone.meta
+new file mode 100644
+index 0000000..508a907
+--- /dev/null
++++ b/Assets/Resources/Model/Drone.meta
+@@ -0,0 +1,8 @@
++fileFormatVersion: 2
++guid: e2f1d3f7cfc5045a1bde385c9942fafb
++folderAsset: yes
++DefaultImporter:
++  externalObjects: {}
++  userData: 
++  assetBundleName: 
++  assetBundleVariant: 
+diff --git a/Assets/Resources/Model/Hammer.meta b/Assets/Resources/Model/Hammer.meta
+new file mode 100644
+index 0000000..e534789
+--- /dev/null
++++ b/Assets/Resources/Model/Hammer.meta
+@@ -0,0 +1,8 @@
++fileFormatVersion: 2
++guid: 0cfd4ee26e3fa4266aeac8d2f179f35b
++folderAsset: yes
++DefaultImporter:
++  externalObjects: {}
++  userData: 
++  assetBundleName: 
++  assetBundleVariant: 
+diff --git a/Assets/Scripts/WorkbenchSystem/MicroscopeProximityInteractor.cs b/Assets/Scripts/WorkbenchSystem/MicroscopeProximityInteractor.cs
+new file mode 100644
+index 0000000..f01e962
+--- /dev/null
++++ b/Assets/Scripts/WorkbenchSystem/MicroscopeProximityInteractor.cs
+@@ -0,0 +1,175 @@
++using UnityEngine;
++using UnityEngine.InputSystem;
++using UnityEngine.UI;
++
++namespace WorkbenchSystem
++{
++    /// <summary>
++    /// 显微镜的"靠近 + 按 F 互动"组件。
++    ///
++    /// 背景：原本由 WorkbenchController 负责，但该组件从未真正挂在场景任何对象上
++    /// （Laboratory Scene 里搜不到 WorkbenchController 的实例），导致"走到显微镜
++    /// 旁边按 F"完全无效。本组件由 MicroscopeController.Start 自动 ensure 添加，
++    /// 不需要手动编辑 .unity 文件。
++    ///
++    /// 行为模仿 QuestNpcInteraction 的提示 UI 风格，保持视觉一致。
++    /// </summary>
++    [RequireComponent(typeof(MicroscopeController))]
++    public class MicroscopeProximityInteractor : MonoBehaviour
++    {
++        [Header("互动设置")]
++        [Tooltip("玩家进入此距离即显示提示并允许按 F 互动")]
++        public float interactionDistance = 4f;
++        [Tooltip("互动键")]
++        public Key interactionKey = Key.F;
++        [Tooltip("提示文本本地化 key")]
++        public string promptLocalizationKey = "ui.microscope.prompt";
++
++        [Header("提示UI样式")]
++        [SerializeField] private Color promptBackgroundColor = new Color(0f, 0f, 0f, 0.65f);
++        [SerializeField] private int promptFontSize = 22;
++
++        private MicroscopeController microscope;
++        private Transform playerTransform;
++        private GameObject promptCanvasGO;
++        private LocalizedText promptLocalized;
++        private bool playerInRange;
++
++        void Awake()
++        {
++            microscope = GetComponent<MicroscopeController>();
++        }
++
++        void Start()
++        {
++            CreatePromptUI();
++        }
++
++        void OnDestroy()
++        {
++            if (promptCanvasGO != null)
++            {
++                Destroy(promptCanvasGO);
++            }
++        }
++
++        void Update()
++        {
++            // 显微镜界面打开时不响应靠近互动（避免在已打开状态下按 F 又触发 toggle close 误操作 — 实际上 toggle 是合理行为，但提示 UI 应隐藏）
++            if (microscope == null) return;
++
++            // 持续找玩家（玩家可能在场景切换后才生成）
++            if (playerTransform == null)
++            {
++                var fp = Object.FindFirstObjectByType<FirstPersonController>();
++                if (fp == null)
++                {
++                    HidePrompt();
++                    return;
++                }
++                playerTransform = fp.transform;
++            }
++
++            float dist = Vector3.Distance(transform.position, playerTransform.position);
++            bool inRange = dist <= interactionDistance;
++
++            // 打开显微镜界面时隐藏靠近提示（避免与界面 UI 重叠）
++            bool microscopeUIActive = IsMicroscopeOpen();
++
++            if (inRange && !microscopeUIActive)
++            {
++                if (!playerInRange) ShowPrompt();
++                playerInRange = true;
++            }
++            else
++            {
++                if (playerInRange) HidePrompt();
++                playerInRange = false;
++            }
++
++            // 检测互动键
++            if (playerInRange && Keyboard.current != null)
++            {
++                var key = Keyboard.current[interactionKey];
++                if (key != null && key.wasPressedThisFrame)
++                {
++                    HidePrompt(); // 立即隐藏提示，让位给显微镜界面
++                    microscope.HandleClick(); // toggle Open/Close
++                }
++            }
++        }
++
++        bool IsMicroscopeOpen()
++        {
++            // MicroscopeController 没有公开 isActive，但 uiRoot.activeSelf 是个可靠的代理
++            return microscope.uiRoot != null && microscope.uiRoot.activeSelf;
++        }
++
++        // ---------- Prompt UI ----------
++        // 风格参考 QuestNpcInteraction.CreatePromptUI，保持游戏内视觉一致
++
++        void CreatePromptUI()
++        {
++            if (promptCanvasGO != null) return;
++
++            promptCanvasGO = new GameObject("MicroscopePromptCanvas");
++
++            var canvas = promptCanvasGO.AddComponent<Canvas>();
++            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
++            canvas.sortingOrder = 160;
++
++            var scaler = promptCanvasGO.AddComponent<CanvasScaler>();
++            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
++            scaler.referenceResolution = new Vector2(1920, 1080);
++
++            promptCanvasGO.AddComponent<GraphicRaycaster>();
++
++            var panel = new GameObject("PromptPanel");
++            panel.transform.SetParent(promptCanvasGO.transform, false);
++            var rect = panel.AddComponent<RectTransform>();
++            rect.anchorMin = new Vector2(0.5f, 0.22f);
++            rect.anchorMax = new Vector2(0.5f, 0.22f);
++            rect.pivot = new Vector2(0.5f, 0.5f);
++            rect.anchoredPosition = Vector2.zero;
++            rect.sizeDelta = new Vector2(420f, 64f);
++
++            var bg = panel.AddComponent<Image>();
++            bg.color = promptBackgroundColor;
++
++            var textObj = new GameObject("PromptText");
++            textObj.transform.SetParent(panel.transform, false);
++            var textRect = textObj.AddComponent<RectTransform>();
++            textRect.anchorMin = Vector2.zero;
++            textRect.anchorMax = Vector2.one;
++            textRect.offsetMin = new Vector2(16f, 12f);
++            textRect.offsetMax = new Vector2(-16f, -12f);
++
++            var text = textObj.AddComponent<Text>();
++            text.font = UIFontResolver.GetUIFont();
++            text.fontSize = promptFontSize;
++            text.color = Color.white;
++            text.alignment = TextAnchor.MiddleCenter;
++
++            promptLocalized = textObj.AddComponent<LocalizedText>();
++            promptLocalized.TextKey = promptLocalizationKey;
++
++            promptCanvasGO.SetActive(false);
++        }
++
++        void ShowPrompt()
++        {
++            if (promptCanvasGO != null && !promptCanvasGO.activeSelf)
++            {
++                promptCanvasGO.SetActive(true);
++            }
++        }
++
++        void HidePrompt()
++        {
++            if (promptCanvasGO != null && promptCanvasGO.activeSelf)
++            {
++                promptCanvasGO.SetActive(false);
++            }
++        }
++    }
++}
+diff --git a/Assets/Scripts/WorkbenchSystem/MicroscopeProximityInteractor.cs.meta b/Assets/Scripts/WorkbenchSystem/MicroscopeProximityInteractor.cs.meta
+new file mode 100644
+index 0000000..4ebdc49
+--- /dev/null
++++ b/Assets/Scripts/WorkbenchSystem/MicroscopeProximityInteractor.cs.meta
+@@ -0,0 +1,2 @@
++fileFormatVersion: 2
++guid: 48ada7838bb324f2f9635dd29497ec89
+\ No newline at end of file
