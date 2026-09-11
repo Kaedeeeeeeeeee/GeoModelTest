@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="ja">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,11 +11,18 @@
   <body>
     <div id="unity-container">
       <canvas id="unity-canvas" width={{{ WIDTH }}} height={{{ HEIGHT }}} tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-progress-bar-empty">
+      <section id="unity-loading-bar" aria-labelledby="loading-title" aria-busy="true">
+        <p class="loading-eyebrow">G-LAB / 地層のひみつを探ろう</p>
+        <h1 id="loading-title">ゲームを読み込んでいます</h1>
+        <p id="loading-status" role="status" aria-live="polite">読み込みの準備をしています…</p>
+        <div id="unity-progress-bar-empty" role="progressbar" aria-label="ゲームの読み込み" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
           <div id="unity-progress-bar-full"></div>
         </div>
-      </div>
+        <p id="loading-progress-text">0%</p>
+        <p id="loading-help">初回はダウンロードに時間がかかることがあります。<br>この画面を開いたままお待ちください。</p>
+        <button id="loading-retry" type="button" onclick="location.reload()" hidden>もう一度読み込む</button>
+        <p id="loading-version"></p>
+      </section>
       <div id="unity-warning"></div>
     </div>
     <div id="orientation-overlay" lang="ja" aria-hidden="true">
@@ -25,17 +32,19 @@
         <div class="orientation-body">スマートフォンを横向きにすると、<br>ゲームを続けられます。</div>
       </div>
     </div>
+    <script src="TemplateData/loading.js" onerror="document.getElementById('loading-status').textContent='読み込めませんでした。接続を確認して、もう一度お試しください。'; document.getElementById('loading-retry').hidden=false;"></script>
     <script>
       var canvas = document.querySelector("#unity-canvas");
       var orientationOverlay = document.querySelector("#orientation-overlay");
 
       function unityShowBanner(msg, type) {
+        if (window.gameLoading && window.gameLoading.handleBanner(msg, type)) return;
         var warningBanner = document.querySelector("#unity-warning");
         function updateBannerVisibility() {
           warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
         }
         var div = document.createElement('div');
-        div.innerHTML = msg;
+        div.textContent = msg;
         warningBanner.appendChild(div);
         if (type == 'error') div.style = 'background: red; padding: 10px;';
         else {
@@ -102,6 +111,7 @@
       });
 
       function preventBrowserGesture(event) {
+        if (event.target instanceof Element && event.target.closest('#loading-retry')) return;
         event.preventDefault();
       }
 
@@ -150,21 +160,7 @@
         event.preventDefault();
       });
 
-      var loadingBar = document.querySelector("#unity-loading-bar");
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        loadingBar.style.display = "block";
-        createUnityInstance(canvas, config, (progress) => {
-          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-        }).then((unityInstance) => {
-          loadingBar.style.display = "none";
-          window.unityInstance = unityInstance;
-        }).catch((message) => {
-          alert(message);
-        });
-      };
-      document.body.appendChild(script);
+      if (window.GeoModelLoading) window.gameLoading = GeoModelLoading.start(canvas, config, loaderUrl);
     </script>
   </body>
 </html>

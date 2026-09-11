@@ -52,7 +52,7 @@ html, body {
     calc((100vw - env(safe-area-inset-left) - env(safe-area-inset-right)) * 9 / 16),
     calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))
   );
-  background: #231F20;
+  background: #07181e;
   display: block;
   outline: none;
   touch-action: none;
@@ -66,22 +66,68 @@ html, body {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  display: none;
+  width: min(480px, calc(100vw - 64px));
+  padding: 32px;
+  box-sizing: border-box;
+  color: #edf4f1;
+  background: #0d2028;
+  border-top: 3px solid #60cdb0;
+  font-family: -apple-system, BlinkMacSystemFont, "Noto Sans JP", "Segoe UI", sans-serif;
+  text-align: left;
 }
 
+#unity-loading-bar[hidden] { display: none; }
+.loading-eyebrow { margin: 0 0 22px; color: #60cdb0; font-size: 12px; letter-spacing: .04em; }
+#loading-title { margin: 0 0 14px; font-size: clamp(19px, 3vw, 25px); line-height: 1.4; }
+#loading-status { min-height: 24px; margin: 0 0 20px; font-size: 14px; line-height: 1.7; }
+#loading-progress-text { margin: 8px 0 20px; color: #60cdb0; font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; }
+#loading-help { margin: 0; min-height: 44px; font-size: 13px; line-height: 1.7; color: #b4c7c9; }
+#loading-version { margin: 20px 0 0; color: #829d9f; font-size: 10px; }
+#loading-retry {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 20px;
+  border: 0;
+  border-radius: 3px;
+  background: #60cdb0;
+  color: #082b29;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+#loading-retry:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
+#loading-retry:disabled { opacity: .6; cursor: wait; }
+#unity-loading-bar[data-state="failed"] { border-top-color: #edbd85; }
+#unity-loading-bar[data-state="failed"] #loading-progress-text { color: #edbd85; }
+
 #unity-progress-bar-empty {
-  width: 200px;
-  height: 18px;
-  background: #444;
-  border-radius: 4px;
+  width: 100%;
+  height: 6px;
+  background: #29424a;
+  border-radius: 3px;
   overflow: hidden;
 }
 
 #unity-progress-bar-full {
   width: 0%;
   height: 100%;
-  background: linear-gradient(90deg, #5af, #fa5);
+  background: #60cdb0;
   transition: width 0.2s ease;
+}
+
+@media (max-height: 450px) {
+  #unity-loading-bar { padding: 18px 24px; width: min(500px, calc(100vw - 64px)); }
+  .loading-eyebrow { margin-bottom: 10px; }
+  #loading-title { font-size: 20px; margin-bottom: 8px; }
+  #loading-status { margin-bottom: 12px; }
+  #loading-progress-text { margin-bottom: 10px; }
+  #loading-retry { margin-top: 12px; }
+  #loading-version { margin-top: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #unity-progress-bar-full { transition: none; }
 }
 
 #unity-warning {

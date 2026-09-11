@@ -114,6 +114,7 @@ public static class WebGLBuildSetup
 
         BuildReport report = BuildPipeline.BuildPlayer(options);
         BuildSummary summary = report.summary;
+        WebGLAssetReport.Export();
 
         Debug.Log($"[WebGLBuildSetup] 构建结果: {summary.result}");
         Debug.Log($"[WebGLBuildSetup] 输出: {summary.outputPath}");
