@@ -83,7 +83,7 @@ namespace SceneSystem
             else background.color = GameUI.Surface;
             var menu = GameUI.Box(_canvas.transform, "Menu", new Color(0.03f, 0.09f, 0.12f, 0.94f), Vector2.zero, new Vector2(0.45f, 1f));
             GameUI.Label(menu.transform, "Eyebrow", "G-LAB  /  FIELD RESEARCH", 20, new Vector2(0.14f, 0.89f), new Vector2(0.92f, 0.94f)).color = GameUI.Accent;
-            GameUI.Label(menu.transform, "Title", "Geo Model", 70, new Vector2(0.13f, 0.73f), new Vector2(0.95f, 0.87f));
+            GameUI.Label(menu.transform, "Title", "ジオクエスト", 70, new Vector2(0.13f, 0.73f), new Vector2(0.95f, 0.87f));
             GameUI.Label(menu.transform, "Subtitle", GameUI.L("ui.start.subtitle"), 24, new Vector2(0.14f, 0.63f), new Vector2(0.88f, 0.74f)).color = GameUI.Muted;
             var next = GameUI.Button(menu.transform, "Continue", GameUI.L("ui.start.continue"), new Vector2(0.14f, 0.51f), new Vector2(0.87f, 0.59f), OnStartGame, true);
             next.interactable = HasSavedProgress();
