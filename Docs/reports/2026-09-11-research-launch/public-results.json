@@ -1,0 +1,19 @@
+{
+  "version": "2026.09.11-research",
+  "frame": "https://html-classic.itch.zone/html/17462165-1966928/index.html?v=1789087766",
+  "page": "https://kaedeeeeeeeeee.itch.io/geo-model-geological-drilling-simulator",
+  "errors": [],
+  "passed": true,
+  "build": 1966928,
+  "eventCount": 9,
+  "endReason": "heartbeat_timeout",
+  "checks": [
+    "fresh public title made no research requests",
+    "public invitation entry validated a separate QA code",
+    "real WebGL events matched the expected participant in the database",
+    "JavaScript errors absent",
+    "current release survey reopened the real Unity submission",
+    "public release manifest and survey scripts/styles matched the uploaded build",
+    "real public browser close was ended by the remote heartbeat timeout job"
+  ]
+}

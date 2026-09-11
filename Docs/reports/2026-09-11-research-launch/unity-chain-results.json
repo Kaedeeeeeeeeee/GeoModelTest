@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "checks": [
+    "UI entered the separately issued QA invitation",
+    "real Unity completed-run snapshot reached the remote backend",
+    "report button obtained a participant/run/session-bound ticket",
+    "browser submitted the real issued ticket",
+    "response matched the issued invitation",
+    "session ended with post_game_survey"
+  ]
+}

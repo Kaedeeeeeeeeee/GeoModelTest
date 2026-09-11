@@ -1,0 +1,11 @@
+[
+  "Valid ticket opens the survey; URL is scrubbed and no participant field exists",
+  "Unanswered required questions block advancing and explain the skip choice",
+  "390px mobile layout fits without horizontal overflow",
+  "Refresh and back retain per-ticket draft answers and the current page",
+  "Offline submission preserves answers and never displays a false success",
+  "Retry is acknowledged by the real backend; no identity is submitted and draft is cleared",
+  "Reopening a submitted ticket shows the existing completion",
+  "A fresh browser without a ticket cannot answer",
+  "No JavaScript page errors"
+]
