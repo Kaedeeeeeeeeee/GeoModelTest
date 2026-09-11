@@ -1,0 +1,36 @@
+{
+  "version": "2026.09.11-first-controls.1",
+  "buildId": 1968146,
+  "embed": "https://html-classic.itch.zone/html/17462165-1968146/index.html?v=1789128911",
+  "verified": [
+    {
+      "path": "Build/WebGL.data.unityweb",
+      "remoteBytes": 130864106,
+      "localBytes": 107315979,
+      "decodedBytes": 130864106,
+      "decodedSha256": "c73b93978ab337b7fc9328834857fa3aefa70feb93351146dbe663351b493fc8"
+    },
+    {
+      "path": "Build/WebGL.framework.js.unityweb",
+      "remoteBytes": 507717,
+      "localBytes": 97275,
+      "decodedBytes": 507717,
+      "decodedSha256": "dd7ef5a99e1a5d94a4a5719607fc4cdb8698fbc6dd6d6240972514c77811f8b5"
+    },
+    {
+      "path": "Build/WebGL.loader.js",
+      "remoteBytes": 47338,
+      "localBytes": 47338,
+      "decodedBytes": 47338,
+      "decodedSha256": "4cf88564b697746c7322e2b86c3210ea2a4b4b703644571efabeee58a1b356c6"
+    },
+    {
+      "path": "Build/WebGL.wasm.unityweb",
+      "remoteBytes": 66944862,
+      "localBytes": 16106856,
+      "decodedBytes": 66944862,
+      "decodedSha256": "14e2ea8e9dc35075179bbb2acaf69e6c6cb277e988b6b976e4ed3c86bc7e2d35"
+    }
+  ],
+  "at": "2026-09-11T12:17:24.201Z"
+}

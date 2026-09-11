@@ -1,6 +1,6 @@
 # 首次操作引导与研究室仓库调整
 
-发布版本：`2026.09.11-first-controls.1`  
+发布版本：`2026.09.11-first-controls.1`
 源码：`a0c1883`（Unity 6000.0.51f1）
 
 [游戏入口](https://kaedeeeeeeeeee.itch.io/geo-model-geological-drilling-simulator)
@@ -41,3 +41,11 @@
 ![触控移动前](mobile-final-before-move.png)
 
 ![触控移动后](mobile-final-moved.png)
+
+## 线上发布核对
+
+itch.io HTML5 构建 `1968146`，版本 `2026.09.11-first-controls.1`。公开游戏入口指向此构建，线上 `release.json` 与本地一致。平台提供的四个核心资源解压后 SHA-256 均与本地一致；CDN 实际加载到游戏标题，运行时版本号也与发布版本一致。
+
+[文件核对记录](published-verification.json)
+
+![线上新版启动画面](published-title.png)
