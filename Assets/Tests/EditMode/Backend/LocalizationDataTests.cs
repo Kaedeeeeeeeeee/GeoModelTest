@@ -56,7 +56,7 @@ public class LocalizationDataTests
         Assert.AreEqual(keys.Count, keys.Distinct().Count());
         foreach (string key in new[] { "ui.start.continue", "ui.start.new_game.title", "ui.start.new_game.message",
             "ui.start.new_game.warning", "ui.start.new_game.confirm", "ui.start.new_game.cancel", "ui.session.save_return",
-            "ui.history.title", "ui.tool.current", "report.wrong_attempts", "report.practice", "backend.bound", "backend.pending_upload" })
+            "ui.history.title", "ui.tool.current", "report.wrong_attempts", "report.practice", "backend.bound", "backend.pending_upload", "survey.open_first" })
             CollectionAssert.Contains(keys, key);
         for (int i = 1; i <= 10; i++) CollectionAssert.Contains(keys, "quest.step." + i);
         Assert.AreEqual(source, File.ReadAllText(Path.Combine(Application.dataPath, "Scripts/Localization/Data", language + ".json")));

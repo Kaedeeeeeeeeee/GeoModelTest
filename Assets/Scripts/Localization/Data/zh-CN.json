@@ -3265,6 +3265,10 @@
       "value": "已打开问卷。"
     },
     {
+      "key": "survey.open_first",
+      "value": "请先点击“回答问卷”。"
+    },
+    {
       "key": "survey.research_only",
       "value": "以研究参与模式游玩后可回答问卷。"
     },

@@ -3265,6 +3265,10 @@
       "value": "The survey is open."
     },
     {
+      "key": "survey.open_first",
+      "value": "Please click “Answer the survey” first."
+    },
+    {
       "key": "survey.research_only",
       "value": "Play in research mode to answer the survey."
     },

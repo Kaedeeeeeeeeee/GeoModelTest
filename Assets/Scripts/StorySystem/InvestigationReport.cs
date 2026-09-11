@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UISystem;
 using Core;
 
@@ -17,6 +19,17 @@ namespace StorySystem
             var canvas = GameUI.Canvas("ReportCanvas", 32767);
             _activeCanvas = canvas;
             bool close = false;
+            bool surveyAttempted = false;
+            int surveyClickFrame = -1;
+            bool CanReturnToTitle()
+            {
+                return !Backend.SurveyGateway.Instance.IsBusy &&
+                    (surveyAttempted || !Backend.SurveyGateway.IsEligible);
+            }
+            void RequestReturnToTitle()
+            {
+                if (CanReturnToTitle()) close = true;
+            }
             var input = GameInputState.Acquire();
             var layer = ModalCanvasLayerGuard.Activate(canvas);
             GameUI.Box(canvas.transform, "Dim", new Color(0.01f, 0.04f, 0.06f, 0.92f), Vector2.zero, Vector2.one);
@@ -24,7 +37,7 @@ namespace StorySystem
             var cardButton = card.gameObject.AddComponent<Button>();
             cardButton.targetGraphic = card;
             cardButton.transition = Selectable.Transition.None;
-            cardButton.onClick.AddListener(() => { if (!Backend.SurveyGateway.Instance.IsBusy) close = true; });
+            cardButton.onClick.AddListener(RequestReturnToTitle);
             GameUI.Box(card.transform, "Accent", GameUI.Accent, new Vector2(0, 0.989f), Vector2.one).raycastTarget = false;
             GameUI.Label(card.transform, "Eyebrow", "G-LAB  /  INVESTIGATION REPORT", 19, new Vector2(0.07f, 0.91f), new Vector2(0.94f, 0.96f)).color = GameUI.Accent;
             GameUI.Label(card.transform, "Title", GameUI.L("report.complete_title"), 43, new Vector2(0.07f, 0.79f), new Vector2(0.94f, 0.90f));
@@ -36,17 +49,37 @@ namespace StorySystem
             GameUI.Label(card.transform, "PracticeDetails", GameUI.L("report.practice_details"), 22, new Vector2(0.07f, 0.19f), new Vector2(0.94f, 0.28f)).color = GameUI.Muted;
             var surveyStatus = GameUI.Label(card.transform, "SurveyStatus", "", 18, new Vector2(0.07f, 0.01f), new Vector2(0.94f, 0.055f));
             surveyStatus.color = GameUI.Muted;
-            var returnButton = GameUI.Button(card.transform, "ReturnToTitle", GameUI.L("ui.session.return_title"), new Vector2(0.07f, 0.07f), new Vector2(0.47f, 0.16f), () => close = true);
-            var surveyButton = GameUI.Button(card.transform, "AnswerSurvey", GameUI.L("survey.answer"), new Vector2(0.53f, 0.07f), new Vector2(0.93f, 0.16f), () => Backend.SurveyGateway.Instance.Open(message => surveyStatus.text = message), true);
-            if (!Backend.SurveyGateway.IsEligible) surveyStatus.text = GameUI.L("survey.research_only");
+            var returnButton = GameUI.Button(card.transform, "ReturnToTitle", GameUI.L("ui.session.return_title"), new Vector2(0.07f, 0.07f), new Vector2(0.47f, 0.16f), RequestReturnToTitle);
+            var returnLabel = returnButton.GetComponentInChildren<Text>();
+            Button surveyButton = null;
+            surveyButton = GameUI.Button(card.transform, "AnswerSurvey", GameUI.L("survey.answer"), new Vector2(0.53f, 0.07f), new Vector2(0.93f, 0.16f), () =>
+            {
+                if (Backend.SurveyGateway.Instance.IsBusy || !Backend.SurveyGateway.IsEligible) return;
+                // An attempt is enough: a failed connection must not trap the player here.
+                surveyAttempted = true;
+                surveyClickFrame = Time.frameCount;
+                Backend.SurveyGateway.Instance.Open(message => surveyStatus.text = message);
+                RefreshButtons();
+            }, true);
+            void RefreshButtons()
+            {
+                bool canReturn = CanReturnToTitle();
+                returnButton.interactable = canReturn;
+                returnLabel.color = canReturn ? GameUI.Ink : new Color(0.46f, 0.52f, 0.53f);
+                surveyButton.interactable = !Backend.SurveyGateway.Instance.IsBusy && Backend.SurveyGateway.IsEligible;
+            }
+            surveyStatus.text = GameUI.L(Backend.SurveyGateway.IsEligible ? "survey.open_first" : "survey.research_only");
+            RefreshButtons();
             yield return null;
             while (!close)
             {
-                bool busy = Backend.SurveyGateway.Instance.IsBusy;
-                returnButton.interactable = !busy;
-                surveyButton.interactable = !busy && Backend.SurveyGateway.IsEligible;
-                if (!busy && !SettingsManager.Instance.IsSettingsOpen &&
-                    (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))) close = true;
+                RefreshButtons();
+                bool surveySelected = EventSystem.current != null &&
+                    EventSystem.current.currentSelectedGameObject == surveyButton.gameObject;
+                var keyboard = Keyboard.current;
+                if (CanReturnToTitle() && Time.frameCount > surveyClickFrame && !surveySelected &&
+                    !SettingsManager.Instance.IsSettingsOpen && keyboard != null &&
+                    (keyboard.spaceKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame)) RequestReturnToTitle();
                 yield return null;
             }
             layer.Dispose();

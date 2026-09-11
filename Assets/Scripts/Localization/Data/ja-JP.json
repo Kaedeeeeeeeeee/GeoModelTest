@@ -3445,6 +3445,10 @@
       "value": "アンケートを開きました。"
     },
     {
+      "key": "survey.open_first",
+      "value": "まず「アンケートに答える」を押してください。"
+    },
+    {
       "key": "survey.research_only",
       "value": "研究参加で遊ぶと、アンケートに進めます。"
     },
