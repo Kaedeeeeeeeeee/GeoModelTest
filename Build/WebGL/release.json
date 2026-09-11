@@ -1,13 +1,13 @@
 {
-  "version": "2026.09.11-research",
-  "sourceCommit": "1a593bedc7ef97322ecd61508a79c3575dc37f39",
+  "version": "2026.09.11-loading",
+  "sourceCommit": "f72d4cb3dde24e6524fcf2c2ffd4d66f2f96780b",
   "unity": "6000.0.51f1",
   "buildType": "release",
-  "builtAt": "2026-09-11T00:48:12.391114+00:00",
+  "builtAt": "2026-09-11T02:11:47.362862+00:00",
   "assets": {
     "Build/WebGL.data.unityweb": {
-      "bytes": 199099545,
-      "sha256": "b253d4f56d98e3d687d1ac1de4d5531896b3789aa9ed2472b55319821e513a80"
+      "bytes": 181736968,
+      "sha256": "ab4a85050bf516a0c06af7ed2ee0f95907431a4bc9cc6943872c45b19071f566"
     },
     "Build/WebGL.framework.js.unityweb": {
       "bytes": 97091,
@@ -20,6 +20,16 @@
     "Build/WebGL.wasm.unityweb": {
       "bytes": 16110904,
       "sha256": "89112a98a01917e4f9491b22756ba2004bf0f0de737bf18be25984ebe6612b31"
+    }
+  },
+  "webAssets": {
+    "TemplateData/loading.js": {
+      "bytes": 12153,
+      "sha256": "d8720b2a9023ccc6562b8d89da01a74b22d8df1f1d8dfd0e538490686755d05d"
+    },
+    "TemplateData/style.css": {
+      "bytes": 5032,
+      "sha256": "b7578fc598014751398102e63229c225c66a6c030b6a3e564dd989262f4c80dd"
     }
   }
 }
