@@ -1,0 +1,16 @@
+{
+  "questionCount": 13,
+  "requiredValidation": true,
+  "checkedRequired": 11,
+  "mobileLayout": {
+    "width": 390,
+    "scrollWidth": 390,
+    "questionCount": 13
+  },
+  "submissionAcknowledged": true,
+  "url": "https://html-classic.itch.zone/html/17462165-1980722/StreamingAssets/Survey/index.html",
+  "reopenRecognizesSubmitted": true,
+  "databaseConfirmedOneResponse": true,
+  "responseIsolatedInDevelopmentStudy": true,
+  "qaEntryClosed": true
+}

@@ -1,0 +1,30 @@
+{
+  "version": "2026.09.15-teacher-feedback",
+  "sourceCommit": "042b4c3b142301b13150c49ffadf74635ab533b0",
+  "buildId": 1980722,
+  "embed": "https://html-classic.itch.zone/html/17462165-1980722/index.html",
+  "verified": [
+    {
+      "path": "Build/WebGL.data.unityweb",
+      "decodedBytes": 130891181,
+      "sha256": "1ad6a1c0ea5a67eccaaca2d29e95b94af4703267449bec9b001d825e5f910022"
+    },
+    {
+      "path": "Build/WebGL.framework.js.unityweb",
+      "decodedBytes": 507890,
+      "sha256": "c50ff64a00728f192ee881005c00e60409a80c0db5206c6da4f48b706f0d8f83"
+    },
+    {
+      "path": "Build/WebGL.loader.js",
+      "decodedBytes": 47338,
+      "sha256": "15d939f63ded63cbfff243fb569ffac2ee528df84a4243aded41d2299462c221"
+    },
+    {
+      "path": "Build/WebGL.wasm.unityweb",
+      "decodedBytes": 66974025,
+      "sha256": "ec3ae7a1cfd1431d7cffdc2c71edd43ef29fe4426678d17e79b1019fa4b72862"
+    }
+  ],
+  "surveyAssetsMatch": true,
+  "at": "2026-09-15T06:41:41.455447+00:00"
+}

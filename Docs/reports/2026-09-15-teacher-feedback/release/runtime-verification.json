@@ -1,0 +1,119 @@
+{
+  "version": "2026.09.15-teacher-feedback",
+  "ready": true,
+  "jsErrors": [
+    "WrongDocumentError: The root document of this element is not valid for pointer lock.",
+    "WrongDocumentError: The root document of this element is not valid for pointer lock."
+  ],
+  "requests": [
+    {
+      "path": "/auth/v1/signup",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/research-participation",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    },
+    {
+      "path": "/functions/v1/game-ingest-v2",
+      "status": 200
+    }
+  ],
+  "exceptionLogs": []
+}
