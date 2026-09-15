@@ -32,6 +32,8 @@ public class InventoryUISystem : MonoBehaviour
     public Color selectedSlotBackgroundColor = new Color(0.8f, 0.8f, 0.2f, 0.9f);
     public Color textShadowColor = new Color(0f, 0f, 0f, 0.8f);
     
+    private static InventoryUISystem activeWheel;
+    public static bool IsAnyWheelOpen => activeWheel != null && activeWheel.isWheelOpen;
     private bool isWheelOpen = false;
     private bool wheelOpenedByMobileInput = false; // 标记轮盘是否由移动端输入打开
     private int selectedSlot = -1;
@@ -1030,6 +1032,8 @@ public class InventoryUISystem : MonoBehaviour
             // Debug.Log($"[InventoryUISystem] Canvas设置 - RenderMode: {canvas.renderMode}, SortingOrder: {canvas.sortingOrder}");
         }
 
+        activeWheel = this;
+        CollectionTool.SuppressSelectionInput();
         isWheelOpen = true;
         mobileWheelCandidateSlot = -1;
         selectedSlot = -1;
@@ -1077,6 +1081,7 @@ public class InventoryUISystem : MonoBehaviour
             SelectToolAndStartPreview(selectedSlot);
         }
         
+        CollectionTool.SuppressSelectionInput();
         isWheelOpen = false;
         wheelUI.SetActive(false);
 
@@ -1299,6 +1304,12 @@ public class InventoryUISystem : MonoBehaviour
             if (toolManager != null)
             {
                 EnsureUnlockedToolsApplied();
+                if (availableTools[slotIndex] is EmptyHandTool)
+                {
+                    CollectionTool.SuppressSelectionInput();
+                    toolManager.UnequipCurrentTool();
+                    return;
+                }
                 EnsureToolRegistered(toolManager, availableTools[slotIndex]);
                 toolManager.EquipTool(availableTools[slotIndex]);
                 
@@ -1324,6 +1335,12 @@ public class InventoryUISystem : MonoBehaviour
             if (toolManager != null)
             {
                 EnsureUnlockedToolsApplied();
+                if (availableTools[slotIndex] is EmptyHandTool)
+                {
+                    CollectionTool.SuppressSelectionInput();
+                    toolManager.UnequipCurrentTool();
+                    return;
+                }
                 EnsureToolRegistered(toolManager, availableTools[slotIndex]);
                 toolManager.EquipTool(availableTools[slotIndex]);
                 
@@ -1406,6 +1423,12 @@ public class InventoryUISystem : MonoBehaviour
                     availableTools.Add(tool);
                 }
             }
+        }
+        if (toolManager != null)
+        {
+            var emptyHand = toolManager.GetComponent<EmptyHandTool>();
+            if (emptyHand == null) emptyHand = toolManager.gameObject.AddComponent<EmptyHandTool>();
+            if (!availableTools.Contains(emptyHand)) availableTools.Add(emptyHand);
         }
         // 不再从场景中扫描所有 CollectionTool，防止未解锁工具被显示
 
@@ -1589,6 +1612,8 @@ public class InventoryUISystem : MonoBehaviour
         {
             switch (tool.toolID)
             {
+                case "0":
+                    return "tool.empty_hand.name";
                 case "999":
                     return "tool.scene_switcher.name";
                 case "1000":

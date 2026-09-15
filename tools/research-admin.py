@@ -144,7 +144,8 @@ class Admin:
             events = self.rows('telemetry_events',{'participant_id':'eq.'+pid,'select':'id','order':'id'})
             responses = self.rows('survey_responses',{'participant_id':'eq.'+pid,'select':'*','order':'submitted_at,id'})
             attempts = self.rows('quiz_attempts',{'participant_id':'eq.'+pid,'select':'run_id,question_id,attempt_index,is_correct','order':'event_id'})
-            for response in responses or [{}]:
+            # Open-play records become research sample rows only after a submission.
+            for response in responses or ([] if study.get('entry_mode') == 'open_play' else [{}]):
                 same_run = [x for x in attempts if x['run_id']==response.get('run_id')]
                 rows.append({'participation_code':register.get(pid,''),'participant_id':pid,'study_key':args.study_key,
                     'cohort':participant['cohort'],'condition':participant['condition'],'status':participant['status'],

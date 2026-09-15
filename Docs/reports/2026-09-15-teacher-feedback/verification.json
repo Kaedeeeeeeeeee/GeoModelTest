@@ -1,0 +1,137 @@
+{
+  "unity": "6000.0.51f1",
+  "suites": [
+    {
+      "suite": "playmode",
+      "passed": 22,
+      "failed": 0,
+      "startTimeUtc": "2026-09-15 06:14:47Z",
+      "tests": [
+        {
+          "name": "GuideButton_ShouldPauseThenRestoreAndRememberCompletion",
+          "result": "Passed"
+        },
+        {
+          "name": "Player_ShouldAcceptJoystickCreatedAfterPlayerAndGuide",
+          "result": "Passed"
+        },
+        {
+          "name": "PublishedWarehouseGate_ShouldHideLegacyUIAndPreserveScenery",
+          "result": "Passed"
+        },
+        {
+          "name": "TouchGuide_ShouldUseTouchInstructionsAndSurviveNestedModal",
+          "result": "Passed"
+        },
+        {
+          "name": "WarehouseCloseButton_ShouldRestoreControlsIfFeatureIsReenabled",
+          "result": "Passed"
+        },
+        {
+          "name": "WarehouseEscapeCallback_ShouldRestoreControlsIfFeatureIsReenabled",
+          "result": "Passed"
+        },
+        {
+          "name": "Escape_ShouldBeConsumedOnceBySettingsAndModalRouter",
+          "result": "Passed"
+        },
+        {
+          "name": "HistoryOverSettings_ShouldPreservePauseUntilSettingsCloses",
+          "result": "Passed"
+        },
+        {
+          "name": "NestedModals_ShouldRestoreOriginalTimeOnlyAfterLastClose",
+          "result": "Passed"
+        },
+        {
+          "name": "EmptyHands_ShouldUnequipInsteadOfStartingAnAction",
+          "result": "Passed"
+        },
+        {
+          "name": "FieldGuide_ShouldWaitForStoryThenShowOnceEvenWithoutASamplingTask",
+          "result": "Passed"
+        },
+        {
+          "name": "GuidePages_ShouldFitEveryLanguageOnDesktopAndTouch",
+          "result": "Passed"
+        },
+        {
+          "name": "HelpOverDestinationSelection_ShouldRestorePauseThenCancelPutsToolAway",
+          "result": "Passed"
+        },
+        {
+          "name": "Npc_ShouldShowNewQuestMarkerThenRepeatReminderAfterCompletion",
+          "result": "Passed"
+        },
+        {
+          "name": "Reminder_ShouldRemainReplayableWithoutChangingQuestOrCheckpoints",
+          "result": "Passed"
+        },
+        {
+          "name": "WheelSelection_ShouldWaitForReleaseAndANewClickBeforeUsingSwitcher",
+          "result": "Passed"
+        },
+        {
+          "name": "DrillCar_ShouldMoveWithMobileInputAndRestorePlayerAfterRecall",
+          "result": "Passed"
+        },
+        {
+          "name": "Drone_ShouldMoveWithMobileInputAndRestorePlayerAfterRecall",
+          "result": "Passed"
+        },
+        {
+          "name": "PackagedVehicle_ShouldHaveRealMeshAndController(\"Drone\")",
+          "result": "Passed"
+        },
+        {
+          "name": "PackagedVehicle_ShouldHaveRealMeshAndController(\"DrillCar\")",
+          "result": "Passed"
+        },
+        {
+          "name": "ToolWheel_ShouldResolveVehicleNamesById(\"Drone\",\"1100\",\"tool.drone.name\")",
+          "result": "Passed"
+        },
+        {
+          "name": "ToolWheel_ShouldResolveVehicleNamesById(\"DrillCar\",\"1101\",\"tool.drill_car.name\")",
+          "result": "Passed"
+        }
+      ]
+    },
+    {
+      "suite": "localization",
+      "passed": 7,
+      "failed": 0,
+      "startTimeUtc": "2026-09-15 06:10:06Z",
+      "tests": [
+        {
+          "name": "JapaneseLocalization_ShouldContainRequiredMobileAndSafetyKeys",
+          "result": "Passed"
+        },
+        {
+          "name": "JapaneseLocalization_ShouldHaveBalancedFormatPlaceholders",
+          "result": "Passed"
+        },
+        {
+          "name": "JapaneseLocalization_ShouldHaveUniqueNonEmptyKeysAndValues",
+          "result": "Passed"
+        },
+        {
+          "name": "JapaneseLocalization_ShouldNotContainKnownUnsafeOrMixedLanguageCopy",
+          "result": "Passed"
+        },
+        {
+          "name": "RemediationCopy_ShouldExistWithoutDuplicatesInEveryLanguage(\"ja-JP\")",
+          "result": "Passed"
+        },
+        {
+          "name": "RemediationCopy_ShouldExistWithoutDuplicatesInEveryLanguage(\"zh-CN\")",
+          "result": "Passed"
+        },
+        {
+          "name": "RemediationCopy_ShouldExistWithoutDuplicatesInEveryLanguage(\"en-US\")",
+          "result": "Passed"
+        }
+      ]
+    }
+  ]
+}

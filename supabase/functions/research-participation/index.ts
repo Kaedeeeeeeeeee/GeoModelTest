@@ -60,12 +60,15 @@ serve(async (req) => {
     return fail(400, "Invalid JSON body");
   }
 
-  if (!isPlainObject(parsed) || typeof parsed.participantCode !== "string") {
+  if (!isPlainObject(parsed)) return fail(400, "Invalid request body");
+  const openPlay = parsed.entryMode === "open_play";
+  if (openPlay && parsed.participantCode != null) return fail(400, "Unexpected participation code");
+  if (!openPlay && typeof parsed.participantCode !== "string") {
     return fail(400, "参加コードを確認してください。");
   }
 
-  const participantCode = parsed.participantCode.trim().toUpperCase();
-  if (!/^[A-Z0-9-]{8,64}$/.test(participantCode)) {
+  const participantCode = typeof parsed.participantCode === "string" ? parsed.participantCode.trim().toUpperCase() : "";
+  if (!openPlay && !/^[A-Z0-9-]{8,64}$/.test(participantCode)) {
     return fail(400, "参加コードを確認してください。");
   }
 
@@ -85,6 +88,7 @@ serve(async (req) => {
   });
   const { data: userData, error: userError } = await supabase.auth.getUser(token);
   if (userError || !userData.user) return fail(401, "Invalid bearer token");
+  if (openPlay && userData.user.is_anonymous !== true) return fail(403, "Anonymous game identity required");
 
   const rateBucketKey = await hmacSha256Hex(codePepper, `rate:${forwardedFor}`);
   const { data: rateAllowed, error: rateError } = await supabase.rpc("consume_research_rate_limit", {
@@ -108,11 +112,12 @@ serve(async (req) => {
   if (identityRate.error) return fail(500, "参加コードを確認できませんでした。");
   if (identityRate.data !== true) return fail(429, "確認回数が多すぎます。少し待ってから再試行してください。");
 
-  const codeHash = await hmacSha256Hex(codePepper, participantCode);
-  const { data, error } = await supabase.rpc("activate_research_participant", {
-    p_code_hash: codeHash,
-    p_user_id: userData.user.id,
-  });
+  const { data, error } = openPlay
+    ? await supabase.rpc("activate_open_play_participant", { p_user_id: userData.user.id })
+    : await supabase.rpc("activate_research_participant", {
+      p_code_hash: await hmacSha256Hex(codePepper, participantCode),
+      p_user_id: userData.user.id,
+    });
 
   if (error) {
     console.error("Participant activation failed", error.code, error.message);

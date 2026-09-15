@@ -126,6 +126,31 @@ public class ResearchRecoveryTests
         Assert.AreEqual("local-test-refresh", PlayerPrefs.GetString("Backend.RefreshToken"));
     }
 
+    [UnityTest]
+    public IEnumerator OpenPlay_ShouldActivateWithoutCode_AndRecoverLocalQuizAnswers()
+    {
+        StartServer();
+        var scoreType = Type.GetType("StorySystem.QuizScoreManager, Assembly-CSharp", true);
+        var score = scoreType.GetProperty("Instance").GetValue(null);
+        Call(score, "StartNewRun");
+        string run = (string)scoreType.GetProperty("RunId").GetValue(score);
+        Call(score, "Record", "q.weathering_order", "story-formative-v1", "choice-0", true, false, 1000L, null);
+        var progress = Type.GetType("StorySystem.InvestigationProgress, Assembly-CSharp", true);
+        progress.GetMethod("MarkComplete").Invoke(null, null);
+        bool active = false;
+        yield return (IEnumerator)Call(_client, "ActivateForResearch", _settings, null,
+            (Action<bool, string>)((ok, error) => active = ok));
+        Assert.IsTrue(active);
+        Assert.AreEqual(run, scoreType.GetProperty("RunId").GetValue(score), "Late activation must preserve the completed run.");
+        Assert.IsTrue((bool)progress.GetProperty("IsComplete").GetValue(null));
+        bool posted = false;
+        yield return (IEnumerator)Call(_client, "FlushForSurvey", (Action<bool>)(ok => posted = ok));
+        Assert.IsTrue(posted);
+        Assert.IsTrue(Array.Exists(_payloads.ToArray(), body => body.Contains("\"entryMode\":\"open_play\"")));
+        Assert.IsTrue(Array.Exists(_payloads.ToArray(), body => body.Contains("q.weathering_order") && body.Contains(run)));
+        Assert.IsFalse(PlayerPrefs.HasKey("Backend.CurrentCodeHash.v1"), "Open play must not create a fake participation code.");
+    }
+
     [TearDown]
     public void TearDown()
     {

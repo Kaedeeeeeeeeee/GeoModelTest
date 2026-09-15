@@ -52,9 +52,14 @@ public class FirstControlExperienceTests
         var canvas = GameObject.Find("FirstControlGuide");
         Assert.NotNull(canvas);
         var cards = canvas.transform.Find("GuideCard");
-        foreach (string name in new[] { "move", "look", "interact", "tools" })
-            Assert.IsFalse(string.IsNullOrWhiteSpace(cards.Find(name + "/Instruction").GetComponent<Text>().text));
+        foreach (string name in new[] { "move", "look", "jump", "run" })
+            Assert.IsFalse(string.IsNullOrWhiteSpace(cards.Find("Content/" + name + "/Instruction").GetComponent<Text>().text));
         cards.Find("Begin").GetComponent<Button>().onClick.Invoke();
+        Assert.IsFalse(PlayerPrefs.HasKey(GuideKey), "The Next button must not dismiss the guide.");
+        Assert.AreEqual("2 / 4", cards.Find("Page").GetComponent<Text>().text);
+        cards.Find("Previous").GetComponent<Button>().onClick.Invoke();
+        Assert.AreEqual("1 / 4", cards.Find("Page").GetComponent<Text>().text);
+        for (int page = 0; page < 4; page++) cards.Find("Begin").GetComponent<Button>().onClick.Invoke();
         Assert.AreEqual(1, PlayerPrefs.GetInt(GuideKey));
         Assert.IsTrue(player.enabled);
         Assert.AreEqual(0.75f, Time.timeScale);
@@ -68,14 +73,14 @@ public class FirstControlExperienceTests
         Time.timeScale = 1f;
         Call("UISystem.FirstControlGuide", "Show", null, true);
         var canvas = GameObject.Find("FirstControlGuide");
-        var move = canvas.transform.Find("GuideCard/move/Instruction").GetComponent<Text>().text;
+        var move = canvas.transform.Find("GuideCard/Content/move/Instruction").GetComponent<Text>().text;
         var expected = Call("UISystem.GameUI", "L", null, "ui.guide.touch.move");
         Assert.AreEqual(expected, move);
         yield return null;
         Canvas.ForceUpdateCanvases();
-        foreach (string action in new[] { "move", "look", "interact", "tools" })
+        foreach (string action in new[] { "move", "look", "jump", "run" })
         {
-            var instruction = canvas.transform.Find("GuideCard/" + action + "/Instruction").GetComponent<Text>();
+            var instruction = canvas.transform.Find("GuideCard/Content/" + action + "/Instruction").GetComponent<Text>();
             Assert.LessOrEqual(instruction.preferredHeight, instruction.rectTransform.rect.height + 1f,
                 action + ": the full touch instruction must fit without losing its second line.");
         }
@@ -106,7 +111,7 @@ public class FirstControlExperienceTests
 
         Call("UISystem.FirstControlGuide", "Show", null, true);
         var guide = GameObject.Find("FirstControlGuide");
-        guide.transform.Find("GuideCard/Begin").GetComponent<Button>().onClick.Invoke();
+        guide.transform.Find("GuideCard/Close").GetComponent<Button>().onClick.Invoke();
         yield return null;
         yield return null;
         var before = host.transform.position;

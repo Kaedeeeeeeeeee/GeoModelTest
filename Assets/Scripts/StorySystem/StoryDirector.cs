@@ -352,6 +352,20 @@ namespace StorySystem
         /// <summary>
         /// 显示结尾调查报告（A/B/C 评级 + 正解数），用于最终 beat 结束时。
         /// </summary>
+        public void PlayReminder(string speaker, string text, Action onComplete = null)
+        {
+            StartCoroutine(PlayReminderRoutine(speaker, text, onComplete));
+        }
+
+        private IEnumerator PlayReminderRoutine(string speaker, string text, Action onComplete)
+        {
+            while (_isRunningCinematic) yield return null;
+            _isRunningCinematic = true;
+            yield return SubtitleUI.ShowSequence(new[] { new SubtitleUI.SubtitleLine(speaker, text) });
+            _isRunningCinematic = false;
+            onComplete?.Invoke();
+        }
+
         public void CancelPlayback()
         {
             StopAllCoroutines();
@@ -878,7 +892,15 @@ namespace StorySystem
             hintTxt.fontSize = 20;
             hintTxt.color = new Color(1f, 1f, 1f, 0.7f);
             hintTxt.alignment = TextAlignmentOptions.Center;
-            string hintContinue = FuriganaProcessor.Process(LocalizedOr("ui.dialog.continue", "ダイアログをクリックして続ける"));
+            string hintContinue = FuriganaProcessor.Process(LocalizedOr(UISystem.FirstControlGuide.UsesTouch() ? "ui.dialog.continue.touch" : "ui.dialog.continue", "次へ"));
+            string hintFinish = FuriganaProcessor.Process(LocalizedOr(UISystem.FirstControlGuide.UsesTouch() ? "ui.dialog.finish.touch" : "ui.dialog.finish", "話を終える"));
+            bool finalLine = false;
+            bool canFinish = false;
+            void RefreshAdvanceHint()
+            {
+                hintTxt.text = canFinish && finalLine && pager.Page >= pager.PageCount ? hintFinish : hintContinue;
+                if (pager.PageCount > 1) hintTxt.text += $"  {pager.Page}/{pager.PageCount}";
+            }
             hintTxt.text = hintContinue;
             hintTxt.raycastTarget = false;
             GameUI.Button(bg.transform, "History", GameUI.L("ui.history.title"),
@@ -889,7 +911,7 @@ namespace StorySystem
             {
                 if (GameInputState.IsModalOpen) return;
                 advanceRequested = pager.Advance();
-                hintTxt.text = hintContinue + (pager.PageCount > 1 ? $"  {pager.Page}/{pager.PageCount}" : "");
+                RefreshAdvanceHint();
             }
             void SetDialogAdvanceEnabled(bool enabled)
             {
@@ -953,8 +975,11 @@ namespace StorySystem
                     }
                 }
 
+                finalLine = IsLastUnreadLine(lines, i);
+                canFinish = !line.HasChoices;
                 ShowSpeaker(line.Speaker);
                 pager.SetText(line.Text);
+                RefreshAdvanceHint();
                 advanceRequested = false;
                 yield return null; // 避免前一次点击连带跳过
 
@@ -979,8 +1004,10 @@ namespace StorySystem
                         SetDialogAdvanceEnabled(false);
 
                         // 每次循环（含重答）恢复 speaker + prompt
+                        canFinish = false;
                         ShowSpeaker(line.Speaker);
                         pager.SetText(line.Text);
+                        RefreshAdvanceHint();
 
                         // Read every prompt page before exposing the answer choices.
                         SetDialogAdvanceEnabled(true);
@@ -1065,7 +1092,8 @@ namespace StorySystem
                         pager.SetText(feedback);
                         StoryHistory.Append(line.Speaker, chosen.Text, "choice", chosen.ChoiceId);
                         StoryHistory.Append(line.Speaker, feedback, "feedback", line.QuestionId);
-                        hintTxt.text = hintContinue;
+                        canFinish = chosen.IsCorrect;
+                        RefreshAdvanceHint();
                         SetDialogAdvanceEnabled(true);
                         advanceRequested = false;
                         yield return null;
@@ -1112,6 +1140,17 @@ namespace StorySystem
             StoryDirectorRunner.Instance.Run(DestroyCanvasNextFrame(canvasGO));
 
             onComplete?.Invoke();
+        }
+
+        private static bool IsLastUnreadLine(IReadOnlyList<SubtitleLine> lines, int index)
+        {
+            for (int i = index + 1; i < lines.Count; i++)
+            {
+                if (StoryCheckpoint.IsPassed(lines[i].ContentId)) continue;
+                if (lines[i].HasChoices && QuizScoreManager.Instance.HasMastered(lines[i].QuestionId)) continue;
+                return false;
+            }
+            return true;
         }
 
         private static IEnumerator DestroyCanvasNextFrame(GameObject canvasGO)

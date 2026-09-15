@@ -2314,7 +2314,7 @@
     },
     {
       "key": "ui.dialog.continue",
-      "value": "点击对话框继续"
+      "value": "继续（点击 / Space / Enter）"
     },
     {
       "key": "ui.dialog.choose",
@@ -3030,7 +3030,7 @@
     },
     {
       "key": "ui.start.footer",
-      "value": "采集 · 观察 · 发现"
+      "value": "约 20 分钟的地学调查体验"
     },
     {
       "key": "ui.start.field_caption",
@@ -3066,11 +3066,11 @@
     },
     {
       "key": "ui.session.return_message",
-      "value": "保存进度并返回标题。未完成的对话会从检查点继续。"
+      "value": "返回标题后需要重新开始游戏。确定返回吗？"
     },
     {
       "key": "ui.session.save_return",
-      "value": "保存并返回"
+      "value": "返回标题"
     },
     {
       "key": "ui.history.title",
@@ -3258,7 +3258,7 @@
     },
     {
       "key": "survey.reenter",
-      "value": "请使用原参与码重新进入后再试。"
+      "value": "连接已失效，请刷新游戏后重试。"
     },
     {
       "key": "survey.opened",
@@ -3270,7 +3270,7 @@
     },
     {
       "key": "survey.research_only",
-      "value": "以研究参与模式游玩后可回答问卷。"
+      "value": "完成游戏后即可回答问卷。"
     },
     {
       "key": "vehicle.enter",
@@ -3346,7 +3346,7 @@
     },
     {
       "key": "ui.guide.desktop.look",
-      "value": "移动鼠标\n看向想观察的方向"
+      "value": "移动鼠标，调整视角"
     },
     {
       "key": "ui.guide.desktop.interact",
@@ -3354,7 +3354,7 @@
     },
     {
       "key": "ui.guide.desktop.tools",
-      "value": "按 Tab 打开道具\n点击选择要使用的道具"
+      "value": "按 Tab 打开道具，点击选择。\n选中工具不会立即使用。"
     },
     {
       "key": "ui.guide.touch.move",
@@ -3370,7 +3370,7 @@
     },
     {
       "key": "ui.guide.touch.tools",
-      "value": "点击左上的“道具”\n选择要使用的道具"
+      "value": "点击左上角“道具”，选择工具。\n选中工具不会立即使用。"
     },
     {
       "key": "ui.guide.hint",
@@ -3383,6 +3383,190 @@
     {
       "key": "ui.guide.touch.map",
       "value": "手指应该放在哪里？"
+    },
+    {
+      "key": "ui.guide.page.0",
+      "value": "移动与观察"
+    },
+    {
+      "key": "ui.guide.page.1",
+      "value": "与研究员交谈"
+    },
+    {
+      "key": "ui.guide.page.2",
+      "value": "道具与菜单"
+    },
+    {
+      "key": "ui.guide.page.3",
+      "value": "如何开展野外调查"
+    },
+    {
+      "key": "ui.guide.previous",
+      "value": "上一页"
+    },
+    {
+      "key": "ui.guide.next",
+      "value": "下一页"
+    },
+    {
+      "key": "ui.guide.done",
+      "value": "明白了，关闭"
+    },
+    {
+      "key": "ui.guide.open.desktop",
+      "value": "H  操作说明"
+    },
+    {
+      "key": "ui.guide.open.touch",
+      "value": "？ 操作说明"
+    },
+    {
+      "key": "ui.guide.jump",
+      "value": "跳跃"
+    },
+    {
+      "key": "ui.guide.run",
+      "value": "奔跑"
+    },
+    {
+      "key": "ui.guide.desktop.jump",
+      "value": "站在地面时按 Space 键"
+    },
+    {
+      "key": "ui.guide.desktop.run",
+      "value": "移动时按住左 Shift 键"
+    },
+    {
+      "key": "ui.guide.touch.jump",
+      "value": "站在地面时，点击右下角的“跳跃”"
+    },
+    {
+      "key": "ui.guide.touch.run",
+      "value": "用左侧摇杆移动时，\n按住右下角的“奔跑”"
+    },
+    {
+      "key": "ui.guide.npc.new.title",
+      "value": "黄色“！”表示有新的对话"
+    },
+    {
+      "key": "ui.guide.npc.new",
+      "value": "需要通过对话推进任务时，研究员头顶会出现“！”。\n出发调查前，先听完说明。"
+    },
+    {
+      "key": "ui.guide.npc.talk.title",
+      "value": "人物变蓝后就可以交谈"
+    },
+    {
+      "key": "ui.guide.npc.desktop",
+      "value": "靠近，研究员变蓝后按 E。点击、Space 或 Enter 推进对话。\n“结束对话”表示已到最后一页。不清楚下一步时，可以再次交谈。"
+    },
+    {
+      "key": "ui.guide.npc.touch",
+      "value": "靠近，研究员变蓝后点击“调查”，点击画面推进对话。\n“结束对话”表示已到最后一页。不清楚下一步时，可以再次交谈。"
+    },
+    {
+      "key": "ui.guide.use",
+      "value": "使用道具"
+    },
+    {
+      "key": "ui.guide.put_away",
+      "value": "收起道具"
+    },
+    {
+      "key": "ui.guide.menus",
+      "value": "背包、图鉴与设置"
+    },
+    {
+      "key": "ui.guide.desktop.use",
+      "value": "用画面中央瞄准目标后点击鼠标左键。\n与人物或设备交互时，按画面提示的 E / F。"
+    },
+    {
+      "key": "ui.guide.touch.use",
+      "value": "用画面中央瞄准目标后点击“调查”。\n设备和载具使用画面上的专用按钮操作。"
+    },
+    {
+      "key": "ui.guide.desktop.put_away",
+      "value": "Tab →“空手”可收起道具。\n鼠标右键 / Esc 取消放置。\n取消选择传送目的地时，切换器也会收起。"
+    },
+    {
+      "key": "ui.guide.touch.put_away",
+      "value": "“道具”→“空手”可收起道具。\n点击“取消”停止放置。\n取消传送目的地时，切换器也会收起。"
+    },
+    {
+      "key": "ui.guide.desktop.menus",
+      "value": "I：背包　O：图鉴　Esc：设置\nH：随时打开操作说明"
+    },
+    {
+      "key": "ui.guide.touch.menus",
+      "value": "左上角打开“背包”“图鉴”，右上角打开设置。\n点击“？ 操作说明”可随时查看本说明。"
+    },
+    {
+      "key": "ui.guide.field.line.title",
+      "value": "留意地面上的蓝色引导"
+    },
+    {
+      "key": "ui.guide.field.line",
+      "value": "看看地面上有没有蓝色（水蓝色）的线，有的话就沿着它前往调查地点。\n没有线时，先看左上角当前任务；也许还需要回去听研究员的说明。"
+    },
+    {
+      "key": "ui.guide.field.outcrop.title",
+      "value": "什么是露头？"
+    },
+    {
+      "key": "ui.guide.field.outcrop.desktop",
+      "value": "露头是岩石或地层裸露在地表的地方。找找没有被草覆盖的岩面。\n用地质锤在同一标记处敲击三次，再靠近生成的样本，按 E 拾取。"
+    },
+    {
+      "key": "ui.guide.field.outcrop.touch",
+      "value": "露头是岩石或地层裸露在地表的地方。找找没有被草覆盖的岩面。\n选地质锤，对准同一标记点三次“调查”；靠近生成的样本，再点“调查”拾取。"
+    },
+    {
+      "key": "ui.dialog.continue.touch",
+      "value": "点击继续"
+    },
+    {
+      "key": "ui.dialog.finish",
+      "value": "结束对话（点击 / Space / Enter）"
+    },
+    {
+      "key": "ui.dialog.finish.touch",
+      "value": "点击结束对话"
+    },
+    {
+      "key": "quest.npc.prompt.continue",
+      "value": "［E］继续听说明"
+    },
+    {
+      "key": "quest.npc.prompt.continue.mobile",
+      "value": "继续听说明"
+    },
+    {
+      "key": "quest.npc.prompt.reminder",
+      "value": "［E］再次交谈"
+    },
+    {
+      "key": "quest.npc.prompt.reminder.mobile",
+      "value": "再次交谈"
+    },
+    {
+      "key": "quest.npc.reminder.field",
+      "value": "用场景切换器前往野外，在蓝色引导线指向的位置用地质锤采集样本。"
+    },
+    {
+      "key": "quest.npc.reminder.core",
+      "value": "接下来到野外用钻塔采集岩芯，然后带回研究室。"
+    },
+    {
+      "key": "quest.npc.reminder.complete",
+      "value": "这次调查已经完成，谢谢你的帮助！可以在调查报告中查看结果。"
+    },
+    {
+      "key": "quest.npc.reminder.wait",
+      "value": "可以在画面左上角查看当前任务。不确定如何操作时，打开“操作说明”。"
+    },
+    {
+      "key": "tool.empty_hand.name",
+      "value": "空手"
     }
   ]
 }

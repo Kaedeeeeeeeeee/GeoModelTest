@@ -15,6 +15,9 @@ public class GameSceneManager : MonoBehaviour
     };
     
     [Header("UI引用")]
+    private Core.GameInputState.Scope selectionInput;
+    private ModalCanvasLayerGuard.Scope selectionLayer;
+    private SceneSwitcherTool selectionOwner;
     public GameObject sceneSelectionUI;
     public Transform sceneButtonContainer;
     public GameObject sceneButtonPrefab;
@@ -82,7 +85,7 @@ public class GameSceneManager : MonoBehaviour
     /// <summary>
     /// 显示场景选择UI
     /// </summary>
-    public void ShowSceneSelectionUI()
+    public void ShowSceneSelectionUI(SceneSwitcherTool owner = null)
     {
         Debug.Log("[GameSceneManager] ShowSceneSelectionUI被调用");
 
@@ -100,13 +103,9 @@ public class GameSceneManager : MonoBehaviour
             Debug.Log("[GameSceneManager] 激活场景选择UI");
             sceneSelectionUI.SetActive(true);
 
-            // 暂停游戏时间，显示光标
-            Time.timeScale = 0f;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-
-            // 禁用玩家输入
-            SetPlayerInputEnabled(false);
+            selectionOwner = owner;
+            if (selectionInput == null) selectionInput = Core.GameInputState.Acquire(CancelSceneSelection);
+            if (selectionLayer == null) selectionLayer = ModalCanvasLayerGuard.Activate(sceneSelectionUI.GetComponent<Canvas>());
 
             Debug.Log("[GameSceneManager] 场景选择UI显示完成");
         }
@@ -126,18 +125,26 @@ public class GameSceneManager : MonoBehaviour
             sceneSelectionUI.SetActive(false);
         }
         
-        // 恢复游戏时间和光标
-        Time.timeScale = 1f;
-        bool mobilePointer = MobileInputManager.IsRuntimeMobileDevice();
-        Cursor.lockState = mobilePointer ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = mobilePointer;
-        
-        // 恢复玩家输入
-        SetPlayerInputEnabled(true);
-        
+        selectionLayer?.Dispose();
+        selectionLayer = null;
+        selectionInput?.Dispose();
+        selectionInput = null;
+        selectionOwner = null;
+        CollectionTool.SuppressSelectionInput();
+
         Debug.Log("隐藏场景选择UI");
     }
     
+    public void CancelSceneSelection()
+    {
+        var owner = selectionOwner;
+        HideSceneSelectionUI();
+        if (owner == null) return;
+        var tools = owner.GetComponent<ToolManager>();
+        if (tools != null && tools.GetCurrentTool() == owner) tools.UnequipCurrentTool();
+        else owner.Unequip();
+    }
+
     /// <summary>
     /// 创建场景选择UI
     /// </summary>
@@ -337,7 +344,7 @@ public class GameSceneManager : MonoBehaviour
         
         UnityEngine.UI.Button closeButtonComponent = closeButton.AddComponent<UnityEngine.UI.Button>();
         closeButtonComponent.targetGraphic = closeImage;
-        closeButtonComponent.onClick.AddListener(HideSceneSelectionUI);
+        closeButtonComponent.onClick.AddListener(CancelSceneSelection);
         
         GameObject closeText = new GameObject("Text");
         closeText.transform.SetParent(closeButton.transform);
@@ -356,7 +363,7 @@ public class GameSceneManager : MonoBehaviour
         
         // 添加本地化组件
         LocalizedText localizedClose = closeText.AddComponent<LocalizedText>();
-        localizedClose.TextKey = "ui.button.close";
+        localizedClose.TextKey = "ui.common.cancel";
     }
     
     /// <summary>

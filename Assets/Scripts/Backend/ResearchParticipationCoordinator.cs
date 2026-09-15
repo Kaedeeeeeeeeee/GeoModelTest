@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Backend
 {
     /// <summary>
-    /// 明示的な参加コード入力から研究モードを開始・終了する調整役。
+    /// 通常プレイの匿名記録と旧参加コードのセッションを管理する。
     /// Instance の生成だけでは認証も通信も開始しない。
     /// </summary>
     public sealed class ResearchParticipationCoordinator : MonoBehaviour
@@ -53,6 +53,11 @@ namespace Backend
             StartCoroutine(ActivateRoutine(participantCode, completed));
         }
 
+        public void ActivateOpenPlay(Action<bool, string> completed)
+        {
+            Activate(null, completed);
+        }
+
         public void EndSession(string reason, Action completed = null)
         {
             TelemetryClient client = TelemetryClient.Instance;
@@ -78,7 +83,7 @@ namespace Backend
             }
 
             TelemetryClient client = BackendBootstrap.CreateResearchClient();
-            if (client.IsResearchActive && !BackendAuthProfiles.IsCurrentCode(settings.SupabaseUrl, participantCode ?? ""))
+            if (participantCode != null && client.IsResearchActive && !BackendAuthProfiles.IsCurrentCode(settings.SupabaseUrl, participantCode ?? ""))
             {
                 bool ended = false;
                 client.EndResearchSession("participant_switch", () => ended = true);

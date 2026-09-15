@@ -118,22 +118,10 @@ public class SceneSwitcherTool : CollectionTool
         if (!canUse) return;
 
         // 处理鼠标左键点击（桌面端）
-        var mouse = Mouse.current;
-        if (mouse != null && mouse.leftButton.wasPressedThisFrame)
+        if (WasPrimaryUsePressed())
         {
             UseSceneSwitcher();
             return;
-        }
-
-        // 处理移动端触摸输入
-        if (UnityEngine.InputSystem.Touchscreen.current != null)
-        {
-            var touch = UnityEngine.InputSystem.Touchscreen.current.primaryTouch;
-            if (touch.press.wasPressedThisFrame)
-            {
-                UseSceneSwitcher();
-                return;
-            }
         }
 
         // 处理F键输入（移动端虚拟按钮）
@@ -180,7 +168,7 @@ public class SceneSwitcherTool : CollectionTool
     /// </summary>
     void UseSceneSwitcher()
     {
-        if (!canUse)
+        if (IsToolInputBlocked || !isEquipped || !canUse)
         {
             Debug.Log("场景切换器在冷却中，无法使用");
             return;
@@ -203,7 +191,7 @@ public class SceneSwitcherTool : CollectionTool
         if (sceneManager != null)
         {
             Debug.Log("调用场景管理器显示UI");
-            sceneManager.ShowSceneSelectionUI();
+            sceneManager.ShowSceneSelectionUI(this);
         }
         else
         {
@@ -213,7 +201,7 @@ public class SceneSwitcherTool : CollectionTool
             if (sceneManager != null)
             {
                 Debug.Log("重新获取场景管理器成功，显示UI");
-                sceneManager.ShowSceneSelectionUI();
+                sceneManager.ShowSceneSelectionUI(this);
             }
             else
             {
@@ -312,6 +300,7 @@ public class SceneSwitcherTool : CollectionTool
     
     public override void Unequip()
     {
+        StopAllCoroutines();
         base.Unequip();
         
         // 隐藏切换器

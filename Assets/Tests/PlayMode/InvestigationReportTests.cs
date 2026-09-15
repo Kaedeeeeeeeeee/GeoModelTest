@@ -81,7 +81,7 @@ public class InvestigationReportTests
             PlayerPrefs.SetString("Backend.ResearchParticipantId", participant);
             PlayerPrefs.SetString("Backend.SurveyCompletion.v1", "{\"participantId\":\"" + participant + "\",\"sessionId\":\"22222222-2222-4222-8222-222222222222\",\"runId\":\"" + run + "\",\"server\":\"" + Server + "\"}");
         }
-        Assert.AreEqual(research, RuntimeType("Backend.SurveyGateway").GetProperty("IsEligible").GetValue(null));
+        Assert.AreEqual(true, RuntimeType("Backend.SurveyGateway").GetProperty("IsEligible").GetValue(null));
         _report = (IEnumerator)Call("StorySystem.InvestigationReport", "Show", null, (Action)(() => _closed = true));
         Assert.IsTrue(_report.MoveNext());
     }
@@ -130,14 +130,13 @@ public class InvestigationReportTests
     }
 
     [UnityTest]
-    public IEnumerator Report_Should_KeepReturnAvailable_ForOrdinaryPlay()
+    public IEnumerator Report_Should_OfferSurvey_ForOrdinaryPlayWithoutCode()
     {
         OpenReport(false);
-        Assert.IsTrue(Return.interactable);
-        Assert.IsFalse(Survey.interactable);
-        Return.onClick.Invoke();
-        Assert.IsFalse(_report.MoveNext());
-        Assert.IsTrue(_closed);
+        Assert.IsTrue(Survey.interactable);
+        Assert.IsFalse(Return.interactable, "Every completed player sees the same questionnaire invitation.");
+        Assert.IsFalse(PlayerPrefs.HasKey("Backend.ResearchParticipantId"));
+        Assert.IsFalse(PlayerPrefs.HasKey("Backend.SurveyCompletion.v1"));
         yield return null;
     }
 

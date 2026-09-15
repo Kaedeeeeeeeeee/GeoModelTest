@@ -38,8 +38,7 @@ namespace Backend
             {
                 if (!InvestigationProgress.IsComplete) return false;
                 var settings = BackendSettingsProvider.Load();
-                return settings != null && settings.HasClientConfig &&
-                    (TelemetryClient.Instance?.IsResearchActive == true || SurveyCompletionStore.Current(settings.SupabaseUrl, QuizScoreManager.Instance.RunId) != null);
+                return settings != null && settings.EnableBackend && settings.HasClientConfig;
             }
         }
 
@@ -57,6 +56,16 @@ namespace Backend
                 status?.Invoke(GameUI.L("survey.preparing"));
                 var settings = BackendSettingsProvider.Load();
                 SceneSystem.GameSession.SaveCheckpoint();
+                var coordinator = ResearchParticipationCoordinator.Instance;
+                while (coordinator.IsActivating) yield return null;
+                if (TelemetryClient.Instance?.IsResearchActive != true &&
+                    SurveyCompletionStore.Current(settings.SupabaseUrl, QuizScoreManager.Instance.RunId) == null)
+                {
+                    bool activated = false;
+                    coordinator.ActivateOpenPlay((success, error) => activated = success);
+                    while (coordinator.IsActivating) yield return null;
+                    if (!activated) { status?.Invoke(GameUI.L("survey.retry")); yield break; }
+                }
                 var client = TelemetryClient.Instance;
                 if (client?.IsResearchActive == true)
                 {

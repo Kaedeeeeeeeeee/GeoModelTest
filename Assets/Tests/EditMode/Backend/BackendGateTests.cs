@@ -5,7 +5,7 @@ using UnityEngine;
 public class BackendGateTests
 {
     [Test]
-    public void BackendBootstrap_ShouldNotAutoStartTelemetryForOrdinaryPlay()
+    public void BackendBootstrap_ShouldWaitForPlayerToStartGame()
     {
         var bootstrapType = BackendTestReflection.GetType("Backend.BackendBootstrap");
         bool hasRuntimeBootstrap = bootstrapType
@@ -14,7 +14,7 @@ public class BackendGateTests
                         System.Reflection.BindingFlags.Static)
             .Any(method => method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), true).Length > 0);
 
-        Assert.IsFalse(hasRuntimeBootstrap, "Ordinary play must not start backend authentication or telemetry automatically.");
+        Assert.IsFalse(hasRuntimeBootstrap, "Loading the title alone must not start backend authentication or telemetry.");
     }
 
     [Test]

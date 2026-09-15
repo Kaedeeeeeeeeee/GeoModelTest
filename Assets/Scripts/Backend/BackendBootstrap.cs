@@ -3,8 +3,8 @@ using UnityEngine;
 namespace Backend
 {
     /// <summary>
-    /// 通常プレイでは呼び出されない明示的な研究クライアント生成口。
-    /// 参加コードの検証が成功するまで TelemetryClient は初期化されない。
+    /// New Game またはアンケート再試行から匿名プレイクライアントを生成する。
+    /// サーバーの登録が成功するまで TelemetryClient は初期化されない。
     /// </summary>
     public static class BackendBootstrap
     {

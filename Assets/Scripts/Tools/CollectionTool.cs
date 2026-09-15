@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Core;
@@ -18,6 +19,28 @@ public abstract class CollectionTool : MonoBehaviour
     
     protected bool isEquipped = false;
     public bool IsEquipped => isEquipped;
+    private static int selectionFrame = -10;
+    private static bool waitingForSelectionRelease;
+
+    public static void SuppressSelectionInput()
+    {
+        selectionFrame = Time.frameCount;
+        waitingForSelectionRelease = true;
+    }
+
+    public static bool IsSelectionInputSuppressed
+    {
+        get
+        {
+            if (Time.frameCount <= selectionFrame + 1) return true;
+            if (!waitingForSelectionRelease) return false;
+            if ((Mouse.current != null && Mouse.current.leftButton.isPressed) ||
+                (Touchscreen.current != null && Touchscreen.current.touches.Any(t => t.press.isPressed))) return true;
+            waitingForSelectionRelease = false;
+            return false;
+        }
+    }
+
     protected bool canUse = true;
     protected Camera playerCamera;
     protected AudioSource audioSource;
@@ -27,7 +50,8 @@ public abstract class CollectionTool : MonoBehaviour
     /// <summary>
     /// 剧情对话显示期间，所有工具共用同一个输入锁。
     /// </summary>
-    protected bool IsToolInputBlocked => VehicleController.Active != null || StoryDirector.IsStoryPlaybackActive || Core.GameInputState.GameplayBlocked;
+    private bool IsGameplayInputBlocked => VehicleController.Active != null || StoryDirector.IsStoryPlaybackActive || GameInputState.GameplayBlocked;
+    protected bool IsToolInputBlocked => IsGameplayInputBlocked || IsSelectionInputSuppressed || InventoryUISystem.IsAnyWheelOpen;
     
     protected virtual void Start()
     {
@@ -47,7 +71,7 @@ public abstract class CollectionTool : MonoBehaviour
     
     protected virtual void Update()
     {
-        bool inputBlocked = IsToolInputBlocked;
+        bool inputBlocked = IsGameplayInputBlocked;
         if (inputBlocked)
         {
             if (!wasToolInputBlocked && isEquipped)
@@ -60,6 +84,7 @@ public abstract class CollectionTool : MonoBehaviour
         }
 
         wasToolInputBlocked = false;
+        if (IsSelectionInputSuppressed || InventoryUISystem.IsAnyWheelOpen) return;
 
         if (isEquipped)
         {
@@ -86,6 +111,8 @@ public abstract class CollectionTool : MonoBehaviour
 
     protected bool WasPrimaryUsePressed()
     {
+        if (IsToolInputBlocked || (UnityEngine.EventSystems.EventSystem.current != null &&
+            UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())) return false;
         var mouse = Mouse.current;
         bool pressed = mouse != null && mouse.leftButton.wasPressedThisFrame;
 #if ENABLE_LEGACY_INPUT_MANAGER
@@ -201,6 +228,7 @@ public abstract class CollectionTool : MonoBehaviour
     
     public virtual void Equip()
     {
+        SuppressSelectionInput();
         isEquipped = true;
         if (toolModel != null)
         {

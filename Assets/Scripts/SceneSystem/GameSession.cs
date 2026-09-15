@@ -13,6 +13,7 @@ namespace SceneSystem
         private static GameSession _instance;
         private bool _returning;
         private bool _quitting;
+        private bool _starting;
 
         public static GameSession Instance
         {
@@ -60,6 +61,27 @@ namespace SceneSystem
             }
             PlayerPrefs.Save();
             WebGLFileSync.Flush();
+        }
+
+        public void StartNewGame()
+        {
+            if (!_starting) StartCoroutine(StartNewGameRoutine());
+        }
+
+        private IEnumerator StartNewGameRoutine()
+        {
+            _starting = true;
+            var participation = Backend.ResearchParticipationCoordinator.Instance;
+            while (participation.IsActivating) yield return null;
+            bool ended = false;
+            participation.EndSession("new_game", () => ended = true);
+            while (!ended) yield return null;
+            yield return null; // The previous telemetry client is destroyed at frame end.
+            ProgressResetService.ResetAll();
+            // Opening the game must not depend on a network request succeeding.
+            participation.ActivateOpenPlay((success, error) => { });
+            ContinueGame();
+            _starting = false;
         }
 
         public void ContinueGame()

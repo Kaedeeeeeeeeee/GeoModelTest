@@ -2298,7 +2298,7 @@
     },
     {
       "key": "ui.dialog.continue",
-      "value": "ダイアログをクリックして続（つづ）ける"
+      "value": "次へ（クリック / Space / Enter）"
     },
     {
       "key": "ui.dialog.choose",
@@ -3226,7 +3226,7 @@
     },
     {
       "key": "ui.start.footer",
-      "value": "採集する。観察する。発見する。"
+      "value": "約20分の地学調査体験"
     },
     {
       "key": "ui.start.field_caption",
@@ -3246,11 +3246,11 @@
     },
     {
       "key": "ui.session.return_message",
-      "value": "進行状況を保存して、タイトルへ戻ります。途中の会話はチェックポイントから再開します。"
+      "value": "タイトルに戻ると、ゲームは最初からになります。戻りますか？"
     },
     {
       "key": "ui.session.save_return",
-      "value": "保存して戻る"
+      "value": "タイトルに戻る"
     },
     {
       "key": "ui.history.title",
@@ -3438,7 +3438,7 @@
     },
     {
       "key": "survey.reenter",
-      "value": "同じ参加コードで入り直してから、お試しください。"
+      "value": "接続が切れました。ゲームを再読み込みしてお試しください。"
     },
     {
       "key": "survey.opened",
@@ -3450,7 +3450,7 @@
     },
     {
       "key": "survey.research_only",
-      "value": "研究参加で遊ぶと、アンケートに進めます。"
+      "value": "ゲームを最後まで終えると、アンケートに回答できます。"
     },
     {
       "key": "vehicle.enter",
@@ -3534,7 +3534,7 @@
     },
     {
       "key": "ui.guide.desktop.tools",
-      "value": "Tab で道具を開く\n使う道具をクリック"
+      "value": "Tab で道具を開き、使いたい道具をクリック。\n選ぶだけでは使用されません。"
     },
     {
       "key": "ui.guide.touch.move",
@@ -3550,7 +3550,7 @@
     },
     {
       "key": "ui.guide.touch.tools",
-      "value": "左上の「道具」をタップ\n使う道具を選ぶ"
+      "value": "左上の「道具」をタップして選びます。\n選ぶだけでは使用されません。"
     },
     {
       "key": "ui.guide.hint",
@@ -3563,6 +3563,190 @@
     {
       "key": "ui.guide.touch.map",
       "value": "画面のどこをさわる？"
+    },
+    {
+      "key": "ui.guide.page.0",
+      "value": "移動とまわりの見方"
+    },
+    {
+      "key": "ui.guide.page.1",
+      "value": "研究員に話しかけよう"
+    },
+    {
+      "key": "ui.guide.page.2",
+      "value": "道具とメニュー"
+    },
+    {
+      "key": "ui.guide.page.3",
+      "value": "野外の調べ方"
+    },
+    {
+      "key": "ui.guide.previous",
+      "value": "前へ"
+    },
+    {
+      "key": "ui.guide.next",
+      "value": "次へ"
+    },
+    {
+      "key": "ui.guide.done",
+      "value": "わかった・閉じる"
+    },
+    {
+      "key": "ui.guide.open.desktop",
+      "value": "H  操作説明"
+    },
+    {
+      "key": "ui.guide.open.touch",
+      "value": "？ 操作説明"
+    },
+    {
+      "key": "ui.guide.jump",
+      "value": "ジャンプする"
+    },
+    {
+      "key": "ui.guide.run",
+      "value": "走る"
+    },
+    {
+      "key": "ui.guide.desktop.jump",
+      "value": "地面に立っているときに\nSpace キーを押す"
+    },
+    {
+      "key": "ui.guide.desktop.run",
+      "value": "移動しながら\n左 Shift キーを押し続ける"
+    },
+    {
+      "key": "ui.guide.touch.jump",
+      "value": "地面に立っているときに\n右下の「ジャンプ」をタップ"
+    },
+    {
+      "key": "ui.guide.touch.run",
+      "value": "左のスティックで移動しながら\n右下の「走る」を押し続ける"
+    },
+    {
+      "key": "ui.guide.npc.new.title",
+      "value": "黄色の「！」は新しい話の目印"
+    },
+    {
+      "key": "ui.guide.npc.new",
+      "value": "次に話を聞く必要があるとき、研究員の頭の上に「！」が出ます。\n調査へ出かける前に、説明を聞きましょう。"
+    },
+    {
+      "key": "ui.guide.npc.talk.title",
+      "value": "青くなったら話しかけられます"
+    },
+    {
+      "key": "ui.guide.npc.desktop",
+      "value": "近づいて研究員が青くなったら E キー。会話はクリック・Space・Enter で進めます。\n「話を終える」が最後のページです。困ったら、もう一度話しかけてね。"
+    },
+    {
+      "key": "ui.guide.npc.touch",
+      "value": "近づいて研究員が青くなったら「調べる」をタップ。会話は画面をタップして進めます。\n「話を終える」が最後のページです。困ったら、もう一度話しかけてね。"
+    },
+    {
+      "key": "ui.guide.use",
+      "value": "道具を使う"
+    },
+    {
+      "key": "ui.guide.put_away",
+      "value": "道具をしまう"
+    },
+    {
+      "key": "ui.guide.menus",
+      "value": "持ちもの・図鑑・設定"
+    },
+    {
+      "key": "ui.guide.desktop.use",
+      "value": "画面中央を対象に合わせて左クリック。\n人や設備には画面に出た E / F を使います。"
+    },
+    {
+      "key": "ui.guide.touch.use",
+      "value": "画面中央を対象に合わせて「調べる」をタップ。\n設備や乗りものは、画面の専用ボタンで操作します。"
+    },
+    {
+      "key": "ui.guide.desktop.put_away",
+      "value": "Tab →「何も持たない」で道具をしまいます。\n置くのをやめるときは右クリック / Esc。\n転送先の「キャンセル」でも切替器をしまえます。"
+    },
+    {
+      "key": "ui.guide.touch.put_away",
+      "value": "「道具」→「何も持たない」でしまいます。\n置くのをやめるときは「キャンセル」。\n転送先をキャンセルすると切替器もしまえます。"
+    },
+    {
+      "key": "ui.guide.desktop.menus",
+      "value": "I：バッグ　O：図鑑　Esc：設定\nH：この操作説明をいつでも開く"
+    },
+    {
+      "key": "ui.guide.touch.menus",
+      "value": "左上の「バッグ」「図鑑」、右上の設定ボタン。\n「？ 操作説明」から、この説明をいつでも開けます。"
+    },
+    {
+      "key": "ui.guide.field.line.title",
+      "value": "地面の青いガイドを探そう"
+    },
+    {
+      "key": "ui.guide.field.line",
+      "value": "地面に青い（水色の）線があれば、線をたどって調査する場所へ進みましょう。\n線がないときは、左上の「今すること」を確認。研究員にまだ聞く話があるかもしれません。"
+    },
+    {
+      "key": "ui.guide.field.outcrop.title",
+      "value": "露頭（ろとう）って何？"
+    },
+    {
+      "key": "ui.guide.field.outcrop.desktop",
+      "value": "岩石や地層が地表にあらわれている場所です。草におおわれていない岩肌を探しましょう。\n地質ハンマーで同じ目印を３回たたき、できた試料に近づいて E で拾います。"
+    },
+    {
+      "key": "ui.guide.field.outcrop.touch",
+      "value": "岩石や地層が地表にあらわれている場所です。草におおわれていない岩肌を探しましょう。\n地質ハンマーで同じ目印に「調べる」を３回。できた試料に近づき「調べる」で拾います。"
+    },
+    {
+      "key": "ui.dialog.continue.touch",
+      "value": "タップして次へ"
+    },
+    {
+      "key": "ui.dialog.finish",
+      "value": "話を終える（クリック / Space / Enter）"
+    },
+    {
+      "key": "ui.dialog.finish.touch",
+      "value": "タップして話を終える"
+    },
+    {
+      "key": "quest.npc.prompt.continue",
+      "value": "［E］続けて話を聞く"
+    },
+    {
+      "key": "quest.npc.prompt.continue.mobile",
+      "value": "続けて話を聞く"
+    },
+    {
+      "key": "quest.npc.prompt.reminder",
+      "value": "［E］もう一度話を聞く"
+    },
+    {
+      "key": "quest.npc.prompt.reminder.mobile",
+      "value": "もう一度話を聞く"
+    },
+    {
+      "key": "quest.npc.reminder.field",
+      "value": "フェーズシフターで野外へ行き、青い線が示す場所で地質ハンマーを使って試料を採ってきてね。"
+    },
+    {
+      "key": "quest.npc.reminder.core",
+      "value": "次は野外でボーリング装置（ドリルタワー）を使ってコア試料を採り、研究室へ持ち帰ってね。"
+    },
+    {
+      "key": "quest.npc.reminder.complete",
+      "value": "今回の調査はこれでおしまい。協力してくれてありがとう！　結果は調査報告で確認できるよ。"
+    },
+    {
+      "key": "quest.npc.reminder.wait",
+      "value": "今することは画面左上で確認できるよ。操作に迷ったら「操作説明」を開いてね。"
+    },
+    {
+      "key": "tool.empty_hand.name",
+      "value": "何も持たない"
     }
   ]
 }

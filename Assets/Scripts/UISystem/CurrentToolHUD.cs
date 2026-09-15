@@ -44,7 +44,7 @@ namespace UISystem
 
         public static string ToolName(CollectionTool tool)
         {
-            if (tool == null) return GameUI.L("ui.tool.none");
+            if (tool == null) return GameUI.L("tool.empty_hand.name");
             string key = tool.toolID switch
             {
                 "1002" => "tool.hammer.name", "1000" => "tool.drill.simple.name", "1001" => "tool.drill_tower.name",

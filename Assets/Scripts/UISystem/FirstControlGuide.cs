@@ -3,106 +3,180 @@ using SceneSystem;
 using StorySystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace UISystem
 {
-    /// <summary>A short, device-specific introduction before the first free movement in a run.</summary>
+    /// <summary>Device-specific, repeatable help, with a separate first-field introduction.</summary>
     public sealed class FirstControlGuide : MonoBehaviour
     {
         public const string CompletedKey = "FirstControlGuide.Completed.v2";
+        public const string FieldCompletedKey = "FirstControlGuide.FieldCompleted.v1";
+        public const int PageCount = 4;
         private static FirstControlGuide _current;
         private GameInputState.Scope _input;
         private ModalCanvasLayerGuard.Scope _layer;
-
+        private Transform _card;
+        private GameObject _content;
+        private Text _title;
+        private Text _pageLabel;
+        private Button _previous;
+        private Button _next;
+        private bool _touch;
+        private bool _fieldOnly;
+        public int Page { get; private set; }
         public static bool IsOpen => _current != null;
 
         public static bool TryShowForFirstControl()
         {
             if (IsOpen) return true;
-            if (PlayerPrefs.GetInt(CompletedKey, 0) == 1 ||
-                !StoryDirector.HasFinishedLabIntroduction || StoryDirector.IsStoryPlaybackActive ||
-                GameInputState.GameplayBlocked || GameSceneManager.IsLoadingScene ||
-                !GameSession.IsGameplayScene(SceneManager.GetActiveScene().name)) return false;
-
-            bool touch = MobileInputManager.IsRuntimeMobileDevice() ||
-                (MobileInputManager.Instance != null && MobileInputManager.Instance.desktopTestMode);
-            Show(touch);
+            if (PlayerPrefs.GetInt(CompletedKey, 0) == 1 || !CanShowAutomatically()) return false;
+            Show(UsesTouch());
             return true;
         }
 
-        public static void Show(bool touch)
+        public static bool TryShowForFirstField()
+        {
+            if (PlayerPrefs.GetInt(FieldCompletedKey, 0) == 1 || IsOpen ||
+                SceneManager.GetActiveScene().name != "MainScene" || !CanShowAutomatically()) return false;
+            ShowInternal(UsesTouch(), true);
+            return true;
+        }
+
+        private static bool CanShowAutomatically() => StoryDirector.HasFinishedLabIntroduction &&
+            !StoryDirector.IsStoryPlaybackActive && !GameInputState.GameplayBlocked &&
+            !GameSceneManager.IsLoadingScene && !InventoryUISystem.IsAnyWheelOpen &&
+            GameSession.IsGameplayScene(SceneManager.GetActiveScene().name);
+
+        public static bool UsesTouch() => MobileInputManager.IsRuntimeMobileDevice() ||
+            (MobileInputManager.Instance != null && MobileInputManager.Instance.desktopTestMode);
+
+        public static void Show(bool touch) => ShowInternal(touch, false);
+
+        private static void ShowInternal(bool touch, bool fieldOnly)
         {
             if (IsOpen) return;
             var canvas = GameUI.Canvas("FirstControlGuide", 32767);
             _current = canvas.gameObject.AddComponent<FirstControlGuide>();
-            Debug.Log("[FirstControlGuide] Shown: " + (touch ? "touch" : "desktop"));
-            _current._input = GameInputState.Acquire(_current.Complete);
+            _current._touch = touch;
+            _current._fieldOnly = fieldOnly;
+            _current.Page = fieldOnly ? PageCount - 1 : 0;
+            _current._input = GameInputState.Acquire(_current.CloseFromEscape);
             _current._layer = ModalCanvasLayerGuard.Activate(canvas);
-            GameUI.Box(canvas.transform, "Dim", new Color(0.01f, 0.03f, 0.05f, 0.84f), Vector2.zero, Vector2.one);
-            var card = GameUI.Box(canvas.transform, "GuideCard", GameUI.Surface,
-                new Vector2(0.055f, 0.04f), new Vector2(0.945f, 0.96f));
-            GameUI.Box(card.transform, "Accent", GameUI.Accent, new Vector2(0, 0.988f), Vector2.one);
-            var eyebrow = GameUI.Label(card.transform, "Device", GameUI.L(touch ? "ui.guide.touch" : "ui.guide.desktop"),
-                22, new Vector2(0.04f, 0.89f), new Vector2(0.96f, 0.965f));
-            eyebrow.color = GameUI.Accent;
-            GameUI.Label(card.transform, "Title", GameUI.L("ui.guide.title"), 40,
-                new Vector2(0.04f, 0.785f), new Vector2(0.96f, 0.90f));
-            if (touch)
+            GameUI.Box(canvas.transform, "Dim", new Color(0.01f, 0.03f, 0.05f, 0.88f), Vector2.zero, Vector2.one);
+            _current._card = GameUI.Box(canvas.transform, "GuideCard", GameUI.Surface,
+                new Vector2(0.055f, 0.04f), new Vector2(0.945f, 0.96f)).transform;
+            GameUI.Box(_current._card, "Accent", GameUI.Accent, new Vector2(0, 0.988f), Vector2.one);
+            var device = GameUI.Label(_current._card, "Device", GameUI.L(touch ? "ui.guide.touch" : "ui.guide.desktop"),
+                22, new Vector2(0.04f, 0.89f), new Vector2(0.80f, 0.965f));
+            device.color = GameUI.Accent;
+            _current._title = GameUI.Label(_current._card, "Title", "", 38,
+                new Vector2(0.04f, 0.79f), new Vector2(0.96f, 0.9f));
+            _current._pageLabel = GameUI.Label(_current._card, "Page", "", 24,
+                new Vector2(0.82f, 0.89f), new Vector2(0.96f, 0.965f), TextAnchor.MiddleRight);
+            _current._previous = GameUI.Button(_current._card, "Previous", GameUI.L("ui.guide.previous"),
+                new Vector2(0.04f, 0.03f), new Vector2(0.28f, 0.115f), () => _current.ChangePage(-1));
+            _current._next = GameUI.Button(_current._card, "Begin", "",
+                new Vector2(0.68f, 0.03f), new Vector2(0.96f, 0.115f), () => _current.Advance(), true);
+            GameUI.Button(_current._card, "Close", GameUI.L("ui.button.close"),
+                new Vector2(0.38f, 0.03f), new Vector2(0.62f, 0.115f), () => _current.CloseFromEscape());
+            _current.RenderPage();
+        }
+
+        public void ChangePage(int delta)
+        {
+            Page = Mathf.Clamp(Page + delta, 0, PageCount - 1);
+            RenderPage();
+        }
+
+        public void Advance()
+        {
+            if (Page < PageCount - 1) ChangePage(1);
+            else Complete();
+        }
+
+        private void RenderPage()
+        {
+            if (_content != null) { _content.SetActive(false); Destroy(_content); }
+            _content = GameUI.Rect(_card, "Content", new Vector2(0.04f, 0.16f), new Vector2(0.96f, 0.77f)).gameObject;
+            _title.text = GameUI.L("ui.guide.page." + Page);
+            _pageLabel.text = _fieldOnly ? "" : $"{Page + 1} / {PageCount}";
+            _previous.gameObject.SetActive(!_fieldOnly);
+            _previous.interactable = Page > 0;
+            _next.GetComponentInChildren<Text>().text = GameUI.L(Page == PageCount - 1 ? "ui.guide.done" : "ui.guide.next");
+            if (Page == 0)
             {
-                ControlGuideDiagram.Create(card.transform, "TouchMap", ControlGuideDiagram.Diagram.TouchMap,
-                    new Vector2(0.025f, 0.235f), new Vector2(0.595f, 0.755f));
-                var caption = GameUI.Label(card.transform, "MapCaption", GameUI.L("ui.guide.touch.map"), 23,
-                    new Vector2(0.04f, 0.18f), new Vector2(0.58f, 0.24f), TextAnchor.MiddleCenter);
-                caption.color = GameUI.Muted;
+                string[] actions = { "move", "look", "jump", "run" };
+                for (int i = 0; i < actions.Length; i++)
+                    ActionCard(actions[i], "ui.guide." + actions[i], "ui.guide." + (_touch ? "touch." : "desktop.") + actions[i], i);
             }
-            string[] actions = { "move", "look", "interact", "tools" };
-            for (int i = 0; i < actions.Length; i++)
+            else if (Page == 1)
             {
-                float x = touch ? 0.615f : (i % 2 == 0 ? 0.04f : 0.515f);
-                float y = touch ? 0.625f - i * 0.148f : (i < 2 ? 0.48f : 0.185f);
-                var cell = GameUI.Box(card.transform, actions[i], GameUI.Panel,
-                    new Vector2(x, y), new Vector2(touch ? 0.96f : x + 0.445f, y + (touch ? 0.135f : 0.27f)));
-                Color color = i == 2 ? ControlGuideDiagram.InteractionColor :
-                    i == 3 ? ControlGuideDiagram.ToolColor : GameUI.Accent;
-                if (touch)
-                {
-                    var number = GameUI.Label(cell.transform, "Number", (i + 1).ToString(), 30,
-                        new Vector2(0.025f, 0.18f), new Vector2(0.13f, 0.85f), TextAnchor.MiddleCenter);
-                    number.color = i == 1 ? GameUI.Ink : color;
-                }
-                else
-                {
-                    ControlGuideDiagram.Create(cell.transform, "Diagram", (ControlGuideDiagram.Diagram)i,
-                        new Vector2(0.025f, 0.10f), new Vector2(0.43f, 0.90f));
-                }
-                float textX = touch ? 0.16f : 0.47f;
-                if (!touch)
-                {
-                    var label = GameUI.Label(cell.transform, "Action", GameUI.L("ui.guide." + actions[i]), 26,
-                        new Vector2(textX, 0.66f), new Vector2(0.97f, 0.94f));
-                    label.color = color;
-                }
-                var detail = GameUI.Label(cell.transform, "Instruction",
-                    GameUI.L("ui.guide." + (touch ? "touch." : "desktop.") + actions[i]), touch ? 28 : 26,
-                    new Vector2(textX, touch ? 0.06f : 0.18f), new Vector2(0.97f, touch ? 0.94f : 0.63f));
-                detail.resizeTextForBestFit = true;
-                detail.resizeTextMinSize = touch ? 24 : 22;
-                detail.resizeTextMaxSize = touch ? 28 : 26;
+                InfoCard("NewConversation", "!", new Color(1f, 0.8f, 0.2f), "ui.guide.npc.new.title", "ui.guide.npc.new", true);
+                InfoCard("Talk", "E", new Color(0.55f, 0.85f, 1f), "ui.guide.npc.talk.title",
+                    "ui.guide.npc." + (_touch ? "touch" : "desktop"), false);
             }
-            GameUI.Label(card.transform, "Hint", GameUI.L("ui.guide.hint"), 22,
-                new Vector2(0.04f, 0.12f), new Vector2(0.96f, 0.17f), TextAnchor.MiddleCenter);
-            GameUI.Button(card.transform, "Begin", GameUI.L("ui.guide.begin"),
-                new Vector2(0.30f, 0.025f), new Vector2(0.70f, 0.11f), _current.Complete, true);
+            else if (Page == 2)
+            {
+                string[] actions = { "tools", "use", "put_away", "menus" };
+                for (int i = 0; i < actions.Length; i++)
+                    ActionCard(actions[i], "ui.guide." + actions[i], "ui.guide." + (_touch ? "touch." : "desktop.") + actions[i], i);
+            }
+            else
+            {
+                InfoCard("Guidance", "→", new Color(0.3f, 0.8f, 1f), "ui.guide.field.line.title", "ui.guide.field.line", true);
+                InfoCard("Outcrop", "岩", GameUI.Accent, "ui.guide.field.outcrop.title",
+                    "ui.guide.field.outcrop." + (_touch ? "touch" : "desktop"), false);
+            }
+        }
+
+        private void ActionCard(string name, string title, string body, int index)
+        {
+            float x = index % 2 == 0 ? 0 : 0.52f;
+            float y = index < 2 ? 0.53f : 0;
+            var cell = GameUI.Box(_content.transform, name, GameUI.Panel, new Vector2(x, y), new Vector2(x + 0.48f, y + 0.47f));
+            var heading = GameUI.Label(cell.transform, "Action", GameUI.L(title), 30,
+                new Vector2(0.05f, 0.69f), new Vector2(0.95f, 0.94f));
+            heading.color = GameUI.Accent;
+            FitLabel(cell.transform, "Instruction", GameUI.L(body), new Vector2(0.05f, 0.09f), new Vector2(0.95f, 0.66f));
+        }
+
+        private void InfoCard(string name, string symbol, Color color, string title, string body, bool upper)
+        {
+            float y = upper ? 0.53f : 0;
+            var cell = GameUI.Box(_content.transform, name, GameUI.Panel, new Vector2(0, y), new Vector2(1, y + 0.47f));
+            var icon = GameUI.Label(cell.transform, "Symbol", _touch && name == "Talk" ? "…" : symbol, 76,
+                new Vector2(0.02f, 0.1f), new Vector2(0.14f, 0.9f), TextAnchor.MiddleCenter);
+            icon.color = color;
+            var heading = GameUI.Label(cell.transform, "Heading", GameUI.L(title), 30,
+                new Vector2(0.17f, 0.69f), new Vector2(0.96f, 0.95f));
+            heading.color = color;
+            FitLabel(cell.transform, "Instruction", GameUI.L(body), new Vector2(0.17f, 0.07f), new Vector2(0.96f, 0.66f));
+        }
+
+        private static void FitLabel(Transform parent, string name, string text, Vector2 min, Vector2 max)
+        {
+            var label = GameUI.Label(parent, name, text, 28, min, max);
+            label.resizeTextForBestFit = true;
+            label.resizeTextMinSize = 22;
+            label.resizeTextMaxSize = 28;
+        }
+
+        private void CloseFromEscape()
+        {
+            // Dismissing is an acknowledgement; help remains available at any time.
+            Complete();
         }
 
         public void Complete()
         {
-            Debug.Log("[FirstControlGuide] Completed");
-            PlayerPrefs.SetInt(CompletedKey, 1);
+            PlayerPrefs.SetInt(_fieldOnly ? FieldCompletedKey : CompletedKey, 1);
             PlayerPrefs.Save();
             WebGLFileSync.Flush();
             CloseCurrent();
         }
+
+        public static void DismissCurrent() => _current?.Complete();
 
         public static void CloseCurrent()
         {

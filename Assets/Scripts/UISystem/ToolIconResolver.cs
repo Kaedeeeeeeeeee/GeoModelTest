@@ -10,6 +10,7 @@ public static class ToolIconResolver
 
     private enum GeneratedIconShape
     {
+        EmptyHand,
         SceneSwitcher,
         SimpleDrill,
         DrillTower,
@@ -290,6 +291,7 @@ public static class ToolIconResolver
 
     private static GeneratedIconShape GetGeneratedIconShape(CollectionTool tool)
     {
+        if (tool is EmptyHandTool) return GeneratedIconShape.EmptyHand;
         if (tool is SceneSwitcherTool || tool.toolID == "999") return GeneratedIconShape.SceneSwitcher;
         if (tool is SimpleDrillTool || tool.toolID == "1000") return GeneratedIconShape.SimpleDrill;
         if (tool is DrillTowerTool || tool.toolID == "1001") return GeneratedIconShape.DrillTower;
@@ -332,6 +334,17 @@ public static class ToolIconResolver
 
         switch (shape)
         {
+            case GeneratedIconShape.EmptyHand:
+                DrawRect(pixels, GeneratedIconSize, 44, 37, 44, 39, light);
+                for (int finger = 0; finger < 4; finger++)
+                {
+                    float x = 49 + finger * 11;
+                    DrawThickLine(pixels, GeneratedIconSize, new Vector2(x, 70),
+                        new Vector2(x, 96 - Mathf.Abs(finger - 1) * 6), light, 9);
+                }
+                DrawThickLine(pixels, GeneratedIconSize, new Vector2(47, 46), new Vector2(30, 67), light, 12);
+                DrawRect(pixels, GeneratedIconSize, 53, 23, 28, 18, accent);
+                break;
             case GeneratedIconShape.SceneSwitcher:
                 DrawRect(pixels, GeneratedIconSize, 43, 30, 42, 68, shadow);
                 DrawRect(pixels, GeneratedIconSize, 40, 27, 42, 68, accent);
@@ -408,6 +421,18 @@ public static class ToolIconResolver
             wrapMode = TextureWrapMode.Clamp
         };
 
+        // The vehicle illustration uses screen coordinates (origin at the top).
+        // Texture pixels use a bottom-left origin: convert just this icon.
+        if (shape == GeneratedIconShape.DrillCar)
+        {
+            for (int y = 0; y < GeneratedIconSize / 2; y++)
+            for (int x = 0; x < GeneratedIconSize; x++)
+            {
+                int a = y * GeneratedIconSize + x;
+                int b = (GeneratedIconSize - 1 - y) * GeneratedIconSize + x;
+                (pixels[a], pixels[b]) = (pixels[b], pixels[a]);
+            }
+        }
         texture.SetPixels(pixels);
         texture.Apply(false, true);
 

@@ -39,17 +39,19 @@ with sync_playwright() as p:
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
     page.screenshot(path=str(shots/'03-survey-mobile.png'), full_page=True)
     results.append('390px mobile layout fits without horizontal overflow')
-    page.locator('#next').click()
     page.reload()
-    expect(page.locator('#step-label')).to_have_text('2 / 5 ページ')
-    page.locator('#previous').click()
+    definition = page.evaluate('window.GEOMODEL_QUESTIONS')
+    expect(page.locator('#step-label')).to_have_text(f"1 / {len(definition['sections'])} ページ")
     expect(page.locator('input[name=q1][value="4"]')).to_be_checked()
     expect(page.locator('input[name=q2][value="skip"]')).to_be_checked()
-    results.append('Refresh and back retain per-ticket draft answers and the current page')
-    page.locator('#next').click()
-    for ids in ([3,4,5,6],[7,8,9,10],[11,12]):
-        for n in ids: page.locator(f'input[name=q{n}][value="'+('none' if n==12 else '3')+'"]').check()
-        page.locator('#next').click()
+    results.append('Refresh retains per-ticket draft answers and the current page')
+    for index, section in enumerate(definition['sections']):
+        for question_id in section['questions']:
+            question = next(q for q in definition['questions'] if q['id'] == question_id)
+            if question.get('scale') and not page.locator(f'input[name={question_id}]:checked').count():
+                page.locator(f'input[name={question_id}][value="3"]').check()
+        if index < len(definition['sections']) - 1:
+            page.locator('#next').click()
     page.set_viewport_size({'width':1280,'height':1000})
     page.locator('textarea[name=q13]').fill('地層を調べる場面が印象に残りました。（動作確認用）')
     page.screenshot(path=str(shots/'04-survey-final-page.png'), full_page=True)

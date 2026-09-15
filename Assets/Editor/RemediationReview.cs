@@ -202,6 +202,24 @@ public static class RemediationReview
                 var button = UnityEngine.Object.FindObjectsByType<Button>(FindObjectsSortMode.None).First(b => b.gameObject.activeInHierarchy &&
                     (b.name == c.value || b.GetComponentInChildren<Text>()?.text == c.value || b.GetComponentInChildren<TMPro.TMP_Text>()?.text == c.value));
                 button.onClick.Invoke(); break;
+            case "teacher_guide": UISystem.FirstControlGuide.Show(c.value == "touch"); break;
+            case "teacher_close_guide": UISystem.FirstControlGuide.DismissCurrent(); break;
+            case "teacher_capture":
+                Directory.CreateDirectory("Docs/reports/2026-09-15-teacher-feedback/screenshots");
+                ScreenCapture.CaptureScreenshot(Path.GetFullPath("Docs/reports/2026-09-15-teacher-feedback/screenshots/" + Path.GetFileName(c.value) + ".png"));
+                break;
+            case "teacher_use": UnityEngine.Object.FindFirstObjectByType<ToolManager>().GetCurrentTool().RequestPrimaryUse(); break;
+            case "teacher_npc":
+                StoryDirector.Instance.CancelPlayback();
+                QuestSystem.QuestManager.Instance.CompleteObjective("q.lab.intro.intro_done");
+                var npc = UnityEngine.Object.FindFirstObjectByType<QuestSystem.QuestNpcInteraction>();
+                var player = UnityEngine.Object.FindFirstObjectByType<FirstPersonController>();
+                player.GetComponent<CharacterController>().enabled = false;
+                player.transform.position = npc.transform.position + npc.transform.forward * (c.value == "near" ? 1.2f : 2.3f);
+                player.transform.LookAt(new Vector3(npc.transform.position.x, player.transform.position.y, npc.transform.position.z));
+                player.GetComponent<CharacterController>().enabled = true;
+                player.SetMouseLookEnabled(false);
+                break;
             case "state":
                 var state = new
                 {

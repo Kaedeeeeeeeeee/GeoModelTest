@@ -59,7 +59,7 @@
       const legend = document.createElement('legend');
       const number = document.createElement('span');
       number.className = 'number';
-      number.textContent = id.slice(1) + '.';
+      number.textContent = (definition.questions.indexOf(question) + 1) + '.';
       legend.append(number, document.createTextNode(question.text));
       if (question.optional) {
         const optional = document.createElement('span');

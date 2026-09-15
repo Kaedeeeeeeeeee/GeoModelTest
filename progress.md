@@ -1,5 +1,13 @@
 Original prompt: Mobile WebGL controls now slide correctly on the left joystick; continue optimizing touch look speed, mobile button language, and the iPad itch fullscreen swipe-down behavior.
 
+## 2026-09-14 code-free research experience (local, not deployed)
+- Removed title-screen Continue and participation-code entry; New Game starts anonymous registration in the background.
+- All completed players can open the questionnaire; retrying enrollment preserves the current game run and recovers locally stored quiz answers.
+- Added the server-controlled open-play study and code-free activation while retaining legacy invitation and ownership rules. Open-play admin exports include submitted questionnaires only.
+- Unity EditMode 57/57 and targeted PlayMode 7/7 passed; local SQL and HTTP checks passed for open-play and legacy invitation routes. WebGL development validation build succeeded.
+- Production migration/function deployment and public WebGL publication have not been performed. See Docs/reports/2026-09-14-open-play/README.md for verification scope and release order.
+
+
 ## 2026-09-11 direct opening story
 - Removed the disaster notice and its watch/skip gate at the user's request. New games now play the opening directly and continue to the laboratory after the three dialogue lines.
 - Seven localization EditMode tests passed; Unity 6000.0.51f1 release build completed with 0 errors and Butler validation passed.

@@ -50,8 +50,8 @@ namespace Backend
         }
 
         /// <summary>
-        /// 参加コードをサーバーで検証し、成功した場合だけ研究テレメトリを開始する。
-        /// 通常プレイからは呼び出さない。
+        /// 匿名プレイをサーバーに登録する。旧クライアントの参加コードも引き続き扱う。
+        /// participantCode が null の場合はコード不要の参加登録を使う。
         /// </summary>
         public IEnumerator ActivateForResearch(
             BackendSettings settings,
@@ -76,8 +76,9 @@ namespace Backend
                 yield break;
             }
 
-            string normalizedCode = participantCode?.Trim().ToUpperInvariant() ?? string.Empty;
-            if (!System.Text.RegularExpressions.Regex.IsMatch(normalizedCode, "^[A-Z0-9-]{8,64}$"))
+            bool openPlay = participantCode == null;
+            string normalizedCode = participantCode?.Trim().ToUpperInvariant();
+            if (!openPlay && !System.Text.RegularExpressions.Regex.IsMatch(normalizedCode, "^[A-Z0-9-]{8,64}$"))
             {
                 completed?.Invoke(false, UISystem.GameUI.L("backend.invalid_code"));
                 yield break;
@@ -86,7 +87,8 @@ namespace Backend
             _settings = settings;
             _installId = BackendSessionStore.GetOrCreateInstallId();
             string previousParticipantId = PlayerPrefs.GetString(BackendSessionStore.ResearchParticipantIdKey, "");
-            if (!BackendAuthProfiles.SelectCode(settings.SupabaseUrl, normalizedCode, out bool changedParticipant))
+            bool changedParticipant = false;
+            if (!openPlay && !BackendAuthProfiles.SelectCode(settings.SupabaseUrl, normalizedCode, out changedParticipant))
             {
                 completed?.Invoke(false, UISystem.GameUI.L("backend.pending_upload"));
                 yield break;
@@ -131,8 +133,8 @@ namespace Backend
                 yield break;
             }
             BackendSessionStore.SaveResearchContext(context);
-            BackendAuthProfiles.MarkVerified();
-            if (changedParticipant || (!string.IsNullOrEmpty(previousParticipantId) && previousParticipantId != context.participantId))
+            if (!openPlay) BackendAuthProfiles.MarkVerified();
+            if (!openPlay && (changedParticipant || (!string.IsNullOrEmpty(previousParticipantId) && previousParticipantId != context.participantId)))
                 ProgressResetService.ResetAll();
             if (PlayerPrefs.HasKey(PendingSessionEndPrefsKey))
             {
@@ -156,6 +158,13 @@ namespace Backend
                 ClearPendingSnapshot();
             }
             InitializeAuthorized(settings, context);
+            // Recover quiz answers recorded locally while the initial connection was unavailable.
+            // Stable event IDs make retrying these uploads idempotent on the server.
+            if (openPlay)
+            {
+                foreach (var attempt in QuizScoreManager.Instance.Attempts)
+                    if (attempt.runId == QuizScoreManager.Instance.RunId) RecordQuizAttempt(attempt);
+            }
             completed?.Invoke(true, string.Empty);
         }
 
@@ -623,6 +632,7 @@ namespace Backend
             string json = JsonConvert.SerializeObject(new
             {
                 participantCode,
+                entryMode = participantCode == null ? "open_play" : "invitation",
                 gameVersion = Application.version,
                 contentVersion = ResearchContentVersion.ContentVersion,
                 storyRoute = ResearchContentVersion.StoryRoute

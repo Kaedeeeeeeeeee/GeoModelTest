@@ -2314,7 +2314,7 @@
     },
     {
       "key": "ui.dialog.continue",
-      "value": "Click to continue"
+      "value": "Next (click / Space / Enter)"
     },
     {
       "key": "ui.dialog.choose",
@@ -3030,7 +3030,7 @@
     },
     {
       "key": "ui.start.footer",
-      "value": "Collect. Observe. Discover."
+      "value": "A 20-minute geology investigation"
     },
     {
       "key": "ui.start.field_caption",
@@ -3066,11 +3066,11 @@
     },
     {
       "key": "ui.session.return_message",
-      "value": "Save your progress and return to the title. Unfinished dialogue resumes from its checkpoint."
+      "value": "Returning to the title means starting the game from the beginning. Return now?"
     },
     {
       "key": "ui.session.save_return",
-      "value": "Save and return"
+      "value": "Return to title"
     },
     {
       "key": "ui.history.title",
@@ -3258,7 +3258,7 @@
     },
     {
       "key": "survey.reenter",
-      "value": "Enter again with the same participation code, then retry."
+      "value": "Your connection expired. Reload the game and try again."
     },
     {
       "key": "survey.opened",
@@ -3270,7 +3270,7 @@
     },
     {
       "key": "survey.research_only",
-      "value": "Play in research mode to answer the survey."
+      "value": "Complete the game to answer the questionnaire."
     },
     {
       "key": "vehicle.enter",
@@ -3346,7 +3346,7 @@
     },
     {
       "key": "ui.guide.desktop.look",
-      "value": "Move the mouse\nto look around"
+      "value": "Move the mouse to look around."
     },
     {
       "key": "ui.guide.desktop.interact",
@@ -3354,7 +3354,7 @@
     },
     {
       "key": "ui.guide.desktop.tools",
-      "value": "Press Tab to open tools\nClick a tool to select it"
+      "value": "Press Tab and click a tool to select it.\nSelecting a tool does not use it."
     },
     {
       "key": "ui.guide.touch.move",
@@ -3370,7 +3370,7 @@
     },
     {
       "key": "ui.guide.touch.tools",
-      "value": "Tap Tools at the top left\nChoose a tool"
+      "value": "Tap “Tools” at the top left, then choose a tool.\nSelecting a tool does not use it."
     },
     {
       "key": "ui.guide.hint",
@@ -3383,6 +3383,190 @@
     {
       "key": "ui.guide.touch.map",
       "value": "Where do I touch?"
+    },
+    {
+      "key": "ui.guide.page.0",
+      "value": "Moving and looking around"
+    },
+    {
+      "key": "ui.guide.page.1",
+      "value": "Talking to the researcher"
+    },
+    {
+      "key": "ui.guide.page.2",
+      "value": "Tools and menus"
+    },
+    {
+      "key": "ui.guide.page.3",
+      "value": "Exploring the field"
+    },
+    {
+      "key": "ui.guide.previous",
+      "value": "Back"
+    },
+    {
+      "key": "ui.guide.next",
+      "value": "Next"
+    },
+    {
+      "key": "ui.guide.done",
+      "value": "Got it · Close"
+    },
+    {
+      "key": "ui.guide.open.desktop",
+      "value": "H  Controls"
+    },
+    {
+      "key": "ui.guide.open.touch",
+      "value": "? Controls"
+    },
+    {
+      "key": "ui.guide.jump",
+      "value": "Jump"
+    },
+    {
+      "key": "ui.guide.run",
+      "value": "Run"
+    },
+    {
+      "key": "ui.guide.desktop.jump",
+      "value": "Press Space while standing on the ground."
+    },
+    {
+      "key": "ui.guide.desktop.run",
+      "value": "Hold left Shift while moving."
+    },
+    {
+      "key": "ui.guide.touch.jump",
+      "value": "Tap “Jump” at the bottom right while on the ground."
+    },
+    {
+      "key": "ui.guide.touch.run",
+      "value": "Move with the left stick and hold “Run” at the bottom right."
+    },
+    {
+      "key": "ui.guide.npc.new.title",
+      "value": "A yellow ! means there is a new conversation"
+    },
+    {
+      "key": "ui.guide.npc.new",
+      "value": "A ! appears above the researcher when talking will advance your task.\nHear the instructions before heading out."
+    },
+    {
+      "key": "ui.guide.npc.talk.title",
+      "value": "Blue means you are close enough to talk"
+    },
+    {
+      "key": "ui.guide.npc.desktop",
+      "value": "Approach until the researcher turns blue, then press E. Click, Space or Enter advances dialogue.\n“End conversation” marks the last page. Talk again for a reminder."
+    },
+    {
+      "key": "ui.guide.npc.touch",
+      "value": "Approach until the researcher turns blue, then tap “Inspect”. Tap the screen to advance dialogue.\n“End conversation” marks the last page. Talk again for a reminder."
+    },
+    {
+      "key": "ui.guide.use",
+      "value": "Use a tool"
+    },
+    {
+      "key": "ui.guide.put_away",
+      "value": "Put a tool away"
+    },
+    {
+      "key": "ui.guide.menus",
+      "value": "Bag, encyclopedia and settings"
+    },
+    {
+      "key": "ui.guide.desktop.use",
+      "value": "Aim at a target and left-click.\nFor people and equipment, use the E / F prompt."
+    },
+    {
+      "key": "ui.guide.touch.use",
+      "value": "Aim at a target and tap “Inspect”.\nUse the on-screen buttons for equipment and vehicles."
+    },
+    {
+      "key": "ui.guide.desktop.put_away",
+      "value": "Tab → Empty hands: put away.\nRight-click / Esc: cancel placement.\nCancel a destination: put away shifter."
+    },
+    {
+      "key": "ui.guide.touch.put_away",
+      "value": "Tools → Empty hands: put away.\nCancel: stop placing a tool.\nCancel a destination: put away shifter."
+    },
+    {
+      "key": "ui.guide.desktop.menus",
+      "value": "I: bag · O: encyclopedia · Esc: settings\nH: open these controls at any time"
+    },
+    {
+      "key": "ui.guide.touch.menus",
+      "value": "Use Bag and Encyclopedia at the top left, and Settings at the top right.\nTap “? Controls” to reopen this guide."
+    },
+    {
+      "key": "ui.guide.field.line.title",
+      "value": "Look for the blue guide on the ground"
+    },
+    {
+      "key": "ui.guide.field.line",
+      "value": "If you see a blue line on the ground, follow it to the investigation site.\nIf there is no line, check your current task at the top left. You may still need to talk to the researcher."
+    },
+    {
+      "key": "ui.guide.field.outcrop.title",
+      "value": "What is an outcrop?"
+    },
+    {
+      "key": "ui.guide.field.outcrop.desktop",
+      "value": "An outcrop is a place where rock or rock layers are exposed at the surface. Look for bare rock.\nUse the hammer on the same marker three times, then approach the sample and press E to collect it."
+    },
+    {
+      "key": "ui.guide.field.outcrop.touch",
+      "value": "An outcrop is where rock or rock layers are exposed at the surface. Look for bare rock.\nWith the hammer, aim at the same marker and tap “Inspect” three times. Approach the sample and tap “Inspect” to collect it."
+    },
+    {
+      "key": "ui.dialog.continue.touch",
+      "value": "Tap to continue"
+    },
+    {
+      "key": "ui.dialog.finish",
+      "value": "End conversation (click / Space / Enter)"
+    },
+    {
+      "key": "ui.dialog.finish.touch",
+      "value": "Tap to end conversation"
+    },
+    {
+      "key": "quest.npc.prompt.continue",
+      "value": "[E] Continue the conversation"
+    },
+    {
+      "key": "quest.npc.prompt.continue.mobile",
+      "value": "Continue the conversation"
+    },
+    {
+      "key": "quest.npc.prompt.reminder",
+      "value": "[E] Ask for a reminder"
+    },
+    {
+      "key": "quest.npc.prompt.reminder.mobile",
+      "value": "Ask for a reminder"
+    },
+    {
+      "key": "quest.npc.reminder.field",
+      "value": "Use the phase shifter to go to the field. Follow the blue line and collect a sample with your geological hammer."
+    },
+    {
+      "key": "quest.npc.reminder.core",
+      "value": "Next, use the drill tower in the field to collect a core sample, then bring it back to the laboratory."
+    },
+    {
+      "key": "quest.npc.reminder.complete",
+      "value": "That completes our investigation. Thank you for your help! You can review the results in the investigation report."
+    },
+    {
+      "key": "quest.npc.reminder.wait",
+      "value": "Check the top left for your current task. Open Controls whenever you need help."
+    },
+    {
+      "key": "tool.empty_hand.name",
+      "value": "Empty hands"
     }
   ]
 }

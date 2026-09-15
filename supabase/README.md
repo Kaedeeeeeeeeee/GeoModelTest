@@ -1,8 +1,26 @@
 # Supabase research backend
 
-The published Unity/WebGL client exposes an opt-in research entry. Ordinary play stays local: it does not sign in or upload gameplay data. Study eligibility is enforced by the backend at activation, log ingestion, questionnaire issuance and submission.
+The current source uses one New Game entry, with no Continue or participation-code button. After New Game, anonymous enrollment runs in the background and the game starts without waiting for the network. Every completed player can open the questionnaire. If enrollment initially failed, opening the questionnaire retries it and uploads the locally retained quiz answers and completion snapshot.
 
-## Eligibility and identity
+The research sample is **submitted questionnaires**, not every anonymous play record. `survey-export.sql` starts from `survey_responses`, so players who do not submit are excluded automatically. Each response stays linked to the exact participant and game run. An anonymous account or run identifies a browser/playthrough, not a verified unique person, age or recruitment source.
+
+## Code-free enrollment
+
+Migration `20260914042127_open_play_research.sql` creates the `geoquest-open-play-2026-09` study with `entry_mode = open_play`. Only one active open-play study can accept new players. The server chooses the study, condition and protocol; clients cannot supply them. The Edge function verifies the anonymous Auth user before calling the service-only enrollment function. No code or consent timestamps are invented.
+
+Existing invitation studies and their consent rules remain intact. Withdrawal, study closure, retention and run ownership checks still apply to both enrollment routes. Consent and recruitment arrangements for children remain a separate research procedure; submitted responses are not proof of guardian consent. The questionnaire explains voluntary participation and anonymous linkage to gameplay records.
+
+Export the new study without an invitation register:
+
+```sh
+python3 tools/research-admin.py export --study-key geoquest-open-play-2026-09 --output /private/research/respondents.csv
+```
+
+Open-play exports include only submitted responses. Legacy invitation exports still include nonresponders for recruitment follow-up.
+
+Source/backend changes require coordinated deployment before the published player uses this flow.
+
+## Legacy invitation eligibility and identity
 
 - `development` batches are for internal trials. They do not pretend that consent has been collected.
 - `active` batches require matching protocol versions, a nonempty consent version, recorded guardian consent and student assent timestamps, and an open entry. Future timestamps, withdrawn participants and expired studies are rejected.
@@ -46,8 +64,8 @@ Each row identifies the code, participant, completed run and response, with q1�
 
 ## Data flow and questionnaire
 
-1. The player chooses research participation and enters a distributed code. Unity signs in anonymously, then validates the code over TLS.
-2. The server binds the participant to that anonymous identity. Only successful activation starts log collection.
+1. The player chooses New Game. Unity signs in anonymously and requests code-free enrollment over TLS. Legacy clients may still validate a distributed code.
+2. The server creates or reuses the anonymous play record. Only successful activation starts uploads; creating a record does not count as a submitted questionnaire.
 3. `game-ingest-v2` validates ownership and payloads. A transaction stores sessions, events, quiz attempts and progress. Stable UUIDs make retries idempotent.
 4. At completion, the questionnaire button first uploads pending logs and the completed-run snapshot. The server issues a random 24-hour ticket bound to the participant, study, session, run and questionnaire version.
 5. The Japanese questionnaire bundled in `Assets/StreamingAssets/Survey` opens with that ticket. There is no editable participant field. The page removes the ticket from the displayed URL and keeps drafts in session storage.
@@ -60,9 +78,11 @@ All research tables have RLS enabled and direct access revoked from `anon` and `
 ## Validation
 
 - Database contracts: `supabase test db --local supabase/tests` after applying migrations locally.
-- Local HTTP checks: `tools/qa/research-smoke.py` and `tools/qa/survey-smoke.py` require the isolated remediation stack and refuse remote targets.
+- Local HTTP checks: `tools/qa/research-smoke.py` and `tools/qa/survey-smoke.py` require the isolated remediation stack and refuse remote targets. `python3 tools/qa/survey-smoke.py --open-play` checks the complete code-free enrollment → completion → questionnaire flow.
 - Explicit remote QA: `tools/qa/research-release-smoke.py --config PRIVATE_CONFIG --register QA_BATCH.private.json --output Logs/research-launch/remote-fixture.json`. It requires a separate development study whose key starts with `release-qa-` and cohort `release-qa`; never use the distribution batch. Completed runs created by this HTTP fixture are synthetic and labelled accordingly.
 - `tools/qa/survey-browser.py` accepts a fresh QA fixture and page URL to test mobile layout, draft recovery, offline retry and real backend acknowledgment.
 - Unity EditMode/PlayMode tests cover gates, ownership and retry state. The editor-only review driver can observe the real completion button separately; it is excluded from player builds.
 
 Edit `questions.json`, then run `python3 tools/sync-survey.py` to update the browser bundle. Changing IDs, accepted values or question meaning requires corresponding server validation and a new questionnaire version. Never reinterpret existing responses in place.
+
+The current questionnaire is `post-game-ja-v2`: 13 questions displayed as 1–13 in the confirmed Google Form order. Apply `20260914060638_post_game_survey_v2.sql` before publishing its static assets. Stable answer IDs are retained: `q12` is removed and `q10` now measures text length; exports must distinguish `survey_version`. Existing v1 tickets retain their original validation. Local build copies and verification are documented in `Docs/reports/2026-09-14-survey-v2/README.md`.

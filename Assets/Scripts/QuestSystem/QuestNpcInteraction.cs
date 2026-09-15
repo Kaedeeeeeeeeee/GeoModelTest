@@ -2,6 +2,9 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Core;
+using StorySystem;
+using UISystem;
 
 namespace QuestSystem
 {
@@ -47,6 +50,13 @@ namespace QuestSystem
         private QuestStatus currentStageStatus;
         private int currentStageIndex = -1;
         private bool hasPendingStage = false;
+        private GameObject markerCanvasGO;
+        private RectTransform marker;
+        private Camera viewCamera;
+        private float markerHeight = 2.4f;
+        public bool HasNewConversation => currentStage != null && currentStageStatus == QuestStatus.InProgress;
+        public bool IsRepeatingReminder { get; private set; }
+
 
         private void Awake()
         {
@@ -63,6 +73,7 @@ namespace QuestSystem
 
             CacheRenderers();
             CreatePromptUI();
+            CreateQuestMarker();
             RefreshCurrentStage();
             UpdateAvailability();
         }
@@ -74,89 +85,108 @@ namespace QuestSystem
 
         private void OnDestroy()
         {
-            if (promptCanvasGO != null)
-            {
-                Destroy(promptCanvasGO);
-            }
+            if (promptCanvasGO != null) Destroy(promptCanvasGO);
+            if (markerCanvasGO != null) Destroy(markerCanvasGO);
         }
 
         private void Update()
         {
-            if (!playerInRange || isInteracting)
-            {
-                return;
-            }
-
-            if (!RefreshCurrentStage())
+            if (isInteracting || StoryDirector.IsStoryPlaybackActive || GameInputState.GameplayBlocked || InventoryUISystem.IsAnyWheelOpen)
             {
                 HidePrompt();
+                if (markerCanvasGO != null) markerCanvasGO.SetActive(false);
+                // Do not turn a held touch from another UI into a new conversation.
+                previousInteractState = mobileInput != null && mobileInput.IsInteracting;
                 return;
             }
 
-            var questManager = QuestManager.Instance;
-            if (questManager == null)
-            {
-                return;
-            }
-
-            if (currentStageStatus != QuestStatus.InProgress)
-            {
-                HidePrompt();
-                return;
-            }
-
+            RefreshCurrentStage();
+            UpdateQuestMarker();
+            if (!playerInRange) { HidePrompt(); return; }
             UpdatePromptLocalization();
             ShowPrompt();
-
-            if (IsInteractTriggered())
-            {
-                BeginInteraction();
-            }
+            if (IsInteractTriggered()) BeginInteraction();
         }
 
         private void BeginInteraction()
         {
+            if (isInteracting || StoryDirector.IsStoryPlaybackActive || GameInputState.GameplayBlocked) return;
+            RefreshCurrentStage();
             isInteracting = true;
             HidePrompt();
-            SetHighlight(false);
+            if (markerCanvasGO != null) markerCanvasGO.SetActive(false);
 
-            if (!RefreshCurrentStage())
+            var director = StoryDirector.Instance;
+            if (HasNewConversation)
             {
-                isInteracting = false;
-                return;
-            }
-
-            var questManager = QuestManager.Instance;
-            if (questManager != null && currentStageStatus == QuestStatus.NotStarted)
-            {
-                questManager.StartQuest(currentStage.questId);
-                RefreshCurrentStage();
-            }
-
-            var director = StorySystem.StoryDirector.Instance;
-            if (director != null)
-            {
-                director.PlaySequence(currentStage.storyResourcePath, OnInteractionSequenceFinished, currentStage.disablePlayerControl);
+                IsRepeatingReminder = false;
+                // Capture this stage: availability may change when the sequence completes.
+                var stage = currentStage;
+                director.PlaySequence(stage.storyResourcePath, () =>
+                {
+                    if (!string.IsNullOrEmpty(stage.objectiveId)) QuestManager.Instance.CompleteObjective(stage.objectiveId);
+                    OnInteractionSequenceFinished();
+                }, stage.disablePlayerControl);
             }
             else
             {
-                OnInteractionSequenceFinished();
+                IsRepeatingReminder = true;
+                director.PlayReminder(LocalizationManager.Resolve("story.speaker.drkaede", "Dr.Kaede"),
+                    GameUI.L(GetReminderKey()), OnInteractionSequenceFinished);
             }
+        }
+
+        public string GetReminderKey()
+        {
+            var quests = QuestManager.Instance;
+            if (InvestigationProgress.IsComplete) return "quest.npc.reminder.complete";
+            if (quests.GetQuestStatus("q.chapter4.sample") == QuestStatus.InProgress ||
+                quests.GetQuestStatus("q.chapter4.field") == QuestStatus.InProgress) return "quest.npc.reminder.core";
+            if (quests.GetQuestStatus("q.field.phase") == QuestStatus.InProgress) return "quest.npc.reminder.field";
+            return "quest.npc.reminder.wait";
         }
 
         private void OnInteractionSequenceFinished()
         {
-            var questManager = QuestManager.Instance;
-            if (questManager != null)
-            {
-                if (!string.IsNullOrEmpty(currentStage?.objectiveId))
-                {
-                    questManager.CompleteObjective(currentStage.objectiveId);
-                }
-            }
-
             isInteracting = false;
+            IsRepeatingReminder = false;
             UpdateAvailability();
+        }
+
+        private void CreateQuestMarker()
+        {
+            var canvas = GameUI.Canvas("QuestNpcMarker", 155);
+            markerCanvasGO = canvas.gameObject;
+            var badge = GameUI.Box(canvas.transform, "NewConversation", new Color(0.06f, 0.09f, 0.10f, 0.85f),
+                new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
+            badge.raycastTarget = false;
+            marker = badge.rectTransform;
+            marker.sizeDelta = new Vector2(60, 78);
+            var text = GameUI.Label(marker, "Exclamation", "!", 48, Vector2.zero, Vector2.one, TextAnchor.MiddleCenter);
+            text.color = new Color(1f, 0.8f, 0.2f);
+            text.resizeTextForBestFit = true;
+            text.resizeTextMinSize = 28;
+            text.resizeTextMaxSize = 48;
+            text.verticalOverflow = VerticalWrapMode.Overflow;
+            if (renderers != null && renderers.Length > 0)
+            {
+                var bounds = renderers[0].bounds;
+                foreach (var renderer in renderers) bounds.Encapsulate(renderer.bounds);
+                markerHeight = Mathf.Max(1f, bounds.max.y - transform.position.y) + 0.35f;
+            }
+            markerCanvasGO.SetActive(false);
+        }
+
+        private void UpdateQuestMarker()
+        {
+            if (markerCanvasGO == null) return;
+            if (viewCamera == null) viewCamera = Camera.main;
+            if (!HasNewConversation || viewCamera == null) { markerCanvasGO.SetActive(false); return; }
+            Vector3 screen = viewCamera.WorldToScreenPoint(transform.position + Vector3.up * markerHeight);
+            bool visible = screen.z > 0 && screen.x >= 0 && screen.x <= Screen.width && screen.y >= 0 && screen.y <= Screen.height;
+            markerCanvasGO.SetActive(visible);
+            if (visible && RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                (RectTransform)markerCanvasGO.transform, screen, null, out Vector2 local)) marker.anchoredPosition = local;
         }
 
         private bool IsInteractTriggered()
@@ -284,32 +314,13 @@ namespace QuestSystem
 
         private void UpdateAvailability()
         {
-            var questManager = QuestManager.Instance;
-            if (questManager == null)
-            {
-                HidePrompt();
-                return;
-            }
-
-            if (!RefreshCurrentStage())
-            {
-                HidePrompt();
-                if (!hasPendingStage)
-                {
-                    enabled = false;
-                }
-                return;
-            }
-
-            if (playerInRange && currentStageStatus == QuestStatus.InProgress)
+            RefreshCurrentStage();
+            if (playerInRange && !isInteracting && !StoryDirector.IsStoryPlaybackActive && !GameInputState.GameplayBlocked)
             {
                 UpdatePromptLocalization();
                 ShowPrompt();
             }
-            else
-            {
-                HidePrompt();
-            }
+            else HidePrompt();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -342,7 +353,7 @@ namespace QuestSystem
         {
             var questManager = QuestManager.Instance;
             hasPendingStage = false;
-            if (questManager == null || stages == null || stages.Length == 0)
+            if (questManager == null || stages == null || stages.Length == 0 || InvestigationProgress.IsComplete)
             {
                 currentStage = null;
                 currentStageStatus = QuestStatus.NotStarted;
@@ -439,15 +450,12 @@ namespace QuestSystem
         {
             if (promptText == null) return;
             string targetKey = currentStage != null ? currentStage.promptLocalizationKey : string.Empty;
-            if (string.IsNullOrEmpty(targetKey))
-            {
-                promptText.text = string.Empty;
-                return;
-            }
-
+            bool followup = HasNewConversation && currentStageIndex > 0 &&
+                QuestManager.Instance.GetQuestStatus(stages[currentStageIndex - 1].questId) == QuestStatus.Completed;
+            targetKey = HasNewConversation ? (followup ? "quest.npc.prompt.continue" : targetKey) : "quest.npc.prompt.reminder";
             promptText.text = LocalizationManager.ResolveForCurrentInput(
                 targetKey,
-                "quest.npc.prompt.mobile",
+                HasNewConversation ? (followup ? "quest.npc.prompt.continue.mobile" : "quest.npc.prompt.mobile") : "quest.npc.prompt.reminder.mobile",
                 "［E］カエデ研究員に話を聞く",
                 "カエデ研究員に話を聞く");
         }

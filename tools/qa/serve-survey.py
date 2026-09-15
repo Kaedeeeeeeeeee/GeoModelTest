@@ -6,8 +6,9 @@ from pathlib import Path
 parser = argparse.ArgumentParser()
 parser.add_argument('--port', type=int, default=55883)
 parser.add_argument('--local-backend', action='store_true')
+parser.add_argument('--directory', type=Path, default=Path(__file__).resolve().parents[2] / 'Assets/StreamingAssets/Survey')
 args = parser.parse_args()
-root = Path(__file__).resolve().parents[2] / 'Assets/StreamingAssets/Survey'
+root = args.directory.resolve()
 
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *a, **kw):
