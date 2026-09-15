@@ -126,3 +126,8 @@ supabase/.temp/
 
 # Local document render previews and downloaded preview fonts.
 /tmp/
+
+# Packaged copies of old builds and temporary browser captures.
+# The published WebGL directory and final guide deliverables remain tracked.
+/Build/*.zip
+/output/playwright/

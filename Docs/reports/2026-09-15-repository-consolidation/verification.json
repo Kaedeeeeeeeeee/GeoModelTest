@@ -1,0 +1,414 @@
+{
+  "auditedMain": "b18126d19116334674ad12e04f195335b0c3e6d4",
+  "branches": {
+    "main": {
+      "commit": "b18126d19116334674ad12e04f195335b0c3e6d4",
+      "mainOnlyCommits": 0,
+      "branchOnlyCommits": 0
+    },
+    "claude/amazing-matsumoto-6767b3": {
+      "commit": "8c36731bb426481e0e033fe113f7de36652a4f6e",
+      "mainOnlyCommits": 73,
+      "branchOnlyCommits": 0
+    },
+    "codex/experiment-validity-foundation": {
+      "commit": "aa8884b72a3a1a74d18a21f1a91b7d9779e2ff4b",
+      "mainOnlyCommits": 14,
+      "branchOnlyCommits": 0
+    },
+    "gh-pages": {
+      "commit": "034ba086ac2039ab76ab79510d32c821e87a96ad",
+      "mainOnlyCommits": 131,
+      "branchOnlyCommits": 21
+    }
+  },
+  "legacyEquivalentCommits": [
+    {
+      "legacyCommit": "034ba086ac2039ab76ab79510d32c821e87a96ad",
+      "mainCommit": "3e7248cab7be4943ac812a202722d42c8f2615f1",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "535df5f41c1b2cc0ac6ee616bd413a4a4c7d3c33",
+      "mainCommit": "7dff9f13b356e805c6e0cf19150fbf7a8b81bcf0",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "96d66acf3aec887eb0d1418e3c7161ab8781ce8b",
+      "mainCommit": "210d04ff598a5cc88a305156d0f1bd0e09c0c149",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "718df9dd9c1da459239fe23b5ba1e9848a5e3fec",
+      "mainCommit": "33c4a2694ed690389422f31c1313c8f597bec7e1",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "18f9168cb61bdb4c5b16611aac9cbed0bfccfcd5",
+      "mainCommit": "2a7edd0010e7c8dda3b065c7cb591fd891af4820",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "04422a7c325a512fe371f5d278a527b907aee33e",
+      "mainCommit": "404fb61f777a2bdb929d30c575fbce025f654d24",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "92bf33e5d0015b9d5bcc2209e302120ea000fc92",
+      "mainCommit": "15e8f80366a8351c7ecb55c66a88b4dee8a77ce2",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "4e22df192ac5d7b5bbd9314e690867bbc166dbb2",
+      "mainCommit": "d29825c7971551d6c3e1239d6c4430751becf437",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "d35ae6bf82dd07189de756d594096daf6db32548",
+      "mainCommit": "e35c3c01a6c52a91da42ab49e480adc3e237071d",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "c3523627b32d79051141775f8aff803e8897831c",
+      "mainCommit": "b1b805772ece1251434e3bab160bc429241180d5",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "12a0d90c4083f2e201e509d4448b5618cfd20f97",
+      "mainCommit": "bf4bf271911195b793ecb491cb4f51897817613a",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "edf85ddf04f728c3fa6b44a9678093f3f2d2ba8f",
+      "mainCommit": "fc0f4ede9eee24c58d862d8a5a14fd7626d8cc48",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "f106a4435ed0501aadb7a6230c2b5759cb8599eb",
+      "mainCommit": "4175e9cc02922f8e495fa56cddaf33f8e947f3e6",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "218d61acffa4cd5d6502269338f34f23b4918055",
+      "mainCommit": "96d74e65ccf999a21d10cb1a3531aa1abc8656d0",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "827d56057f58ec17ce8ae00c4221f57d4d6dbbb2",
+      "mainCommit": "7714602457add346d337b9dc240c2d518ba1c282",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "78099494af132e91f582cc7852b6ed41631cc974",
+      "mainCommit": "8ddd1fc72b5cb0e8359cba61450e677286b874c9",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "c22aa14e86f4996e41a644e99ca086a75e8f07dc",
+      "mainCommit": "3e7b12d9b8070865cc7a5f992c702b834115cd8e",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "9fcb7c66aa5947cd044d9db2580b7c594e0c1b43",
+      "mainCommit": "00d6f122a8d32b6c8e55da1e34e3b29015fbd29a",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "094ca15c0dee5ced61f118c1f57f10371b0c7b1b",
+      "mainCommit": "00d6f122a8d32b6c8e55da1e34e3b29015fbd29a",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "4ebfb7e0a7bd0e870ff2913478635245cf63e148",
+      "mainCommit": "52fdc954fd413f5715e05bf92a00acbdd19bf148",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    },
+    {
+      "legacyCommit": "9e5bab4f01abb410b94afae31863df838ea48eec",
+      "mainCommit": "52fdc954fd413f5715e05bf92a00acbdd19bf148",
+      "onlyDifference": [
+        ".gitattributes"
+      ]
+    }
+  ],
+  "legacyWorktreeArchive": {
+    "patchSha256": "295f2d64c61141bc2b96dcc5d7ae009451ff233a93a3fdccbf093b9a18d0a553",
+    "sourcePathsVerified": [
+      {
+        "path": "Assets/Model/Drill/Drill Car.prefab",
+        "archivedDeletion": true
+      },
+      {
+        "path": "Assets/Model/Drill/Drill Car.prefab.meta",
+        "archivedDeletion": true
+      },
+      {
+        "path": "Assets/Model/Drone/Drone.prefab",
+        "archivedDeletion": true
+      },
+      {
+        "path": "Assets/Model/Drone/Drone.prefab.meta",
+        "archivedDeletion": true
+      },
+      {
+        "path": "Assets/Model/Hammer/Hammer.prefab",
+        "archivedDeletion": true
+      },
+      {
+        "path": "Assets/Model/Hammer/Hammer.prefab.meta",
+        "archivedDeletion": true
+      },
+      {
+        "path": "Assets/Resources/Localization/Data/en-US.json",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Resources/Localization/Data/ja-JP.json",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Resources/Localization/Data/zh-CN.json",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Resources/Model/Drill.meta",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Resources/Model/Drill/Drill Car.prefab",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Resources/Model/Drill/Drill Car.prefab.meta",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Resources/Model/Drone.meta",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Resources/Model/Drone/Drone.prefab",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Resources/Model/Drone/Drone.prefab.meta",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Resources/Model/Hammer.meta",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Resources/Model/Hammer/Hammer.prefab",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Resources/Model/Hammer/Hammer.prefab.meta",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Resources/Model/Player/Lily.prefab",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Scripts/Controllers/FirstPersonController.cs",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Scripts/Core/ProgressResetService.cs",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Scripts/Localization/SettingsManager.cs",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Scripts/Managers/GameInitializer.cs",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Scripts/Managers/ToolUnlockService.cs",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Scripts/QuestSystem/QuestManager.cs",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Scripts/SceneSystem/StartMenuBootstrap.cs",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Scripts/Tools/CollectionTargetMarker.cs",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Scripts/UISystem/InventoryUISystem.cs",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Scripts/WorkbenchSystem/MicroscopeController.cs",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Scripts/WorkbenchSystem/MicroscopeProximityInteractor.cs",
+        "matchesArchive": true
+      },
+      {
+        "path": "Assets/Scripts/WorkbenchSystem/MicroscopeProximityInteractor.cs.meta",
+        "matchesArchive": true
+      },
+      {
+        "path": "CLAUDE.md",
+        "matchesArchive": true
+      }
+    ],
+    "settingsIdenticalToBase": [
+      "ProjectSettings/AudioManager.asset",
+      "ProjectSettings/ClusterInputManager.asset",
+      "ProjectSettings/DynamicsManager.asset",
+      "ProjectSettings/EditorSettings.asset",
+      "ProjectSettings/GraphicsSettings.asset",
+      "ProjectSettings/InputManager.asset",
+      "ProjectSettings/MemorySettings.asset",
+      "ProjectSettings/MultiplayerManager.asset",
+      "ProjectSettings/NavMeshAreas.asset",
+      "ProjectSettings/PackageManagerSettings.asset",
+      "ProjectSettings/Physics2DSettings.asset",
+      "ProjectSettings/PresetManager.asset",
+      "ProjectSettings/ShaderGraphSettings 2.asset",
+      "ProjectSettings/TimeManager.asset",
+      "ProjectSettings/VFXManager.asset",
+      "ProjectSettings/VersionControlSettings.asset",
+      "ProjectSettings/XRSettings.asset"
+    ],
+    "uniqueUnarchivedSourcePaths": []
+  },
+  "decision": "All committed game development is already present in main. Preserve pre-LFS history and archived experiments without replacing the current game.",
+  "materialChecks": {
+    "pythonSyntaxFiles": 8,
+    "javascriptSyntaxFiles": 2,
+    "validEditAndNarrationJsonFiles": 2,
+    "chaptersWithExistingNarrationAndSourceMedia": 19,
+    "narrationHelpPassed": true,
+    "lfsMedia": [
+      {
+        "path": "Docs/manual-ja/assets/code.png",
+        "bytes": 820611,
+        "sha256": "773f452ab5823744bb9f92b25bae80c70d50b89b3b3579077f8a2c9d8dff58ca"
+      },
+      {
+        "path": "Docs/manual-ja/assets/dialogue.png",
+        "bytes": 647465,
+        "sha256": "e622cd7f90a6df949e425aa29199dc484011a368becbf1f1eeaea036475b50e5"
+      },
+      {
+        "path": "Docs/manual-ja/assets/mobile-play.png",
+        "bytes": 180341,
+        "sha256": "defdd1a6d6ed06bf794a9683db071d8fcb44a1d3f5ca41f366b6658a1d560097"
+      },
+      {
+        "path": "Docs/manual-ja/assets/mobile-wheel.png",
+        "bytes": 181169,
+        "sha256": "c62c7b7f0fd6a583cdde918dc76fbc6e733c8f94062c91f8cd1f9bdafd4fa621"
+      },
+      {
+        "path": "Docs/manual-ja/assets/quiz.png",
+        "bytes": 181401,
+        "sha256": "65fbdfd06b151fbe7abaa49b21cee6697199ff2e5786f5db99fbf388016b0a37"
+      },
+      {
+        "path": "Docs/manual-ja/assets/report.png",
+        "bytes": 465958,
+        "sha256": "187be9b87337d82684753fee38ff1a5a4c99d968f4ff3dbbf48665e0f79643a8"
+      },
+      {
+        "path": "Docs/manual-ja/assets/survey-done.png",
+        "bytes": 34695,
+        "sha256": "ea6f60307751e1eb6b8905a977ea1edaf413c22485cb869bb42f78baa515fad7"
+      },
+      {
+        "path": "Docs/manual-ja/assets/survey-last.png",
+        "bytes": 185372,
+        "sha256": "25049b5308608e010d2023d6be8483fbb3dca79de1fca451208880b1b7e15da1"
+      },
+      {
+        "path": "Docs/manual-ja/assets/survey.png",
+        "bytes": 152304,
+        "sha256": "7a8100f4ac44b162e28c274718300403b8302bedbd082fad32ae155aaa1331f6"
+      },
+      {
+        "path": "Docs/manual-ja/assets/title.png",
+        "bytes": 1351907,
+        "sha256": "64b18b579b51097f7b132c1709ee8c1d68241d6ee4e67c227143d9a649f3de29"
+      },
+      {
+        "path": "Docs/manual-ja/assets/travel.png",
+        "bytes": 115144,
+        "sha256": "a36d3f9e1753d7a5e0b19f326f0cc50f57c6e142ad016958fec3b289d622c657"
+      },
+      {
+        "path": "Docs/manual-ja/assets/wheel.png",
+        "bytes": 684864,
+        "sha256": "6b4efacfe44d5c716f1f0ca9312099f21d59dba7a1283c7b95fdd2595c4b2811"
+      },
+      {
+        "path": "output/pdf/ジオクエスト_あそびかたガイド_日本語.pdf",
+        "bytes": 6052702,
+        "sha256": "ae47058eb7994b222098952ad03722341a6378008d9fe55c2b497e834a8971eb"
+      },
+      {
+        "path": "output/video/ジオクエスト_操作ガイド_日本語.mp4",
+        "bytes": 20204643,
+        "sha256": "3d4b5fdf1e29f0bab8be4f3eceee33a193ac50179f5c95070808c3e074693af4"
+      },
+      {
+        "path": "output/video/ジオクエスト_操作ガイド_表紙.png",
+        "bytes": 1685274,
+        "sha256": "a71c2da3a655e26a229df1b4dde8fca6fc6196beeff8598f4dacbcd15745effa"
+      }
+    ],
+    "gameAndBackendUnchanged": true,
+    "excludedLocalFilesStillPresent": true
+  }
+}

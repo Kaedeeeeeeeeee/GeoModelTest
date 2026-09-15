@@ -1,0 +1,12 @@
+title.png	Logs/survey-return-release/local/desktop.png
+code.png	Docs/reports/2026-09-11-research-launch/screenshots/07-live-code-entry.png
+mobile-play.png	Logs/vehicles/browser-final/05-free-play.png
+travel.png	Logs/vehicles/browser-final/07-travel.png
+quiz.png	Logs/vehicles/browser-final/04-quiz.png
+dialogue.png	Docs/reports/2026-09-10/screenshots/07-lab-analysis.png
+wheel.png	Docs/reports/2026-09-10/screenshots/03-tool-wheel.png
+report.png	Docs/reports/2026-09-11-research-launch/screenshots/01-live-unity-report.png
+survey.png	Docs/reports/2026-09-11-research-launch/screenshots/02-survey-desktop.png
+survey-last.png	Logs/manual-video/ego/survey-last-empty.png (EgoLite local survey DOM render; blank optional responses)
+survey-done.png	Docs/reports/2026-09-11-research-launch/screenshots/08-current-release-survey-complete.png
+mobile-wheel.png	Logs/vehicles/browser-final/06-six-tools.png

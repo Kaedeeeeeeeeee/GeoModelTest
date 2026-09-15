@@ -1,0 +1,510 @@
+[
+  {
+    "id": "01-intro",
+    "title": "ジオクエストの あそびかた",
+    "caption": "画面を見ながら、操作を確かめよう",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/49-title.png",
+        "end": 7
+      }
+    ],
+    "marks": []
+  },
+  {
+    "id": "02-ready",
+    "title": "はじめる前に",
+    "caption": "ゲーム ＋ アンケート：約20分\nスマートフォン・タブレットは横向きにしよう",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/ready-card.png",
+        "end": 8
+      }
+    ],
+    "marks": [],
+    "note": "このガイドを見る時間は別です"
+  },
+  {
+    "id": "03-code",
+    "title": "自分の参加コードを入れよう",
+    "caption": "「研究に参加」→ 自分のコード →「コードを確認」",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/50-code-open.webm",
+        "start": 0,
+        "end": 4.3
+      }
+    ],
+    "marks": [
+      {
+        "kind": "box",
+        "x": 115,
+        "y": 788,
+        "w": 640,
+        "h": 88,
+        "from": 0,
+        "to": 1.6
+      },
+      {
+        "kind": "box",
+        "x": 610,
+        "y": 493,
+        "w": 700,
+        "h": 83,
+        "from": 2,
+        "to": 6
+      },
+      {
+        "kind": "box",
+        "x": 605,
+        "y": 730,
+        "w": 344,
+        "h": 85,
+        "from": 6,
+        "to": 12
+      }
+    ]
+  },
+  {
+    "id": "04-dialogue",
+    "title": "会話を読み進めよう",
+    "caption": "読み終わったら、画面の下を押そう",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/28-dialogue.webm",
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "marks": [
+      {
+        "kind": "box",
+        "x": 120,
+        "y": 805,
+        "w": 1640,
+        "h": 240
+      }
+    ]
+  },
+  {
+    "id": "05-question",
+    "title": "自分で考えて、選ぼう",
+    "caption": "選択肢を読んで、自分の考えを選ぼう",
+    "pieces": [
+      {
+        "file": "Docs/manual-ja/assets/quiz.png",
+        "start": 0,
+        "end": 7
+      }
+    ],
+    "marks": [],
+    "note": "急がなくてだいじょうぶ"
+  },
+  {
+    "id": "06-move",
+    "title": "左下の丸で歩こう",
+    "caption": "丸を動かす → 歩く　／　指を離す → 止まる",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/30-walk.webm",
+        "start": 2,
+        "end": 13.5
+      }
+    ],
+    "marks": [
+      {
+        "kind": "ring",
+        "x": 190,
+        "y": 920,
+        "r": 92
+      },
+      {
+        "kind": "arrow",
+        "x1": 190,
+        "y1": 902,
+        "x2": 190,
+        "y2": 827,
+        "from": 2,
+        "to": 8
+      }
+    ]
+  },
+  {
+    "id": "07-look",
+    "title": "まわりを見てみよう",
+    "caption": "画面の右側を、指でゆっくりなぞろう",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/29-field-look.webm",
+        "start": 5,
+        "end": 15
+      }
+    ],
+    "marks": [
+      {
+        "kind": "arrow",
+        "x1": 1320,
+        "y1": 500,
+        "x2": 1120,
+        "y2": 500,
+        "from": 1,
+        "to": 8
+      }
+    ]
+  },
+  {
+    "id": "08-mission",
+    "title": "迷ったら、左上を見よう",
+    "caption": "今の目標が書いてあるよ",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/30-walk.webm",
+        "start": 12,
+        "end": 14.5
+      }
+    ],
+    "marks": [
+      {
+        "kind": "box",
+        "x": 24,
+        "y": 25,
+        "w": 650,
+        "h": 170
+      }
+    ]
+  },
+  {
+    "id": "09-tools",
+    "title": "道具を持ち替えよう",
+    "caption": "「道具」を開いて、使いたい絵を押そう",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/18-tools-tap.webm",
+        "start": 1,
+        "end": 7.5
+      }
+    ],
+    "marks": [
+      {
+        "kind": "ring",
+        "x": 435,
+        "y": 358,
+        "r": 75,
+        "from": 0,
+        "to": 3
+      },
+      {
+        "kind": "ring",
+        "x": 1180,
+        "y": 760,
+        "r": 92,
+        "from": 4,
+        "to": 10
+      }
+    ]
+  },
+  {
+    "id": "10-hammer",
+    "title": "ハンマーで、石を集めよう",
+    "caption": "同じ場所に合わせて「調べる」を３回",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/32-hammer-three.webm",
+        "start": 2,
+        "end": 15.7
+      }
+    ],
+    "marks": [
+      {
+        "kind": "ring",
+        "x": 1790,
+        "y": 785,
+        "r": 73
+      },
+      {
+        "kind": "ring",
+        "x": 960,
+        "y": 540,
+        "r": 100,
+        "from": 0,
+        "to": 12
+      },
+      {
+        "kind": "label",
+        "label": "１回",
+        "label_x": 1300,
+        "label_y": 525,
+        "from": 2,
+        "to": 5.9
+      },
+      {
+        "kind": "label",
+        "label": "２回",
+        "label_x": 1300,
+        "label_y": 525,
+        "from": 6,
+        "to": 9.9
+      },
+      {
+        "kind": "label",
+        "label": "３回",
+        "label_x": 1300,
+        "label_y": 525,
+        "from": 10,
+        "to": 13.7
+      }
+    ]
+  },
+  {
+    "id": "12-bag",
+    "title": "バッグを確認しよう",
+    "caption": "集めたサンプルは、バッグで見られるよ",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/47-bag.webm",
+        "start": 0,
+        "end": 5.4
+      }
+    ],
+    "marks": [
+      {
+        "kind": "ring",
+        "x": 124,
+        "y": 358,
+        "r": 72,
+        "from": 0,
+        "to": 1.1
+      },
+      {
+        "kind": "box",
+        "x": 460,
+        "y": 300,
+        "w": 540,
+        "h": 170,
+        "from": 2,
+        "to": 9
+      }
+    ]
+  },
+  {
+    "id": "13-travel",
+    "title": "フェーズシフターで移動しよう",
+    "caption": "フェーズシフター →「調べる」→ 行きたい場所",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/19-phase-travel.webm",
+        "start": 0,
+        "end": 5.8
+      },
+      {
+        "file": "Logs/manual-video/ego/24-phase-primary.webm",
+        "start": 0,
+        "end": 6.6
+      }
+    ],
+    "marks": [
+      {
+        "kind": "ring",
+        "x": 960,
+        "y": 226,
+        "r": 76,
+        "from": 0,
+        "to": 2.8
+      },
+      {
+        "kind": "ring",
+        "x": 1790,
+        "y": 785,
+        "r": 75,
+        "from": 6,
+        "to": 9
+      },
+      {
+        "kind": "box",
+        "x": 654,
+        "y": 432,
+        "w": 610,
+        "h": 218,
+        "from": 10,
+        "to": 14
+      }
+    ]
+  },
+  {
+    "id": "14-place",
+    "title": "ドリルタワーを置こう",
+    "caption": "道具を選ぶ → 近くの地面を見る →「調べる」",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/36-drill-select.webm",
+        "start": 3,
+        "end": 9
+      },
+      {
+        "file": "Logs/manual-video/ego/37-place.webm",
+        "start": 0,
+        "end": 6.1
+      }
+    ],
+    "marks": [
+      {
+        "kind": "ring",
+        "x": 1270,
+        "y": 540,
+        "r": 88,
+        "from": 0,
+        "to": 3
+      },
+      {
+        "kind": "ring",
+        "x": 1790,
+        "y": 785,
+        "r": 75,
+        "from": 7,
+        "to": 12.1
+      }
+    ]
+  },
+  {
+    "id": "15-drill",
+    "title": "ドリルで、ほろう",
+    "caption": "ドリルの近くで「使う」→ 少し待とう",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/38-drill.webm",
+        "start": 0,
+        "end": 7.4
+      }
+    ],
+    "marks": [
+      {
+        "kind": "ring",
+        "x": 1630,
+        "y": 865,
+        "r": 75
+      }
+    ]
+  },
+  {
+    "id": "16-core",
+    "title": "サンプルを拾おう",
+    "caption": "サンプルに近づいて「調べる」",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/46-core-pickup.webm",
+        "start": 3,
+        "end": 16.3
+      }
+    ],
+    "marks": [
+      {
+        "kind": "ring",
+        "x": 1790,
+        "y": 785,
+        "r": 75,
+        "from": 7,
+        "to": 13.3
+      }
+    ],
+    "note": "見つからないときは、少し上も見てみよう"
+  },
+  {
+    "id": "17-return",
+    "title": "研究室へ戻ろう",
+    "caption": "「G-Lab研究室」を選ぶ → 会話と案内に沿って進もう",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/52-return-lab.webm",
+        "start": 0,
+        "end": 7
+      }
+    ],
+    "marks": [
+      {
+        "kind": "box",
+        "x": 650,
+        "y": 550,
+        "w": 620,
+        "h": 105,
+        "from": 0,
+        "to": 3.3
+      }
+    ]
+  },
+  {
+    "id": "18-survey",
+    "title": "アンケートへ進もう",
+    "caption": "「アンケートに答える」→ 感じたことを、そのまま回答",
+    "pieces": [
+      {
+        "file": "Docs/manual-ja/assets/report.png",
+        "end": 4.4
+      },
+      {
+        "file": "Docs/manual-ja/assets/survey.png",
+        "end": 6.12,
+        "pan": true,
+        "pan_start": 10
+      }
+    ],
+    "marks": [
+      {
+        "kind": "box",
+        "x": 995,
+        "y": 855,
+        "w": 512,
+        "h": 87,
+        "from": 0,
+        "to": 4.4
+      }
+    ],
+    "note": "ここからはアンケート画面の例です"
+  },
+  {
+    "id": "19-next",
+    "title": "感じたことを、そのまま答えよう",
+    "caption": "答えを選ぶ →「次へ」\n最後の自由回答は、空欄でもOK",
+    "pieces": [
+      {
+        "file": "Docs/manual-ja/assets/survey.png",
+        "start": 0,
+        "end": 9,
+        "pan": true,
+        "pan_start": 1,
+        "pan_duration": 5
+      },
+      {
+        "file": "Logs/manual-video/ego/survey-last-empty.png",
+        "start": 0,
+        "end": 4,
+        "pan": true,
+        "pan_start": 0,
+        "pan_duration": 3
+      }
+    ],
+    "marks": [],
+    "note": "最後の自由回答は、書かなくてもかまいません"
+  },
+  {
+    "id": "20-finish",
+    "title": "送信して、おしまい",
+    "caption": "「回答を受け取りました」と出たら終了！",
+    "pieces": [
+      {
+        "file": "Logs/manual-video/ego/survey-last-empty.png",
+        "start": 0,
+        "end": 3.7,
+        "pan": true,
+        "pan_start": -8,
+        "pan_duration": 3
+      },
+      {
+        "file": "Logs/manual-video/ego/survey-complete-wide.png",
+        "start": 0,
+        "end": 8
+      }
+    ],
+    "marks": [],
+    "note": "音声：AI合成（研究者本人の声を使用）"
+  }
+]
