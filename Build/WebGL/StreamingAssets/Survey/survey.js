@@ -24,7 +24,7 @@
     } finally {clearTimeout(timer);}
   }
   function saveDraft(){storage.set(draftKey,JSON.stringify({version:definition.version,step,answers}));updateCount();}
-  function updateCount(){const count=definition.questions.filter(q=>answers[q.id]?.trim()).length;$('answered-label').textContent=`${count} / 14 問`;}
+  function updateCount(){const count=definition.questions.filter(q=>answers[q.id]?.trim()).length;$('answered-label').textContent=`${count} / ${definition.questions.length} 問`;}
   function render(focus=false) {
     const section=definition.sections[step];
     $('step-label').textContent=`${step+1} / ${definition.sections.length} ページ`;
@@ -34,7 +34,7 @@
     for(const id of section.questions){
       const question=definition.questions.find(q=>q.id===id);
       const field=document.createElement('fieldset');field.id='field-'+id;
-      const legend=document.createElement('legend');const number=document.createElement('span');number.className='number';number.textContent=id.slice(1)+'.';legend.append(number,document.createTextNode(question.text));
+      const legend=document.createElement('legend');const number=document.createElement('span');number.className='number';number.textContent=(definition.questions.indexOf(question)+1)+'.';legend.append(number,document.createTextNode(question.text));
       if(question.optional){const optional=document.createElement('span');optional.className='optional';optional.textContent='自由回答';legend.append(optional);}
       field.append(legend);
       if(question.scale){
@@ -78,7 +78,7 @@
       definition=window.GEOMODEL_QUESTIONS;
       if(response.surveyVersion!==definition.version)throw new Error('version');
       try{const draft=JSON.parse(storage.get(draftKey)||'null');if(draft?.version===definition.version){answers=draft.answers||{};step=Math.min(Math.max(Number(draft.step)||0,0),definition.sections.length-1);}}catch{}
-      $('intro').textContent=definition.intro;$('privacy').textContent=definition.privacy;render();screen('questionnaire');
+      $('intro').textContent=definition.intro;$('privacy').textContent=definition.privacy;$('progress').max=definition.sections.length;render();screen('questionnaire');
     }catch(error){screen('access-error');$('access-text').textContent=error.status===403?'このリンクの受付期限が切れたか、受付が停止しています。ゲームの調査報告から開き直してください。':'接続を確認できませんでした。通信を確認して、もう一度お試しください。';$('access-retry').hidden=false;}
   }
   $('access-retry').onclick=start;

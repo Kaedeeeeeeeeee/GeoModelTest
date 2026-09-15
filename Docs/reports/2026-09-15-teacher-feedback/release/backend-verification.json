@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "checks": [
+    "auth anonymous sign in",
+    "other anonymous sign in",
+    "code-free enrollment accepted",
+    "anonymous entry mode",
+    "no fabricated participation code or consent",
+    "server chose intended open study",
+    "retry retains participant",
+    "synthetic records use isolated development study",
+    "game session upload",
+    "unfinished game cannot issue survey",
+    "labelled completion fixture upload",
+    "foreign account cannot issue ticket",
+    "wrong run rejected",
+    "completed owner receives ticket",
+    "new survey version issued",
+    "ticket opens",
+    "missing required answers rejected",
+    "removed question rejected",
+    "invalid length choice rejected",
+    "submission acknowledged",
+    "retry returns same receipt",
+    "one response",
+    "first answer retained",
+    "response isolated from research study",
+    "reopen reports submitted",
+    "browser fixture upload",
+    "browser ticket issued"
+  ],
+  "study": "release-qa-2026-09-15-open-play"
+}
