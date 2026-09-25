@@ -62,7 +62,9 @@
   $('survey').onsubmit=async event=>{
     event.preventDefault();if(busy)return;
     const missing=definition.sections[step].questions.find(id=>!definition.questions.find(q=>q.id===id).optional&&!answers[id]);
-    if(missing){$('field-'+missing).classList.add('invalid');$('field-'+missing).setAttribute('aria-invalid','true');fail('まだ選んでいない質問があります。「答えたくない」も選べます。');return;}
+    if(missing){$('field-'+missing).classList.add('invalid');$('field-'+missing).setAttribute('aria-invalid','true');fail('まだ選んでいない質問があります。各質問で答えを1つ選んでください。');return;}
+    const tooLong=definition.questions.find(q=>q.maxLength&&(answers[q.id]||'').length>q.maxLength);
+    if(tooLong){$('field-'+tooLong.id).classList.add('invalid');$('field-'+tooLong.id).setAttribute('aria-invalid','true');fail(`自由回答は${tooLong.maxLength}文字以内で入力してください。`);return;}
     if(step<definition.sections.length-1){step++;saveDraft();render(true);return;}
     busy=true;$('next').disabled=true;$('previous').disabled=true;$('next').textContent='送信しています…';$('form-error').hidden=true;
     try{await call('submit',{answers});finished();}
@@ -77,8 +79,18 @@
       if(response.submitted){finished();return;}
       definition=window.GEOMODEL_QUESTIONS;
       if(response.surveyVersion!==definition.version)throw new Error('version');
-      try{const draft=JSON.parse(storage.get(draftKey)||'null');if(draft?.version===definition.version){answers=draft.answers||{};step=Math.min(Math.max(Number(draft.step)||0,0),definition.sections.length-1);}}catch{}
-      $('intro').textContent=definition.intro;$('privacy').textContent=definition.privacy;$('progress').max=definition.sections.length;render();screen('questionnaire');
+      try{
+        const draft=JSON.parse(storage.get(draftKey)||'null');
+        if(draft?.version===definition.version){
+          // Removed choices in older drafts must be answered again, not submitted invisibly.
+          for(const question of definition.questions){
+            const value=draft.answers?.[question.id];
+            if(typeof value==='string'&&(!question.scale||definition.scales[question.scale].some(([option])=>option===value))) answers[question.id]=value;
+          }
+          step=Math.min(Math.max(Number(draft.step)||0,0),definition.sections.length-1);
+        }
+      }catch{}
+      $('intro').textContent=definition.intro;$('privacy').textContent=definition.privacy;$('progress').max=definition.sections.length;saveDraft();render();screen('questionnaire');
     }catch(error){screen('access-error');$('access-text').textContent=error.status===403?'このリンクの受付期限が切れたか、受付が停止しています。ゲームの調査報告から開き直してください。':'接続を確認できませんでした。通信を確認して、もう一度お試しください。';$('access-retry').hidden=false;}
   }
   $('access-retry').onclick=start;

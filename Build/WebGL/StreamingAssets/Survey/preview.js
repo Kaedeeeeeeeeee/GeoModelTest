@@ -117,7 +117,16 @@
     if (missing) {
       $('field-' + missing).classList.add('invalid');
       $('field-' + missing).setAttribute('aria-invalid', 'true');
-      $('form-error').textContent = 'まだ選んでいない質問があります。「答えたくない」も選べます。';
+      $('form-error').textContent = 'まだ選んでいない質問があります。各質問で答えを1つ選んでください。';
+      $('form-error').hidden = false;
+      $('form-error').focus();
+      return;
+    }
+    const tooLong = definition.questions.find(q => q.maxLength && (answers[q.id] || '').length > q.maxLength);
+    if (tooLong) {
+      $('field-' + tooLong.id).classList.add('invalid');
+      $('field-' + tooLong.id).setAttribute('aria-invalid', 'true');
+      $('form-error').textContent = `自由回答は${tooLong.maxLength}文字以内で入力してください。`;
       $('form-error').hidden = false;
       $('form-error').focus();
       return;
