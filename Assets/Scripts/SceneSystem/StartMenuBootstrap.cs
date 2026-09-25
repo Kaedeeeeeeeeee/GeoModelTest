@@ -1,6 +1,7 @@
 using UnityEngine;
 using UISystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace SceneSystem
 {
@@ -14,6 +15,10 @@ namespace SceneSystem
 
         [SerializeField]
         private Canvas _canvas;
+
+        private Button _newGame;
+        private Button _reviewConsent;
+        private bool _researchConsentAccepted;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void EnsureOnStartScene()
@@ -45,6 +50,8 @@ namespace SceneSystem
 
         private void SceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            ResearchConsentDialog.CloseCurrent();
+            _researchConsentAccepted = false;
             if (_canvas != null) Destroy(_canvas.gameObject);
             _canvas = null;
             if (scene.name == _startSceneName) BuildUI();
@@ -53,6 +60,7 @@ namespace SceneSystem
         private void RefreshLanguage()
         {
             if (SceneManager.GetActiveScene().name != _startSceneName) return;
+            ResearchConsentDialog.CloseCurrent();
             if (_canvas != null) Destroy(_canvas.gameObject);
             BuildUI();
         }
@@ -73,18 +81,19 @@ namespace SceneSystem
             GameUI.Label(menu.transform, "Eyebrow", "G-LAB  /  FIELD RESEARCH", 20, new Vector2(0.14f, 0.89f), new Vector2(0.92f, 0.94f)).color = GameUI.Accent;
             GameUI.Label(menu.transform, "Title", "ジオクエスト", 70, new Vector2(0.13f, 0.73f), new Vector2(0.95f, 0.87f));
             GameUI.Label(menu.transform, "Subtitle", GameUI.L("ui.start.subtitle"), 24, new Vector2(0.14f, 0.63f), new Vector2(0.88f, 0.74f)).color = GameUI.Muted;
-            GameUI.Button(menu.transform, "NewGame", GameUI.L("ui.start.new_game.title"), new Vector2(0.14f, 0.51f), new Vector2(0.87f, 0.59f), () =>
-            {
-                if (HasSavedProgress()) OnNewGameClicked();
-                else GameSession.Instance.StartNewGame();
-            }, true);
+            _newGame = GameUI.Button(menu.transform, "NewGame", GameUI.L("ui.start.new_game.title"), new Vector2(0.14f, 0.51f), new Vector2(0.87f, 0.59f), OnNewGameClicked, true);
+            _newGame.interactable = _researchConsentAccepted;
             GameUI.Button(menu.transform, "Settings", GameUI.L("ui.start.settings"), new Vector2(0.14f, 0.41f), new Vector2(0.49f, 0.49f), OnOpenSettings);
             GameUI.Button(menu.transform, "Quit", GameUI.L("ui.start.quit"), new Vector2(0.52f, 0.41f), new Vector2(0.87f, 0.49f), OnQuitGame);
+            _reviewConsent = GameUI.Button(menu.transform, "ReviewConsent", GameUI.L("ui.consent.review"),
+                new Vector2(0.14f, 0.29f), new Vector2(0.87f, 0.37f), ShowResearchConsent);
+            _reviewConsent.gameObject.SetActive(!_researchConsentAccepted);
             GameUI.Label(menu.transform, "Footer", GameUI.L("ui.start.footer"), 18, new Vector2(0.14f, 0.06f), new Vector2(0.90f, 0.15f)).color = GameUI.Muted;
             GameUI.Label(_canvas.transform, "FieldCaption", GameUI.L("ui.start.field_caption"), 26, new Vector2(0.53f, 0.07f), new Vector2(0.95f, 0.17f));
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             _ = SettingsManager.Instance;
+            if (!_researchConsentAccepted) ShowResearchConsent();
         }
 
         /// <summary>
@@ -112,10 +121,31 @@ namespace SceneSystem
         public void OnQuitGame() => GameSession.Instance.QuitToWebsite();
 
         /// <summary>
-        /// 玩家点击 New Game 按钮。弹确认框，确认后清掉所有 PlayerPrefs 进度并进 MainScene。
+        /// 每次进入主菜单时确认研究参与；同意后仅解锁 New Game，不自动开始游戏。
         /// </summary>
+        private void ShowResearchConsent()
+        {
+            if (Core.GameInputState.IsModalOpen) return;
+            ResearchConsentDialog.Show(OnResearchConsentAccepted);
+        }
+
+        private void OnResearchConsentAccepted()
+        {
+            _researchConsentAccepted = true;
+            _newGame.interactable = true;
+            _reviewConsent.gameObject.SetActive(false);
+            _newGame.Select();
+        }
+
         private void OnNewGameClicked()
         {
+            if (!_researchConsentAccepted || Core.GameInputState.IsModalOpen) return;
+            if (!HasSavedProgress())
+            {
+                GameSession.Instance.StartNewGame();
+                return;
+            }
+
             GameUI.Confirm(GameUI.L("ui.start.new_game.title"),
                 GameUI.L("ui.start.new_game.message") + "\n\n" + GameUI.L("ui.start.new_game.warning"),
                 GameUI.L("ui.start.new_game.confirm"), () =>
