@@ -1,0 +1,20 @@
+[WebGLBuildSetup] 准备 WebGL 构建...
+[WebGLBuildSetup] 开始配置 Player Settings...
+[WebGLBuildSetup] ProductVersion = 2026.09.25-gameplay-guidance
+[WebGLBuildSetup] ManagedStrippingLevel = Minimal
+[WebGLBuildSetup] WebGL.initialMemorySize = 64
+[WebGLBuildSetup] WebGL.decompressionFallback = true
+[WebGLBuildSetup] WebGL.exceptionSupport (unchanged) = ExplicitlyThrownExceptionsOnly
+[WebGLBuildSetup] WebGL.dataCaching = true
+[WebGLBuildSetup] WebGL.template = PROJECT:FixedAspect
+[WebGLBuildSetup] 配置完成，已保存
+[WebGLBuildSetup] StartScene 已在 scenes[0] 且启用
+[WebGLBuildSetup] Scene[0]: Assets/Scenes/StartScene.unity
+[WebGLBuildSetup] Scene[1]: Assets/Scenes/MainScene.unity
+[WebGLBuildSetup] Scene[2]: Assets/3D Laboratory Environment with Appratus/Scenes/Laboratory Scene.unity
+[WebGLBuildSetup] 构建结果: Succeeded
+[WebGLBuildSetup] 输出: /Users/user/Unity/GeoModelTest/Build/WebGL
+[WebGLBuildSetup] 大小: 117 MB
+[WebGLBuildSetup] 耗时: 00:06:04.9980527
+[WebGLBuildSetup] 错误数: 0
+[WebGLBuildSetup] 构建成功 ✓

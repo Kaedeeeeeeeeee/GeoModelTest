@@ -1,25 +1,25 @@
 {
-  "version": "2026.09.25-research-consent",
+  "version": "2026.09.25-gameplay-guidance",
   "unity": "6000.0.51f1",
   "buildType": "release",
-  "builtAt": "2026-09-25T01:34:46.393476+00:00",
-  "sourceCommit": "bf89734d640c8556695ca33bb3a87b43bfc78190",
+  "builtAt": "2026-09-25T05:30:35.215Z",
+  "sourceCommit": "2ca9079dd3135c8ee537cb18966900fec13b69a6",
   "assets": {
     "Build/WebGL.data.unityweb": {
-      "bytes": 107347039,
-      "sha256": "ab324e7acc875bfa2b4378aefa4cfa8197ed47d603e89cc82222bc61bdb3d8e1"
+      "bytes": 107356286,
+      "sha256": "93a221e944ba11d403f50c1214094b0c199846d13e3bb8b5021ba3c5138fdbae"
     },
     "Build/WebGL.framework.js.unityweb": {
-      "bytes": 97287,
-      "sha256": "37be81b08c9253f7a7a2c1389afe2b975f275aa8f252d4df9eea61600c617538"
+      "bytes": 97285,
+      "sha256": "3ac2b3735048d5581418118bc372b44e46bb02dd45d584f1da370a5d3bf76215"
     },
     "Build/WebGL.loader.js": {
       "bytes": 47338,
-      "sha256": "dc493acd378e4234496973b7ec5cbe7eacb93555be9f6d3e7dd13075e8a96c79"
+      "sha256": "9050251c45f6982cf1f01e4647175343789883770cf80dc6304b5d1cdf5467aa"
     },
     "Build/WebGL.wasm.unityweb": {
-      "bytes": 16120784,
-      "sha256": "a2bccd2ccce55a7c7328249590cd6c92c0b20bb83bcd1d3c95754bbac181b2d8"
+      "bytes": 16132435,
+      "sha256": "c2d44337193aab590c3b78cebab383f41b20155071e12ad3c081fe81550496f2"
     }
   },
   "webAssets": {
@@ -36,8 +36,8 @@
       "sha256": "457635e457520fda8f884ed77c14463d67fdc13bbae6ab74635086d16e2f97d2"
     },
     "index.html": {
-      "bytes": 7048,
-      "sha256": "fba0adf33eff53ee34735f4c96c050b7013b155818ef085209530535aecacb9b"
+      "bytes": 7049,
+      "sha256": "459e2b1c6a76f571a1300b2fde1f419e5d380de319d2c67d8bf7c40a22590257"
     }
   },
   "surveyAssets": {
@@ -78,6 +78,10 @@
       "sha256": "55780fc5840d83ab2b8f369c86e133600fe12b66e2f07466526a3cd2211eda08"
     }
   },
-  "republishedAt": "2026-09-25T01:42:23.121787+00:00",
-  "publicationNote": "Republished identical tested game assets to replace a CDN-cached pre-extraction 404."
+  "streamingAssets": {
+    "StreamingAssets/UnityServicesProjectConfiguration.json": {
+      "bytes": 985,
+      "sha256": "82e790d093246c9ec6bc56dcd171dd619567eb3aa19dd3ef0dfb6126b6d874b7"
+    }
+  }
 }
