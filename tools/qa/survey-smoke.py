@@ -67,7 +67,10 @@ check('removed anxiety answer rejected',survey('submit',ticket,answers=dict(answ
 check('text length answer remains required',survey('submit',ticket,answers={k:v for k,v in answers.items() if k!='q10'})[0],400)
 check('invalid text length choice rejected',survey('submit',ticket,answers=dict(answers,q10='6'))[0],400)
 check('unknown answer fields rejected',survey('submit',ticket,answers=dict(answers,participantId=uid()))[0],400)
-check('oversize text rejected',survey('submit',ticket,answers=dict(answers,q13='あ'*2001))[0],400)
+check('removed skip choice rejected',survey('submit',ticket,answers=dict(answers,q1='skip'))[0],400)
+check('301 characters in first free answer rejected',survey('submit',ticket,answers=dict(answers,q13='あ'*301))[0],400)
+check('301 characters in second free answer rejected',survey('submit',ticket,answers=dict(answers,q14='あ'*301))[0],400)
+answers.update(q13='あ'*300,q14='い'*300)
 _,second=survey('issue',auth['access_token'],sessionId=session,runId=run)
 with ThreadPoolExecutor(2) as pool:
  replies=list(pool.map(lambda value:survey('submit',value,answers=answers),[ticket,second['ticket']]))

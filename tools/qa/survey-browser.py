@@ -32,9 +32,12 @@ with sync_playwright() as p:
     page.locator('#next').click()
     expect(page.locator('#form-error')).to_be_visible()
     assert page.locator('#step-label').inner_text().startswith('1 /')
-    results.append('Unanswered required questions block advancing and explain the skip choice')
+    expect(page.locator('#form-error')).to_contain_text('各質問で答えを1つ選んでください')
+    assert page.locator('input[value="skip"]').count()==0
+    assert page.locator('input[type=radio]').count()==55
+    results.append('Eleven five-choice questions render; unanswered required questions block advancing')
     page.locator('input[name=q1][value="4"]').check()
-    page.locator('input[name=q2][value="skip"]').check()
+    page.locator('input[name=q2][value="2"]').check()
     page.set_viewport_size({'width':390,'height':844})
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
     page.screenshot(path=str(shots/'03-survey-mobile.png'), full_page=True)
@@ -43,7 +46,7 @@ with sync_playwright() as p:
     definition = page.evaluate('window.GEOMODEL_QUESTIONS')
     expect(page.locator('#step-label')).to_have_text(f"1 / {len(definition['sections'])} ページ")
     expect(page.locator('input[name=q1][value="4"]')).to_be_checked()
-    expect(page.locator('input[name=q2][value="skip"]')).to_be_checked()
+    expect(page.locator('input[name=q2][value="2"]')).to_be_checked()
     results.append('Refresh retains per-ticket draft answers and the current page')
     for index, section in enumerate(definition['sections']):
         for question_id in section['questions']:

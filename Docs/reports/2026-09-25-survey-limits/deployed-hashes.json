@@ -1,0 +1,22 @@
+[
+  {
+    "path": "StreamingAssets/Survey/questions.json",
+    "sha256": "665fdfe3d695a092fa4703988f163e42e62036b1516eaa3a44c14e8e2deafc0f"
+  },
+  {
+    "path": "StreamingAssets/Survey/questions.js",
+    "sha256": "54203cd284e580a06a80f9f2388c4d761e59a176472bbcc5f1b1a2a57f4ba7d9"
+  },
+  {
+    "path": "StreamingAssets/Survey/survey.js",
+    "sha256": "55780fc5840d83ab2b8f369c86e133600fe12b66e2f07466526a3cd2211eda08"
+  },
+  {
+    "path": "StreamingAssets/Survey/preview.js",
+    "sha256": "7965aa653c6039ca68271f3d7bf9c2d907a5f6b66cac997f1b7a480c02f85750"
+  },
+  {
+    "path": "release.json",
+    "sha256": "c59e3514207776addd06ed62f386b41d20562324021aa6d8d3b55b9dca81dc4d"
+  }
+]
