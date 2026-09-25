@@ -1,0 +1,16 @@
+{
+  "url": "https://html-classic.itch.zone/html/17462165-2013820/index.html?v=1790300578",
+  "version": "2026.09.25-research-consent",
+  "ready": true,
+  "canvas": [
+    1280,
+    720
+  ],
+  "loadingState": "ready",
+  "failedRequests": [
+    {
+      "url": "https://html-classic.itch.zone/html/17462165-2013820/TemplateData/favicon.ico",
+      "status": 404
+    }
+  ]
+}

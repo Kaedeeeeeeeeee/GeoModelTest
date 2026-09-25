@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="10" result="Passed" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-25 01:22:54Z" end-time="2026-09-25 01:22:56Z" duration="1.7124175">
+  <test-suite type="TestSuite" id="1056" name="GeoModelTest" fullname="GeoModelTest" runstate="Runnable" testcasecount="41" result="Passed" start-time="2026-09-25 01:22:54Z" end-time="2026-09-25 01:22:56Z" duration="1.712418" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1052" name="GeoModel.UI.PlayModeTests.dll" fullname="/Users/user/Unity/GeoModelTest/Library/ScriptAssemblies/GeoModel.UI.PlayModeTests.dll" runstate="Runnable" testcasecount="41" result="Passed" start-time="2026-09-25 01:22:54Z" end-time="2026-09-25 01:22:56Z" duration="1.685397" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="25797" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1019" name="ModalInputTests" fullname="ModalInputTests" classname="ModalInputTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-09-25 01:22:54Z" end-time="2026-09-25 01:22:55Z" duration="0.603170" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1021" name="Escape_ShouldBeConsumedOnceBySettingsAndModalRouter" fullname="ModalInputTests.Escape_ShouldBeConsumedOnceBySettingsAndModalRouter" methodname="Escape_ShouldBeConsumedOnceBySettingsAndModalRouter" classname="ModalInputTests" runstate="Runnable" seed="1533420583" result="Passed" start-time="2026-09-25 01:22:54Z" end-time="2026-09-25 01:22:55Z" duration="0.238602" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[未找到FirstPersonController，设置界面将无法控制玩家移动
+未找到FirstPersonController，设置界面将无法控制玩家移动
+]]></output>
+        </test-case>
+        <test-case id="1022" name="HistoryOverSettings_ShouldPreservePauseUntilSettingsCloses" fullname="ModalInputTests.HistoryOverSettings_ShouldPreservePauseUntilSettingsCloses" methodname="HistoryOverSettings_ShouldPreservePauseUntilSettingsCloses" classname="ModalInputTests" runstate="Runnable" seed="1889444772" result="Passed" start-time="2026-09-25 01:22:55Z" end-time="2026-09-25 01:22:55Z" duration="0.160386" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[未找到FirstPersonController，设置界面将无法控制玩家移动
+]]></output>
+        </test-case>
+        <test-case id="1020" name="NestedModals_ShouldRestoreOriginalTimeOnlyAfterLastClose" fullname="ModalInputTests.NestedModals_ShouldRestoreOriginalTimeOnlyAfterLastClose" methodname="NestedModals_ShouldRestoreOriginalTimeOnlyAfterLastClose" classname="ModalInputTests" runstate="Runnable" seed="978211291" result="Passed" start-time="2026-09-25 01:22:55Z" end-time="2026-09-25 01:22:55Z" duration="0.166568" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1023" name="ResearchConsentTests" fullname="ResearchConsentTests" classname="ResearchConsentTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-09-25 01:22:55Z" end-time="2026-09-25 01:22:56Z" duration="1.051527" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1027" name="CancelAndReopen_ShouldDiscardAgreement_WithoutChangingProgress" fullname="ResearchConsentTests.CancelAndReopen_ShouldDiscardAgreement_WithoutChangingProgress" methodname="CancelAndReopen_ShouldDiscardAgreement_WithoutChangingProgress" classname="ResearchConsentTests" runstate="Runnable" seed="1510244857" result="Passed" start-time="2026-09-25 01:22:55Z" end-time="2026-09-25 01:22:55Z" duration="0.103329" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1025" name="Checkmarks_ShouldBeVisibleWhenChecked_WhileGameIsPaused" fullname="ResearchConsentTests.Checkmarks_ShouldBeVisibleWhenChecked_WhileGameIsPaused" methodname="Checkmarks_ShouldBeVisibleWhenChecked_WhileGameIsPaused" classname="ResearchConsentTests" runstate="Runnable" seed="996842007" result="Passed" start-time="2026-09-25 01:22:55Z" end-time="2026-09-25 01:22:55Z" duration="0.196925" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1026" name="Continue_ShouldRequireCurrentCheck_AndOnlyRunOnce" fullname="ResearchConsentTests.Continue_ShouldRequireCurrentCheck_AndOnlyRunOnce" methodname="Continue_ShouldRequireCurrentCheck_AndOnlyRunOnce" classname="ResearchConsentTests" runstate="Runnable" seed="1651103403" result="Passed" start-time="2026-09-25 01:22:55Z" end-time="2026-09-25 01:22:55Z" duration="0.100605" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1028" name="EscapeScope_ShouldCancelRatherThanAccept" fullname="ResearchConsentTests.EscapeScope_ShouldCancelRatherThanAccept" methodname="EscapeScope_ShouldCancelRatherThanAccept" classname="ResearchConsentTests" runstate="Runnable" seed="1442842321" result="Passed" start-time="2026-09-25 01:22:55Z" end-time="2026-09-25 01:22:55Z" duration="0.098903" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1030" name="FocusAndNavigation_ShouldStayInsideDialog_AndRestoreOnClose" fullname="ResearchConsentTests.FocusAndNavigation_ShouldStayInsideDialog_AndRestoreOnClose" methodname="FocusAndNavigation_ShouldStayInsideDialog_AndRestoreOnClose" classname="ResearchConsentTests" runstate="Runnable" seed="1610163024" result="Passed" start-time="2026-09-25 01:22:55Z" end-time="2026-09-25 01:22:56Z" duration="0.133335" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1029" name="LongCopy_ShouldScroll_WhileAgreementAndActionsStayFixed" fullname="ResearchConsentTests.LongCopy_ShouldScroll_WhileAgreementAndActionsStayFixed" methodname="LongCopy_ShouldScroll_WhileAgreementAndActionsStayFixed" classname="ResearchConsentTests" runstate="Runnable" seed="828474484" result="Passed" start-time="2026-09-25 01:22:56Z" end-time="2026-09-25 01:22:56Z" duration="0.133834" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1024" name="TitleEntry_ShouldShowAutomatically_AndOnlyUnlockNewGameAfterConfirmation" fullname="ResearchConsentTests.TitleEntry_ShouldShowAutomatically_AndOnlyUnlockNewGameAfterConfirmation" methodname="TitleEntry_ShouldShowAutomatically_AndOnlyUnlockNewGameAfterConfirmation" classname="ResearchConsentTests" runstate="Runnable" seed="1182456413" result="Passed" start-time="2026-09-25 01:22:56Z" end-time="2026-09-25 01:22:56Z" duration="0.251718" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

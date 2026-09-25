@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="7" result="Passed" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-25 01:14:57Z" end-time="2026-09-25 01:14:57Z" duration="0.2458497">
+  <test-suite type="TestSuite" id="1000" name="GeoModelTest" fullname="GeoModelTest" runstate="Runnable" testcasecount="57" result="Passed" start-time="2026-09-25 01:14:57Z" end-time="2026-09-25 01:14:57Z" duration="0.245850" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1057" name="GeoModel.Backend.EditModeTests.dll" fullname="/Users/user/Unity/GeoModelTest/Library/ScriptAssemblies/GeoModel.Backend.EditModeTests.dll" runstate="Runnable" testcasecount="43" result="Passed" start-time="2026-09-25 01:14:57Z" end-time="2026-09-25 01:14:57Z" duration="0.237392" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="22938" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1023" name="LocalizationDataTests" fullname="LocalizationDataTests" classname="LocalizationDataTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-09-25 01:14:57Z" end-time="2026-09-25 01:14:57Z" duration="0.233637" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1029" name="JapaneseLocalization_ShouldContainRequiredMobileAndSafetyKeys" fullname="LocalizationDataTests.JapaneseLocalization_ShouldContainRequiredMobileAndSafetyKeys" methodname="JapaneseLocalization_ShouldContainRequiredMobileAndSafetyKeys" classname="LocalizationDataTests" runstate="Runnable" seed="1454732120" result="Passed" start-time="2026-09-25 01:14:57Z" end-time="2026-09-25 01:14:57Z" duration="0.036611" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1031" name="JapaneseLocalization_ShouldHaveBalancedFormatPlaceholders" fullname="LocalizationDataTests.JapaneseLocalization_ShouldHaveBalancedFormatPlaceholders" methodname="JapaneseLocalization_ShouldHaveBalancedFormatPlaceholders" classname="LocalizationDataTests" runstate="Runnable" seed="1594047419" result="Passed" start-time="2026-09-25 01:14:57Z" end-time="2026-09-25 01:14:57Z" duration="0.026649" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1028" name="JapaneseLocalization_ShouldHaveUniqueNonEmptyKeysAndValues" fullname="LocalizationDataTests.JapaneseLocalization_ShouldHaveUniqueNonEmptyKeysAndValues" methodname="JapaneseLocalization_ShouldHaveUniqueNonEmptyKeysAndValues" classname="LocalizationDataTests" runstate="Runnable" seed="2125153657" result="Passed" start-time="2026-09-25 01:14:57Z" end-time="2026-09-25 01:14:57Z" duration="0.010018" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1030" name="JapaneseLocalization_ShouldNotContainKnownUnsafeOrMixedLanguageCopy" fullname="LocalizationDataTests.JapaneseLocalization_ShouldNotContainKnownUnsafeOrMixedLanguageCopy" methodname="JapaneseLocalization_ShouldNotContainKnownUnsafeOrMixedLanguageCopy" classname="LocalizationDataTests" runstate="Runnable" seed="951393359" result="Passed" start-time="2026-09-25 01:14:57Z" end-time="2026-09-25 01:14:57Z" duration="0.084722" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1027" name="RemediationCopy_ShouldExistWithoutDuplicatesInEveryLanguage" fullname="LocalizationDataTests.RemediationCopy_ShouldExistWithoutDuplicatesInEveryLanguage" classname="LocalizationDataTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-09-25 01:14:57Z" end-time="2026-09-25 01:14:57Z" duration="0.065092" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1024" name="RemediationCopy_ShouldExistWithoutDuplicatesInEveryLanguage(&quot;ja-JP&quot;)" fullname="LocalizationDataTests.RemediationCopy_ShouldExistWithoutDuplicatesInEveryLanguage(&quot;ja-JP&quot;)" methodname="RemediationCopy_ShouldExistWithoutDuplicatesInEveryLanguage" classname="LocalizationDataTests" runstate="Runnable" seed="653267333" result="Passed" start-time="2026-09-25 01:14:57Z" end-time="2026-09-25 01:14:57Z" duration="0.022220" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1025" name="RemediationCopy_ShouldExistWithoutDuplicatesInEveryLanguage(&quot;zh-CN&quot;)" fullname="LocalizationDataTests.RemediationCopy_ShouldExistWithoutDuplicatesInEveryLanguage(&quot;zh-CN&quot;)" methodname="RemediationCopy_ShouldExistWithoutDuplicatesInEveryLanguage" classname="LocalizationDataTests" runstate="Runnable" seed="1824957623" result="Passed" start-time="2026-09-25 01:14:57Z" end-time="2026-09-25 01:14:57Z" duration="0.019944" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1026" name="RemediationCopy_ShouldExistWithoutDuplicatesInEveryLanguage(&quot;en-US&quot;)" fullname="LocalizationDataTests.RemediationCopy_ShouldExistWithoutDuplicatesInEveryLanguage(&quot;en-US&quot;)" methodname="RemediationCopy_ShouldExistWithoutDuplicatesInEveryLanguage" classname="LocalizationDataTests" runstate="Runnable" seed="1688387468" result="Passed" start-time="2026-09-25 01:14:57Z" end-time="2026-09-25 01:14:57Z" duration="0.020773" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: /Users/user/Library/Application Support/ZHANGSHIFENG/GeoModelTest/TestResults.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

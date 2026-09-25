@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="41" result="Passed" total="41" passed="41" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-25 01:28:23Z" end-time="2026-09-25 01:28:33Z" duration="10.389713">
+  <test-suite type="TestSuite" id="1056" name="GeoModelTest" fullname="GeoModelTest" runstate="Runnable" testcasecount="41" result="Passed" start-time="2026-09-25 01:28:23Z" end-time="2026-09-25 01:28:33Z" duration="10.389713" total="41" passed="41" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1052" name="GeoModel.UI.PlayModeTests.dll" fullname="/Users/user/Unity/GeoModelTest/Library/ScriptAssemblies/GeoModel.UI.PlayModeTests.dll" runstate="Runnable" testcasecount="41" result="Passed" start-time="2026-09-25 01:28:23Z" end-time="2026-09-25 01:28:33Z" duration="10.361121" total="41" passed="41" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="27837" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1001" name="FirstControlExperienceTests" fullname="FirstControlExperienceTests" classname="FirstControlExperienceTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-25 01:28:23Z" end-time="2026-09-25 01:28:24Z" duration="1.000893" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1002" name="GuideButton_ShouldPauseThenRestoreAndRememberCompletion" fullname="FirstControlExperienceTests.GuideButton_ShouldPauseThenRestoreAndRememberCompletion" methodname="GuideButton_ShouldPauseThenRestoreAndRememberCompletion" classname="FirstControlExperienceTests" runstate="Runnable" seed="69697594" result="Passed" start-time="2026-09-25 01:28:23Z" end-time="2026-09-25 01:28:23Z" duration="0.108607" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1004" name="Player_ShouldAcceptJoystickCreatedAfterPlayerAndGuide" fullname="FirstControlExperienceTests.Player_ShouldAcceptJoystickCreatedAfterPlayerAndGuide" methodname="Player_ShouldAcceptJoystickCreatedAfterPlayerAndGuide" classname="FirstControlExperienceTests" runstate="Runnable" seed="951682501" result="Passed" start-time="2026-09-25 01:28:23Z" end-time="2026-09-25 01:28:23Z" duration="0.357884" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[FirstPersonController] 未找到MobileInputManager，移动端输入功能将不可用
+请确保场景中有MobileInputManager组件，或者禁用enableMobileInput
+]]></output>
+        </test-case>
+        <test-case id="1005" name="PublishedWarehouseGate_ShouldHideLegacyUIAndPreserveScenery" fullname="FirstControlExperienceTests.PublishedWarehouseGate_ShouldHideLegacyUIAndPreserveScenery" methodname="PublishedWarehouseGate_ShouldHideLegacyUIAndPreserveScenery" classname="FirstControlExperienceTests" runstate="Runnable" seed="38486871" result="Passed" start-time="2026-09-25 01:28:23Z" end-time="2026-09-25 01:28:23Z" duration="0.097034" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1003" name="TouchGuide_ShouldUseTouchInstructionsAndSurviveNestedModal" fullname="FirstControlExperienceTests.TouchGuide_ShouldUseTouchInstructionsAndSurviveNestedModal" methodname="TouchGuide_ShouldUseTouchInstructionsAndSurviveNestedModal" classname="FirstControlExperienceTests" runstate="Runnable" seed="112630875" result="Passed" start-time="2026-09-25 01:28:23Z" end-time="2026-09-25 01:28:24Z" duration="0.132930" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1006" name="WarehouseCloseButton_ShouldRestoreControlsIfFeatureIsReenabled" fullname="FirstControlExperienceTests.WarehouseCloseButton_ShouldRestoreControlsIfFeatureIsReenabled" methodname="WarehouseCloseButton_ShouldRestoreControlsIfFeatureIsReenabled" classname="FirstControlExperienceTests" runstate="Runnable" seed="419906619" result="Passed" start-time="2026-09-25 01:28:24Z" end-time="2026-09-25 01:28:24Z" duration="0.138777" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1007" name="WarehouseEscapeCallback_ShouldRestoreControlsIfFeatureIsReenabled" fullname="FirstControlExperienceTests.WarehouseEscapeCallback_ShouldRestoreControlsIfFeatureIsReenabled" methodname="WarehouseEscapeCallback_ShouldRestoreControlsIfFeatureIsReenabled" classname="FirstControlExperienceTests" runstate="Runnable" seed="2097092975" result="Passed" start-time="2026-09-25 01:28:24Z" end-time="2026-09-25 01:28:24Z" duration="0.128109" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1008" name="GamePerformanceSettingsTests" fullname="GamePerformanceSettingsTests" classname="GamePerformanceSettingsTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-09-25 01:28:24Z" end-time="2026-09-25 01:28:24Z" duration="0.143947" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+        <test-case id="1011" name="AutoQuality_Should_KeepDowngrade_When_LayoutReappliesPreferences" fullname="GamePerformanceSettingsTests.AutoQuality_Should_KeepDowngrade_When_LayoutReappliesPreferences" methodname="AutoQuality_Should_KeepDowngrade_When_LayoutReappliesPreferences" classname="GamePerformanceSettingsTests" runstate="Runnable" seed="1467360313" result="Passed" start-time="2026-09-25 01:28:24Z" end-time="2026-09-25 01:28:24Z" duration="0.005427" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1009" name="AutoQuality_Should_StartAtLow_When_SelectedOnAnyDevice" fullname="GamePerformanceSettingsTests.AutoQuality_Should_StartAtLow_When_SelectedOnAnyDevice" methodname="AutoQuality_Should_StartAtLow_When_SelectedOnAnyDevice" classname="GamePerformanceSettingsTests" runstate="Runnable" seed="1472216332" result="Passed" start-time="2026-09-25 01:28:24Z" end-time="2026-09-25 01:28:24Z" duration="0.001885" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1010" name="ManualQuality_Should_RemainSelected_When_LayoutRefreshesOrAutoHasSlowHistory" fullname="GamePerformanceSettingsTests.ManualQuality_Should_RemainSelected_When_LayoutRefreshesOrAutoHasSlowHistory" methodname="ManualQuality_Should_RemainSelected_When_LayoutRefreshesOrAutoHasSlowHistory" classname="GamePerformanceSettingsTests" runstate="Runnable" seed="144251021" result="Passed" start-time="2026-09-25 01:28:24Z" end-time="2026-09-25 01:28:24Z" duration="0.004834" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1013" name="MicroscopePreview_Should_ReallocateAndRelease_When_QualityChanges" fullname="GamePerformanceSettingsTests.MicroscopePreview_Should_ReallocateAndRelease_When_QualityChanges" methodname="MicroscopePreview_Should_ReallocateAndRelease_When_QualityChanges" classname="GamePerformanceSettingsTests" runstate="Runnable" seed="370669354" result="Passed" start-time="2026-09-25 01:28:24Z" end-time="2026-09-25 01:28:24Z" duration="0.096788" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+        </test-case>
+        <test-case id="1012" name="QualityChange_Should_PreservePause_When_LowEndLayoutOptimizationRuns" fullname="GamePerformanceSettingsTests.QualityChange_Should_PreservePause_When_LowEndLayoutOptimizationRuns" methodname="QualityChange_Should_PreservePause_When_LowEndLayoutOptimizationRuns" classname="GamePerformanceSettingsTests" runstate="Runnable" seed="1997475508" result="Passed" start-time="2026-09-25 01:28:24Z" end-time="2026-09-25 01:28:24Z" duration="0.002584" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1014" name="InvestigationReportTests" fullname="InvestigationReportTests" classname="InvestigationReportTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-09-25 01:28:24Z" end-time="2026-09-25 01:28:24Z" duration="0.433070" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+        <test-case id="1015" name="Report_Should_BlockButtonCardAndKeys_BeforeResearchSurveyClick" fullname="InvestigationReportTests.Report_Should_BlockButtonCardAndKeys_BeforeResearchSurveyClick" methodname="Report_Should_BlockButtonCardAndKeys_BeforeResearchSurveyClick" classname="InvestigationReportTests" runstate="Runnable" seed="589984142" result="Passed" start-time="2026-09-25 01:28:24Z" end-time="2026-09-25 01:28:24Z" duration="0.104011" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+        </test-case>
+        <test-case id="1018" name="Report_Should_NotTreatSurveySubmitKey_AsReturnShortcut" fullname="InvestigationReportTests.Report_Should_NotTreatSurveySubmitKey_AsReturnShortcut" methodname="Report_Should_NotTreatSurveySubmitKey_AsReturnShortcut" classname="InvestigationReportTests" runstate="Runnable" seed="585228217" result="Passed" start-time="2026-09-25 01:28:24Z" end-time="2026-09-25 01:28:24Z" duration="0.098114" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+        </test-case>
+        <test-case id="1017" name="Report_Should_OfferSurvey_ForOrdinaryPlayWithoutCode" fullname="InvestigationReportTests.Report_Should_OfferSurvey_ForOrdinaryPlayWithoutCode" methodname="Report_Should_OfferSurvey_ForOrdinaryPlayWithoutCode" classname="InvestigationReportTests" runstate="Runnable" seed="1161238792" result="Passed" start-time="2026-09-25 01:28:24Z" end-time="2026-09-25 01:28:24Z" duration="0.098839" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+        </test-case>
+        <test-case id="1016" name="Report_Should_UnlockAfterFailedSurveyAttempt_WithoutCompletingQuestionnaire" fullname="InvestigationReportTests.Report_Should_UnlockAfterFailedSurveyAttempt_WithoutCompletingQuestionnaire" methodname="Report_Should_UnlockAfterFailedSurveyAttempt_WithoutCompletingQuestionnaire" classname="InvestigationReportTests" runstate="Runnable" seed="173186772" result="Passed" start-time="2026-09-25 01:28:24Z" end-time="2026-09-25 01:28:24Z" duration="0.101613" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+未找到FirstPersonController，设置界面将无法控制玩家移动
+]]></output>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1019" name="ModalInputTests" fullname="ModalInputTests" classname="ModalInputTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-09-25 01:28:24Z" end-time="2026-09-25 01:28:25Z" duration="1.044323" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1021" name="Escape_ShouldBeConsumedOnceBySettingsAndModalRouter" fullname="ModalInputTests.Escape_ShouldBeConsumedOnceBySettingsAndModalRouter" methodname="Escape_ShouldBeConsumedOnceBySettingsAndModalRouter" classname="ModalInputTests" runstate="Runnable" seed="1369227009" result="Passed" start-time="2026-09-25 01:28:24Z" end-time="2026-09-25 01:28:25Z" duration="0.681379" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[未找到FirstPersonController，设置界面将无法控制玩家移动
+]]></output>
+        </test-case>
+        <test-case id="1022" name="HistoryOverSettings_ShouldPreservePauseUntilSettingsCloses" fullname="ModalInputTests.HistoryOverSettings_ShouldPreservePauseUntilSettingsCloses" methodname="HistoryOverSettings_ShouldPreservePauseUntilSettingsCloses" classname="ModalInputTests" runstate="Runnable" seed="828843998" result="Passed" start-time="2026-09-25 01:28:25Z" end-time="2026-09-25 01:28:25Z" duration="0.165931" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[未找到FirstPersonController，设置界面将无法控制玩家移动
+]]></output>
+        </test-case>
+        <test-case id="1020" name="NestedModals_ShouldRestoreOriginalTimeOnlyAfterLastClose" fullname="ModalInputTests.NestedModals_ShouldRestoreOriginalTimeOnlyAfterLastClose" methodname="NestedModals_ShouldRestoreOriginalTimeOnlyAfterLastClose" classname="ModalInputTests" runstate="Runnable" seed="1275613396" result="Passed" start-time="2026-09-25 01:28:25Z" end-time="2026-09-25 01:28:25Z" duration="0.166580" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1023" name="ResearchConsentTests" fullname="ResearchConsentTests" classname="ResearchConsentTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-09-25 01:28:25Z" end-time="2026-09-25 01:28:26Z" duration="1.032486" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1027" name="CancelAndReopen_ShouldDiscardAgreement_WithoutChangingProgress" fullname="ResearchConsentTests.CancelAndReopen_ShouldDiscardAgreement_WithoutChangingProgress" methodname="CancelAndReopen_ShouldDiscardAgreement_WithoutChangingProgress" classname="ResearchConsentTests" runstate="Runnable" seed="406285229" result="Passed" start-time="2026-09-25 01:28:25Z" end-time="2026-09-25 01:28:26Z" duration="0.102895" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1025" name="Checkmarks_ShouldBeVisibleWhenChecked_WhileGameIsPaused" fullname="ResearchConsentTests.Checkmarks_ShouldBeVisibleWhenChecked_WhileGameIsPaused" methodname="Checkmarks_ShouldBeVisibleWhenChecked_WhileGameIsPaused" classname="ResearchConsentTests" runstate="Runnable" seed="1831585921" result="Passed" start-time="2026-09-25 01:28:26Z" end-time="2026-09-25 01:28:26Z" duration="0.197572" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1026" name="Continue_ShouldRequireCurrentCheck_AndOnlyRunOnce" fullname="ResearchConsentTests.Continue_ShouldRequireCurrentCheck_AndOnlyRunOnce" methodname="Continue_ShouldRequireCurrentCheck_AndOnlyRunOnce" classname="ResearchConsentTests" runstate="Runnable" seed="1840902678" result="Passed" start-time="2026-09-25 01:28:26Z" end-time="2026-09-25 01:28:26Z" duration="0.100102" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1028" name="EscapeScope_ShouldCancelRatherThanAccept" fullname="ResearchConsentTests.EscapeScope_ShouldCancelRatherThanAccept" methodname="EscapeScope_ShouldCancelRatherThanAccept" classname="ResearchConsentTests" runstate="Runnable" seed="561099355" result="Passed" start-time="2026-09-25 01:28:26Z" end-time="2026-09-25 01:28:26Z" duration="0.099270" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1030" name="FocusAndNavigation_ShouldStayInsideDialog_AndRestoreOnClose" fullname="ResearchConsentTests.FocusAndNavigation_ShouldStayInsideDialog_AndRestoreOnClose" methodname="FocusAndNavigation_ShouldStayInsideDialog_AndRestoreOnClose" classname="ResearchConsentTests" runstate="Runnable" seed="1247870399" result="Passed" start-time="2026-09-25 01:28:26Z" end-time="2026-09-25 01:28:26Z" duration="0.133539" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1029" name="LongCopy_ShouldScroll_WhileAgreementAndActionsStayFixed" fullname="ResearchConsentTests.LongCopy_ShouldScroll_WhileAgreementAndActionsStayFixed" methodname="LongCopy_ShouldScroll_WhileAgreementAndActionsStayFixed" classname="ResearchConsentTests" runstate="Runnable" seed="1054267284" result="Passed" start-time="2026-09-25 01:28:26Z" end-time="2026-09-25 01:28:26Z" duration="0.133358" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1024" name="TitleEntry_ShouldShowAutomatically_AndOnlyUnlockNewGameAfterConfirmation" fullname="ResearchConsentTests.TitleEntry_ShouldShowAutomatically_AndOnlyUnlockNewGameAfterConfirmation" methodname="TitleEntry_ShouldShowAutomatically_AndOnlyUnlockNewGameAfterConfirmation" classname="ResearchConsentTests" runstate="Runnable" seed="1405791530" result="Passed" start-time="2026-09-25 01:28:26Z" end-time="2026-09-25 01:28:26Z" duration="0.231987" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1031" name="ResearchRecoveryTests" fullname="ResearchRecoveryTests" classname="ResearchRecoveryTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-09-25 01:28:26Z" end-time="2026-09-25 01:28:27Z" duration="0.835590" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1032" name="OfflineExit_ShouldRetainIdentityAndUploadOriginalSessionAfterReconnect" fullname="ResearchRecoveryTests.OfflineExit_ShouldRetainIdentityAndUploadOriginalSessionAfterReconnect" methodname="OfflineExit_ShouldRetainIdentityAndUploadOriginalSessionAfterReconnect" classname="ResearchRecoveryTests" runstate="Runnable" seed="180132828" result="Passed" start-time="2026-09-25 01:28:26Z" end-time="2026-09-25 01:28:27Z" duration="0.474395" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[TelemetryClient] Ingest failed: HTTP 0 Cannot connect to destination host 
+[TelemetryClient] Ingest failed: HTTP 0 Cannot connect to destination host 
+]]></output>
+        </test-case>
+        <test-case id="1034" name="OpenPlay_ShouldActivateWithoutCode_AndRecoverLocalQuizAnswers" fullname="ResearchRecoveryTests.OpenPlay_ShouldActivateWithoutCode_AndRecoverLocalQuizAnswers" methodname="OpenPlay_ShouldActivateWithoutCode_AndRecoverLocalQuizAnswers" classname="ResearchRecoveryTests" runstate="Runnable" seed="141033000" result="Passed" start-time="2026-09-25 01:28:27Z" end-time="2026-09-25 01:28:27Z" duration="0.260879" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1033" name="RefreshFailure_ShouldKeepBoundIdentityAndNeverCreateReplacementAnonymousUser" fullname="ResearchRecoveryTests.RefreshFailure_ShouldKeepBoundIdentityAndNeverCreateReplacementAnonymousUser" methodname="RefreshFailure_ShouldKeepBoundIdentityAndNeverCreateReplacementAnonymousUser" classname="ResearchRecoveryTests" runstate="Runnable" seed="2011101138" result="Passed" start-time="2026-09-25 01:28:27Z" end-time="2026-09-25 01:28:27Z" duration="0.098783" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[TelemetryClient] Auth request failed: HTTP 503 HTTP/1.1 503 Service Unavailable {"ok":true}
+]]></output>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1035" name="TeacherFeedbackTests" fullname="TeacherFeedbackTests" classname="TeacherFeedbackTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-09-25 01:28:27Z" end-time="2026-09-25 01:28:30Z" duration="2.810705" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1037" name="EmptyHands_ShouldUnequipInsteadOfStartingAnAction" fullname="TeacherFeedbackTests.EmptyHands_ShouldUnequipInsteadOfStartingAnAction" methodname="EmptyHands_ShouldUnequipInsteadOfStartingAnAction" classname="TeacherFeedbackTests" runstate="Runnable" seed="361272352" result="Passed" start-time="2026-09-25 01:28:27Z" end-time="2026-09-25 01:28:27Z" duration="0.103022" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[无法显示场景切换器：缺少预制体或手部位置
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+        </test-case>
+        <test-case id="1042" name="FieldGuide_ShouldWaitForStoryThenShowOnceEvenWithoutASamplingTask" fullname="TeacherFeedbackTests.FieldGuide_ShouldWaitForStoryThenShowOnceEvenWithoutASamplingTask" methodname="FieldGuide_ShouldWaitForStoryThenShowOnceEvenWithoutASamplingTask" classname="TeacherFeedbackTests" runstate="Runnable" seed="733902735" result="Passed" start-time="2026-09-25 01:28:27Z" end-time="2026-09-25 01:28:28Z" duration="0.376467" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1040" name="GuidePages_ShouldFitEveryLanguageOnDesktopAndTouch" fullname="TeacherFeedbackTests.GuidePages_ShouldFitEveryLanguageOnDesktopAndTouch" methodname="GuidePages_ShouldFitEveryLanguageOnDesktopAndTouch" classname="TeacherFeedbackTests" runstate="Runnable" seed="1195909223" result="Passed" start-time="2026-09-25 01:28:28Z" end-time="2026-09-25 01:28:29Z" duration="1.068788" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1038" name="HelpOverDestinationSelection_ShouldRestorePauseThenCancelPutsToolAway" fullname="TeacherFeedbackTests.HelpOverDestinationSelection_ShouldRestorePauseThenCancelPutsToolAway" methodname="HelpOverDestinationSelection_ShouldRestorePauseThenCancelPutsToolAway" classname="TeacherFeedbackTests" runstate="Runnable" seed="1649894487" result="Passed" start-time="2026-09-25 01:28:29Z" end-time="2026-09-25 01:28:29Z" duration="0.186112" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[无法显示场景切换器：缺少预制体或手部位置
+[ToolUnlockService] 未在玩家对象上找到工具组件，且无兜底可用: hammer
+[ToolUnlockService] 未在玩家对象上找到工具组件，且无兜底可用: drill
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+        </test-case>
+        <test-case id="1041" name="Npc_ShouldShowNewQuestMarkerThenRepeatReminderAfterCompletion" fullname="TeacherFeedbackTests.Npc_ShouldShowNewQuestMarkerThenRepeatReminderAfterCompletion" methodname="Npc_ShouldShowNewQuestMarkerThenRepeatReminderAfterCompletion" classname="TeacherFeedbackTests" runstate="Runnable" seed="552273804" result="Passed" start-time="2026-09-25 01:28:29Z" end-time="2026-09-25 01:28:29Z" duration="0.340903" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1039" name="Reminder_ShouldRemainReplayableWithoutChangingQuestOrCheckpoints" fullname="TeacherFeedbackTests.Reminder_ShouldRemainReplayableWithoutChangingQuestOrCheckpoints" methodname="Reminder_ShouldRemainReplayableWithoutChangingQuestOrCheckpoints" classname="TeacherFeedbackTests" runstate="Runnable" seed="767431039" result="Passed" start-time="2026-09-25 01:28:29Z" end-time="2026-09-25 01:28:30Z" duration="0.465243" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1036" name="WheelSelection_ShouldWaitForReleaseAndANewClickBeforeUsingSwitcher" fullname="TeacherFeedbackTests.WheelSelection_ShouldWaitForReleaseAndANewClickBeforeUsingSwitcher" methodname="WheelSelection_ShouldWaitForReleaseAndANewClickBeforeUsingSwitcher" classname="TeacherFeedbackTests" runstate="Runnable" seed="159165348" result="Passed" start-time="2026-09-25 01:28:30Z" end-time="2026-09-25 01:28:30Z" duration="0.237338" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+[ToolUnlockService] 未在玩家对象上找到工具组件，且无兜底可用: hammer
+[ToolUnlockService] 未在玩家对象上找到工具组件，且无兜底可用: drill
+无法显示场景切换器：缺少预制体或手部位置
+]]></output>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1043" name="VehicleToolTests" fullname="VehicleToolTests" classname="VehicleToolTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-25 01:28:30Z" end-time="2026-09-25 01:28:33Z" duration="3.028751" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+        <test-case id="1048" name="DrillCar_ShouldMoveWithMobileInputAndRestorePlayerAfterRecall" fullname="VehicleToolTests.DrillCar_ShouldMoveWithMobileInputAndRestorePlayerAfterRecall" methodname="DrillCar_ShouldMoveWithMobileInputAndRestorePlayerAfterRecall" classname="VehicleToolTests" runstate="Runnable" seed="1673133996" result="Passed" start-time="2026-09-25 01:28:30Z" end-time="2026-09-25 01:28:33Z" duration="2.532873" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+        </test-case>
+        <test-case id="1047" name="Drone_ShouldMoveWithMobileInputAndRestorePlayerAfterRecall" fullname="VehicleToolTests.Drone_ShouldMoveWithMobileInputAndRestorePlayerAfterRecall" methodname="Drone_ShouldMoveWithMobileInputAndRestorePlayerAfterRecall" classname="VehicleToolTests" runstate="Runnable" seed="469451544" result="Passed" start-time="2026-09-25 01:28:33Z" end-time="2026-09-25 01:28:33Z" duration="0.266377" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1046" name="PackagedVehicle_ShouldHaveRealMeshAndController" fullname="VehicleToolTests.PackagedVehicle_ShouldHaveRealMeshAndController" classname="VehicleToolTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-09-25 01:28:33Z" end-time="2026-09-25 01:28:33Z" duration="0.099983" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+          <test-case id="1044" name="PackagedVehicle_ShouldHaveRealMeshAndController(&quot;Drone&quot;)" fullname="VehicleToolTests.PackagedVehicle_ShouldHaveRealMeshAndController(&quot;Drone&quot;)" methodname="PackagedVehicle_ShouldHaveRealMeshAndController" classname="VehicleToolTests" runstate="Runnable" seed="1868852301" result="Passed" start-time="2026-09-25 01:28:33Z" end-time="2026-09-25 01:28:33Z" duration="0.033153" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+          </test-case>
+          <test-case id="1045" name="PackagedVehicle_ShouldHaveRealMeshAndController(&quot;DrillCar&quot;)" fullname="VehicleToolTests.PackagedVehicle_ShouldHaveRealMeshAndController(&quot;DrillCar&quot;)" methodname="PackagedVehicle_ShouldHaveRealMeshAndController" classname="VehicleToolTests" runstate="Runnable" seed="1351673445" result="Passed" start-time="2026-09-25 01:28:33Z" end-time="2026-09-25 01:28:33Z" duration="0.033230" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1051" name="ToolWheel_ShouldResolveVehicleNamesById" fullname="VehicleToolTests.ToolWheel_ShouldResolveVehicleNamesById" classname="VehicleToolTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-09-25 01:28:33Z" end-time="2026-09-25 01:28:33Z" duration="0.099741" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1049" name="ToolWheel_ShouldResolveVehicleNamesById(&quot;Drone&quot;,&quot;1100&quot;,&quot;tool.drone.name&quot;)" fullname="VehicleToolTests.ToolWheel_ShouldResolveVehicleNamesById(&quot;Drone&quot;,&quot;1100&quot;,&quot;tool.drone.name&quot;)" methodname="ToolWheel_ShouldResolveVehicleNamesById" classname="VehicleToolTests" runstate="Runnable" seed="1480711440" result="Passed" start-time="2026-09-25 01:28:33Z" end-time="2026-09-25 01:28:33Z" duration="0.033264" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1050" name="ToolWheel_ShouldResolveVehicleNamesById(&quot;DrillCar&quot;,&quot;1101&quot;,&quot;tool.drill_car.name&quot;)" fullname="VehicleToolTests.ToolWheel_ShouldResolveVehicleNamesById(&quot;DrillCar&quot;,&quot;1101&quot;,&quot;tool.drill_car.name&quot;)" methodname="ToolWheel_ShouldResolveVehicleNamesById" classname="VehicleToolTests" runstate="Runnable" seed="1114865746" result="Passed" start-time="2026-09-25 01:28:33Z" end-time="2026-09-25 01:28:33Z" duration="0.033144" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,6 @@
+[WebGLBuildSetup] 构建结果: Succeeded
+[WebGLBuildSetup] 输出: /Users/user/Unity/GeoModelTest/Build/WebGL
+[WebGLBuildSetup] 大小: 117 MB
+[WebGLBuildSetup] 耗时: 00:05:29.4997587
+[WebGLBuildSetup] 错误数: 0
+[WebGLBuildSetup] 构建成功 ✓
