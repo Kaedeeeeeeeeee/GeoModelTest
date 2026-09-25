@@ -24,4 +24,11 @@ The scene acceptance uses prepared quest checkpoints and simulated desktop/touch
 
 ## Publication
 
-Build and live verification details will be recorded here after publication to the existing itch.io HTML5 channel.
+- Source commit: `2ca9079`; build commit: `ab5dd5a`. Both pushed to `origin/main`.
+- Release build: 117 MB, 6 minutes 5 seconds, 0 BuildReport errors. StartScene remains the entry scene. See `build-summary.txt` and `build-provenance.json` (clean source revision).
+- Butler recognizes `index.html` as the HTML5 launch target. Upload contains 19 files and is published to `kaedeeeeeeeeee/geo-model-geological-drilling-simulator:html5`.
+- itch.io build `2014267` completed processing. The [public game page](https://kaedeeeeeeeeee.itch.io/geo-model-geological-drilling-simulator) points to `17462165-2014267` and displays the new version.
+- All 19 published files match the release package. Ordinary files are byte-identical; Unity gzip resources match after decompression; the two `index.html` files differ only by itch.io's official `htmlgame.js` insertion. Checks use the normal asset URLs without cache-busting parameters. See `published-assets.json`.
+- Ego Lite loaded the public build to `ready` at 1280×720 and verified the new version. The consent cancel button returned to the title menu with New Game still disabled. A subsequent ordinary reload also reached `ready`. See `online-runtime.json`, `online-consent.png` and `online-title.png`.
+- The first main-data transfer was truncated at 71,363,417 bytes (expected 130,924,138 decompressed bytes), and Unity cached that incomplete response. A fresh download from the same public URL matched the complete local data. Only that test-created response and its matching UnityCache metadata were removed, after which startup and an ordinary reload succeeded. Game saves, consent state, cookies and other cache entries were not cleared. No republish or game-code change was needed; the exact cause of the interrupted transfer was not established.
+- Screenshots are actual WebGL canvas exports; the verification page temporarily enabled `preserveDrawingBuffer` for capture. That setting is not part of the published package. No research consent was accepted, research session started or questionnaire submitted during this live smoke test. New feature flows were validated in the Unity scene tests above, not replayed end-to-end on the public site.

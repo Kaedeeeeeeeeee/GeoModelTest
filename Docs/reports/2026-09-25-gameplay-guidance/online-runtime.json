@@ -1,0 +1,28 @@
+{
+  "url": "https://html-classic.itch.zone/html/17462165-2014267/index.html?v=1790314736",
+  "version": "2026.09.25-gameplay-guidance",
+  "ready": true,
+  "loadingState": "ready",
+  "canvas": [
+    1280,
+    720
+  ],
+  "errors": [],
+  "canvasBounds": {
+    "x": 0,
+    "y": 0,
+    "width": 1280,
+    "height": 720
+  },
+  "normalReload": {
+    "version": "2026.09.25-gameplay-guidance",
+    "ready": true,
+    "loadingState": "ready",
+    "canvas": [
+      1280,
+      720
+    ]
+  },
+  "interaction": "Consent cancel button returned to the title menu; New Game remained disabled.",
+  "testConsentAccepted": false
+}

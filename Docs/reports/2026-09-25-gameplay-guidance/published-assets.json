@@ -1,0 +1,159 @@
+{
+  "verifiedAt": "2026-09-25T05:42:03.743454+00:00",
+  "baseUrl": "https://html-classic.itch.zone/html/17462165-2014267/",
+  "version": "2026.09.25-gameplay-guidance",
+  "checks": [
+    {
+      "path": "Build/WebGL.data.unityweb",
+      "status": 200,
+      "match": true,
+      "comparison": "decompressed-exact",
+      "localSha256": "93a221e944ba11d403f50c1214094b0c199846d13e3bb8b5021ba3c5138fdbae",
+      "servedSha256": "5f8b55ef4f1e3ced6fd7763fefccaa3c9bacff3473816857c21887c82cc07046"
+    },
+    {
+      "path": "Build/WebGL.framework.js.unityweb",
+      "status": 200,
+      "match": true,
+      "comparison": "decompressed-exact",
+      "localSha256": "3ac2b3735048d5581418118bc372b44e46bb02dd45d584f1da370a5d3bf76215",
+      "servedSha256": "9de49a4b8fdba45de1d5459b3db1846ce977e2ca8dc2b1b32d9b975fe845c9fc"
+    },
+    {
+      "path": "Build/WebGL.loader.js",
+      "status": 200,
+      "match": true,
+      "comparison": "byte-exact",
+      "localSha256": "9050251c45f6982cf1f01e4647175343789883770cf80dc6304b5d1cdf5467aa",
+      "servedSha256": "9050251c45f6982cf1f01e4647175343789883770cf80dc6304b5d1cdf5467aa"
+    },
+    {
+      "path": "Build/WebGL.wasm.unityweb",
+      "status": 200,
+      "match": true,
+      "comparison": "decompressed-exact",
+      "localSha256": "c2d44337193aab590c3b78cebab383f41b20155071e12ad3c081fe81550496f2",
+      "servedSha256": "73bd2b419cfe5f2a5aa95c15eb6a45210b368025a4841a4ff7585cf7974cdf76"
+    },
+    {
+      "path": "StreamingAssets/Survey/config.js",
+      "status": 200,
+      "match": true,
+      "comparison": "byte-exact",
+      "localSha256": "254b36bbd422ce0bf8355193a5e606f36c52e53118194fc6b14a9074934edbc0",
+      "servedSha256": "254b36bbd422ce0bf8355193a5e606f36c52e53118194fc6b14a9074934edbc0"
+    },
+    {
+      "path": "StreamingAssets/Survey/index.html",
+      "status": 200,
+      "match": true,
+      "comparison": "original-plus-itch-platform-script",
+      "localSha256": "4638dd8397d4728538f4cadc78f2cf9ae0f58bac0813d05893ca907c0ad05fcd",
+      "servedSha256": "1e9f8717ab45b4eb43b2fd10f69477b524a285dc558ca978ec9ac5232ddae7c5"
+    },
+    {
+      "path": "StreamingAssets/Survey/preview.css",
+      "status": 200,
+      "match": true,
+      "comparison": "byte-exact",
+      "localSha256": "399e8bc03c56bc1432531226807b6e9bdfe166128447687d35d29b2e8f3de541",
+      "servedSha256": "399e8bc03c56bc1432531226807b6e9bdfe166128447687d35d29b2e8f3de541"
+    },
+    {
+      "path": "StreamingAssets/Survey/preview.html",
+      "status": 200,
+      "match": true,
+      "comparison": "byte-exact",
+      "localSha256": "2dab6eedf779ffa69e9cb92d283e2f69c8aef749d18917aa6b26d8c707edf120",
+      "servedSha256": "2dab6eedf779ffa69e9cb92d283e2f69c8aef749d18917aa6b26d8c707edf120"
+    },
+    {
+      "path": "StreamingAssets/Survey/preview.js",
+      "status": 200,
+      "match": true,
+      "comparison": "byte-exact",
+      "localSha256": "7965aa653c6039ca68271f3d7bf9c2d907a5f6b66cac997f1b7a480c02f85750",
+      "servedSha256": "7965aa653c6039ca68271f3d7bf9c2d907a5f6b66cac997f1b7a480c02f85750"
+    },
+    {
+      "path": "StreamingAssets/Survey/questions.js",
+      "status": 200,
+      "match": true,
+      "comparison": "byte-exact",
+      "localSha256": "54203cd284e580a06a80f9f2388c4d761e59a176472bbcc5f1b1a2a57f4ba7d9",
+      "servedSha256": "54203cd284e580a06a80f9f2388c4d761e59a176472bbcc5f1b1a2a57f4ba7d9"
+    },
+    {
+      "path": "StreamingAssets/Survey/questions.json",
+      "status": 200,
+      "match": true,
+      "comparison": "byte-exact",
+      "localSha256": "665fdfe3d695a092fa4703988f163e42e62036b1516eaa3a44c14e8e2deafc0f",
+      "servedSha256": "665fdfe3d695a092fa4703988f163e42e62036b1516eaa3a44c14e8e2deafc0f"
+    },
+    {
+      "path": "StreamingAssets/Survey/survey.css",
+      "status": 200,
+      "match": true,
+      "comparison": "byte-exact",
+      "localSha256": "bf0eef3b6839c55413ea9a63ddf002a63778cf6048a9cd7ac588606e69db4fe4",
+      "servedSha256": "bf0eef3b6839c55413ea9a63ddf002a63778cf6048a9cd7ac588606e69db4fe4"
+    },
+    {
+      "path": "StreamingAssets/Survey/survey.js",
+      "status": 200,
+      "match": true,
+      "comparison": "byte-exact",
+      "localSha256": "55780fc5840d83ab2b8f369c86e133600fe12b66e2f07466526a3cd2211eda08",
+      "servedSha256": "55780fc5840d83ab2b8f369c86e133600fe12b66e2f07466526a3cd2211eda08"
+    },
+    {
+      "path": "StreamingAssets/UnityServicesProjectConfiguration.json",
+      "status": 200,
+      "match": true,
+      "comparison": "byte-exact",
+      "localSha256": "82e790d093246c9ec6bc56dcd171dd619567eb3aa19dd3ef0dfb6126b6d874b7",
+      "servedSha256": "82e790d093246c9ec6bc56dcd171dd619567eb3aa19dd3ef0dfb6126b6d874b7"
+    },
+    {
+      "path": "TemplateData/loading.js",
+      "status": 200,
+      "match": true,
+      "comparison": "byte-exact",
+      "localSha256": "d8720b2a9023ccc6562b8d89da01a74b22d8df1f1d8dfd0e538490686755d05d",
+      "servedSha256": "d8720b2a9023ccc6562b8d89da01a74b22d8df1f1d8dfd0e538490686755d05d"
+    },
+    {
+      "path": "TemplateData/performance.js",
+      "status": 200,
+      "match": true,
+      "comparison": "byte-exact",
+      "localSha256": "0e36abece3c0aeb0a3fe0ae50fdc480fb71ed6783c8664b8ce549329fbf63bc9",
+      "servedSha256": "0e36abece3c0aeb0a3fe0ae50fdc480fb71ed6783c8664b8ce549329fbf63bc9"
+    },
+    {
+      "path": "TemplateData/style.css",
+      "status": 200,
+      "match": true,
+      "comparison": "byte-exact",
+      "localSha256": "457635e457520fda8f884ed77c14463d67fdc13bbae6ab74635086d16e2f97d2",
+      "servedSha256": "457635e457520fda8f884ed77c14463d67fdc13bbae6ab74635086d16e2f97d2"
+    },
+    {
+      "path": "index.html",
+      "status": 200,
+      "match": true,
+      "comparison": "original-plus-itch-platform-script",
+      "localSha256": "459e2b1c6a76f571a1300b2fde1f419e5d380de319d2c67d8bf7c40a22590257",
+      "servedSha256": "ed1783a4969425b8f3aac890aa2860895f0ff9d9422c8b184de31a0b78f045a8"
+    },
+    {
+      "path": "release.json",
+      "status": 200,
+      "match": true,
+      "comparison": "byte-exact",
+      "localSha256": "0db06e306f1fcf38c50ceeecccf3b2d3bd16a10eeb1ed9f46d8669202fa938f2",
+      "servedSha256": "0db06e306f1fcf38c50ceeecccf3b2d3bd16a10eeb1ed9f46d8669202fa938f2"
+    }
+  ]
+}
