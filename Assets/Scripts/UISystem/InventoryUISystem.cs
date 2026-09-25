@@ -1260,6 +1260,28 @@ public class InventoryUISystem : MonoBehaviour
         }
     }
     
+    private void LateUpdate()
+    {
+        string recommended = UISystem.CollectionGuidanceHUD.RecommendedToolId;
+        Color hintColor = Color.Lerp(slotBackgroundColor, UISystem.GameUI.Accent,
+            0.35f + 0.12f * Mathf.Sin(Time.unscaledTime * 3f));
+        for (int i = 0; i < wheelSlots.Length && i < availableTools.Count; i++)
+        {
+            if (i == selectedSlot || wheelSlots[i] == null) continue;
+            var background = wheelSlots[i].GetComponent<Image>();
+            if (background != null)
+                background.color = availableTools[i] != null && availableTools[i].toolID == recommended
+                    ? hintColor : slotBackgroundColor;
+        }
+        for (int i = 0; i < mobileToolButtons.Count && i < availableTools.Count; i++)
+        {
+            if (mobileToolButtons[i] == null) continue;
+            var outline = mobileToolButtons[i].GetComponent<Outline>();
+            if (outline != null)
+                outline.enabled = availableTools[i] != null && availableTools[i].toolID == recommended;
+        }
+    }
+
     void ResetSlotColors()
     {
         for (int i = 0; i < wheelSlots.Length; i++)
@@ -1682,7 +1704,7 @@ public class InventoryUISystem : MonoBehaviour
     void RefreshMobileModeState()
     {
         isMobileMode = Application.isMobilePlatform ||
-                       (mobileInputManager != null && mobileInputManager.IsMobileDevice());
+                       (mobileInputManager != null && (mobileInputManager.IsMobileDevice() || mobileInputManager.desktopTestMode));
     }
     
     /// <summary>
@@ -1896,6 +1918,10 @@ public class InventoryUISystem : MonoBehaviour
         LocalizedText localizedText = textObj.AddComponent<LocalizedText>();
         localizedText.TextKey = GetToolNameKey(tool);
         
+        var recommendationOutline = buttonObj.AddComponent<Outline>();
+        recommendationOutline.effectColor = UISystem.GameUI.Accent;
+        recommendationOutline.effectDistance = new Vector2(3f, -3f);
+        recommendationOutline.enabled = false;
         mobileToolButtons.Add(button);
     }
     

@@ -48,6 +48,8 @@ public class DrillTowerTool : PlaceableTool
     public Material inactiveDrillMaterial; // 闲置状态材质
     
     public DrillTower placedTower; // 已放置的钻塔引用
+    public bool IsPlayerNearTower => placedTower != null && GetPlayerCamera() != null &&
+        Vector3.Distance(GetPlayerCamera().transform.position, placedTower.transform.position) <= interactionRange;
     private MobileInputManager mobileInputManager; // 移动端输入管理器
     private bool wasFKeyPressedLastFrame = false; // 上一帧F键状态
     

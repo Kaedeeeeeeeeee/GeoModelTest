@@ -30,6 +30,8 @@ public class HammerTool : CollectionTool
     
     // 采集状态
     private HammerCollectionState currentCollection;
+    public int CurrentHitCount => currentCollection?.currentHits ?? 0;
+    public GameObject PendingSample { get; private set; }
     private CollectionTargetMarker targetMarker;
     private GameObject targetMarkerObject;
     
@@ -362,6 +364,7 @@ public class HammerTool : CollectionTool
         // 第一阶段：抬起
         while (elapsed < upPhase)
         {
+            if (hammerTransform == null) yield break;
             float t = elapsed / upPhase;
             Vector3 upPos = startPos + Vector3.up * 0.2f + Vector3.back * 0.1f;
             Vector3 upRot = startRot + Vector3.right * -30f;
@@ -374,12 +377,14 @@ public class HammerTool : CollectionTool
         }
         
         // 第二阶段：下挥
+        if (hammerTransform == null) yield break;
         Vector3 upPosition = hammerTransform.localPosition;
         Vector3 upRotation = hammerTransform.localEulerAngles;
         elapsed = 0f;
         
         while (elapsed < downPhase)
         {
+            if (hammerTransform == null) yield break;
             float t = elapsed / downPhase;
             Vector3 downPos = startPos + Vector3.down * 0.1f + Vector3.forward * 0.1f;
             Vector3 downRot = startRot + Vector3.right * 20f;
@@ -392,12 +397,14 @@ public class HammerTool : CollectionTool
         }
         
         // 第三阶段：回位
+        if (hammerTransform == null) yield break;
         Vector3 downPosition = hammerTransform.localPosition;
         Vector3 downRotation = hammerTransform.localEulerAngles;
         elapsed = 0f;
         
         while (elapsed < returnPhase)
         {
+            if (hammerTransform == null) yield break;
             float t = elapsed / returnPhase;
             
             hammerTransform.localPosition = Vector3.Lerp(downPosition, startPos, t);
@@ -408,6 +415,7 @@ public class HammerTool : CollectionTool
         }
         
         // 确保回到初始位置
+        if (hammerTransform == null) yield break;
         hammerTransform.localPosition = startPos;
         hammerTransform.localEulerAngles = startRot;
     }
@@ -586,6 +594,7 @@ public class HammerTool : CollectionTool
         
         if (slabSample != null)
         {
+            PendingSample = slabSample;
             AttachGeometricSampleInfo(slabSample, reconstructedSample, position);
             // 集成到样本收集系统
             IntegrateSlabSample(slabSample);

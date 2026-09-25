@@ -44,6 +44,9 @@ public class SampleCollector : MonoBehaviour
         {
             mobileInputManager = FindObjectOfType<MobileInputManager>();
         }
+        // A sample may spawn while the final hammer tap is still held.
+        // Require a new press to pick it up, rather than consuming that tap twice.
+        wasEKeyPressedLastFrame = mobileInputManager != null && mobileInputManager.IsInteracting;
     }
     
     void Update()
@@ -521,7 +524,8 @@ public class SampleCollector : MonoBehaviour
     /// </summary>
     void HandleInput()
     {
-        if (playerInRange && IsEKeyPressed())
+        bool pressed = IsEKeyPressed();
+        if (playerInRange && pressed)
         {
             CollectSample();
         }

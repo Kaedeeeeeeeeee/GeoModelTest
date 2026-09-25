@@ -3607,6 +3607,130 @@
     {
       "key": "ui.consent.review",
       "value": "查看研究参与说明"
+    },
+    {
+      "key": "ui.collection.travel.desktop",
+      "value": "沿蓝色引导线前往采集地点。"
+    },
+    {
+      "key": "ui.collection.travel.touch",
+      "value": "沿蓝色引导线前往采集地点。"
+    },
+    {
+      "key": "ui.collection.equip.desktop",
+      "value": "按 Tab 打开工具栏，选择高亮的「{0}」。"
+    },
+    {
+      "key": "ui.collection.equip.touch",
+      "value": "打开「工具」，选择高亮的「{0}」。"
+    },
+    {
+      "key": "ui.collection.hit.desktop",
+      "value": "靠近岩石，对准同一位置，左键敲击 {2} 次。"
+    },
+    {
+      "key": "ui.collection.hit.touch",
+      "value": "靠近岩石，对准同一位置，点击「交互」{2} 次。"
+    },
+    {
+      "key": "ui.collection.hit_progress.desktop",
+      "value": "采集 {1}/{2} — 继续左键敲击同一标记。"
+    },
+    {
+      "key": "ui.collection.hit_progress.touch",
+      "value": "采集 {1}/{2} — 对准同一标记，继续点击「交互」。"
+    },
+    {
+      "key": "ui.collection.pickup.desktop",
+      "value": "采集完成 {2}/{2}！靠近样本，按 E 拾取。"
+    },
+    {
+      "key": "ui.collection.pickup.touch",
+      "value": "采集完成 {2}/{2}！靠近样本，点击「交互」拾取。"
+    },
+    {
+      "key": "ui.collection.preview.desktop",
+      "value": "对准采集点地面，左键进入钻塔放置模式。"
+    },
+    {
+      "key": "ui.collection.preview.touch",
+      "value": "对准采集点地面，点击「交互」进入钻塔放置模式。"
+    },
+    {
+      "key": "ui.collection.place.desktop",
+      "value": "确认预览位置，左键放置钻塔。"
+    },
+    {
+      "key": "ui.collection.place.touch",
+      "value": "确认预览位置，再次点击「交互」放置钻塔。"
+    },
+    {
+      "key": "ui.collection.place_invalid.desktop",
+      "value": "这里无法放置。请对准采集点附近的平坦地面。"
+    },
+    {
+      "key": "ui.collection.place_invalid.touch",
+      "value": "这里无法放置。请对准采集点附近的平坦地面。"
+    },
+    {
+      "key": "ui.collection.approach.desktop",
+      "value": "靠近已放置的钻塔。"
+    },
+    {
+      "key": "ui.collection.approach.touch",
+      "value": "靠近已放置的钻塔。"
+    },
+    {
+      "key": "ui.collection.drill.desktop",
+      "value": "按 F 开始钻探，采集岩芯。"
+    },
+    {
+      "key": "ui.collection.drill.touch",
+      "value": "点击「次操作」开始钻探，采集岩芯。"
+    },
+    {
+      "key": "ui.collection.drilling.desktop",
+      "value": "钻探中……等待岩芯生成。"
+    },
+    {
+      "key": "ui.collection.drilling.touch",
+      "value": "钻探中……等待岩芯生成。"
+    },
+    {
+      "key": "ui.collection.pickup_core.desktop",
+      "value": "岩芯已生成！靠近钻塔周围的岩芯，按 E 拾取。"
+    },
+    {
+      "key": "ui.collection.pickup_core.touch",
+      "value": "岩芯已生成！靠近钻塔周围的岩芯，点击「交互」拾取。"
+    },
+    {
+      "key": "ui.collection.finished.desktop",
+      "value": "已达最大深度。拾取周围的岩芯，并查看下一步任务。"
+    },
+    {
+      "key": "ui.collection.finished.touch",
+      "value": "已达最大深度。拾取周围的岩芯，并查看下一步任务。"
+    },
+    {
+      "key": "ui.dialog.zoom.desktop",
+      "value": "点击放大"
+    },
+    {
+      "key": "ui.dialog.zoom.touch",
+      "value": "轻触放大"
+    },
+    {
+      "key": "ui.dialog.zoom.close",
+      "value": "关闭 ×"
+    },
+    {
+      "key": "quest.ui.new_objective",
+      "value": "新任务"
+    },
+    {
+      "key": "quest.ui.completed_cue",
+      "value": "调查完成"
     }
   ]
 }

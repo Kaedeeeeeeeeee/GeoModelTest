@@ -1,0 +1,45 @@
+Actual MainScene player exists.
+Scene camera, tool manager, inventory and input services exist.
+Hammer task uses its real configured guidance target.
+Unequipped hammer shows the tool-selection instruction at the site.
+The hammer is highlighted in the tool menu.
+Equipped hammer explains three hits on one spot.
+Two real primary clicks reach 2/3 hammer hits.
+Third hammer hit generates a collectible world sample.
+Completed hammer sampling prompts the player to collect the sample.
+E collects the actual hammer sample into inventory exactly once.
+The real teaching picture shows its enlarge hint.
+UI raycast reaches IllustrationBanner.
+The visible IllustrationBanner receives the click without an overlay blocking it.
+Opening the actual illustration blocks underlying controls.
+UI raycast reaches CloseButton.
+The visible CloseButton receives the click without an overlay blocking it.
+Close button restores dialogue interaction.
+Hammer collection advances to the rock-identification quiz.
+Wrong then correct UI answers record two attempts.
+Scoring follows the actual choice ID after fixed reordering.
+Drill-tower task uses its configured field target.
+Selecting the tower opens a valid placement preview at the real site.
+Primary click places a real drill tower.
+Near the placed tower, the prompt switches to F to drill.
+F starts the actual drill coroutine.
+Drilling generates an actual core sample.
+E collects the drilled core exactly once.
+Core pickup updates the actual investigation progress.
+The scene contains its real virtual controls.
+Touch-mode guidance uses the tool button instead of Tab.
+The touch guidance does not cover inventoryButton.
+The touch guidance does not cover encyclopediaButton.
+The touch guidance does not cover toolWheelButton.
+The touch guidance does not cover interactButton.
+The touch guidance does not cover secondaryInteractButton.
+The actual virtual Inspect button routes to one hammer hit.
+Second virtual Inspect press reaches 2/3.
+Third virtual hammer press creates a sample without also collecting it.
+Virtual Inspect collects the sample exactly once.
+The virtual-control tower preview can be placed.
+Virtual Inspect places the tower.
+Virtual Use starts drilling.
+Touch-mode drilling generates a core.
+Virtual Inspect collects the core from ground level.
+Touch-mode core pickup advances investigation progress.

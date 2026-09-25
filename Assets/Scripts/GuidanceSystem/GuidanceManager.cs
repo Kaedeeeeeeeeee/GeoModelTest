@@ -24,6 +24,8 @@ namespace GuidanceSystem
         }
 
         public static GuidanceManager Current => _instance;
+        public bool IsPlayerNearActiveTarget => activeTarget != null && playerTransform != null &&
+            Vector3.Distance(playerTransform.position, activeTarget.WorldPosition) <= Mathf.Max(5f, activeTarget.DetectionRadius);
 
         [Header("Line Appearance")]
         [SerializeField] private Gradient lineGradient;

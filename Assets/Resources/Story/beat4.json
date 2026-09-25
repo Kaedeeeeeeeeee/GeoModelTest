@@ -28,17 +28,17 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat4.q1.prompt",
             "questionId": "q.strata_tilt",
-            "questionVersion": "story-formative-v1",
+            "questionVersion": "story-formative-v2-fixed-order",
             "hint": "同（おな）じ層（そう）が深（ふか）い方向（ほうこう）＝地層全体（ちそうぜんたい）が低（ひく）くなる方向（ほうこう）だよ。",
             "hintKey": "story.beat4.q1.hint",
             "choices": [
                 {
-                    "text": "東（ひがし）",
-                    "id": "q.strata_tilt.east",
-                    "textKey": "story.beat4.q1.a",
-                    "isCorrect": true,
-                    "feedback": "せいかい！　同（おな）じ層（そう）が深（ふか）くなる方向（ほうこう）に、地層（ちそう）は傾（かたむ）いて低（ひく）くなっているんだ。火山灰（かざんばい）の層（そう）が東（ひがし）へ下（さ）がる＝この一帯（いったい）、東（ひがし）へ傾（かたむ）きながら沈（しず）んでる。",
-                    "feedbackKey": "story.beat4.q1.fb_ok"
+                    "text": "北（きた）",
+                    "id": "q.strata_tilt.north",
+                    "textKey": "story.beat4.q1.c",
+                    "isCorrect": false,
+                    "feedback": "南北（なんぼく）方向（ほうこう）で深（ふか）さは変（か）わってないよ。東西（とうざい）の差（さ）に注目（ちゅうもく）して。",
+                    "feedbackKey": "story.beat4.q1.fb_ng_c"
                 },
                 {
                     "text": "西（にし）",
@@ -49,12 +49,12 @@
                     "feedbackKey": "story.beat4.q1.fb_ng_b"
                 },
                 {
-                    "text": "北（きた）",
-                    "id": "q.strata_tilt.north",
-                    "textKey": "story.beat4.q1.c",
-                    "isCorrect": false,
-                    "feedback": "南北（なんぼく）方向（ほうこう）で深（ふか）さは変（か）わってないよ。東西（とうざい）の差（さ）に注目（ちゅうもく）して。",
-                    "feedbackKey": "story.beat4.q1.fb_ng_c"
+                    "text": "東（ひがし）",
+                    "id": "q.strata_tilt.east",
+                    "textKey": "story.beat4.q1.a",
+                    "isCorrect": true,
+                    "feedback": "せいかい！　同（おな）じ層（そう）が深（ふか）くなる方向（ほうこう）に、地層（ちそう）は傾（かたむ）いて低（ひく）くなっているんだ。火山灰（かざんばい）の層（そう）が東（ひがし）へ下（さ）がる＝この一帯（いったい）、東（ひがし）へ傾（かたむ）きながら沈（しず）んでる。",
+                    "feedbackKey": "story.beat4.q1.fb_ok"
                 }
             ]
         },
@@ -71,7 +71,7 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat4.q2.prompt",
             "questionId": "q.fold_term",
-            "questionVersion": "story-formative-v1",
+            "questionVersion": "story-formative-v2-fixed-order",
             "hint": "両側（りょうがわ）から押（お）し縮（ちぢ）められた地層（ちそう）が、波（なみ）のように曲（ま）がる現象（げんしょう）。",
             "hintKey": "story.beat4.q2.hint",
             "choices": [
@@ -84,20 +84,20 @@
                     "feedbackKey": "story.beat4.q2.fb_ok"
                 },
                 {
-                    "text": "断層（だんそう）",
-                    "id": "q.fold_term.fault",
-                    "textKey": "story.beat4.q2.b",
-                    "isCorrect": false,
-                    "feedback": "断層（だんそう）は地層（ちそう）が「ずれる」こと。曲（ま）がるのは別（べつ）の現象（げんしょう）だよ。",
-                    "feedbackKey": "story.beat4.q2.fb_ng_b"
-                },
-                {
                     "text": "整合（せいごう）",
                     "id": "q.fold_term.unconformity",
                     "textKey": "story.beat4.q2.c",
                     "isCorrect": false,
                     "feedback": "整合（せいごう）は地層（ちそう）が途切（とぎ）れずに重（かさ）なってる状態（じょうたい）。波（なみ）状（じょう）の曲（ま）がりとはちがうよ。",
                     "feedbackKey": "story.beat4.q2.fb_ng_c"
+                },
+                {
+                    "text": "断層（だんそう）",
+                    "id": "q.fold_term.fault",
+                    "textKey": "story.beat4.q2.b",
+                    "isCorrect": false,
+                    "feedback": "断層（だんそう）は地層（ちそう）が「ずれる」こと。曲（ま）がるのは別（べつ）の現象（げんしょう）だよ。",
+                    "feedbackKey": "story.beat4.q2.fb_ng_b"
                 }
             ]
         },

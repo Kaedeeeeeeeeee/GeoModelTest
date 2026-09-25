@@ -9,6 +9,7 @@ namespace UISystem
     {
         private ToolManager _tools;
         private GameObject _panel;
+        private RectTransform _panelRect;
         private Text _name;
         private Text _caption;
         private Image _icon;
@@ -26,17 +27,16 @@ namespace UISystem
             canvas.transform.SetParent(transform, false);
             var panel = GameUI.Box(canvas.transform, "CurrentTool", GameUI.Surface, new Vector2(0.72f, 0.03f), new Vector2(0.98f, 0.15f));
             _panel = panel.gameObject;
+            _panelRect = panel.rectTransform;
             _icon = GameUI.Box(panel.transform, "Icon", Color.white, new Vector2(0.035f, 0.1f), new Vector2(0.24f, 0.9f));
             _icon.preserveAspect = true;
             _icon.raycastTarget = false;
             _caption = GameUI.Label(panel.transform, "Caption", GameUI.L("ui.tool.current"), 19, new Vector2(0.29f, 0.60f), new Vector2(0.96f, 0.94f));
             _caption.color = GameUI.Accent;
-            if (MobileInputManager.IsRuntimeMobileDevice())
-            {
-                panel.rectTransform.anchorMin = new Vector2(0.70f, 0.76f);
-                panel.rectTransform.anchorMax = new Vector2(0.98f, 0.88f);
-            }
             _name = GameUI.Label(panel.transform, "Name", "", 27, new Vector2(0.29f, 0.07f), new Vector2(0.96f, 0.62f));
+            _name.resizeTextForBestFit = true;
+            _name.resizeTextMinSize = 16;
+            _name.resizeTextMaxSize = 27;
             GameEventBus.ToolEquipped += Refresh;
             LocalizationManager.Instance.OnLanguageChanged += RefreshLanguage;
             RefreshLanguage();
@@ -67,6 +67,12 @@ namespace UISystem
 
         private void LateUpdate()
         {
+            if (_panelRect != null)
+            {
+                bool touch = FirstControlGuide.UsesTouch();
+                _panelRect.anchorMin = touch ? new Vector2(0.70f, 0.61f) : new Vector2(0.72f, 0.03f);
+                _panelRect.anchorMax = touch ? new Vector2(0.98f, 0.73f) : new Vector2(0.98f, 0.15f);
+            }
             if (_panel != null) _panel.SetActive(!GameInputState.IsModalOpen && !StorySystem.StoryDirector.IsStoryPlaybackActive &&
                 SceneSystem.GameSession.IsGameplayScene(SceneManager.GetActiveScene().name));
         }

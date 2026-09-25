@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-25 05:11:20Z" end-time="2026-09-25 05:11:40Z" duration="19.4095852">
+  <test-suite type="TestSuite" id="1068" name="GeoModelTest" fullname="GeoModelTest" runstate="Runnable" testcasecount="49" result="Passed" start-time="2026-09-25 05:11:20Z" end-time="2026-09-25 05:11:40Z" duration="19.409585" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1064" name="GeoModel.UI.PlayModeTests.dll" fullname="/Users/user/Unity/GeoModelTest/Library/ScriptAssemblies/GeoModel.UI.PlayModeTests.dll" runstate="Runnable" testcasecount="49" result="Passed" start-time="2026-09-25 05:11:20Z" end-time="2026-09-25 05:11:40Z" duration="19.381623" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="97469" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1033" name="QuestAttentionSceneTests" fullname="QuestAttentionSceneTests" classname="QuestAttentionSceneTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-25 05:11:20Z" end-time="2026-09-25 05:11:40Z" duration="19.313252" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1034" name="NewObjective_ShouldCueOnceAndRecordRealScene" fullname="QuestAttentionSceneTests.NewObjective_ShouldCueOnceAndRecordRealScene" methodname="NewObjective_ShouldCueOnceAndRecordRealScene" classname="QuestAttentionSceneTests" runstate="Runnable" seed="524327220" result="Passed" start-time="2026-09-25 05:11:21Z" end-time="2026-09-25 05:11:40Z" duration="19.275338" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1029" name="QuestAttentionTests" fullname="QuestAttentionTests" classname="QuestAttentionTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-09-25 05:11:40Z" end-time="2026-09-25 05:11:40Z" duration="0.037276" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1032" name="Completion_ShouldUseCompletionLabelInsteadOfNewTask" fullname="QuestAttentionTests.Completion_ShouldUseCompletionLabelInsteadOfNewTask" methodname="Completion_ShouldUseCompletionLabelInsteadOfNewTask" classname="QuestAttentionTests" runstate="Runnable" seed="1783773704" result="Passed" start-time="2026-09-25 05:11:40Z" end-time="2026-09-25 05:11:40Z" duration="0.003309" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1031" name="Cue_ShouldResumeAfterModalInterruptsIt" fullname="QuestAttentionTests.Cue_ShouldResumeAfterModalInterruptsIt" methodname="Cue_ShouldResumeAfterModalInterruptsIt" classname="QuestAttentionTests" runstate="Runnable" seed="1684500378" result="Passed" start-time="2026-09-25 05:11:40Z" end-time="2026-09-25 05:11:40Z" duration="0.001213" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1030" name="Cue_ShouldWaitForGameplayAndMergeRapidTaskChanges" fullname="QuestAttentionTests.Cue_ShouldWaitForGameplayAndMergeRapidTaskChanges" methodname="Cue_ShouldWaitForGameplayAndMergeRapidTaskChanges" classname="QuestAttentionTests" runstate="Runnable" seed="955952736" result="Passed" start-time="2026-09-25 05:11:40Z" end-time="2026-09-25 05:11:40Z" duration="0.004265" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

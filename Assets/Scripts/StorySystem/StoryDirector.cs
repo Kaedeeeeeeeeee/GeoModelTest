@@ -1395,6 +1395,24 @@ namespace StorySystem
             img.preserveAspect = true;
             img.raycastTarget = false;
             var c = img.color; c.a = 0f; img.color = c;
+            var zoom = GameUI.Box(go.transform, "ZoomHint", GameUI.Surface,
+                new Vector2(0.43f, 0f), new Vector2(0.88f, 0.14f));
+            zoom.raycastTarget = false;
+            var icon = GameUI.Rect(zoom.transform, "Magnifier", new Vector2(0.03f, 0.15f), new Vector2(0.14f, 0.85f))
+                .gameObject.AddComponent<UISystem.MagnifierIcon>();
+            icon.raycastTarget = false;
+            icon.color = GameUI.Accent;
+            var label = GameUI.Rect(zoom.transform, "Label", new Vector2(0.17f, 0f), new Vector2(0.98f, 1f))
+                .gameObject.AddComponent<TextMeshProUGUI>();
+            ApplyTmpFont(label);
+            label.fontSize = 22;
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 16;
+            label.fontSizeMax = 22;
+            label.alignment = TextAlignmentOptions.Center;
+            label.raycastTarget = false;
+            label.text = LocalizedOr(UISystem.FirstControlGuide.UsesTouch() ? "ui.dialog.zoom.touch" : "ui.dialog.zoom.desktop", "クリックで拡大");
+            zoom.gameObject.SetActive(false);
             return img;
         }
 
@@ -1404,6 +1422,7 @@ namespace StorySystem
         private static IEnumerator SwapIllustration(Image img, Sprite next, float duration)
         {
             if (img == null) yield break;
+            SetZoomHintVisible(img, false);
             if (img.sprite != next && img.color.a > 0.01f)
             {
                 yield return FadeAlpha(img, 0f, duration * 0.5f);
@@ -1419,6 +1438,14 @@ namespace StorySystem
             img.sprite = next;
             img.raycastTarget = true;      // 显示时可点击 → 全屏放大
             yield return FadeAlpha(img, 1f, duration * 0.5f);
+            SetZoomHintVisible(img, true);
+        }
+
+        private static void SetZoomHintVisible(Image img, bool visible)
+        {
+            if (img == null) return;
+            var hint = img.transform.Find("ZoomHint");
+            if (hint != null) hint.gameObject.SetActive(visible && img.sprite != null);
         }
 
         private static void HideIllustrationNow(Image img)
@@ -1436,6 +1463,7 @@ namespace StorySystem
             img.color = c;
             img.sprite = null;
             img.raycastTarget = false;
+            SetZoomHintVisible(img, false);
         }
 
         /// <summary>
@@ -1443,7 +1471,7 @@ namespace StorySystem
         /// </summary>
         private static void ShowIllustrationFullscreen(Transform canvas, Sprite sprite)
         {
-            if (canvas == null || sprite == null) return;
+            if (canvas == null || sprite == null || GameInputState.IsModalOpen) return;
             var overlay = new GameObject("IllustrationFullscreen");
             overlay.transform.SetParent(canvas, false);
             overlay.transform.SetAsLastSibling();
@@ -1456,15 +1484,15 @@ namespace StorySystem
             btn.transition = Selectable.Transition.None;
             btn.targetGraphic = dim;
             var nav = btn.navigation; nav.mode = Navigation.Mode.None; btn.navigation = nav;
-            btn.onClick.AddListener(() => { if (overlay != null) UnityEngine.Object.Destroy(overlay); });
+            var modal = overlay.AddComponent<UISystem.IllustrationPreviewModal>();
+            btn.onClick.AddListener(modal.Close);
 
             var bigGO = new GameObject("BigImage");
             bigGO.transform.SetParent(overlay.transform, false);
             var bRt = bigGO.AddComponent<RectTransform>();
-            bRt.anchorMin = new Vector2(0.5f, 0.5f);
-            bRt.anchorMax = new Vector2(0.5f, 0.5f);
-            bRt.pivot = new Vector2(0.5f, 0.5f);
-            bRt.sizeDelta = new Vector2(1760f, 1000f); // preserveAspect 下按高度填满，近全屏
+            bRt.anchorMin = new Vector2(0.04f, 0.09f);
+            bRt.anchorMax = new Vector2(0.96f, 0.91f);
+            bRt.offsetMin = bRt.offsetMax = Vector2.zero;
             var big = bigGO.AddComponent<Image>();
             big.sprite = sprite;
             big.preserveAspect = true;
@@ -1484,6 +1512,8 @@ namespace StorySystem
             hTxt.alignment = TextAlignmentOptions.Center;
             hTxt.raycastTarget = false;
             hTxt.text = FuriganaProcessor.Process(LocalizedOr("ui.dialog.tap_close", "タップで閉（と）じる"));
+            GameUI.Button(overlay.transform, "CloseButton", LocalizedOr("ui.dialog.zoom.close", "閉じる ×"),
+                new Vector2(0.81f, 0.92f), new Vector2(0.96f, 0.985f), modal.Close);
         }
 
         private static string LocalizedOr(string key, string fallback)

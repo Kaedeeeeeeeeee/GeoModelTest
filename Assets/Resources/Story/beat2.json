@@ -40,17 +40,17 @@
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat2.q1.prompt",
             "questionId": "q.rock_mudstone",
-            "questionVersion": "story-formative-v1",
+            "questionVersion": "story-formative-v2-fixed-order",
             "hint": "粒（つぶ）の大（おお）きさで分（わ）かれる岩石（がんせき）3 種類（しゅるい）のうち、一番（いちばん）細（こま）かいのは？",
             "hintKey": "story.beat2.q1.hint",
             "choices": [
                 {
-                    "id": "q.rock_mudstone.mudstone",
-                    "text": "泥岩（でいがん）",
-                    "textKey": "story.beat2.q1.a",
-                    "isCorrect": true,
-                    "feedback": "せいかい！　粒（つぶ）が細（こま）かいほど、河口（かこう）から遠（とお）い深（ふか）い海（うみ）でたまるんだ。つまりここは昔（むかし）、静（しず）かで深（ふか）い海（うみ）の底（そこ）だった。",
-                    "feedbackKey": "story.beat2.q1.fb_ok"
+                    "id": "q.rock_mudstone.conglomerate",
+                    "text": "れき岩（がん）",
+                    "textKey": "story.beat2.q1.c",
+                    "isCorrect": false,
+                    "feedback": "れき岩（がん）は粒（つぶ）が 2mm 以上（いじょう）と、はっきり見（み）えるくらい大（おお）きいよ。",
+                    "feedbackKey": "story.beat2.q1.fb_ng_c"
                 },
                 {
                     "id": "q.rock_mudstone.sandstone",
@@ -61,12 +61,12 @@
                     "feedbackKey": "story.beat2.q1.fb_ng_b"
                 },
                 {
-                    "id": "q.rock_mudstone.conglomerate",
-                    "text": "れき岩（がん）",
-                    "textKey": "story.beat2.q1.c",
-                    "isCorrect": false,
-                    "feedback": "れき岩（がん）は粒（つぶ）が 2mm 以上（いじょう）と、はっきり見（み）えるくらい大（おお）きいよ。",
-                    "feedbackKey": "story.beat2.q1.fb_ng_c"
+                    "id": "q.rock_mudstone.mudstone",
+                    "text": "泥岩（でいがん）",
+                    "textKey": "story.beat2.q1.a",
+                    "isCorrect": true,
+                    "feedback": "せいかい！　粒（つぶ）が細（こま）かいほど、河口（かこう）から遠（とお）い深（ふか）い海（うみ）でたまるんだ。つまりここは昔（むかし）、静（しず）かで深（ふか）い海（うみ）の底（そこ）だった。",
+                    "feedbackKey": "story.beat2.q1.fb_ok"
                 }
             ]
         },
@@ -77,10 +77,18 @@
             "textKey": "story.beat2.q2.prompt",
             "illustrationKey": "03_limestone",
             "questionId": "q.rock_limestone",
-            "questionVersion": "story-formative-v1",
+            "questionVersion": "story-formative-v2-fixed-order",
             "hint": "塩酸（えんさん）に反応（はんのう）する岩石（がんせき）は限（かぎ）られているよ。貝（かい）やサンゴからできた岩（いわ）は？",
             "hintKey": "story.beat2.q2.hint",
             "choices": [
+                {
+                    "id": "q.rock_limestone.tuff",
+                    "text": "凝灰岩（ぎょうかいがん）",
+                    "textKey": "story.beat2.q2.c",
+                    "isCorrect": false,
+                    "feedback": "凝灰岩（ぎょうかいがん）は火山灰（かざんばい）からできる岩石（がんせき）。塩酸（えんさん）には反応（はんのう）しないよ。",
+                    "feedbackKey": "story.beat2.q2.fb_ng_c"
+                },
                 {
                     "id": "q.rock_limestone.limestone",
                     "text": "石灰岩（せっかいがん）",
@@ -96,14 +104,6 @@
                     "isCorrect": false,
                     "feedback": "チャートは塩酸（えんさん）には反応（はんのう）しないんだ。あわが出（で）る＝石灰岩（せっかいがん）の特徴（とくちょう）だよ。",
                     "feedbackKey": "story.beat2.q2.fb_ng_b"
-                },
-                {
-                    "id": "q.rock_limestone.tuff",
-                    "text": "凝灰岩（ぎょうかいがん）",
-                    "textKey": "story.beat2.q2.c",
-                    "isCorrect": false,
-                    "feedback": "凝灰岩（ぎょうかいがん）は火山灰（かざんばい）からできる岩石（がんせき）。塩酸（えんさん）には反応（はんのう）しないよ。",
-                    "feedbackKey": "story.beat2.q2.fb_ng_c"
                 }
             ]
         },
@@ -114,7 +114,7 @@
             "textKey": "story.beat2.q3.prompt",
             "illustrationKey": "04_chert",
             "questionId": "q.rock_chert",
-            "questionVersion": "story-formative-v1",
+            "questionVersion": "story-formative-v2-fixed-order",
             "hint": "海（うみ）の小（ちい）さな生物（せいぶつ）の殻（から）が積（つ）もってできた、とてもかたい岩（いわ）は？",
             "hintKey": "story.beat2.q3.hint",
             "choices": [
@@ -127,20 +127,20 @@
                     "feedbackKey": "story.beat2.q3.fb_ok"
                 },
                 {
-                    "id": "q.rock_chert.mudstone",
-                    "text": "泥岩（でいがん）",
-                    "textKey": "story.beat2.q3.b",
-                    "isCorrect": false,
-                    "feedback": "泥岩（でいがん）は意外（いがい）とやわらかい。くぎで傷（きず）がつかないほどかたいのは別（べつ）の岩（いわ）だよ。",
-                    "feedbackKey": "story.beat2.q3.fb_ng_b"
-                },
-                {
                     "id": "q.rock_chert.conglomerate",
                     "text": "れき岩（がん）",
                     "textKey": "story.beat2.q3.c",
                     "isCorrect": false,
                     "feedback": "れき岩（がん）も粒（つぶ）の集（あつ）まりだから、くぎでガリガリ削（けず）れちゃうんだ。",
                     "feedbackKey": "story.beat2.q3.fb_ng_c"
+                },
+                {
+                    "id": "q.rock_chert.mudstone",
+                    "text": "泥岩（でいがん）",
+                    "textKey": "story.beat2.q3.b",
+                    "isCorrect": false,
+                    "feedback": "泥岩（でいがん）は意外（いがい）とやわらかい。くぎで傷（きず）がつかないほどかたいのは別（べつ）の岩（いわ）だよ。",
+                    "feedbackKey": "story.beat2.q3.fb_ng_b"
                 }
             ]
         },

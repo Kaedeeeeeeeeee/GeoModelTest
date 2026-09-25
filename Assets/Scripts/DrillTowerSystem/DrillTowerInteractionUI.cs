@@ -40,6 +40,12 @@ public class DrillTowerInteractionUI : MonoBehaviour
     
     void Update()
     {
+        if (Core.GameInputState.IsModalOpen || StorySystem.StoryDirector.IsStoryPlaybackActive ||
+            UISystem.CollectionGuidanceHUD.IsVisible)
+        {
+            HideInteractionPrompt();
+            return;
+        }
         UpdateInteractionPrompt();
     }
     

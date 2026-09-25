@@ -3607,6 +3607,130 @@
     {
       "key": "ui.consent.review",
       "value": "Review participation details"
+    },
+    {
+      "key": "ui.collection.travel.desktop",
+      "value": "Follow the blue guide line to the sampling site."
+    },
+    {
+      "key": "ui.collection.travel.touch",
+      "value": "Follow the blue guide line to the sampling site."
+    },
+    {
+      "key": "ui.collection.equip.desktop",
+      "value": "Press Tab and select the highlighted {0}."
+    },
+    {
+      "key": "ui.collection.equip.touch",
+      "value": "Open Tools and select the highlighted {0}."
+    },
+    {
+      "key": "ui.collection.hit.desktop",
+      "value": "Approach the rock. Left-click the same spot {2} times."
+    },
+    {
+      "key": "ui.collection.hit.touch",
+      "value": "Approach the rock. Aim at one spot and tap Use {2} times."
+    },
+    {
+      "key": "ui.collection.hit_progress.desktop",
+      "value": "Sampling {1}/{2} — keep left-clicking the same marker."
+    },
+    {
+      "key": "ui.collection.hit_progress.touch",
+      "value": "Sampling {1}/{2} — keep aiming at the marker and tapping Use."
+    },
+    {
+      "key": "ui.collection.pickup.desktop",
+      "value": "Sample ready {2}/{2}! Approach it and press E to collect."
+    },
+    {
+      "key": "ui.collection.pickup.touch",
+      "value": "Sample ready {2}/{2}! Approach it and tap Use to collect."
+    },
+    {
+      "key": "ui.collection.preview.desktop",
+      "value": "Aim at the sampling site ground and left-click to preview placement."
+    },
+    {
+      "key": "ui.collection.preview.touch",
+      "value": "Aim at the site ground and tap Use to preview placement."
+    },
+    {
+      "key": "ui.collection.place.desktop",
+      "value": "Check the preview position, then left-click to place the tower."
+    },
+    {
+      "key": "ui.collection.place.touch",
+      "value": "Check the preview position, then tap Use again to place the tower."
+    },
+    {
+      "key": "ui.collection.place_invalid.desktop",
+      "value": "Cannot place here. Aim at level ground near the sampling site."
+    },
+    {
+      "key": "ui.collection.place_invalid.touch",
+      "value": "Cannot place here. Aim at level ground near the sampling site."
+    },
+    {
+      "key": "ui.collection.approach.desktop",
+      "value": "Move closer to the placed drill tower."
+    },
+    {
+      "key": "ui.collection.approach.touch",
+      "value": "Move closer to the placed drill tower."
+    },
+    {
+      "key": "ui.collection.drill.desktop",
+      "value": "Press F to start drilling for a core sample."
+    },
+    {
+      "key": "ui.collection.drill.touch",
+      "value": "Tap Operate to start drilling for a core sample."
+    },
+    {
+      "key": "ui.collection.drilling.desktop",
+      "value": "Drilling… Wait for the core sample."
+    },
+    {
+      "key": "ui.collection.drilling.touch",
+      "value": "Drilling… Wait for the core sample."
+    },
+    {
+      "key": "ui.collection.pickup_core.desktop",
+      "value": "Core ready! Approach a sample beside the tower and press E to collect."
+    },
+    {
+      "key": "ui.collection.pickup_core.touch",
+      "value": "Core ready! Approach a sample beside the tower and tap Use to collect."
+    },
+    {
+      "key": "ui.collection.finished.desktop",
+      "value": "Maximum depth reached. Collect nearby cores and check your objective."
+    },
+    {
+      "key": "ui.collection.finished.touch",
+      "value": "Maximum depth reached. Collect nearby cores and check your objective."
+    },
+    {
+      "key": "ui.dialog.zoom.desktop",
+      "value": "Click to enlarge"
+    },
+    {
+      "key": "ui.dialog.zoom.touch",
+      "value": "Tap to enlarge"
+    },
+    {
+      "key": "ui.dialog.zoom.close",
+      "value": "Close ×"
+    },
+    {
+      "key": "quest.ui.new_objective",
+      "value": "NEW OBJECTIVE"
+    },
+    {
+      "key": "quest.ui.completed_cue",
+      "value": "COMPLETE"
     }
   ]
 }

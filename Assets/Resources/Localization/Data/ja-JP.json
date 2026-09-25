@@ -3787,6 +3787,130 @@
     {
       "key": "ui.consent.review",
       "value": "研究参加の説明を確認"
+    },
+    {
+      "key": "ui.collection.travel.desktop",
+      "value": "青い案内線に沿って採集地点へ進もう。"
+    },
+    {
+      "key": "ui.collection.travel.touch",
+      "value": "青い案内線に沿って採集地点へ進もう。"
+    },
+    {
+      "key": "ui.collection.equip.desktop",
+      "value": "Tabで道具を開き、光っている「{0}」を選ぼう。"
+    },
+    {
+      "key": "ui.collection.equip.touch",
+      "value": "「道具」を開き、光っている「{0}」を選ぼう。"
+    },
+    {
+      "key": "ui.collection.hit.desktop",
+      "value": "岩に近づき、同じ目印を左クリックで{2}回たたこう。"
+    },
+    {
+      "key": "ui.collection.hit.touch",
+      "value": "岩に近づき、同じ目印に「調べる」を{2}回押そう。"
+    },
+    {
+      "key": "ui.collection.hit_progress.desktop",
+      "value": "採集 {1}/{2} — 同じ目印を続けて左クリック。"
+    },
+    {
+      "key": "ui.collection.hit_progress.touch",
+      "value": "採集 {1}/{2} — 同じ目印に続けて「調べる」。"
+    },
+    {
+      "key": "ui.collection.pickup.desktop",
+      "value": "採集完了 {2}/{2}！試料に近づき、Eで拾おう。"
+    },
+    {
+      "key": "ui.collection.pickup.touch",
+      "value": "採集完了 {2}/{2}！試料に近づき「調べる」で拾おう。"
+    },
+    {
+      "key": "ui.collection.preview.desktop",
+      "value": "採集地点の地面に向けて左クリックし、設置位置を決めよう。"
+    },
+    {
+      "key": "ui.collection.preview.touch",
+      "value": "採集地点の地面に向けて「調べる」を押し、設置位置を決めよう。"
+    },
+    {
+      "key": "ui.collection.place.desktop",
+      "value": "設置位置を確認し、左クリックでドリルタワーを置こう。"
+    },
+    {
+      "key": "ui.collection.place.touch",
+      "value": "設置位置を確認し、もう一度「調べる」でドリルタワーを置こう。"
+    },
+    {
+      "key": "ui.collection.place_invalid.desktop",
+      "value": "ここには置けません。採集地点の近くの平らな地面に向けよう。"
+    },
+    {
+      "key": "ui.collection.place_invalid.touch",
+      "value": "ここには置けません。採集地点の近くの平らな地面に向けよう。"
+    },
+    {
+      "key": "ui.collection.approach.desktop",
+      "value": "設置したドリルタワーに近づこう。"
+    },
+    {
+      "key": "ui.collection.approach.touch",
+      "value": "設置したドリルタワーに近づこう。"
+    },
+    {
+      "key": "ui.collection.drill.desktop",
+      "value": "Fでボーリングを開始し、岩芯を採取しよう。"
+    },
+    {
+      "key": "ui.collection.drill.touch",
+      "value": "「使う」でボーリングを開始し、岩芯を採取しよう。"
+    },
+    {
+      "key": "ui.collection.drilling.desktop",
+      "value": "ボーリング中… 岩芯が出るまで待とう。"
+    },
+    {
+      "key": "ui.collection.drilling.touch",
+      "value": "ボーリング中… 岩芯が出るまで待とう。"
+    },
+    {
+      "key": "ui.collection.pickup_core.desktop",
+      "value": "岩芯ができました！装置の周りの岩芯に近づき、Eで拾おう。"
+    },
+    {
+      "key": "ui.collection.pickup_core.touch",
+      "value": "岩芯ができました！装置の周りの岩芯に近づき、「調べる」で拾おう。"
+    },
+    {
+      "key": "ui.collection.finished.desktop",
+      "value": "最大の深さに達しました。周りの岩芯を拾い、次の目的を確認しよう。"
+    },
+    {
+      "key": "ui.collection.finished.touch",
+      "value": "最大の深さに達しました。周りの岩芯を拾い、次の目的を確認しよう。"
+    },
+    {
+      "key": "ui.dialog.zoom.desktop",
+      "value": "クリックで拡大"
+    },
+    {
+      "key": "ui.dialog.zoom.touch",
+      "value": "タップで拡大"
+    },
+    {
+      "key": "ui.dialog.zoom.close",
+      "value": "閉じる ×"
+    },
+    {
+      "key": "quest.ui.new_objective",
+      "value": "新しい目標"
+    },
+    {
+      "key": "quest.ui.completed_cue",
+      "value": "調査完了"
     }
   ]
 }

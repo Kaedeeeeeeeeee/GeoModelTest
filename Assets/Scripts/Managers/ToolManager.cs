@@ -15,6 +15,7 @@ public class ToolManager : MonoBehaviour
     void Start()
     {
         UISystem.CurrentToolHUD.Attach(this);
+        UISystem.CollectionGuidanceHUD.Attach(this);
         if (toolHolder == null)
         {
             toolHolder = transform;

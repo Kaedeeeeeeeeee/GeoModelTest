@@ -18,6 +18,8 @@ namespace QuestSystem
         private QuestManager _quests;
         private Vector2 _lastScreen;
         private Rect _lastSafeArea;
+        private QuestAttentionEffect _attention;
+        private int _displayedStep = -1;
 
         private void Start()
         {
@@ -31,6 +33,8 @@ namespace QuestSystem
             _objective = GameUI.Label(_card, "Objective", "", 26, new Vector2(0.05f, 0.12f), new Vector2(0.95f, 0.58f));
             var track = GameUI.Box(_card, "Track", GameUI.Panel, new Vector2(0.05f, 0.05f), new Vector2(0.95f, 0.085f));
             _fill = GameUI.Box(track.transform, "Fill", GameUI.Accent, Vector2.zero, Vector2.one);
+            _attention = gameObject.AddComponent<QuestAttentionEffect>();
+            _attention.Initialize(_card);
             _quests = QuestManager.Instance;
             _quests.OnQuestStarted += QuestChanged;
             _quests.OnQuestCompleted += QuestChanged;
@@ -44,9 +48,12 @@ namespace QuestSystem
         private void LateUpdate()
         {
             if (_canvas == null) return;
-            _canvas.gameObject.SetActive(!forceHidden && SceneSystem.GameSession.IsGameplayScene(SceneManager.GetActiveScene().name));
+            bool visible = !forceHidden && SceneSystem.GameSession.IsGameplayScene(SceneManager.GetActiveScene().name);
+            _canvas.gameObject.SetActive(visible);
             if (_lastScreen != new Vector2(Screen.width, Screen.height) || _lastSafeArea != Screen.safeArea)
                 ApplyLayout();
+            _attention.Tick(Time.unscaledDeltaTime, visible && Time.timeScale > 0 &&
+                !Core.GameInputState.IsModalOpen && !StoryDirector.IsStoryPlaybackActive);
         }
 
         private void ApplyLayout()
@@ -69,6 +76,11 @@ namespace QuestSystem
         {
             if (_progress == null) return;
             int step = InvestigationProgress.GetStep();
+            if (step != _displayedStep)
+            {
+                _displayedStep = step;
+                _attention.NotifyTaskChanged(step >= InvestigationProgress.StepTotal);
+            }
             _progress.text = $"{GameUI.L("quest.ui.progress")}  {step}/{InvestigationProgress.StepTotal}";
             _objective.text = GameUI.L("quest.step." + step);
             _fill.rectTransform.anchorMax = new Vector2((float)step / InvestigationProgress.StepTotal, 1f);

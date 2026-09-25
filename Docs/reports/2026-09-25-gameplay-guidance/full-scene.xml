@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-25 04:53:46Z" end-time="2026-09-25 04:54:06Z" duration="19.7261024">
+  <test-suite type="TestSuite" id="1062" name="GeoModelTest" fullname="GeoModelTest" runstate="Runnable" testcasecount="45" result="Passed" start-time="2026-09-25 04:53:46Z" end-time="2026-09-25 04:54:06Z" duration="19.726102" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1058" name="GeoModel.UI.PlayModeTests.dll" fullname="/Users/user/Unity/GeoModelTest/Library/ScriptAssemblies/GeoModel.UI.PlayModeTests.dll" runstate="Runnable" testcasecount="45" result="Passed" start-time="2026-09-25 04:53:46Z" end-time="2026-09-25 04:54:06Z" duration="19.698011" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="84364" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1001" name="FieldFeedbackAcceptanceTests" fullname="FieldFeedbackAcceptanceTests" classname="FieldFeedbackAcceptanceTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-25 04:53:46Z" end-time="2026-09-25 04:54:06Z" duration="19.667121" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1002" name="ActualFieldScene_ShouldCompleteHammerTowerAndQuizWithScreenshots" fullname="FieldFeedbackAcceptanceTests.ActualFieldScene_ShouldCompleteHammerTowerAndQuizWithScreenshots" methodname="ActualFieldScene_ShouldCompleteHammerTowerAndQuizWithScreenshots" classname="FieldFeedbackAcceptanceTests" runstate="Runnable" seed="1348666807" result="Passed" start-time="2026-09-25 04:53:46Z" end-time="2026-09-25 04:54:06Z" duration="19.629256" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

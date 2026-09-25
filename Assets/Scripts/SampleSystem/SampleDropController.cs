@@ -437,6 +437,11 @@ public class SampleDropController : MonoBehaviour
         dustParticles.transform.position = position;
         
         ParticleSystem particles = dustParticles.AddComponent<ParticleSystem>();
+        // A runtime-created particle renderer has no default material.
+        // The sprite shader respects particle vertex colours and is shared by both render pipelines.
+        var dustMaterial = new Material(Shader.Find("Sprites/Default"));
+        particles.GetComponent<ParticleSystemRenderer>().sharedMaterial = dustMaterial;
+        Destroy(dustMaterial, 2f);
         var main = particles.main;
         main.startLifetime = 1.0f;
         main.startSpeed = 2.0f;
