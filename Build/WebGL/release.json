@@ -77,5 +77,7 @@
       "bytes": 8325,
       "sha256": "55780fc5840d83ab2b8f369c86e133600fe12b66e2f07466526a3cd2211eda08"
     }
-  }
+  },
+  "republishedAt": "2026-09-25T01:42:23.121787+00:00",
+  "publicationNote": "Republished identical tested game assets to replace a CDN-cached pre-extraction 404."
 }
