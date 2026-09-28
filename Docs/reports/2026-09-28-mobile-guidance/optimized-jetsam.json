@@ -1,0 +1,39 @@
+{
+  "scope": "Only WebContent highwater victims from the optimized-build main-scene reload window. No raw reports, other app rows, identifiers or credentials saved.",
+  "scenario": "DiskSizeLTO optimized release, StartScene initialized, then attempted MainScene",
+  "requestedWindowJST": {
+    "from": "2026-09-28T17:49:50+09:00",
+    "through": "2026-09-28T17:50:05+09:00"
+  },
+  "cases": [
+    {
+      "reportFilename": "JetsamEvent-2026-09-28-174956.ips",
+      "timestamp": "2026-09-28 17:49:56.26 +0900",
+      "pageSizeBytes": 16384,
+      "webContentVictims": [
+        {
+          "name": "com.apple.WebKit.WebContent",
+          "reason": "highwater",
+          "rpages": 105771,
+          "lifetimeMax": 105772,
+          "states": [
+            "frontmost"
+          ],
+          "residentMiB": 1652.67,
+          "lifetimeMaxMiB": 1652.69
+        }
+      ],
+      "nextNavigationStartJST": "2026-09-28T17:49:56.754000+09:00",
+      "navigationSecondsAfterJetsam": 0.494,
+      "conclusion": "WebContent highwater termination immediately preceded the observed navigation"
+    }
+  ],
+  "parentObservedStartScene": {
+    "heapU8Bytes": 96665600,
+    "S3TC": false,
+    "S3TC_sRGB": false,
+    "ASTC": true,
+    "ETC": true,
+    "source": "Parent reported results from existing Unity WebGL context; no device UI actions by this extractor"
+  }
+}

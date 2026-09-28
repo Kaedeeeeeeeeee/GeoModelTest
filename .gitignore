@@ -119,6 +119,9 @@ supabase/.temp/
 
 # Local remediation validation build
 /Build/RemediationWebGL/
+/Build/MobileDeviceWebGL/
+/Build/MobileDeviceOptimizedWebGL/
+/Build/MobileDeviceAstcWebGL/
 /Build/SurveyPreview/
 
 # Unity Performance Testing creates these temporary files during a build.

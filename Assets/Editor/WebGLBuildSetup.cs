@@ -36,9 +36,11 @@ public static class WebGLBuildSetup
         PlayerSettings.SetManagedStrippingLevel(webgl, ManagedStrippingLevel.Minimal);
         Debug.Log("[WebGLBuildSetup] ManagedStrippingLevel = Minimal");
 
-        // 初始内存 64MB（默认 32 偏小）
-        PlayerSettings.WebGL.initialMemorySize = 64;
-        Debug.Log("[WebGLBuildSetup] WebGL.initialMemorySize = 64");
+        // 初始内存 384MB：实机主流程的 WASM 堆最高 275MB。iPhone X 上每次堆扩容都会出现约等于旧堆大小的
+        // 瞬时内存尖峰（2026-09-28 实测：切到研究室时 1,238→1,507MiB，终止线约 1,536MiB），
+        // 一开始就给足容量，避免游戏过程中扩容。
+        PlayerSettings.WebGL.initialMemorySize = 384;
+        Debug.Log("[WebGLBuildSetup] WebGL.initialMemorySize = 384");
 
         // 解压 fallback 开（部分浏览器无原生 Brotli 支持）
         PlayerSettings.WebGL.decompressionFallback = true;
@@ -84,6 +86,11 @@ public static class WebGLBuildSetup
         Debug.Log("[WebGLBuildSetup] 准备 WebGL 构建...");
 
         ConfigureWebGLSettings();
+        if (!ApplyPhoneVerifiedCodeSize())
+        {
+            EditorApplication.Exit(1);
+            return;
+        }
 
         // 强制把 StartScene 放在 scenes[0]，保证游戏从开始菜单进入而不是直接跳 MainScene
         EnsureStartSceneIsFirst();
@@ -131,6 +138,25 @@ public static class WebGLBuildSetup
         {
             Debug.Log("[WebGLBuildSetup] 构建成功 ✓");
         }
+    }
+
+    /// <summary>
+    /// 2026-09-28 的 iPhone X（iOS 16）实机验收使用的就是这组体积优化设置（wasm 解压后约 38 MB）；
+    /// 默认的速度优化版（约 67 MB）在内存优化后没有做过实机验证。codeOptimization 存在 Library 中，
+    /// 不随仓库保存，所以每次正式构建都要重新设置。
+    /// </summary>
+    private static bool ApplyPhoneVerifiedCodeSize()
+    {
+#if UNITY_WEBGL
+        PlayerSettings.SetIl2CppCodeGeneration(NamedBuildTarget.WebGL, Il2CppCodeGeneration.OptimizeSize);
+        UnityEditor.WebGL.UserBuildSettings.codeOptimization = UnityEditor.WebGL.WasmCodeOptimization.DiskSizeLTO;
+        Debug.Log("[WebGLBuildSetup] IL2CPP code generation = OptimizeSize");
+        Debug.Log("[WebGLBuildSetup] WebGL code optimization = DiskSizeLTO");
+        return true;
+#else
+        Debug.LogError("[WebGLBuildSetup] 当前平台不是 WebGL，无法应用实机验证过的体积优化设置；请切换到 WebGL 后再构建。");
+        return false;
+#endif
     }
 
     /// <summary>

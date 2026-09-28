@@ -145,9 +145,19 @@ namespace UISystem
         {
             float y = upper ? 0.53f : 0;
             var cell = GameUI.Box(_content.transform, name, GameUI.Panel, new Vector2(0, y), new Vector2(1, y + 0.47f));
-            var icon = GameUI.Label(cell.transform, "Symbol", _touch && name == "Talk" ? "…" : symbol, 76,
-                new Vector2(0.02f, 0.1f), new Vector2(0.14f, 0.9f), TextAnchor.MiddleCenter);
-            icon.color = color;
+            if (_touch && name == "Talk")
+            {
+                var hint = MobileControlHint.Create(cell.transform, "TouchControl", MobileControlHint.Control.Interact);
+                hint.RectTransform.anchorMin = hint.RectTransform.anchorMax = new Vector2(0.08f, 0.5f);
+                hint.RectTransform.anchoredPosition = Vector2.zero;
+                hint.RectTransform.sizeDelta = new Vector2(100f, 100f);
+            }
+            else
+            {
+                var icon = GameUI.Label(cell.transform, "Symbol", symbol, 76,
+                    new Vector2(0.02f, 0.1f), new Vector2(0.14f, 0.9f), TextAnchor.MiddleCenter);
+                icon.color = color;
+            }
             var heading = GameUI.Label(cell.transform, "Heading", GameUI.L(title), 30,
                 new Vector2(0.17f, 0.69f), new Vector2(0.96f, 0.95f));
             heading.color = color;

@@ -1,0 +1,63 @@
+{
+  "device": "iPhone X / iOS 16.7.16 / Safari",
+  "build": "Build/WebGL (release script, 2026.09.28-mobile-guidance)",
+  "qaTabPid": 1738,
+  "peakFootprintMiB": 1507.3,
+  "peakAtSecondsFromLoad": 150.9,
+  "afterSamplePickupMaxMiB": 1311.1,
+  "samples": 773,
+  "webContentKillLimitObservedMiB": "1536\u20131653 (earlier Jetsam reports)",
+  "allWebContentPids": {
+    "1738": {
+      "samples": 773,
+      "peakMiB": 1507.3,
+      "peakAtSecondsFromLoad": 150.9,
+      "lastMiB": 1286.3
+    },
+    "1742": {
+      "samples": 300,
+      "peakMiB": 5.1,
+      "peakAtSecondsFromLoad": 50.6,
+      "lastMiB": 5.1
+    }
+  },
+  "labTransitionSpike": [
+    {
+      "secondsFromLabSwitch": -0.8,
+      "physFootprintMiB": 1238.3
+    },
+    {
+      "secondsFromLabSwitch": -0.3,
+      "physFootprintMiB": 1238.3
+    },
+    {
+      "secondsFromLabSwitch": 0.3,
+      "physFootprintMiB": 1507.3
+    },
+    {
+      "secondsFromLabSwitch": 0.7,
+      "physFootprintMiB": 1323.7
+    },
+    {
+      "secondsFromLabSwitch": 1.2,
+      "physFootprintMiB": 1242.4
+    },
+    {
+      "secondsFromLabSwitch": 1.7,
+      "physFootprintMiB": 1248.4
+    },
+    {
+      "secondsFromLabSwitch": 2.3,
+      "physFootprintMiB": 1228.8
+    },
+    {
+      "secondsFromLabSwitch": 2.8,
+      "physFootprintMiB": 1228.5
+    }
+  ],
+  "wasmHeapBytes": {
+    "mainScene": 240582656,
+    "afterLabSwitch": 288751616
+  },
+  "interpretation": "A <1 s spike of about +269 MiB coincides with the WASM heap growing from 229.4 to 275.4 MiB; consistent with (not proof of) grow-by-copy on iOS Safari."
+}

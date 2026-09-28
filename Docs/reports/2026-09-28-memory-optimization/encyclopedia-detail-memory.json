@@ -1,0 +1,33 @@
+{
+  "device": "iPhone X / iOS 16.7.16 / Safari",
+  "build": "Build/MobileDeviceOptimizedWebGL (final QA build, see build-summary.json)",
+  "metric": "Safari WebContent physFootprint (MiB) for the QA tab process, sampled every 0.5 s via DVT sysmontap; other processes discarded",
+  "fieldBeforeEncyclopediaMiB": [
+    1296.1,
+    1319.4
+  ],
+  "encyclopediaListOpenMiB": [
+    1296.9,
+    1297.2
+  ],
+  "firstSampleAfterEntryTapMiB": 1378.9,
+  "processGoneAfterSeconds": 1.03,
+  "jetsam": [
+    {
+      "reportFilename": "JetsamEvent-2026-09-28-212853.ips",
+      "timestampJST": "2026-09-28T21:28:53.000+09:00",
+      "reason": "highwater",
+      "residentMiB": 1551.53,
+      "peakMiB": 1551.53
+    },
+    {
+      "reportFilename": "JetsamEvent-2026-09-28-214028.ips",
+      "timestampJST": "2026-09-28T21:40:28.000+09:00",
+      "reason": "highwater",
+      "residentMiB": 1536.2,
+      "peakMiB": 1536.2
+    }
+  ],
+  "reproducedTwice": true,
+  "note": "Opening one detail view (one GLB model) exceeded the ~1.55 GiB WebContent limit within ~1 s. Encyclopedia is hidden for this release instead of being fixed."
+}

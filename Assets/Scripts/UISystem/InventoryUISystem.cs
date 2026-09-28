@@ -225,6 +225,7 @@ public class InventoryUISystem : MonoBehaviour
     /// </summary>
     void HandleEncyclopediaInput()
     {
+        if (!Core.ResearchExperienceSettings.EncyclopediaEnabled) return;
         Debug.Log("[InventoryUISystem] 收到图鉴输入事件");
 
         // 查找图鉴UI并切换状态

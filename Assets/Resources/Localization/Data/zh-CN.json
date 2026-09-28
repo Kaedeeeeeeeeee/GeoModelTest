@@ -3474,7 +3474,7 @@
     },
     {
       "key": "ui.guide.menus",
-      "value": "背包、图鉴与设置"
+      "value": "背包与设置"
     },
     {
       "key": "ui.guide.desktop.use",
@@ -3494,11 +3494,11 @@
     },
     {
       "key": "ui.guide.desktop.menus",
-      "value": "I：背包　O：图鉴　Esc：设置\nH：随时打开操作说明"
+      "value": "I：背包　Esc：设置\nH：随时打开操作说明"
     },
     {
       "key": "ui.guide.touch.menus",
-      "value": "左上角打开“背包”“图鉴”，右上角打开设置。\n点击“？ 操作说明”可随时查看本说明。"
+      "value": "左上角打开“背包”，右上角打开设置。\n点击“？ 操作说明”可随时查看本说明。"
     },
     {
       "key": "ui.guide.field.line.title",
@@ -3622,7 +3622,7 @@
     },
     {
       "key": "ui.collection.equip.touch",
-      "value": "打开「工具」，选择高亮的「{0}」。"
+      "value": "点击工具按钮，再选择高亮的“{0}”。"
     },
     {
       "key": "ui.collection.hit.desktop",
@@ -3731,6 +3731,10 @@
     {
       "key": "quest.ui.completed_cue",
       "value": "调查完成"
+    },
+    {
+      "key": "quest.npc.prompt.control.mobile",
+      "value": "点击右侧对应按钮"
     }
   ]
 }

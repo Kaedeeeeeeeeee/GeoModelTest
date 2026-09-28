@@ -1,0 +1,30 @@
+{
+  "64MB": {
+    "newGameToMainPeak": 1279.0,
+    "labSwitchPeak": 1507.3,
+    "fieldSwitchPeak": 1416.5,
+    "labSteadyMedian": 1226.2,
+    "wholeRunPeak": 1507.3
+  },
+  "384MB": {
+    "newGameToMainPeak": 1280.0,
+    "labSwitchPeak": 1302.7,
+    "fieldSwitchPeak": 1313.0,
+    "labSteadyMedian": 1215.6,
+    "wholeRunPeak": 1313.0
+  },
+  "killLineObservedMiB": {
+    "lowest": 1536.05,
+    "highest": 1652.67
+  },
+  "wasmHeapMiB": {
+    "64MB": [
+      92.2,
+      229.4,
+      275.4
+    ],
+    "384MB": [
+      384.0
+    ]
+  }
+}

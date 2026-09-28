@@ -1,0 +1,42 @@
+{
+  "scope": "Only targeted release-run WebContent memory-kill evidence; no raw reports, other app rows, identifiers or credentials.",
+  "reports": [
+    {
+      "reportFilename": "JetsamEvent-2026-09-28-172012.ips",
+      "targetProcesses": [],
+      "timestamp": "2026-09-28 17:20:12.38 +0900",
+      "pageSizeBytes": 16384,
+      "safariState": {
+        "states": [
+          "frontmost"
+        ],
+        "killReason": null
+      }
+    },
+    {
+      "reportFilename": "JetsamEvent-2026-09-28-172012.000.ips",
+      "targetProcesses": [
+        {
+          "name": "com.apple.WebKit.WebContent",
+          "reason": "highwater",
+          "rpages": 102743,
+          "lifetimeMax": 102743,
+          "states": [
+            "frontmost"
+          ],
+          "residentMiB": 1605.36,
+          "lifetimeMaxMiB": 1605.36
+        }
+      ],
+      "timestamp": "2026-09-28 17:20:12.91 +0900",
+      "pageSizeBytes": 16384,
+      "safariState": {
+        "states": [
+          "frontmost"
+        ],
+        "killReason": null
+      }
+    }
+  ],
+  "nextNavigationStartJST": "2026-09-28T17:20:13.583000+09:00"
+}

@@ -17,6 +17,8 @@ namespace UISystem
         private Image _icon;
         private Text _title;
         private Text _instruction;
+        private Button _openToolsButton;
+        private MobileControlHint _toolsHint;
         public static string RecommendedToolId { get; private set; }
         public static bool IsVisible { get; private set; }
 
@@ -44,6 +46,19 @@ namespace UISystem
             _instruction.resizeTextForBestFit = true;
             _instruction.resizeTextMinSize = 17;
             _instruction.resizeTextMaxSize = 21;
+            // The cue uses the same artwork and label as the real touch control.
+            // Its own button opens the existing wheel; it never equips a tool implicitly.
+            _openToolsButton = GameUI.Button(_card, "OpenTools", "", new Vector2(0.76f, 0.07f),
+                new Vector2(0.98f, 0.91f), OpenTools);
+            _openToolsButton.image.color = Color.clear;
+            _toolsHint = MobileControlHint.Create(_openToolsButton.transform, "ControlHint", MobileControlHint.Control.Tools);
+            _toolsHint.RectTransform.anchorMin = Vector2.zero;
+            _toolsHint.RectTransform.anchorMax = Vector2.one;
+            _toolsHint.RectTransform.offsetMin = _toolsHint.RectTransform.offsetMax = Vector2.zero;
+            var aspect = _toolsHint.gameObject.AddComponent<AspectRatioFitter>();
+            aspect.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
+            aspect.aspectRatio = 1f;
+            _openToolsButton.gameObject.SetActive(false);
             _card.gameObject.SetActive(false);
         }
 
@@ -122,6 +137,11 @@ namespace UISystem
                 stage = "travel";
             if (stage == "equip") RecommendedToolId = id;
             bool touch = FirstControlGuide.UsesTouch();
+            bool showToolsButton = touch && stage == "equip" && !InventoryUISystem.IsAnyWheelOpen &&
+                MobileInputManager.Instance != null && _toolsHint.Refresh();
+            _openToolsButton.gameObject.SetActive(showToolsButton);
+            _instruction.rectTransform.anchorMax = new Vector2(showToolsButton ? 0.73f : 0.96f, 0.65f);
+            _title.rectTransform.anchorMax = new Vector2(showToolsButton ? 0.73f : 0.97f, 0.95f);
             string toolName = CurrentToolHUD.ToolName(tool);
             _title.text = toolName;
             _instruction.text = string.Format(GameUI.L("ui.collection." + stage + (touch ? ".touch" : ".desktop")),
@@ -133,7 +153,23 @@ namespace UISystem
             // Touch controls occupy the row below the quest card.
             float top = touch ? 370f : 172f;
             _card.anchoredPosition = new Vector2(safe.xMin / scale + 20f, -(Screen.height - safe.yMax) / scale - top);
-            IsVisible = true;
+            // Keep the recommendation for the wheel's highlighted slot, without a second
+            // collection card competing with the tool selection UI.
+            IsVisible = !InventoryUISystem.IsAnyWheelOpen;
+        }
+
+        private void OpenTools()
+        {
+            if (!FirstControlGuide.UsesTouch() || GameInputState.GameplayBlocked ||
+                StoryDirector.IsStoryPlaybackActive || InventoryUISystem.IsAnyWheelOpen) return;
+
+            // Recheck the objective and proximity at click time, including an objective
+            // completed or a player moved since the previous frame's visible cue.
+            RecommendedToolId = null;
+            IsVisible = false;
+            RefreshGuidance();
+            if (IsVisible && !string.IsNullOrEmpty(RecommendedToolId))
+                MobileInputManager.Instance?.TriggerToolWheelInput();
         }
 
         private void OnDisable()

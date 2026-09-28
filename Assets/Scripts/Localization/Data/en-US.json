@@ -3474,7 +3474,7 @@
     },
     {
       "key": "ui.guide.menus",
-      "value": "Bag, encyclopedia and settings"
+      "value": "Bag and settings"
     },
     {
       "key": "ui.guide.desktop.use",
@@ -3494,11 +3494,11 @@
     },
     {
       "key": "ui.guide.desktop.menus",
-      "value": "I: bag · O: encyclopedia · Esc: settings\nH: open these controls at any time"
+      "value": "I: bag · Esc: settings\nH: open these controls at any time"
     },
     {
       "key": "ui.guide.touch.menus",
-      "value": "Use Bag and Encyclopedia at the top left, and Settings at the top right.\nTap “? Controls” to reopen this guide."
+      "value": "Use Bag at the top left, and Settings at the top right.\nTap “? Controls” to reopen this guide."
     },
     {
       "key": "ui.guide.field.line.title",
@@ -3622,7 +3622,7 @@
     },
     {
       "key": "ui.collection.equip.touch",
-      "value": "Open Tools and select the highlighted {0}."
+      "value": "Tap Tools, then choose the glowing {0}."
     },
     {
       "key": "ui.collection.hit.desktop",
@@ -3731,6 +3731,10 @@
     {
       "key": "quest.ui.completed_cue",
       "value": "COMPLETE"
+    },
+    {
+      "key": "quest.npc.prompt.control.mobile",
+      "value": "Tap the matching button on the right"
     }
   ]
 }

@@ -1,0 +1,215 @@
+{
+  "verified_at": "2026-09-28T08:59:58.066745+00:00",
+  "unity": "6000.0.51f1",
+  "build_result": "Success",
+  "editor_exit_code": 6,
+  "post_build_diagnostic_error": "BuildSummary.GetSubtarget<T> is unsupported on WebGL; corrected diagnostic source afterward without rebuilding or modifying player files",
+  "code_optimization": "DiskSizeLTO",
+  "il2cpp_codegen": "OptimizeSize",
+  "texture_subtarget": "ASTC",
+  "link_executed": false,
+  "code_cache": [
+    {
+      "path": "Library/Bee/artifacts/WebGL/build/debug_WebGL_wasm/build.wasm",
+      "before_sha256": "deb9e443a71513a8f5cd4d2c8e6b24178052ac851c96f54fbba755fa7e674a03",
+      "after_sha256": "deb9e443a71513a8f5cd4d2c8e6b24178052ac851c96f54fbba755fa7e674a03",
+      "same": true
+    },
+    {
+      "path": "Library/Bee/artifacts/WebGL/build/debug_WebGL_wasm/build.js",
+      "before_sha256": "3da97d9de6edb6a45cc6b874b6723739488b57646cf72b65886ada1b257ef5e7",
+      "after_sha256": "3da97d9de6edb6a45cc6b874b6723739488b57646cf72b65886ada1b257ef5e7",
+      "same": true
+    },
+    {
+      "path": "Library/Bee/artifacts/WebGL/build/debug_WebGL_wasm/build.wasm.unmarked",
+      "before_sha256": "6808ba4a54162c1a7cc147c206f256bee7fce9294bfd8f2565b325a4bcf26637",
+      "after_sha256": "6808ba4a54162c1a7cc147c206f256bee7fce9294bfd8f2565b325a4bcf26637",
+      "same": true
+    },
+    {
+      "path": "Library/Bee/artifacts/WebGL/build/debug_WebGL_wasm/build.framework.js",
+      "before_sha256": "56fa29e0e898ee90ffc2cbeaccce1324968985f3d2ccab53b678e92c2804d7fa",
+      "after_sha256": "56fa29e0e898ee90ffc2cbeaccce1324968985f3d2ccab53b678e92c2804d7fa",
+      "same": true
+    },
+    {
+      "path": "Library/Bee/artifacts/WebGL/build/debug_WebGL_wasm/build.framework.js.unmarked",
+      "before_sha256": "36ecc7bd9f47ef4dfdbf649993b5f5006202613a8fee408610e74f04744ca6bb",
+      "after_sha256": "36ecc7bd9f47ef4dfdbf649993b5f5006202613a8fee408610e74f04744ca6bb",
+      "same": true
+    }
+  ],
+  "settings": {
+    "verified": 33,
+    "restored": [
+      "ProjectSettings/ProjectSettings.asset",
+      "Library/EditorUserBuildSettings.asset"
+    ],
+    "added_files": []
+  },
+  "texture2d_summary": {
+    "optimized": {
+      "texture2d_count": 200,
+      "formats": {
+        "1": 2,
+        "3": 3,
+        "4": 10,
+        "10": 69,
+        "12": 36,
+        "29": 80
+      },
+      "serialized_texture_bytes": 120682475
+    },
+    "astc": {
+      "texture2d_count": 200,
+      "formats": {
+        "1": 2,
+        "3": 1,
+        "4": 8,
+        "12": 1,
+        "29": 80,
+        "48": 17,
+        "50": 91
+      },
+      "serialized_texture_bytes": 96267411
+    }
+  },
+  "remaining_dxt_note": "80 serialized 1024x1024 DXT5Crunched objects (texture0 x32, texture1 x24, texture2 x24) plus one Unity Splash DXT5; all 80 RGBA32 expansion would be 320 MiB, but this does not establish simultaneous runtime residency or crash cause",
+  "files": [
+    {
+      "path": "Build/MobileDeviceAstcWebGL.data.unityweb",
+      "bytes": 122376839,
+      "decoded_bytes": 143680125,
+      "sha256": "2a14af4d9ca36ba7587048e9415c27d3fb619f5f306fd892fd1f1e8fa1104b99",
+      "decoded_sha256": "74476856c9e7a4f33233a3d51537a7574f58ff0e36c7ddf87d3ad8c4336bab31"
+    },
+    {
+      "path": "Build/MobileDeviceAstcWebGL.framework.js.unityweb",
+      "bytes": 96232,
+      "decoded_bytes": 485301,
+      "sha256": "d93b0a89e367b8683affb47ac208b37a8b0d4d9d4395e8b0389a4bd19f78dfc0",
+      "decoded_sha256": "56fa29e0e898ee90ffc2cbeaccce1324968985f3d2ccab53b678e92c2804d7fa"
+    },
+    {
+      "path": "Build/MobileDeviceAstcWebGL.loader.js",
+      "bytes": 47338,
+      "decoded_bytes": 47338,
+      "sha256": "6ca202bc708a91e99d7895ebcb524f88ccce38bb74b80967ce7cf14f55ca6892",
+      "decoded_sha256": "6ca202bc708a91e99d7895ebcb524f88ccce38bb74b80967ce7cf14f55ca6892"
+    },
+    {
+      "path": "Build/MobileDeviceAstcWebGL.wasm.unityweb",
+      "bytes": 12102851,
+      "decoded_bytes": 37953195,
+      "sha256": "2fa6cf01b211297f1728e6b795098b0e3867adff96103023e00bc4dd31c45ae5",
+      "decoded_sha256": "deb9e443a71513a8f5cd4d2c8e6b24178052ac851c96f54fbba755fa7e674a03"
+    },
+    {
+      "path": "StreamingAssets/Survey/config.js",
+      "bytes": 205,
+      "decoded_bytes": 205,
+      "sha256": "254b36bbd422ce0bf8355193a5e606f36c52e53118194fc6b14a9074934edbc0",
+      "decoded_sha256": "254b36bbd422ce0bf8355193a5e606f36c52e53118194fc6b14a9074934edbc0"
+    },
+    {
+      "path": "StreamingAssets/Survey/index.html",
+      "bytes": 2753,
+      "decoded_bytes": 2753,
+      "sha256": "4638dd8397d4728538f4cadc78f2cf9ae0f58bac0813d05893ca907c0ad05fcd",
+      "decoded_sha256": "4638dd8397d4728538f4cadc78f2cf9ae0f58bac0813d05893ca907c0ad05fcd"
+    },
+    {
+      "path": "StreamingAssets/Survey/preview.css",
+      "bytes": 410,
+      "decoded_bytes": 410,
+      "sha256": "399e8bc03c56bc1432531226807b6e9bdfe166128447687d35d29b2e8f3de541",
+      "decoded_sha256": "399e8bc03c56bc1432531226807b6e9bdfe166128447687d35d29b2e8f3de541"
+    },
+    {
+      "path": "StreamingAssets/Survey/preview.html",
+      "bytes": 2591,
+      "decoded_bytes": 2591,
+      "sha256": "2dab6eedf779ffa69e9cb92d283e2f69c8aef749d18917aa6b26d8c707edf120",
+      "decoded_sha256": "2dab6eedf779ffa69e9cb92d283e2f69c8aef749d18917aa6b26d8c707edf120"
+    },
+    {
+      "path": "StreamingAssets/Survey/preview.js",
+      "bytes": 5871,
+      "decoded_bytes": 5871,
+      "sha256": "7965aa653c6039ca68271f3d7bf9c2d907a5f6b66cac997f1b7a480c02f85750",
+      "decoded_sha256": "7965aa653c6039ca68271f3d7bf9c2d907a5f6b66cac997f1b7a480c02f85750"
+    },
+    {
+      "path": "StreamingAssets/Survey/questions.js",
+      "bytes": 3307,
+      "decoded_bytes": 3307,
+      "sha256": "54203cd284e580a06a80f9f2388c4d761e59a176472bbcc5f1b1a2a57f4ba7d9",
+      "decoded_sha256": "54203cd284e580a06a80f9f2388c4d761e59a176472bbcc5f1b1a2a57f4ba7d9"
+    },
+    {
+      "path": "StreamingAssets/Survey/questions.json",
+      "bytes": 3231,
+      "decoded_bytes": 3231,
+      "sha256": "665fdfe3d695a092fa4703988f163e42e62036b1516eaa3a44c14e8e2deafc0f",
+      "decoded_sha256": "665fdfe3d695a092fa4703988f163e42e62036b1516eaa3a44c14e8e2deafc0f"
+    },
+    {
+      "path": "StreamingAssets/Survey/survey.css",
+      "bytes": 4888,
+      "decoded_bytes": 4888,
+      "sha256": "bf0eef3b6839c55413ea9a63ddf002a63778cf6048a9cd7ac588606e69db4fe4",
+      "decoded_sha256": "bf0eef3b6839c55413ea9a63ddf002a63778cf6048a9cd7ac588606e69db4fe4"
+    },
+    {
+      "path": "StreamingAssets/Survey/survey.js",
+      "bytes": 8325,
+      "decoded_bytes": 8325,
+      "sha256": "55780fc5840d83ab2b8f369c86e133600fe12b66e2f07466526a3cd2211eda08",
+      "decoded_sha256": "55780fc5840d83ab2b8f369c86e133600fe12b66e2f07466526a3cd2211eda08"
+    },
+    {
+      "path": "StreamingAssets/UnityServicesProjectConfiguration.json",
+      "bytes": 985,
+      "decoded_bytes": 985,
+      "sha256": "82e790d093246c9ec6bc56dcd171dd619567eb3aa19dd3ef0dfb6126b6d874b7",
+      "decoded_sha256": "82e790d093246c9ec6bc56dcd171dd619567eb3aa19dd3ef0dfb6126b6d874b7"
+    },
+    {
+      "path": "TemplateData/fullscreen.js",
+      "bytes": 5138,
+      "decoded_bytes": 5138,
+      "sha256": "8b12767a34063f3a910778d5fa9d00892d668af59ccdc76ca400fb1f1c3e53aa",
+      "decoded_sha256": "8b12767a34063f3a910778d5fa9d00892d668af59ccdc76ca400fb1f1c3e53aa"
+    },
+    {
+      "path": "TemplateData/loading.js",
+      "bytes": 12153,
+      "decoded_bytes": 12153,
+      "sha256": "d8720b2a9023ccc6562b8d89da01a74b22d8df1f1d8dfd0e538490686755d05d",
+      "decoded_sha256": "d8720b2a9023ccc6562b8d89da01a74b22d8df1f1d8dfd0e538490686755d05d"
+    },
+    {
+      "path": "TemplateData/performance.js",
+      "bytes": 1277,
+      "decoded_bytes": 1277,
+      "sha256": "0e36abece3c0aeb0a3fe0ae50fdc480fb71ed6783c8664b8ce549329fbf63bc9",
+      "decoded_sha256": "0e36abece3c0aeb0a3fe0ae50fdc480fb71ed6783c8664b8ce549329fbf63bc9"
+    },
+    {
+      "path": "TemplateData/style.css",
+      "bytes": 6352,
+      "decoded_bytes": 6352,
+      "sha256": "5c780429ae6c81e30049f12d70a3ba386fe38dd624abb76c0768375d97eb59bd",
+      "decoded_sha256": "5c780429ae6c81e30049f12d70a3ba386fe38dd624abb76c0768375d97eb59bd"
+    },
+    {
+      "path": "index.html",
+      "bytes": 6621,
+      "decoded_bytes": 6621,
+      "sha256": "55a92e13db7d8edf352327b8415037338e0bfbf1380956c5fa26526d68d10fe6",
+      "decoded_sha256": "55a92e13db7d8edf352327b8415037338e0bfbf1380956c5fa26526d68d10fe6"
+    }
+  ],
+  "embedded_texture_source_scope": "Logs/mobile-device-qa/embedded-dxt-source-scope.json"
+}

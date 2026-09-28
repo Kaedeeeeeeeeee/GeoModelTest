@@ -1,0 +1,49 @@
+{
+  "scope": "Only WebContent victims from the two targeted main-scene reload windows. No raw reports, other app rows, identifiers or credentials saved.",
+  "cases": [
+    {
+      "scenario": "ordinary release / automatic Low",
+      "reportFilename": "JetsamEvent-2026-09-28-172550.ips",
+      "webContentVictims": [
+        {
+          "name": "com.apple.WebKit.WebContent",
+          "reason": "highwater",
+          "rpages": 99078,
+          "lifetimeMax": 99096,
+          "states": [
+            "frontmost"
+          ],
+          "residentMiB": 1548.09,
+          "lifetimeMaxMiB": 1548.38
+        }
+      ],
+      "timestamp": "2026-09-28 17:25:50.03 +0900",
+      "pageSizeBytes": 16384,
+      "nextNavigationStartJST": "2026-09-28T17:25:50.552000+09:00",
+      "navigationSecondsAfterJetsam": 0.522,
+      "conclusion": "WebContent memory-limit termination immediately preceded the observed navigation"
+    },
+    {
+      "scenario": "ordinary release / confirmed manual Very Low 960x540",
+      "reportFilename": "JetsamEvent-2026-09-28-172841.000.ips",
+      "webContentVictims": [
+        {
+          "name": "com.apple.WebKit.WebContent",
+          "reason": "highwater",
+          "rpages": 100317,
+          "lifetimeMax": 101902,
+          "states": [
+            "frontmost"
+          ],
+          "residentMiB": 1567.45,
+          "lifetimeMaxMiB": 1592.22
+        }
+      ],
+      "timestamp": "2026-09-28 17:28:41.93 +0900",
+      "pageSizeBytes": 16384,
+      "nextNavigationStartJST": "2026-09-28T17:28:42.451000+09:00",
+      "navigationSecondsAfterJetsam": 0.521,
+      "conclusion": "WebContent memory-limit termination immediately preceded the observed navigation"
+    }
+  ]
+}

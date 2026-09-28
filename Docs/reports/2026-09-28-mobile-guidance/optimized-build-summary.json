@@ -1,0 +1,128 @@
+{
+  "verified_at": "2026-09-28T08:47:17.471276+00:00",
+  "unity": "6000.0.51f1",
+  "success": true,
+  "code_optimization": "DiskSizeLTO",
+  "il2cpp_codegen": "OptimizeSize",
+  "output": "/Users/user/Unity/GeoModelTest/Build/MobileDeviceOptimizedWebGL",
+  "settings_verified": 27,
+  "settings_restored": [
+    "ProjectSettings/ProjectSettings.asset"
+  ],
+  "files": [
+    {
+      "path": "Build/MobileDeviceOptimizedWebGL.data.unityweb",
+      "bytes": 107339465,
+      "decoded_bytes": 130866297,
+      "sha256": "88396938d2adc9b9ef8326dcecc23d5e50c832e4ec02352ce8c9f28cf799fd97"
+    },
+    {
+      "path": "Build/MobileDeviceOptimizedWebGL.framework.js.unityweb",
+      "bytes": 96232,
+      "decoded_bytes": 485301,
+      "sha256": "d93b0a89e367b8683affb47ac208b37a8b0d4d9d4395e8b0389a4bd19f78dfc0"
+    },
+    {
+      "path": "Build/MobileDeviceOptimizedWebGL.loader.js",
+      "bytes": 47338,
+      "decoded_bytes": 47338,
+      "sha256": "6ca202bc708a91e99d7895ebcb524f88ccce38bb74b80967ce7cf14f55ca6892"
+    },
+    {
+      "path": "Build/MobileDeviceOptimizedWebGL.wasm.unityweb",
+      "bytes": 12102851,
+      "decoded_bytes": 37953195,
+      "sha256": "2fa6cf01b211297f1728e6b795098b0e3867adff96103023e00bc4dd31c45ae5"
+    },
+    {
+      "path": "StreamingAssets/Survey/config.js",
+      "bytes": 205,
+      "decoded_bytes": 205,
+      "sha256": "254b36bbd422ce0bf8355193a5e606f36c52e53118194fc6b14a9074934edbc0"
+    },
+    {
+      "path": "StreamingAssets/Survey/index.html",
+      "bytes": 2753,
+      "decoded_bytes": 2753,
+      "sha256": "4638dd8397d4728538f4cadc78f2cf9ae0f58bac0813d05893ca907c0ad05fcd"
+    },
+    {
+      "path": "StreamingAssets/Survey/preview.css",
+      "bytes": 410,
+      "decoded_bytes": 410,
+      "sha256": "399e8bc03c56bc1432531226807b6e9bdfe166128447687d35d29b2e8f3de541"
+    },
+    {
+      "path": "StreamingAssets/Survey/preview.html",
+      "bytes": 2591,
+      "decoded_bytes": 2591,
+      "sha256": "2dab6eedf779ffa69e9cb92d283e2f69c8aef749d18917aa6b26d8c707edf120"
+    },
+    {
+      "path": "StreamingAssets/Survey/preview.js",
+      "bytes": 5871,
+      "decoded_bytes": 5871,
+      "sha256": "7965aa653c6039ca68271f3d7bf9c2d907a5f6b66cac997f1b7a480c02f85750"
+    },
+    {
+      "path": "StreamingAssets/Survey/questions.js",
+      "bytes": 3307,
+      "decoded_bytes": 3307,
+      "sha256": "54203cd284e580a06a80f9f2388c4d761e59a176472bbcc5f1b1a2a57f4ba7d9"
+    },
+    {
+      "path": "StreamingAssets/Survey/questions.json",
+      "bytes": 3231,
+      "decoded_bytes": 3231,
+      "sha256": "665fdfe3d695a092fa4703988f163e42e62036b1516eaa3a44c14e8e2deafc0f"
+    },
+    {
+      "path": "StreamingAssets/Survey/survey.css",
+      "bytes": 4888,
+      "decoded_bytes": 4888,
+      "sha256": "bf0eef3b6839c55413ea9a63ddf002a63778cf6048a9cd7ac588606e69db4fe4"
+    },
+    {
+      "path": "StreamingAssets/Survey/survey.js",
+      "bytes": 8325,
+      "decoded_bytes": 8325,
+      "sha256": "55780fc5840d83ab2b8f369c86e133600fe12b66e2f07466526a3cd2211eda08"
+    },
+    {
+      "path": "StreamingAssets/UnityServicesProjectConfiguration.json",
+      "bytes": 985,
+      "decoded_bytes": 985,
+      "sha256": "82e790d093246c9ec6bc56dcd171dd619567eb3aa19dd3ef0dfb6126b6d874b7"
+    },
+    {
+      "path": "TemplateData/fullscreen.js",
+      "bytes": 5138,
+      "decoded_bytes": 5138,
+      "sha256": "8b12767a34063f3a910778d5fa9d00892d668af59ccdc76ca400fb1f1c3e53aa"
+    },
+    {
+      "path": "TemplateData/loading.js",
+      "bytes": 12153,
+      "decoded_bytes": 12153,
+      "sha256": "d8720b2a9023ccc6562b8d89da01a74b22d8df1f1d8dfd0e538490686755d05d"
+    },
+    {
+      "path": "TemplateData/performance.js",
+      "bytes": 1277,
+      "decoded_bytes": 1277,
+      "sha256": "0e36abece3c0aeb0a3fe0ae50fdc480fb71ed6783c8664b8ce549329fbf63bc9"
+    },
+    {
+      "path": "TemplateData/style.css",
+      "bytes": 6352,
+      "decoded_bytes": 6352,
+      "sha256": "5c780429ae6c81e30049f12d70a3ba386fe38dd624abb76c0768375d97eb59bd"
+    },
+    {
+      "path": "index.html",
+      "bytes": 6641,
+      "decoded_bytes": 6641,
+      "sha256": "9390345200b797351c203c177adbcb63133a06972b51ad8d2da02318aab0d805"
+    }
+  ]
+}

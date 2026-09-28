@@ -7,12 +7,6 @@ public class TerrainHoleSystem : MonoBehaviour
     public Material holeMaterial;
     public List<HoleData> holes = new List<HoleData>();
     
-    private MeshFilter meshFilter;
-    private MeshRenderer meshRenderer;
-    private MeshCollider meshCollider;
-    private Mesh originalMesh;
-    private Mesh modifiedMesh;
-    
     [System.Serializable]
     public class HoleData
     {
@@ -30,25 +24,6 @@ public class TerrainHoleSystem : MonoBehaviour
         }
     }
     
-    void Start()
-    {
-        InitializeComponents();
-    }
-    
-    void InitializeComponents()
-    {
-        meshFilter = GetComponent<MeshFilter>();
-        meshRenderer = GetComponent<MeshRenderer>();
-        meshCollider = GetComponent<MeshCollider>();
-        
-        if (meshFilter != null && meshFilter.mesh != null)
-        {
-            originalMesh = meshFilter.mesh;
-            modifiedMesh = Instantiate(originalMesh);
-            meshFilter.mesh = modifiedMesh;
-        }
-    }
-    
     public void CreateCylindricalHole(Vector3 worldPosition, float radius, float depth, Vector3 normal)
     {
         Vector3 localPosition = transform.InverseTransformPoint(worldPosition);
@@ -56,9 +31,7 @@ public class TerrainHoleSystem : MonoBehaviour
         
         HoleData newHole = new HoleData(localPosition, radius, depth, localNormal);
         holes.Add(newHole);
-        
-        
-        
+        // Holes are separate visual markers; the shared terrain mesh is never modified.
         CreateHoleVisual(newHole);
     }
     
@@ -115,16 +88,6 @@ public class TerrainHoleSystem : MonoBehaviour
             {
                 DestroyImmediate(holeMarkers[i].transform.parent.gameObject);
             }
-        }
-        
-        if (meshFilter != null && originalMesh != null)
-        {
-            if (modifiedMesh != null)
-            {
-                DestroyImmediate(modifiedMesh);
-            }
-            modifiedMesh = Instantiate(originalMesh);
-            meshFilter.mesh = modifiedMesh;
         }
     }
     

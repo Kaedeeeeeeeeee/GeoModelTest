@@ -1,0 +1,8 @@
+{
+  "settings_verified": 33,
+  "progress_verified": 8,
+  "preferences_verified": true,
+  "removed_test_preference_keys": [
+    "FirstControlGuide.Completed.v2"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "scope": "Only WebContent victims from the ASTC plus Very Low main-scene reload window. No raw reports, other app rows, identifiers or credentials saved.",
+  "scenario": "ASTC texture build / confirmed manual Very Low / canvas 960x540; StartScene initialized then attempted MainScene",
+  "requestedWindowJST": {
+    "from": "2026-09-28T18:02:28+09:00",
+    "through": "2026-09-28T18:02:42+09:00"
+  },
+  "cases": [
+    {
+      "reportFilename": "JetsamEvent-2026-09-28-180235.ips",
+      "timestamp": "2026-09-28 18:02:35.70 +0900",
+      "pageSizeBytes": 16384,
+      "webContentVictims": [
+        {
+          "name": "com.apple.WebKit.WebContent",
+          "reason": "highwater",
+          "rpages": 102958,
+          "lifetimeMax": 102997,
+          "states": [
+            "frontmost"
+          ],
+          "residentMiB": 1608.72,
+          "lifetimeMaxMiB": 1609.33
+        }
+      ],
+      "nextNavigationStartJST": "2026-09-28T18:02:35.819000+09:00",
+      "navigationSecondsAfterJetsam": 0.119,
+      "conclusion": "WebContent highwater termination immediately preceded the observed navigation"
+    }
+  ]
+}

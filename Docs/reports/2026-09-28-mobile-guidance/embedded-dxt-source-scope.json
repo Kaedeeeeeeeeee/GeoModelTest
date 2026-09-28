@@ -1,0 +1,272 @@
+{
+  "cause_file": "Assets/Plugins/GLTFUtility/Scripts/Editor/GLTFAssetUtility.cs",
+  "cause_line": 161,
+  "cause": "ScriptedImporter creates embedded Texture2D subassets and explicitly compresses them to DXT5Crunched without checking active build target or WebGL texture subtarget. These are not TextureImporter-controlled standalone images.",
+  "source_glb_count": 32,
+  "source_embedded_image_count": 80,
+  "serialized_dxt_crunched_count": 80,
+  "serialized_names": {
+    "texture1": 24,
+    "texture2": 24,
+    "texture0": 32
+  },
+  "mapping_limit": "Exact object-to-source GUID mapping was not extracted from the release data. The source scope and aggregate cardinalities match, and all 32 source GLBs are named in the successful ASTC build report.",
+  "paths": [
+    {
+      "path": "Assets/Resources/MineralData/Models/Fossil/buried_wood_001.glb",
+      "guid": "9b60a7771d5a24ce4a8dd239ff132a9f",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Fossil/cetacean_fossils_001.glb",
+      "guid": "7995f87dbc75b45cfa903da97a52a571",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Fossil/elephant_fossils_001.glb",
+      "guid": "06e2c861779624692b15e58bfd3aa8c8",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Fossil/fish_fossils_001.glb",
+      "guid": "02f7c4687c0df4fb4b0237553915b294",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Fossil/foraminifera_001.glb",
+      "guid": "8989226595f514ec98d14eb331ab8cf4",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Fossil/horse_fossils_001.glb",
+      "guid": "ee062520bad234f4e8e0400351cfe003",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Fossil/planktonic_diatoms_001.glb",
+      "guid": "1f11874577c1d40279ec4cf0bc791225",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Fossil/plant_leaf_fossils_001.glb",
+      "guid": "de71f297e22324a5588bad6eaeca13e0",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Fossil/plant_remains_001.glb",
+      "guid": "25d791a85c3944b40a2b5053ec70aade",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Fossil/pollen_fossils_001.glb",
+      "guid": "1932aa4415e8a434485210d615d845d0",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Fossil/sendai_clam_001.glb",
+      "guid": "a98343359c5684fcb83790083471b9d6",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Fossil/shark_fossils_001.glb",
+      "guid": "239dc89a87cdc4b328d71ccb0b356776",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Fossil/shellfish_001.glb",
+      "guid": "0c0dba749c3fb44a89cd31d871599de4",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Fossil/silicified_wood_001.glb",
+      "guid": "0397589c417a84edb83e34ae45f3f5ab",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Fossil/takahashi_scallop_001.glb",
+      "guid": "9fc44f9cacaf34e82bd12577cb760def",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/amphibole_001.glb",
+      "guid": "768b19408d5374a439f0584d625a6b3f",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/biotite_001.glb",
+      "guid": "a4b075ac9f01645a2bc71b85fd3f44f7",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/carbonaceous_matter.glb",
+      "guid": "8917af702eae84bd6a26cb9d60bcddfa",
+      "embedded_image_count": 1,
+      "texture_count": 1,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/clay_minerals_001.glb",
+      "guid": "ef078e7b4657741a6807bd88d50d5aae",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/feldspar_001.glb",
+      "guid": "195784da948a749e487dfa65e30fb94f",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/garnet_001.glb",
+      "guid": "5d651f87c81b4491a81c0e19ef08ac27",
+      "embedded_image_count": 1,
+      "texture_count": 1,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/heavy_minerals_001.glb",
+      "guid": "b50ad0e543cc146fb96484d03b931172",
+      "embedded_image_count": 1,
+      "texture_count": 1,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/hypersthene_001.glb",
+      "guid": "1729bcd9313fc42b7a813ae691b397b8",
+      "embedded_image_count": 1,
+      "texture_count": 1,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/illite_alteration_001.glb",
+      "guid": "456e06340285640f5a81f68a7a40bf84",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/magnetite_001.glb",
+      "guid": "327de498f2f00463783a01ac101a8146",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/olivine_001.glb",
+      "guid": "92c505ad77f5a466381bf4d256895de1",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/orthopyroxene_001.glb",
+      "guid": "797a990bccd2743c38f3453a26ed48d6",
+      "embedded_image_count": 1,
+      "texture_count": 1,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/plagioclase_001.glb",
+      "guid": "34562a32041014ae394e9a0f6b2472c7",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/pumice_001.glb",
+      "guid": "522d3e3068b2a4b25ba27cb49eac16f4",
+      "embedded_image_count": 1,
+      "texture_count": 1,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/pyroxene_001.glb",
+      "guid": "8e68ada3a9e3242648f16e2213cc70e0",
+      "embedded_image_count": 3,
+      "texture_count": 3,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/volcanic_glass_001.glb",
+      "guid": "2a36c384ed20a45f580433c6d9da5ade",
+      "embedded_image_count": 1,
+      "texture_count": 1,
+      "material_count": 1,
+      "build_report_included": true
+    },
+    {
+      "path": "Assets/Resources/MineralData/Models/Minerals/zircon_001.glb",
+      "guid": "4e46c13a87f3d4920984ffec64306d4f",
+      "embedded_image_count": 1,
+      "texture_count": 1,
+      "material_count": 1,
+      "build_report_included": true
+    }
+  ]
+}

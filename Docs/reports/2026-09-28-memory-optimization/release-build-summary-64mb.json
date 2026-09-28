@@ -1,0 +1,141 @@
+{
+  "verified_at": "2026-09-28T13:23:33.949287+00:00",
+  "unity": "6000.0.51f1",
+  "builder": "WebGLBuildSetup.BuildWebGL",
+  "productVersion": "2026.09.28-mobile-guidance",
+  "bee_input": "Player3612b428",
+  "configuration": {
+    "development": false,
+    "allowDebugging": false,
+    "configuration": "ReleaseSize",
+    "optimizeForSize": true,
+    "optimizeForSpeed": false,
+    "debugSymbolMode": "Off"
+  },
+  "code_optimization": "DiskSizeLTO",
+  "il2cpp_codegen": "OptimizeSize",
+  "output": "Build/WebGL",
+  "note": "Build/WebGL/release.json is the publish manifest and still describes 2026.09.25; regenerate it when publishing (it must also list TemplateData/fullscreen.js).",
+  "files": [
+    {
+      "path": "Build/WebGL.data.unityweb",
+      "bytes": 107339687,
+      "decoded_bytes": 130867741,
+      "sha256": "85c00fa84b8dab57e18af49aaadf9eb0db5d6b4463e46499399926c0be7fcaa0"
+    },
+    {
+      "path": "Build/WebGL.framework.js.unityweb",
+      "bytes": 96233,
+      "decoded_bytes": 485301,
+      "sha256": "3891813186bf1df4e932c5fd089959f9d58874978e43841b7e2900301f1a310b"
+    },
+    {
+      "path": "Build/WebGL.loader.js",
+      "bytes": 47338,
+      "decoded_bytes": 47338,
+      "sha256": "cfa6000e9672f62a0d93d738e84f2a0720f2cc42f678d6d31d6182ef8059cd62"
+    },
+    {
+      "path": "Build/WebGL.wasm.unityweb",
+      "bytes": 12103890,
+      "decoded_bytes": 37954624,
+      "sha256": "f3d0c9119522fe5f12b3e77be5117384f20ef17ff2a51c8ca07cf9511240d43d"
+    },
+    {
+      "path": "StreamingAssets/Survey/config.js",
+      "bytes": 205,
+      "decoded_bytes": 205,
+      "sha256": "254b36bbd422ce0bf8355193a5e606f36c52e53118194fc6b14a9074934edbc0"
+    },
+    {
+      "path": "StreamingAssets/Survey/index.html",
+      "bytes": 2753,
+      "decoded_bytes": 2753,
+      "sha256": "4638dd8397d4728538f4cadc78f2cf9ae0f58bac0813d05893ca907c0ad05fcd"
+    },
+    {
+      "path": "StreamingAssets/Survey/preview.css",
+      "bytes": 410,
+      "decoded_bytes": 410,
+      "sha256": "399e8bc03c56bc1432531226807b6e9bdfe166128447687d35d29b2e8f3de541"
+    },
+    {
+      "path": "StreamingAssets/Survey/preview.html",
+      "bytes": 2591,
+      "decoded_bytes": 2591,
+      "sha256": "2dab6eedf779ffa69e9cb92d283e2f69c8aef749d18917aa6b26d8c707edf120"
+    },
+    {
+      "path": "StreamingAssets/Survey/preview.js",
+      "bytes": 5871,
+      "decoded_bytes": 5871,
+      "sha256": "7965aa653c6039ca68271f3d7bf9c2d907a5f6b66cac997f1b7a480c02f85750"
+    },
+    {
+      "path": "StreamingAssets/Survey/questions.js",
+      "bytes": 3307,
+      "decoded_bytes": 3307,
+      "sha256": "54203cd284e580a06a80f9f2388c4d761e59a176472bbcc5f1b1a2a57f4ba7d9"
+    },
+    {
+      "path": "StreamingAssets/Survey/questions.json",
+      "bytes": 3231,
+      "decoded_bytes": 3231,
+      "sha256": "665fdfe3d695a092fa4703988f163e42e62036b1516eaa3a44c14e8e2deafc0f"
+    },
+    {
+      "path": "StreamingAssets/Survey/survey.css",
+      "bytes": 4888,
+      "decoded_bytes": 4888,
+      "sha256": "bf0eef3b6839c55413ea9a63ddf002a63778cf6048a9cd7ac588606e69db4fe4"
+    },
+    {
+      "path": "StreamingAssets/Survey/survey.js",
+      "bytes": 8325,
+      "decoded_bytes": 8325,
+      "sha256": "55780fc5840d83ab2b8f369c86e133600fe12b66e2f07466526a3cd2211eda08"
+    },
+    {
+      "path": "StreamingAssets/UnityServicesProjectConfiguration.json",
+      "bytes": 985,
+      "decoded_bytes": 985,
+      "sha256": "82e790d093246c9ec6bc56dcd171dd619567eb3aa19dd3ef0dfb6126b6d874b7"
+    },
+    {
+      "path": "TemplateData/fullscreen.js",
+      "bytes": 5138,
+      "decoded_bytes": 5138,
+      "sha256": "8b12767a34063f3a910778d5fa9d00892d668af59ccdc76ca400fb1f1c3e53aa"
+    },
+    {
+      "path": "TemplateData/loading.js",
+      "bytes": 12153,
+      "decoded_bytes": 12153,
+      "sha256": "d8720b2a9023ccc6562b8d89da01a74b22d8df1f1d8dfd0e538490686755d05d"
+    },
+    {
+      "path": "TemplateData/performance.js",
+      "bytes": 1277,
+      "decoded_bytes": 1277,
+      "sha256": "0e36abece3c0aeb0a3fe0ae50fdc480fb71ed6783c8664b8ce549329fbf63bc9"
+    },
+    {
+      "path": "TemplateData/style.css",
+      "bytes": 6352,
+      "decoded_bytes": 6352,
+      "sha256": "5c780429ae6c81e30049f12d70a3ba386fe38dd624abb76c0768375d97eb59bd"
+    },
+    {
+      "path": "index.html",
+      "bytes": 6555,
+      "decoded_bytes": 6555,
+      "sha256": "0a9e6717d39b544b0acae1d6c377ef4c45ec32e6201784c63b13d72f922c2ca1"
+    },
+    {
+      "path": "release.json",
+      "bytes": 3024,
+      "decoded_bytes": 3024,
+      "sha256": "0db06e306f1fcf38c50ceeecccf3b2d3bd16a10eeb1ed9f46d8669202fa938f2"
+    }
+  ]
+}

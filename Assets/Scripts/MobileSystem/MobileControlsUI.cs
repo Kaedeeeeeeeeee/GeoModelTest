@@ -143,6 +143,7 @@ public class MobileControlsUI : MonoBehaviour
     private ModalCanvasLayerGuard.Scope mobileMenuCanvasScope;
     private FirstPersonController pausedPlayerController;
     private bool pausedPlayerControllerWasEnabled;
+    private Outline toolWheelGuidanceOutline;
 
     void Awake()
     {
@@ -252,6 +253,30 @@ public class MobileControlsUI : MonoBehaviour
 
         // 发送输入数据给输入管理器
         PublishJoystickInput();
+        UpdateToolWheelGuidance();
+    }
+
+    void UpdateToolWheelGuidance()
+    {
+        if (toolWheelButton == null) return;
+        if (toolWheelGuidanceOutline == null || toolWheelGuidanceOutline.gameObject != toolWheelButton.gameObject)
+        {
+            toolWheelGuidanceOutline = toolWheelButton.gameObject.AddComponent<Outline>();
+            toolWheelGuidanceOutline.effectDistance = new Vector2(5f, -5f);
+            toolWheelGuidanceOutline.useGraphicAlpha = true;
+        }
+
+        bool highlight = UISystem.CollectionGuidanceHUD.IsVisible &&
+            !string.IsNullOrEmpty(UISystem.CollectionGuidanceHUD.RecommendedToolId) &&
+            !InventoryUISystem.IsAnyWheelOpen && !Core.GameInputState.GameplayBlocked &&
+            !StorySystem.StoryDirector.IsStoryPlaybackActive;
+        toolWheelGuidanceOutline.enabled = highlight;
+        if (highlight)
+        {
+            Color color = UISystem.GameUI.Accent;
+            color.a = 0.65f + 0.2f * Mathf.Sin(Time.unscaledTime * 3f);
+            toolWheelGuidanceOutline.effectColor = color;
+        }
     }
 
     void OnDisable()
@@ -476,10 +501,16 @@ public class MobileControlsUI : MonoBehaviour
         inventoryButton = CreateButton("InventoryButton", "バッグ", new Vector2(edgeMargin + buttonSize/2, -edgeMargin - buttonSize/2),
                                        new Vector2(0, 0.78f), OnInventoryButtonClick, null);
 
-        encyclopediaButton = CreateButton("EncyclopediaButton", "図鑑", new Vector2(edgeMargin + buttonSize * 1.5f + buttonSpacing, -edgeMargin - buttonSize/2),
-                                          new Vector2(0, 0.78f), OnEncyclopediaButtonClick, null);
+        // The encyclopedia is hidden for this release; the tools button then takes its slot.
+        int toolSlot = 1;
+        if (Core.ResearchExperienceSettings.EncyclopediaEnabled)
+        {
+            encyclopediaButton = CreateButton("EncyclopediaButton", "図鑑", new Vector2(edgeMargin + buttonSize * 1.5f + buttonSpacing, -edgeMargin - buttonSize/2),
+                                              new Vector2(0, 0.78f), OnEncyclopediaButtonClick, null);
+            toolSlot = 2;
+        }
 
-        toolWheelButton = CreateButton("ToolWheelButton", "道具", new Vector2(edgeMargin + buttonSize * 2.5f + buttonSpacing * 2, -edgeMargin - buttonSize/2),
+        toolWheelButton = CreateButton("ToolWheelButton", "道具", new Vector2(edgeMargin + buttonSize * (toolSlot + 0.5f) + buttonSpacing * toolSlot, -edgeMargin - buttonSize/2),
                                        new Vector2(0, 0.78f), OnToolWheelButtonClick, null);
 
         CreateMobileMenuButton();

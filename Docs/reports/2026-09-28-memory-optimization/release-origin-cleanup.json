@@ -1,0 +1,9 @@
+{
+  "port": 55933,
+  "localStorage": true,
+  "sessionStorage": true,
+  "databasesSupported": true,
+  "databasesDeleted": 1,
+  "cachesDeleted": 0,
+  "errors": []
+}

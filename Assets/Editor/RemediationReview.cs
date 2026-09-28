@@ -31,6 +31,92 @@ public static class RemediationReview
             throw new InvalidOperationException("WebGL validation build failed: " + result.summary.result);
     }
 
+    public static void BuildDeviceValidation()
+    {
+        RetainRuntimeShaders();
+        var result = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray(),
+            "Build/MobileDeviceWebGL", BuildTarget.WebGL, BuildOptions.None);
+        if (result.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+            throw new InvalidOperationException("WebGL device build failed: " + result.summary.result);
+    }
+
+    public static void BuildOptimizedDeviceValidation()
+    {
+#if UNITY_WEBGL
+        var previousOptimization = UnityEditor.WebGL.UserBuildSettings.codeOptimization;
+        var previousCodeGeneration = PlayerSettings.GetIl2CppCodeGeneration(UnityEditor.Build.NamedBuildTarget.WebGL);
+        RetainRuntimeShaders();
+        try
+        {
+            UnityEditor.WebGL.UserBuildSettings.codeOptimization = UnityEditor.WebGL.WasmCodeOptimization.DiskSizeLTO;
+            PlayerSettings.SetIl2CppCodeGeneration(UnityEditor.Build.NamedBuildTarget.WebGL, UnityEditor.Build.Il2CppCodeGeneration.OptimizeSize);
+            var result = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray(),
+                "Build/MobileDeviceOptimizedWebGL", BuildTarget.WebGL, BuildOptions.None);
+            if (result.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+                throw new InvalidOperationException("WebGL optimized device build failed: " + result.summary.result);
+        }
+        finally
+        {
+            UnityEditor.WebGL.UserBuildSettings.codeOptimization = previousOptimization;
+            PlayerSettings.SetIl2CppCodeGeneration(UnityEditor.Build.NamedBuildTarget.WebGL, previousCodeGeneration);
+        }
+#else
+        throw new InvalidOperationException("Switch the active build target to WebGL before device validation.");
+#endif
+    }
+
+    public static void BuildAstcDeviceValidation()
+    {
+#if UNITY_WEBGL
+        var previousSubtarget = EditorUserBuildSettings.webGLBuildSubtarget;
+        var previousOptimization = UnityEditor.WebGL.UserBuildSettings.codeOptimization;
+        var previousCodeGeneration = PlayerSettings.GetIl2CppCodeGeneration(UnityEditor.Build.NamedBuildTarget.WebGL);
+        RetainRuntimeShaders();
+        try
+        {
+            EditorUserBuildSettings.webGLBuildSubtarget = WebGLTextureSubtarget.ASTC;
+            UnityEditor.WebGL.UserBuildSettings.codeOptimization = UnityEditor.WebGL.WasmCodeOptimization.DiskSizeLTO;
+            PlayerSettings.SetIl2CppCodeGeneration(UnityEditor.Build.NamedBuildTarget.WebGL, UnityEditor.Build.Il2CppCodeGeneration.OptimizeSize);
+            var result = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+            {
+                scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray(),
+                locationPathName = "Build/MobileDeviceAstcWebGL",
+                target = BuildTarget.WebGL,
+                subtarget = (int)WebGLTextureSubtarget.ASTC,
+                options = BuildOptions.None
+            });
+            if (result.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+                throw new InvalidOperationException("WebGL ASTC device build failed: " + result.summary.result);
+
+            var textures = result.packedAssets.SelectMany(pack => pack.contents)
+                .Select(asset => asset.sourceAssetPath).Distinct()
+                .Where(path => AssetImporter.GetAtPath(path) is TextureImporter)
+                .Select(path => new
+                {
+                    path,
+                    automaticFormat = ((TextureImporter)AssetImporter.GetAtPath(path)).GetAutomaticFormat("WebGL").ToString(),
+                    importedFormat = AssetDatabase.LoadAssetAtPath<Texture2D>(path)?.format.ToString()
+                }).ToArray();
+            Directory.CreateDirectory("Logs/mobile-device-qa");
+            File.WriteAllText("Logs/mobile-device-qa/astc-build-textures.json", Newtonsoft.Json.JsonConvert.SerializeObject(new
+            {
+                requestedSubtarget = WebGLTextureSubtarget.ASTC.ToString(),
+                activeSubtarget = EditorUserBuildSettings.webGLBuildSubtarget.ToString(),
+                buildTarget = result.summary.platform.ToString(),
+                textures
+            }, Newtonsoft.Json.Formatting.Indented));
+        }
+        finally
+        {
+            EditorUserBuildSettings.webGLBuildSubtarget = previousSubtarget;
+            UnityEditor.WebGL.UserBuildSettings.codeOptimization = previousOptimization;
+            PlayerSettings.SetIl2CppCodeGeneration(UnityEditor.Build.NamedBuildTarget.WebGL, previousCodeGeneration);
+        }
+#else
+        throw new InvalidOperationException("Switch the active build target to WebGL before device validation.");
+#endif
+    }
+
     [MenuItem("GeoModel/Setup/Retain runtime shaders")]
     public static void RetainRuntimeShaders()
     {

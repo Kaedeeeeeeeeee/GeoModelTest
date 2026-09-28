@@ -46,6 +46,10 @@ namespace QuestSystem
         private Color[] originalColors;
         private MobileInputManager mobileInput;
         private Text promptText;
+        private Text promptControlInstruction;
+        private RectTransform promptPanel;
+        private CanvasScaler promptScaler;
+        private MobileControlHint promptControlHint;
         private QuestInteractionStage currentStage;
         private QuestStatus currentStageStatus;
         private int currentStageIndex = -1;
@@ -260,6 +264,7 @@ namespace QuestSystem
             canvas.sortingOrder = 160;
 
             var scaler = promptCanvasGO.AddComponent<CanvasScaler>();
+            promptScaler = scaler;
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
 
@@ -268,6 +273,7 @@ namespace QuestSystem
             var panel = new GameObject("PromptPanel");
             panel.transform.SetParent(promptCanvasGO.transform, false);
             var rect = panel.AddComponent<RectTransform>();
+            promptPanel = rect;
             rect.anchorMin = new Vector2(0.5f, 0.22f);
             rect.anchorMax = new Vector2(0.5f, 0.22f);
             rect.pivot = new Vector2(0.5f, 0.5f);
@@ -276,6 +282,7 @@ namespace QuestSystem
 
             var bg = panel.AddComponent<Image>();
             bg.color = promptBackgroundColor;
+            bg.raycastTarget = false;
 
             var textObj = new GameObject("PromptText");
             textObj.transform.SetParent(panel.transform, false);
@@ -290,6 +297,26 @@ namespace QuestSystem
             promptText.fontSize = promptFontSize;
             promptText.color = Color.white;
             promptText.alignment = TextAnchor.MiddleCenter;
+            promptText.raycastTarget = false;
+            promptText.resizeTextForBestFit = true;
+            promptText.resizeTextMinSize = 18;
+            promptText.resizeTextMaxSize = promptFontSize;
+
+            promptControlHint = MobileControlHint.Create(panel.transform, "TouchControl", MobileControlHint.Control.Interact);
+            var hintRect = promptControlHint.RectTransform;
+            hintRect.anchorMin = hintRect.anchorMax = new Vector2(0f, 0.5f);
+            hintRect.anchoredPosition = new Vector2(66f, 0f);
+            hintRect.sizeDelta = new Vector2(92f, 92f);
+
+            promptControlInstruction = GameUI.Label(panel.transform, "TouchInstruction", "", 21,
+                new Vector2(0f, 0.08f), new Vector2(1f, 0.46f));
+            promptControlInstruction.rectTransform.offsetMin = new Vector2(132f, 0f);
+            promptControlInstruction.rectTransform.offsetMax = new Vector2(-18f, 0f);
+            promptControlInstruction.color = new Color(1f, 0.88f, 0.66f);
+            promptControlInstruction.resizeTextForBestFit = true;
+            promptControlInstruction.resizeTextMinSize = 17;
+            promptControlInstruction.resizeTextMaxSize = 21;
+            UpdatePromptLayout();
 
             promptCanvasGO.SetActive(false);
         }
@@ -449,6 +476,7 @@ namespace QuestSystem
         private void UpdatePromptLocalization()
         {
             if (promptText == null) return;
+            UpdatePromptLayout();
             string targetKey = currentStage != null ? currentStage.promptLocalizationKey : string.Empty;
             bool followup = HasNewConversation && currentStageIndex > 0 &&
                 QuestManager.Instance.GetQuestStatus(stages[currentStageIndex - 1].questId) == QuestStatus.Completed;
@@ -458,6 +486,28 @@ namespace QuestSystem
                 HasNewConversation ? (followup ? "quest.npc.prompt.continue.mobile" : "quest.npc.prompt.mobile") : "quest.npc.prompt.reminder.mobile",
                 "［E］カエデ研究員に話を聞く",
                 "カエデ研究員に話を聞く");
+        }
+
+        private void UpdatePromptLayout()
+        {
+            bool touch = MobileControlHint.UsesTouchControls;
+            promptScaler.matchWidthOrHeight = touch ? 0.5f : 0f;
+            promptPanel.sizeDelta = touch ? new Vector2(620f, 124f) : new Vector2(420f, 64f);
+            promptControlHint.gameObject.SetActive(touch);
+            promptControlInstruction.gameObject.SetActive(touch);
+            if (touch)
+            {
+                promptControlHint.Refresh();
+                promptControlInstruction.text = LocalizationManager.Resolve(
+                    "quest.npc.prompt.control.mobile", "右側のボタンをタップ");
+            }
+            var textRect = promptText.rectTransform;
+            textRect.anchorMin = new Vector2(0f, touch ? 0.47f : 0f);
+            textRect.anchorMax = new Vector2(1f, touch ? 0.93f : 1f);
+            textRect.offsetMin = touch ? new Vector2(132f, 0f) : new Vector2(16f, 12f);
+            textRect.offsetMax = touch ? new Vector2(-18f, 0f) : new Vector2(-16f, -12f);
+            promptText.alignment = touch ? TextAnchor.MiddleLeft : TextAnchor.MiddleCenter;
+            promptText.resizeTextMaxSize = touch ? Mathf.Max(promptFontSize, 26) : promptFontSize;
         }
     }
 }

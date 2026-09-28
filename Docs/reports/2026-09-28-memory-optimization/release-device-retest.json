@@ -1,0 +1,364 @@
+[
+  {
+    "id": "rel-start-8970fc95",
+    "result": {
+      "observedAt": "2026-09-28T13:14:45.041Z",
+      "navStart": 1790601283869
+    }
+  },
+  {
+    "id": "rel-loading-b72f4f",
+    "result": {
+      "observedAt": "2026-09-28T13:15:00.390Z",
+      "ready": false,
+      "navStart": 1790601283869,
+      "progress": "22%",
+      "versionShown": true,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "rel-loading-7b06fb",
+    "result": {
+      "observedAt": "2026-09-28T13:15:05.510Z",
+      "ready": false,
+      "navStart": 1790601283869,
+      "progress": "27%",
+      "versionShown": true,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "rel-loading-706710",
+    "result": {
+      "observedAt": "2026-09-28T13:15:11.164Z",
+      "ready": false,
+      "navStart": 1790601283869,
+      "progress": "32%",
+      "versionShown": true,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "rel-loading-3e6255",
+    "result": {
+      "observedAt": "2026-09-28T13:15:16.784Z",
+      "ready": false,
+      "navStart": 1790601283869,
+      "progress": "37%",
+      "versionShown": true,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "rel-loading-587a6c",
+    "result": {
+      "observedAt": "2026-09-28T13:15:22.925Z",
+      "ready": false,
+      "navStart": 1790601283869,
+      "progress": "40%",
+      "versionShown": true,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "rel-loading-71a42c",
+    "result": {
+      "observedAt": "2026-09-28T13:15:28.187Z",
+      "ready": false,
+      "navStart": 1790601283869,
+      "progress": "44%",
+      "versionShown": true,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "rel-loading-d6af89",
+    "result": {
+      "observedAt": "2026-09-28T13:15:34.184Z",
+      "ready": false,
+      "navStart": 1790601283869,
+      "progress": "47%",
+      "versionShown": true,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "rel-loading-7e2fb3",
+    "result": {
+      "observedAt": "2026-09-28T13:15:40.333Z",
+      "ready": false,
+      "navStart": 1790601283869,
+      "progress": "51%",
+      "versionShown": true,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "rel-loading-fa0983",
+    "result": {
+      "observedAt": "2026-09-28T13:15:45.727Z",
+      "ready": false,
+      "navStart": 1790601283869,
+      "progress": "55%",
+      "versionShown": true,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "rel-loading-928d8f",
+    "result": {
+      "observedAt": "2026-09-28T13:15:51.623Z",
+      "ready": false,
+      "navStart": 1790601283869,
+      "progress": "57%",
+      "versionShown": true,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "rel-loading-467d26",
+    "result": {
+      "observedAt": "2026-09-28T13:15:57.786Z",
+      "ready": false,
+      "navStart": 1790601283869,
+      "progress": "61%",
+      "versionShown": true,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "rel-loading-26f297",
+    "result": {
+      "observedAt": "2026-09-28T13:16:03.890Z",
+      "ready": false,
+      "navStart": 1790601283869,
+      "progress": "64%",
+      "versionShown": true,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "rel-loading-591b5d",
+    "result": {
+      "observedAt": "2026-09-28T13:16:11.030Z",
+      "ready": true,
+      "navStart": 1790601283869,
+      "progress": "100%",
+      "versionShown": false,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "rel-consent-flag-5362a5",
+    "result": {
+      "observedAt": "2026-09-28T13:16:37.044Z",
+      "navStart": 1790601283869,
+      "localConsentFlagOnly": true
+    }
+  },
+  {
+    "id": "rel-main-fc7501",
+    "result": {
+      "observedAt": "2026-09-28T13:16:57.342Z",
+      "navStart": 1790601283869,
+      "heapBytes": 240582656,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "rel-flags-c1321f",
+    "result": {
+      "observedAt": "2026-09-28T13:17:09.884Z",
+      "navStart": 1790601283869
+    }
+  },
+  {
+    "id": "rel-lab-fc337f",
+    "result": {
+      "observedAt": "2026-09-28T13:17:14.433Z",
+      "navStart": 1790601283869
+    }
+  },
+  {
+    "id": "rel-lab-quest-97ad1c",
+    "result": {
+      "observedAt": "2026-09-28T13:17:29.044Z",
+      "navStart": 1790601283869,
+      "heapBytes": 288751616
+    }
+  },
+  {
+    "id": "rel-field-5c5947",
+    "result": {
+      "observedAt": "2026-09-28T13:18:36.229Z",
+      "navStart": 1790601283869
+    }
+  },
+  {
+    "id": "rel-field-setup-c4f519",
+    "result": {
+      "observedAt": "2026-09-28T13:18:51.530Z",
+      "navStart": 1790601283869,
+      "heapBytes": 288751616,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 0,
+        "manual": false,
+        "width": 960,
+        "height": 540
+      }
+    }
+  },
+  {
+    "id": "rel-after-sampling-1ddde6",
+    "result": {
+      "observedAt": "2026-09-28T13:20:06.749Z",
+      "navStart": 1790601283870.0002,
+      "elapsed": 322879,
+      "heapBytes": 288751616,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 0,
+        "manual": false,
+        "width": 960,
+        "height": 540
+      },
+      "blockedHosts": [
+        "config.uca.cloud.unity3d.com",
+        "cdp.cloud.unity3d.com",
+        "jrqmoxbzbjxrellvsvwn.supabase.co"
+      ]
+    }
+  },
+  {
+    "id": "rel-skip-story-887d42",
+    "result": {
+      "observedAt": "2026-09-28T13:20:17.988Z",
+      "navStart": 1790601283870.0002
+    }
+  },
+  {
+    "id": "rel-final-3b17c7",
+    "result": {
+      "observedAt": "2026-09-28T13:21:10.775Z",
+      "navStart": 1790601283870.0002,
+      "elapsed": 386905.00000000006,
+      "heapBytes": 288751616,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 0,
+        "manual": false,
+        "width": 960,
+        "height": 540
+      },
+      "isolated": true,
+      "blockedHosts": [
+        "config.uca.cloud.unity3d.com",
+        "cdp.cloud.unity3d.com",
+        "jrqmoxbzbjxrellvsvwn.supabase.co"
+      ]
+    }
+  }
+]

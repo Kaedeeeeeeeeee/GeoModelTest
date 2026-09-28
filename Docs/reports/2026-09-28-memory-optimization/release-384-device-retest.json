@@ -1,0 +1,110 @@
+[
+  {
+    "id": "r384-start-2b744cc4",
+    "result": {
+      "observedAt": "2026-09-28T13:53:13.283Z",
+      "navStart": 1790603592604
+    }
+  },
+  {
+    "id": "r384-loading-2bd982",
+    "result": {
+      "observedAt": "2026-09-28T13:53:23.620Z",
+      "ready": true,
+      "navStart": 1790603592603,
+      "progress": "100%",
+      "versionShown": false,
+      "heapBytes": 402653184
+    }
+  },
+  {
+    "id": "r384-consent-6548a9",
+    "result": {
+      "observedAt": "2026-09-28T13:54:00.163Z",
+      "localConsentFlagOnly": true
+    }
+  },
+  {
+    "id": "r384-main-d9a036",
+    "result": {
+      "observedAt": "2026-09-28T13:54:20.500Z",
+      "navStart": 1790603592602,
+      "heapBytes": 402653184,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "r384-flags-b44c60",
+    "result": {
+      "observedAt": "2026-09-28T13:54:21.497Z",
+      "navStart": 1790603592602
+    }
+  },
+  {
+    "id": "r384-lab-b8fca0",
+    "result": {
+      "observedAt": "2026-09-28T13:54:26.017Z",
+      "navStart": 1790603592601
+    }
+  },
+  {
+    "id": "r384-lab-quest-7c9fb1",
+    "result": {
+      "observedAt": "2026-09-28T13:54:40.533Z",
+      "navStart": 1790603592601,
+      "heapBytes": 402653184
+    }
+  },
+  {
+    "id": "r384-field-991272",
+    "result": {
+      "observedAt": "2026-09-28T13:55:22.722Z",
+      "navStart": 1790603592600.0002
+    }
+  },
+  {
+    "id": "r384-field-setup-46e22f",
+    "result": {
+      "observedAt": "2026-09-28T13:55:38.059Z",
+      "navStart": 1790603592599,
+      "heapBytes": 402653184,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 0,
+        "manual": false,
+        "width": 960,
+        "height": 540
+      }
+    }
+  },
+  {
+    "id": "r384-final-4f121c",
+    "result": {
+      "observedAt": "2026-09-28T13:56:23.857Z",
+      "navStart": 1790603592598,
+      "elapsed": 191259,
+      "heapBytes": 402653184,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 0,
+        "manual": false,
+        "width": 960,
+        "height": 540
+      },
+      "blockedHosts": [
+        "config.uca.cloud.unity3d.com",
+        "cdp.cloud.unity3d.com",
+        "jrqmoxbzbjxrellvsvwn.supabase.co"
+      ]
+    }
+  }
+]

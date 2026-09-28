@@ -1,0 +1,220 @@
+[
+  {
+    "id": "memory-start-b8f60c94",
+    "result": {
+      "observedAt": "2026-09-28T10:21:41.690Z",
+      "isolated": true,
+      "navStart": 1790590900999
+    }
+  },
+  {
+    "id": "memory-loading-1-81cfcf",
+    "result": {
+      "observedAt": "2026-09-28T10:21:48.866Z",
+      "ready": true,
+      "navStart": 1790590900999,
+      "elapsed": 7866.000000000001,
+      "progress": "100%",
+      "heapBytes": 96665600
+    }
+  },
+  {
+    "id": "memory-loading-2-d34f24",
+    "result": {
+      "observedAt": "2026-09-28T10:22:31.924Z",
+      "ready": true,
+      "navStart": 1790590900999,
+      "elapsed": 50924,
+      "progress": "100%",
+      "heapBytes": 96665600,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      },
+      "canvas": {
+        "width": 1280,
+        "height": 720
+      },
+      "fullscreenApi": "undefined",
+      "webkitFullscreenApi": "undefined"
+    }
+  },
+  {
+    "id": "memory-enter-main-584f8d",
+    "result": {
+      "commandIssued": true,
+      "before": {
+        "observedAt": "2026-09-28T10:22:59.451Z",
+        "navStart": 1790590900999,
+        "heapBytes": 96665600,
+        "performance": {
+          "logicalProcessors": 4,
+          "memoryMb": 0,
+          "quality": 1,
+          "manual": false,
+          "width": 1280,
+          "height": 720
+        }
+      }
+    }
+  },
+  {
+    "id": "memory-main-state-1-950064",
+    "result": {
+      "observedAt": "2026-09-28T10:23:32.470Z",
+      "ready": true,
+      "navStart": 1790590900998.0002,
+      "elapsed": 111471,
+      "heapBytes": 96665600,
+      "progress": "100%"
+    }
+  },
+  {
+    "id": "memory-main-before-real-click-7fe1dd",
+    "result": {
+      "observedAt": "2026-09-28T10:24:35.531Z",
+      "navStart": 1790590900998.0002,
+      "heapBytes": 96665600,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 1,
+        "manual": false,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  {
+    "id": "memory-main-state-2-c41a51",
+    "result": {
+      "observedAt": "2026-09-28T10:25:07.590Z",
+      "ready": true,
+      "navStart": 1790590900998.0002,
+      "elapsed": 206592,
+      "heapBytes": 240582656,
+      "progress": "100%"
+    }
+  },
+  {
+    "id": "memory-lab-checkpoint-6eda8f",
+    "result": {
+      "observedAt": "2026-09-28T10:25:38.108Z",
+      "navStart": 1790590900997,
+      "checkpointFlagsSet": true
+    }
+  },
+  {
+    "id": "memory-enter-lab-1704d1",
+    "result": {
+      "observedAt": "2026-09-28T10:26:03.685Z",
+      "navStart": 1790590900997,
+      "labTransitionRequested": true
+    }
+  },
+  {
+    "id": "memory-lab-quest-02de8e",
+    "result": {
+      "observedAt": "2026-09-28T10:26:31.079Z",
+      "navStart": 1790590900997,
+      "heapBytes": 288751616
+    }
+  },
+  {
+    "id": "memory-enter-field-b4e00c",
+    "result": {
+      "observedAt": "2026-09-28T10:29:35.808Z",
+      "navStart": 1790590900996,
+      "fieldTransitionRequested": true
+    }
+  },
+  {
+    "id": "memory-field-setup-3ffac3",
+    "result": {
+      "observedAt": "2026-09-28T10:30:14.334Z",
+      "navStart": 1790590900995.0002,
+      "heapBytes": 288751616
+    }
+  },
+  {
+    "id": "memory-after-sampling-064292",
+    "result": {
+      "observedAt": "2026-09-28T10:34:16.506Z",
+      "navStart": 1790590900993,
+      "elapsed": 755513,
+      "heapBytes": 288751616,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 0,
+        "manual": false,
+        "width": 960,
+        "height": 540
+      }
+    }
+  },
+  {
+    "id": "memory-dismiss-sampling-story-8516a2",
+    "result": {
+      "observedAt": "2026-09-28T10:34:55.008Z",
+      "navStart": 1790590900993
+    }
+  },
+  {
+    "id": "memory-log-probe-d9612a",
+    "result": {
+      "observedAt": "2026-09-28T10:36:07.279Z",
+      "probeInstalled": true
+    }
+  },
+  {
+    "id": "memory-ency-button-probe-8d72da",
+    "result": {
+      "observedAt": "2026-09-28T10:36:30.307Z",
+      "navStart": 1790590900992,
+      "events": []
+    }
+  },
+  {
+    "id": "memory-ency-direct-open-0bde11",
+    "result": {
+      "observedAt": "2026-09-28T10:37:08.187Z",
+      "navStart": 1790590900992,
+      "diagnosticOpenRequested": true
+    }
+  },
+  {
+    "id": "memory-pause-for-entry-fix-afe9cd",
+    "result": {
+      "observedAt": "2026-09-28T10:38:43.060Z",
+      "navStart": 1790590900991,
+      "elapsed": 1022068,
+      "heapBytes": 288751616,
+      "performance": {
+        "logicalProcessors": 4,
+        "memoryMb": 0,
+        "quality": 0,
+        "manual": false,
+        "width": 960,
+        "height": 540
+      },
+      "isolated": true,
+      "blockedHosts": [
+        "config.uca.cloud.unity3d.com",
+        "cdp.cloud.unity3d.com",
+        "cdp.cloud.unity3d.com",
+        "cdp.cloud.unity3d.com",
+        "cdp.cloud.unity3d.com",
+        "cdp.cloud.unity3d.com",
+        "jrqmoxbzbjxrellvsvwn.supabase.co",
+        "cdp.cloud.unity3d.com",
+        "cdp.cloud.unity3d.com",
+        "cdp.cloud.unity3d.com"
+      ]
+    }
+  }
+]

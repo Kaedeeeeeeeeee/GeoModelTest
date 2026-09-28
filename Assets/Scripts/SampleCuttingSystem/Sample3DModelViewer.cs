@@ -1546,11 +1546,24 @@ namespace SampleCuttingSystem
         
         void OnDestroy()
         {
-            // 清理资源
+            // Detach surviving camera/UI references before releasing the owned render target.
             if (renderTexture != null)
             {
+                if (renderCamera != null && renderCamera.targetTexture == renderTexture)
+                {
+                    renderCamera.targetTexture = null;
+                }
+                if (rawImage != null && rawImage.texture == renderTexture)
+                {
+                    rawImage.texture = null;
+                }
+                if (RenderTexture.active == renderTexture)
+                {
+                    RenderTexture.active = null;
+                }
                 renderTexture.Release();
                 DestroyImmediate(renderTexture);
+                renderTexture = null;
             }
         }
     }

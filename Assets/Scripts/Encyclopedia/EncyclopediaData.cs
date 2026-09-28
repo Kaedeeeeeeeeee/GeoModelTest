@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -110,6 +111,14 @@ namespace Encyclopedia
         private Dictionary<string, List<EncyclopediaEntry>> entriesByLayer = new Dictionary<string, List<EncyclopediaEntry>>();
         private List<string> layerNames = new List<string>();
 
+        // Only resources explicitly requested by a visible consumer are retained.
+        private readonly HashSet<EncyclopediaEntry> requestedIcons = new HashSet<EncyclopediaEntry>();
+        private readonly HashSet<EncyclopediaEntry> requestedModels = new HashSet<EncyclopediaEntry>();
+        private readonly Dictionary<EncyclopediaEntry, GameObject> fallbackModels = new Dictionary<EncyclopediaEntry, GameObject>();
+        private readonly Dictionary<EncyclopediaEntry, Material> fallbackMaterials = new Dictionary<EncyclopediaEntry, Material>();
+        private Transform fallbackRoot;
+        private bool unloadPending;
+
         // 单例模式
         public static EncyclopediaData Instance { get; private set; }
 
@@ -170,8 +179,8 @@ namespace Encyclopedia
                 // 处理数据
                 ProcessDatabaseData();
 
-                // 加载资源
-                LoadResources();
+                // Metadata is sufficient for collection, filters and the text-only lists.
+                // Images and models are loaded only when a visible consumer requests them.
 
                 isDataLoaded = true;
                 #if UNITY_EDITOR
@@ -323,122 +332,125 @@ namespace Encyclopedia
         }
 
         /// <summary>
-        /// 加载图片和模型资源
+        /// Load only the image requested by a consumer. Text-only lists do not call this.
+        /// A missing image is cached until release to avoid repeated resource lookups.
         /// </summary>
-        private void LoadResources()
+        public Sprite LoadEntryIcon(EncyclopediaEntry entry)
         {
-            #if UNITY_EDITOR
-            Debug.Log("开始加载资源文件...");
-            #endif
-
-            int loadedImages = 0;
-            int loadedModels = 0;
-
-            foreach (var entry in allEntries.Values)
+            if (entry == null || entry.icon != null || !requestedIcons.Add(entry))
             {
-                // 加载图片
-                if (!string.IsNullOrEmpty(entry.imageFile))
-                {
-                    string imagePath = entry.entryType == EntryType.Mineral ? 
-                        mineralImagePath : fossilImagePath;
-                    
-                    // 尝试加载图片，Resources.Load不需要扩展名
-                    string fileName = Path.GetFileNameWithoutExtension(entry.imageFile);
-                    Sprite sprite = Resources.Load<Sprite>(imagePath + fileName);
-                    
-                    // 如果加载失败，尝试不同的路径格式
-                    if (sprite == null)
-                    {
-                        // 尝试直接使用完整的imageFile名称
-                        sprite = Resources.Load<Sprite>(imagePath + entry.imageFile.Replace(".jpg", "").Replace(".jpeg", "").Replace(".png", ""));
-                    }
-                    
-                    if (sprite != null)
-                    {
-                        entry.icon = sprite;
-                        loadedImages++;
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"无法加载图片: {imagePath + fileName} (尝试了: {entry.imageFile})");
-                    }
-                }
-
-                // 加载3D模型
-                if (!string.IsNullOrEmpty(entry.modelFile))
-                {
-                    string modelPath = entry.entryType == EntryType.Mineral ? 
-                        mineralModelPath : fossilModelPath;
-                    
-                    string fileName = Path.GetFileNameWithoutExtension(entry.modelFile);
-                    GameObject model = Resources.Load<GameObject>(modelPath + fileName);
-                    
-                    if (model != null)
-                    {
-                        entry.model3D = model;
-                        loadedModels++;
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"无法加载模型: {modelPath + fileName}");
-                    }
-                }
+                return entry?.icon;
             }
 
-            // 为缺少3D模型的条目创建默认立方体
-            int createdModels = CreateDefaultModelsForEmptyEntries();
-
-            #if UNITY_EDITOR
-            Debug.Log($"资源加载完成: 图片 {loadedImages}/{allEntries.Count}, 模型 {loadedModels + createdModels}/{allEntries.Count} (创建默认模型: {createdModels})");
-            #endif
+            if (!string.IsNullOrEmpty(entry.imageFile))
+            {
+                string root = entry.entryType == EntryType.Mineral ? mineralImagePath : fossilImagePath;
+                entry.icon = Resources.Load<Sprite>(root + Path.GetFileNameWithoutExtension(entry.imageFile));
+            }
+            return entry.icon;
         }
 
         /// <summary>
-        /// 为缺少3D模型的条目创建默认立方体
+        /// Load one requested detail model; its consumer releases the previous entry when switching.
+        /// Model materials load their own texture dependencies; the unused standalone photo does not.
         /// </summary>
-        private int CreateDefaultModelsForEmptyEntries()
+        public GameObject LoadEntryModel(EncyclopediaEntry entry)
         {
-            int createdCount = 0;
-
-            foreach (var entry in allEntries.Values)
+            if (entry == null || entry.model3D != null || !requestedModels.Add(entry))
             {
-                if (entry.model3D == null)
-                {
-                    // 创建一个简单的立方体作为默认模型
-                    GameObject defaultModel = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    defaultModel.name = $"DefaultModel_{entry.displayName}";
-
-                    // 根据条目类型设置不同颜色
-                    var renderer = defaultModel.GetComponent<Renderer>();
-                    if (entry.entryType == EntryType.Mineral)
-                    {
-                        // 矿物使用随机明亮色
-                        renderer.material.color = new Color(
-                            UnityEngine.Random.Range(0.3f, 1f),
-                            UnityEngine.Random.Range(0.3f, 1f),
-                            UnityEngine.Random.Range(0.3f, 1f)
-                        );
-                    }
-                    else // 化石
-                    {
-                        // 化石使用棕色系
-                        renderer.material.color = new Color(
-                            UnityEngine.Random.Range(0.4f, 0.8f),
-                            UnityEngine.Random.Range(0.3f, 0.6f),
-                            UnityEngine.Random.Range(0.2f, 0.4f)
-                        );
-                    }
-
-                    entry.model3D = defaultModel;
-                    createdCount++;
-
-                    #if UNITY_EDITOR
-                    Debug.Log($"创建默认模型: {entry.displayName} ({entry.entryType})");
-                    #endif
-                }
+                return entry?.model3D;
             }
 
-            return createdCount;
+            if (!string.IsNullOrEmpty(entry.modelFile))
+            {
+                string root = entry.entryType == EntryType.Mineral ? mineralModelPath : fossilModelPath;
+                entry.model3D = Resources.Load<GameObject>(root + Path.GetFileNameWithoutExtension(entry.modelFile));
+            }
+
+            if (entry.model3D == null)
+            {
+                entry.model3D = CreateDefaultModel(entry);
+            }
+            return entry.model3D;
+        }
+
+        private GameObject CreateDefaultModel(EncyclopediaEntry entry)
+        {
+            if (fallbackRoot == null)
+            {
+                var root = new GameObject("EncyclopediaFallbackModels");
+                root.transform.SetParent(transform, false);
+                root.SetActive(false);
+                fallbackRoot = root.transform;
+            }
+
+            // Keep the template inactive in the scene, but activeSelf true so its preview clone is visible.
+            var model = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            model.name = $"DefaultModel_{entry.displayName}";
+            model.transform.SetParent(fallbackRoot, false);
+            var collider = model.GetComponent<Collider>();
+            if (collider != null) Destroy(collider);
+            var material = model.GetComponent<Renderer>().material;
+            material.color = entry.entryType == EntryType.Mineral
+                ? new Color(0.55f, 0.75f, 0.85f)
+                : new Color(0.6f, 0.45f, 0.3f);
+            fallbackModels[entry] = model;
+            fallbackMaterials[entry] = material;
+            return model;
+        }
+
+        /// <summary>
+        /// Call after clearing the consumer's image/preview. Shared assets are not forcibly unloaded:
+        /// Unity retains anything still referenced by another live preview or gameplay object.
+        /// </summary>
+        public void ReleaseEntryResources(EncyclopediaEntry entry)
+        {
+            if (entry == null) return;
+            bool hadResources = entry.icon != null || entry.model3D != null;
+            entry.icon = null;
+            entry.model3D = null;
+            requestedIcons.Remove(entry);
+            requestedModels.Remove(entry);
+            DestroyFallback(entry);
+
+            if (hadResources && !unloadPending && isActiveAndEnabled)
+            {
+                unloadPending = true;
+                StartCoroutine(UnloadReleasedResources());
+            }
+        }
+
+        private IEnumerator UnloadReleasedResources()
+        {
+            // Allow deferred preview/template destruction to complete before scanning references.
+            yield return null;
+            yield return Resources.UnloadUnusedAssets();
+            unloadPending = false;
+        }
+
+        private void DestroyFallback(EncyclopediaEntry entry)
+        {
+            if (fallbackModels.TryGetValue(entry, out var model))
+            {
+                if (model != null) Destroy(model);
+                fallbackModels.Remove(entry);
+            }
+            if (fallbackMaterials.TryGetValue(entry, out var material))
+            {
+                if (material != null) Destroy(material);
+                fallbackMaterials.Remove(entry);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            foreach (var material in fallbackMaterials.Values)
+            {
+                if (material != null) Destroy(material);
+            }
+            fallbackMaterials.Clear();
+            fallbackModels.Clear();
+            if (Instance == this) Instance = null;
         }
 
         /// <summary>

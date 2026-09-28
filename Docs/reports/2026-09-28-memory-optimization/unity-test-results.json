@@ -1,0 +1,332 @@
+[
+  {
+    "file": "playmode.xml",
+    "summary": {
+      "total": "14",
+      "passed": "9",
+      "failed": "4",
+      "skipped": "1",
+      "result": "Failed(Child)",
+      "duration": "21.9225059"
+    },
+    "cases": [
+      {
+        "name": "EncyclopediaResourceLoadingTests.ImageRequest_ShouldLoadOnlyRequestedImageAndReuseItUntilReleased",
+        "result": "Failed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.MissingModel_ShouldCreateOnlyAnInactiveTemplateAndDestroyItOnRelease",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.ModelRequest_ShouldLoadOneRealModelWithoutLoadingStandalonePhotos",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.StartupAndMetadataQueries_ShouldNotLoadImagesModelsOrFallbackObjects",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.TextListAndDetailViews_ShouldLoadCurrentModelAndReleaseItOnSwitchAndClose(\"Encyclopedia.SimpleEncyclopediaManager\")",
+        "result": "Failed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.TextListAndDetailViews_ShouldLoadCurrentModelAndReleaseItOnSwitchAndClose(\"Encyclopedia.EncyclopediaUI\")",
+        "result": "Failed"
+      },
+      {
+        "name": "FieldFeedbackAcceptanceTests.ActualFieldScene_ShouldCompleteHammerTowerAndQuizWithScreenshots",
+        "result": "Passed"
+      },
+      {
+        "name": "MobileInteractionHintTests.Guide_ShouldTeachWithActualTouchIconAndKeepDesktopE",
+        "result": "Passed"
+      },
+      {
+        "name": "MobileInteractionHintTests.Hint_ShouldBindLateControlsAndReuseExactSpritesWithoutInputHandlers",
+        "result": "Passed"
+      },
+      {
+        "name": "MobileInteractionHintTests.NpcPrompt_ShouldShowTouchButtonAndRestoreDesktopKeyPrompt",
+        "result": "Failed"
+      },
+      {
+        "name": "MobileInteractionHintTests.TouchPrompt_ShouldFitPhoneAndTabletCapture",
+        "result": "Skipped"
+      },
+      {
+        "name": "TerrainMeshOwnershipTests.Bounds_Should_ContainTransformedPointsWithoutCopyingMesh_WhenColliderIsAbsent",
+        "result": "Passed"
+      },
+      {
+        "name": "TerrainMeshOwnershipTests.Holes_Should_ClearVisualsWithoutCopyingTerrain_WhenRepeatedlyCreatedAndRemoved",
+        "result": "Passed"
+      },
+      {
+        "name": "TerrainMeshOwnershipTests.Startup_Should_KeepSharedTerrainMesh_WhenBothSystemsInitialize",
+        "result": "Passed"
+      }
+    ]
+  },
+  {
+    "file": "playmode-isolated.xml",
+    "summary": {
+      "total": "15",
+      "passed": "15",
+      "failed": "0",
+      "skipped": "0",
+      "result": "Passed",
+      "duration": "1.6566146"
+    },
+    "cases": [
+      {
+        "name": "EncyclopediaResourceLoadingTests.DestroyingViewer_ShouldDetachItsRenderTextureFromSurvivingCameraAndImage",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.ImageRequest_ShouldLoadOnlyRequestedImageAndReuseItUntilReleased",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.MissingModel_ShouldCreateOnlyAnInactiveTemplateAndDestroyItOnRelease",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.ModelRequest_ShouldLoadOneRealModelWithoutLoadingStandalonePhotos",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.NonSpritePhoto_ShouldReturnNullWithoutLoadingModelsOrRetryingUntilReleased",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.StartupAndMetadataQueries_ShouldNotLoadImagesModelsOrFallbackObjects",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.TextListAndDetailViews_ShouldLoadCurrentModelAndReleaseItOnSwitchAndClose(\"Encyclopedia.SimpleEncyclopediaManager\")",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.TextListAndDetailViews_ShouldLoadCurrentModelAndReleaseItOnSwitchAndClose(\"Encyclopedia.EncyclopediaUI\")",
+        "result": "Passed"
+      },
+      {
+        "name": "MobileInteractionHintTests.Guide_ShouldTeachWithActualTouchIconAndKeepDesktopE",
+        "result": "Passed"
+      },
+      {
+        "name": "MobileInteractionHintTests.Hint_ShouldBindLateControlsAndReuseExactSpritesWithoutInputHandlers",
+        "result": "Passed"
+      },
+      {
+        "name": "MobileInteractionHintTests.NpcPrompt_ShouldShowTouchButtonAndRestoreDesktopKeyPrompt",
+        "result": "Passed"
+      },
+      {
+        "name": "MobileInteractionHintTests.TouchPrompt_ShouldFitPhoneAndTabletCapture",
+        "result": "Passed"
+      },
+      {
+        "name": "TerrainMeshOwnershipTests.Bounds_Should_ContainTransformedPointsWithoutCopyingMesh_WhenColliderIsAbsent",
+        "result": "Passed"
+      },
+      {
+        "name": "TerrainMeshOwnershipTests.Holes_Should_ClearVisualsWithoutCopyingTerrain_WhenRepeatedlyCreatedAndRemoved",
+        "result": "Passed"
+      },
+      {
+        "name": "TerrainMeshOwnershipTests.Startup_Should_KeepSharedTerrainMesh_WhenBothSystemsInitialize",
+        "result": "Passed"
+      }
+    ]
+  },
+  {
+    "file": "playmode-final-isolated.xml",
+    "summary": {
+      "total": "16",
+      "passed": "16",
+      "failed": "0",
+      "skipped": "0",
+      "result": "Passed",
+      "duration": "2.2796062"
+    },
+    "cases": [
+      {
+        "name": "EncyclopediaResourceLoadingTests.DestroyingViewer_ShouldDetachItsRenderTextureFromSurvivingCameraAndImage",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.ImageRequest_ShouldLoadOnlyRequestedImageAndReuseItUntilReleased",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.LegacyInactiveParent_ShouldMoveOnlyPanelAndKeepFirstOpenCloseReopenWorking",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.MissingModel_ShouldCreateOnlyAnInactiveTemplateAndDestroyItOnRelease",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.ModelRequest_ShouldLoadOneRealModelWithoutLoadingStandalonePhotos",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.NonSpritePhoto_ShouldReturnNullWithoutLoadingModelsOrRetryingUntilReleased",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.StartupAndMetadataQueries_ShouldNotLoadImagesModelsOrFallbackObjects",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.TextListAndDetailViews_ShouldLoadCurrentModelAndReleaseItOnSwitchAndClose(\"Encyclopedia.SimpleEncyclopediaManager\")",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.TextListAndDetailViews_ShouldLoadCurrentModelAndReleaseItOnSwitchAndClose(\"Encyclopedia.EncyclopediaUI\")",
+        "result": "Passed"
+      },
+      {
+        "name": "MobileInteractionHintTests.Guide_ShouldTeachWithActualTouchIconAndKeepDesktopE",
+        "result": "Passed"
+      },
+      {
+        "name": "MobileInteractionHintTests.Hint_ShouldBindLateControlsAndReuseExactSpritesWithoutInputHandlers",
+        "result": "Passed"
+      },
+      {
+        "name": "MobileInteractionHintTests.NpcPrompt_ShouldShowTouchButtonAndRestoreDesktopKeyPrompt",
+        "result": "Passed"
+      },
+      {
+        "name": "MobileInteractionHintTests.TouchPrompt_ShouldFitPhoneAndTabletCapture",
+        "result": "Passed"
+      },
+      {
+        "name": "TerrainMeshOwnershipTests.Bounds_Should_ContainTransformedPointsWithoutCopyingMesh_WhenColliderIsAbsent",
+        "result": "Passed"
+      },
+      {
+        "name": "TerrainMeshOwnershipTests.Holes_Should_ClearVisualsWithoutCopyingTerrain_WhenRepeatedlyCreatedAndRemoved",
+        "result": "Passed"
+      },
+      {
+        "name": "TerrainMeshOwnershipTests.Startup_Should_KeepSharedTerrainMesh_WhenBothSystemsInitialize",
+        "result": "Passed"
+      }
+    ]
+  },
+  {
+    "file": "playmode-final-field.xml",
+    "summary": {
+      "total": "1",
+      "passed": "1",
+      "failed": "0",
+      "skipped": "0",
+      "result": "Passed",
+      "duration": "20.2948093"
+    },
+    "cases": [
+      {
+        "name": "FieldFeedbackAcceptanceTests.ActualFieldScene_ShouldCompleteHammerTowerAndQuizWithScreenshots",
+        "result": "Passed"
+      }
+    ]
+  },
+  {
+    "file": "release-playmode-isolated.xml",
+    "summary": {
+      "total": "16",
+      "passed": "15",
+      "failed": "0",
+      "skipped": "1",
+      "result": "Skipped:Ignored",
+      "duration": "2.109917"
+    },
+    "cases": [
+      {
+        "name": "EncyclopediaResourceLoadingTests.DestroyingViewer_ShouldDetachItsRenderTextureFromSurvivingCameraAndImage",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.ImageRequest_ShouldLoadOnlyRequestedImageAndReuseItUntilReleased",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.LegacyInactiveParent_ShouldMoveOnlyPanelAndKeepFirstOpenCloseReopenWorking",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.MissingModel_ShouldCreateOnlyAnInactiveTemplateAndDestroyItOnRelease",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.ModelRequest_ShouldLoadOneRealModelWithoutLoadingStandalonePhotos",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.NonSpritePhoto_ShouldReturnNullWithoutLoadingModelsOrRetryingUntilReleased",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.StartupAndMetadataQueries_ShouldNotLoadImagesModelsOrFallbackObjects",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.TextListAndDetailViews_ShouldLoadCurrentModelAndReleaseItOnSwitchAndClose(\"Encyclopedia.SimpleEncyclopediaManager\")",
+        "result": "Passed"
+      },
+      {
+        "name": "EncyclopediaResourceLoadingTests.TextListAndDetailViews_ShouldLoadCurrentModelAndReleaseItOnSwitchAndClose(\"Encyclopedia.EncyclopediaUI\")",
+        "result": "Passed"
+      },
+      {
+        "name": "MobileInteractionHintTests.Guide_ShouldTeachWithActualTouchIconAndKeepDesktopE",
+        "result": "Passed"
+      },
+      {
+        "name": "MobileInteractionHintTests.Hint_ShouldBindLateControlsAndReuseExactSpritesWithoutInputHandlers",
+        "result": "Passed"
+      },
+      {
+        "name": "MobileInteractionHintTests.NpcPrompt_ShouldShowTouchButtonAndRestoreDesktopKeyPrompt",
+        "result": "Passed"
+      },
+      {
+        "name": "MobileInteractionHintTests.TouchPrompt_ShouldFitPhoneAndTabletCapture",
+        "result": "Skipped"
+      },
+      {
+        "name": "TerrainMeshOwnershipTests.Bounds_Should_ContainTransformedPointsWithoutCopyingMesh_WhenColliderIsAbsent",
+        "result": "Passed"
+      },
+      {
+        "name": "TerrainMeshOwnershipTests.Holes_Should_ClearVisualsWithoutCopyingTerrain_WhenRepeatedlyCreatedAndRemoved",
+        "result": "Passed"
+      },
+      {
+        "name": "TerrainMeshOwnershipTests.Startup_Should_KeepSharedTerrainMesh_WhenBothSystemsInitialize",
+        "result": "Passed"
+      }
+    ]
+  },
+  {
+    "file": "release-playmode-field.xml",
+    "summary": {
+      "total": "1",
+      "passed": "1",
+      "failed": "0",
+      "skipped": "0",
+      "result": "Passed",
+      "duration": "19.7701205"
+    },
+    "cases": [
+      {
+        "name": "FieldFeedbackAcceptanceTests.ActualFieldScene_ShouldCompleteHammerTowerAndQuizWithScreenshots",
+        "result": "Passed"
+      }
+    ]
+  }
+]

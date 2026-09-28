@@ -103,6 +103,7 @@ namespace Encyclopedia
                 Debug.Log($"[EncyclopediaInitializer] 跳过UI创建: autoCreateUI={autoCreateUI}, encyclopediaUI={encyclopediaUI}");
             }
 
+            if (encyclopediaUI != null) encyclopediaUI.PrepareForUse();
         }
 
         /// <summary>
@@ -117,6 +118,7 @@ namespace Encyclopedia
             encyclopediaUI = FindFirstObjectByType<EncyclopediaUI>(FindObjectsInactive.Include);
             if (encyclopediaUI != null)
             {
+                encyclopediaUI.PrepareForUse();
                 if (showDebugInfo)
                     Debug.Log("找到现有的EncyclopediaUI: " + encyclopediaUI.gameObject.name);
                 
@@ -170,6 +172,7 @@ namespace Encyclopedia
 
             // 查找创建的UI控制器
             encyclopediaUI = FindFirstObjectByType<EncyclopediaUI>(FindObjectsInactive.Include);
+            if (encyclopediaUI != null) encyclopediaUI.PrepareForUse();
 
             if (showDebugInfo)
             {

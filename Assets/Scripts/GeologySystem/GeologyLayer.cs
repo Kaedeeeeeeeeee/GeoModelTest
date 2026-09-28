@@ -41,9 +41,9 @@ public class GeologyLayer : MonoBehaviour
         meshRenderer = GetComponent<MeshRenderer>();
         meshCollider = GetComponent<MeshCollider>();
         
-        if (meshFilter != null && meshFilter.mesh != null)
+        if (meshFilter != null && meshFilter.sharedMesh != null)
         {
-            layerBounds = meshFilter.mesh.bounds;
+            layerBounds = meshFilter.sharedMesh.bounds;
             layerBounds.center = transform.TransformPoint(layerBounds.center);
             layerBounds.size = Vector3.Scale(layerBounds.size, transform.lossyScale);
         }
@@ -142,9 +142,9 @@ public class GeologyLayer : MonoBehaviour
         Gizmos.color = layerColor;
         Gizmos.matrix = transform.localToWorldMatrix;
         
-        if (meshFilter != null && meshFilter.mesh != null)
+        if (meshFilter != null && meshFilter.sharedMesh != null)
         {
-            Gizmos.DrawWireMesh(meshFilter.mesh);
+            Gizmos.DrawWireMesh(meshFilter.sharedMesh);
         }
         
         // 绘制地层法向量

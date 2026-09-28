@@ -1,0 +1,22 @@
+{
+  "reportFilename": "JetsamEvent-2026-09-28-171116.ips",
+  "timestamp": "2026-09-28 17:11:16.79 +0900",
+  "pageSizeBytes": 16384,
+  "target": {
+    "name": "com.apple.WebKit.WebContent",
+    "reason": "highwater",
+    "rpages": 98307,
+    "lifetimeMax": 98311,
+    "residentMiB": 1536.05,
+    "lifetimeMaxMiB": 1536.11,
+    "states": [
+      "frontmost"
+    ]
+  },
+  "safariState": "MobileSafari is listed as frontmost in the same report with no kill reason; the killed process is WebContent.",
+  "correlation": {
+    "nextNavigationStartJST": "2026-09-28T17:11:17.060+09:00",
+    "secondsAfterJetsamTimestamp": 0.27
+  },
+  "scope": "Sanitized targeted diagnostic only. No raw report, other app records, device identifiers, or credentials were saved."
+}

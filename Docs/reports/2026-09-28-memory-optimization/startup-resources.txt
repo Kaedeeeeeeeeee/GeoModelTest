@@ -1,0 +1,5 @@
+Encyclopedia metadata entries: 76
+Encyclopedia loaded icons: 0
+Encyclopedia loaded models: 0
+Terrain layers sharing source mesh: 8
+Unique terrain mesh bytes (Unity runtime estimate): 63643092

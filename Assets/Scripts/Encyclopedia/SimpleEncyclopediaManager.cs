@@ -51,6 +51,7 @@ namespace Encyclopedia
         private List<GameObject> entryItems = new List<GameObject>();
         private MobileInputManager mobileInputManager; // 移动端输入管理器
         private EncyclopediaEntry currentDetailEntry;
+        private EncyclopediaEntry loadedDetailEntry;
         
         // 鼠标和摄像机控制
         private CursorLockMode originalCursorLockMode;
@@ -128,8 +129,14 @@ namespace Encyclopedia
             }
         }
         
+        private void OnDisable()
+        {
+            ReleaseDetailResources();
+        }
+
         private void OnDestroy()
         {
+            ReleaseDetailResources();
             // 取消订阅
             if (LocalizationManager.Instance != null)
             {
@@ -2069,8 +2076,9 @@ namespace Encyclopedia
         /// </summary>
         private void ShowEntryDetail(EncyclopediaEntry entry)
         {
-            if (detailPanel == null) return;
+            if (detailPanel == null || entry == null) return;
 
+            if (loadedDetailEntry != entry) ReleaseDetailResources();
             currentDetailEntry = entry;
 
             // 设置标题
@@ -2262,6 +2270,11 @@ namespace Encyclopedia
         /// </summary>
         private void LoadEntryImage(EncyclopediaEntry entry)
         {
+            if (model3DViewer != null && EncyclopediaData.Instance != null)
+            {
+                loadedDetailEntry = entry;
+                EncyclopediaData.Instance.LoadEntryModel(entry);
+            }
             if (showDebugInfo)
             {
                 Debug.Log($"🎯 准备显示3D模型: {entry.id}");
@@ -2315,15 +2328,25 @@ namespace Encyclopedia
         }
 
         /// <summary>
-        /// 关闭详情面板
+        /// Clear the preview before releasing its cached model and owned fallback material.
         /// </summary>
+        private void ReleaseDetailResources()
+        {
+            if (model3DViewer != null) model3DViewer.ClearCurrentModel();
+            if (detailImage != null) detailImage.texture = null;
+            if (loadedDetailEntry != null && EncyclopediaData.Instance != null)
+            {
+                EncyclopediaData.Instance.ReleaseEntryResources(loadedDetailEntry);
+            }
+            loadedDetailEntry = null;
+            currentDetailEntry = null;
+        }
+
         private void CloseDetailPanel()
         {
-            // 清理3D模型
+            ReleaseDetailResources();
             if (model3DViewer != null)
             {
-                model3DViewer.ClearCurrentModel();
-                
                 // 隐藏"无模型可用"提示
                 Transform noModelMessage = model3DViewer.transform.Find("NoModelMessage");
                 if (noModelMessage != null)
@@ -2462,6 +2485,7 @@ namespace Encyclopedia
         /// </summary>
         public void CloseEncyclopedia()
         {
+            CloseDetailPanel();
             if (mainPanel != null)
             {
                 mainPanel.SetActive(false);

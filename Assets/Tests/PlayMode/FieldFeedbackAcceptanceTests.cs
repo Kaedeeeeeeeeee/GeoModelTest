@@ -84,6 +84,67 @@ public class FieldFeedbackAcceptanceTests
         _wheel = Find("InventoryUISystem");
         _mobile = Prop(T("MobileInputManager"), "Instance");
         Check(_camera != null && _tools != null && _wheel != null && _mobile != null, "Scene camera, tool manager, inventory and input services exist.");
+        var encyclopedia = Prop(T("Encyclopedia.EncyclopediaData"), "Instance");
+        var entries = ((IDictionary)Prop(encyclopedia, "AllEntries")).Values.Cast<object>().ToArray();
+        Check(entries.Length > 0, "Actual MainScene has encyclopedia metadata ready at startup.");
+        Check(entries.All(entry => Get(entry, "icon") == null && Get(entry, "model3D") == null),
+            "Starting the field does not preload encyclopedia images or models.");
+        var terrainMeshes = UnityEngine.Object.FindObjectsByType(T("GeologyLayer"), FindObjectsSortMode.None)
+            .Cast<Component>().Select(layer => layer.GetComponent<MeshFilter>()).Where(filter => filter != null).ToArray();
+        Check(terrainMeshes.Length > 0 && terrainMeshes.All(filter => filter.sharedMesh != null &&
+            filter.GetComponent<MeshCollider>() != null &&
+            filter.sharedMesh == filter.GetComponent<MeshCollider>().sharedMesh),
+            "Actual field layers retain the source mesh shared with their terrain colliders.");
+        File.WriteAllLines(Path.Combine(_output, "startup-resources.txt"), new[]
+        {
+            "Encyclopedia metadata entries: " + entries.Length,
+            "Encyclopedia loaded icons: " + entries.Count(entry => Get(entry, "icon") != null),
+            "Encyclopedia loaded models: " + entries.Count(entry => Get(entry, "model3D") != null),
+            "Terrain layers sharing source mesh: " + terrainMeshes.Length,
+            "Unique terrain mesh bytes (Unity runtime estimate): " + terrainMeshes.Select(filter => filter.sharedMesh)
+                .Distinct().Sum(mesh => UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(mesh))
+        });
+        var encyclopediaUI = (Component)UnityEngine.Object.FindFirstObjectByType(T("Encyclopedia.EncyclopediaUI"), FindObjectsInactive.Include);
+        Check(encyclopediaUI != null, "Actual MainScene encyclopedia controller exists even while its panel is closed.");
+        var encyclopediaPanel = (GameObject)Get(encyclopediaUI, "encyclopediaPanel");
+        var encyclopediaCanvas = (Canvas)Get(encyclopediaUI, "dedicatedCanvas");
+        Check(encyclopediaCanvas != null && encyclopediaCanvas.gameObject.activeInHierarchy &&
+            encyclopediaPanel.transform.parent == encyclopediaCanvas.transform,
+            "Actual serialized encyclopedia panel is detached from the inactive legacy mobile canvas.");
+        bool previousMouseLook = (bool)Get(_player, "enableMouseLook");
+        Call(_mobile, "EnableDesktopTestMode", true);
+        Call(_mobile, "SwitchInputMode", Enum.Parse(T("MobileInputManager+InputMode"), "Mobile"));
+        var controls = (Component)UnityEngine.Object.FindFirstObjectByType(T("MobileControlsUI"), FindObjectsInactive.Include);
+        Check(controls != null, "The hidden-encyclopedia test uses the scene's real virtual controls.");
+        Check(!(bool)Prop(T("Core.ResearchExperienceSettings"), "EncyclopediaEnabled"),
+            "This research release keeps the encyclopedia hidden.");
+        bool previousForceShow = (bool)Get(controls, "forceShowOnDesktop");
+        Set(controls, "forceShowOnDesktop", true);
+        controls.gameObject.SetActive(true);
+        if (Get(controls, "interactButton") == null) Call(controls, "StartOriginalLogic");
+        yield return Frames(3);
+        var inventoryRect = ((Button)Get(controls, "inventoryButton")).GetComponent<RectTransform>();
+        var toolsRect = ((Button)Get(controls, "toolWheelButton")).GetComponent<RectTransform>();
+        float slotWidth = (float)Get(controls, "buttonSize") + (float)Get(controls, "buttonSpacing");
+        Check(controls.gameObject.activeInHierarchy && Get(controls, "encyclopediaButton") == null &&
+            Mathf.Approximately(toolsRect.anchoredPosition.x - inventoryRect.anchoredPosition.x, slotWidth),
+            "Real virtual controls show no encyclopedia button, and the tools button takes its slot.");
+        yield return Capture("00-encyclopedia-hidden");
+        Call(_mobile, "TriggerEncyclopediaInput");
+        Call(_wheel, "HandleEncyclopediaInput"); // The desktop O key routes here as well.
+        yield return Frames(2);
+        Check(!(bool)Call(encyclopediaUI, "IsOpen") && !encyclopediaPanel.activeInHierarchy &&
+            !(bool)Prop(T("Core.GameInputState"), "IsModalOpen") && controls.gameObject.activeInHierarchy &&
+            (bool)Get(_player, "enableMouseLook") == previousMouseLook,
+            "Encyclopedia input from touch or keyboard leaves the encyclopedia closed and gameplay unchanged.");
+        Check(entries.All(entry => Get(entry, "icon") == null && Get(entry, "model3D") == null),
+            "The hidden encyclopedia loads no image or model resources.");
+        Call(_mobile, "EnableDesktopTestMode", false);
+        Call(_mobile, "SwitchInputMode", Enum.Parse(T("MobileInputManager+InputMode"), "Desktop"));
+        Set(controls, "forceShowOnDesktop", previousForceShow);
+        Call(controls, "SetVirtualControlsVisible", false);
+        yield return Frames(2);
+
         ((Behaviour)_player).enabled = false; // Position the fixture at the real task site without replaying the commute.
         foreach (string id in new[] { "1002", "1001" }) Call(T("ToolUnlockService"), "UnlockToolById", id);
         yield return null;
@@ -202,11 +263,22 @@ public class FieldFeedbackAcceptanceTests
         yield return Frames(8);
         Check(!Hint().Contains("Tab"), "Touch-mode guidance uses the tool button instead of Tab.");
         var hintRect = ScreenRect(GameObject.Find("CollectionGuidanceCanvas/CollectionHint").GetComponent<RectTransform>());
-        foreach (string field in new[] { "inventoryButton", "encyclopediaButton", "toolWheelButton", "interactButton", "secondaryInteractButton" })
+        foreach (string field in new[] { "inventoryButton", "toolWheelButton", "interactButton", "secondaryInteractButton" })
             Check(!hintRect.Overlaps(ScreenRect(((Button)Get(mobileUI, field)).GetComponent<RectTransform>())), "The touch guidance does not cover " + field + ".");
         yield return Capture("12-touch-hammer-select");
+        var openTools = GameObject.Find("CollectionGuidanceCanvas/CollectionHint/OpenTools")?.GetComponent<Button>();
+        Check(openTools != null && openTools.interactable, "Touch guidance provides an actionable tool-menu entrance.");
+        ClickVisibleButton(openTools);
+        yield return Frames(5);
+        Check((bool)Prop(T("InventoryUISystem"), "IsAnyWheelOpen"), "Tapping the guidance entrance opens the real tool wheel.");
+        Check((string)Prop(T("UISystem.CollectionGuidanceHUD"), "RecommendedToolId") == "1002", "Opening the touch wheel preserves the recommended hammer.");
+        Check(GameObject.Find("CollectionGuidanceCanvas/CollectionHint") == null, "The guidance card yields to the open tool wheel.");
+        yield return Capture("12b-touch-tool-menu");
         SelectTool("1002");
         yield return Frames(6);
+        yield return Capture("12c-touch-hammer-equipped");
+        Check(!openTools.gameObject.activeInHierarchy,
+            "Equipping the recommended tool removes the first-use entrance.");
         yield return TouchAction(mobileUI, "OnInteractButtonDown", "OnInteractButtonUp");
         Check((int)Prop(hammer, "CurrentHitCount") == 1, "The actual virtual Inspect button routes to one hammer hit.");
         yield return Capture("13-touch-hammer-progress");
@@ -296,9 +368,15 @@ public class FieldFeedbackAcceptanceTests
         Call(_wheel, "InitializeTools");
         var tools = (IList)Get(_wheel, "availableTools");
         int index = Enumerable.Range(0, tools.Count).First(i => (string)Get(tools[i], "toolID") == id);
+        var selectedTool = tools[index];
         Call(_wheel, "SelectToolAndStartPreview", index);
+        Assert.AreSame(selectedTool, Call(_tools, "GetCurrentTool"),
+            "Selecting wheel slot " + index + " should equip " + id + ".");
         Call(_wheel, "CloseWheel", false);
+        Assert.AreSame(selectedTool, Call(_tools, "GetCurrentTool"),
+            "Closing the wheel should preserve " + id + ".");
     }
+
     private Vector3 GroundAt(Vector3 site)
     {
         var hits = Physics.RaycastAll(site + Vector3.up * 50f, Vector3.down, 100f).OrderBy(h => h.distance);

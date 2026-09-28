@@ -56,6 +56,15 @@ namespace Encyclopedia
         private List<Button> layerTabs = new List<Button>();
         private List<GameObject> entryItems = new List<GameObject>();
         private EncyclopediaEntry selectedEntry = null;
+        private EncyclopediaEntry loadedDetailEntry;
+        private Canvas dedicatedCanvas;
+        private bool uiInitialized;
+        private int lastToggleFrame = -1;
+        private Core.GameInputState.Scope inputScope;
+        private ModalCanvasLayerGuard.Scope layerScope;
+        private MobileControlsUI hiddenMobileControls;
+        private FirstPersonController playerBeforeOpen;
+        private bool previousMouseLook;
 
         // 筛选状态
         private EntryType? currentEntryTypeFilter = null;
@@ -68,33 +77,57 @@ namespace Encyclopedia
 
         private void Start()
         {
+            PrepareForUse();
+            EnsureUIInitialized();
+        }
 
-            // 修复Canvas层级问题
-            FixCanvasLayer();
+        /// <summary>
+        /// Recover the serialized panel from legacy/inactive HUD canvases without activating those HUDs.
+        /// The panel and its existing controls are reused; only their dedicated canvas is created once.
+        /// </summary>
+        public void PrepareForUse()
+        {
+            if (encyclopediaPanel == null || dedicatedCanvas != null) return;
 
-            // 确保开始时图鉴是关闭的
-            if (encyclopediaPanel != null)
-            {
-                encyclopediaPanel.SetActive(false);
-                isOpen = false;
-            }
+            encyclopediaPanel.SetActive(false);
+            CloseDetailPanel();
+            var canvasObject = new GameObject("EncyclopediaCanvas", typeof(RectTransform));
+            dedicatedCanvas = canvasObject.AddComponent<Canvas>();
+            dedicatedCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            dedicatedCanvas.sortingOrder = 10001;
+            var scaler = canvasObject.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            scaler.matchWidthOrHeight = 0.5f;
+            canvasObject.AddComponent<GraphicRaycaster>();
 
+            var panelRect = (RectTransform)encyclopediaPanel.transform;
+            panelRect.SetParent(canvasObject.transform, false);
+            panelRect.localScale = Vector3.one;
+            panelRect.localRotation = Quaternion.identity;
+            panelRect.anchorMin = Vector2.zero;
+            panelRect.anchorMax = Vector2.one;
+            panelRect.offsetMin = Vector2.zero;
+            panelRect.offsetMax = Vector2.zero;
+        }
+
+        private void EnsureUIInitialized()
+        {
+            if (uiInitialized) return;
+            uiInitialized = true;
             InitializeUI();
-
-            // 监听语言变化事件
             if (LocalizationManager.Instance != null)
             {
                 LocalizationManager.Instance.OnLanguageChanged += OnLanguageChanged;
             }
-
-            // 强制关闭图鉴
-            CloseEncyclopedia();
         }
 
         private void Update()
         {
             // 检测按键输入 - 使用新Input System
-            if (Keyboard.current != null && Keyboard.current[toggleKey].wasPressedThisFrame)
+            if (Keyboard.current != null && Keyboard.current[toggleKey].wasPressedThisFrame &&
+                Core.ResearchExperienceSettings.EncyclopediaEnabled)
             {
                 ToggleEncyclopedia();
             }
@@ -1124,6 +1157,8 @@ namespace Encyclopedia
             // 确保3D查看器存在
             Ensure3DViewerExists();
 
+            PrepareDetailResources(entry);
+
             // 显示3D模型
             Debug.Log($"[EncyclopediaUI] 3D模型检查 - model3DViewer: {model3DViewer != null}, isDiscovered: {entry.isDiscovered}, model3D: {entry.model3D != null}");
             if (model3DViewer != null && entry.isDiscovered && entry.model3D != null)
@@ -1155,10 +1190,33 @@ namespace Encyclopedia
         }
 
         /// <summary>
-        /// 关闭详情面板
+        /// Keep only the model used by the current detail view.
         /// </summary>
+        private void PrepareDetailResources(EncyclopediaEntry entry)
+        {
+            if (loadedDetailEntry != entry) ReleaseDetailResources();
+            if (model3DViewer != null && entry != null && entry.isDiscovered && EncyclopediaData.Instance != null)
+            {
+                loadedDetailEntry = entry;
+                EncyclopediaData.Instance.LoadEntryModel(entry);
+            }
+        }
+
+        private void ReleaseDetailResources()
+        {
+            if (model3DViewer != null) model3DViewer.ClearCurrentModel();
+            if (detailIcon != null) detailIcon.sprite = null;
+            if (loadedDetailEntry != null && EncyclopediaData.Instance != null)
+            {
+                EncyclopediaData.Instance.ReleaseEntryResources(loadedDetailEntry);
+            }
+            loadedDetailEntry = null;
+        }
+
         public void CloseDetailPanel()
         {
+            ReleaseDetailResources();
+            selectedEntry = null;
             if (detailPanel != null)
             {
                 detailPanel.SetActive(false);
@@ -1264,6 +1322,8 @@ namespace Encyclopedia
                 detailProperties.text = GeneratePropertiesText(entry);
             }
             UpdateAdvancedDetailsButton(entry);
+
+            PrepareDetailResources(entry);
 
             // 显示3D模型
             Debug.Log($"[EncyclopediaUI] 3D模型检查 - model3DViewer: {model3DViewer != null}, isDiscovered: {entry.isDiscovered}, model3D: {entry.model3D != null}");
@@ -1499,6 +1559,9 @@ namespace Encyclopedia
         /// </summary>
         public void ToggleEncyclopedia()
         {
+            // Desktop O is also routed by InventoryUISystem; consume a gesture only once.
+            if (lastToggleFrame == Time.frameCount) return;
+            lastToggleFrame = Time.frameCount;
             if (isOpen)
             {
                 CloseEncyclopedia();
@@ -1514,10 +1577,11 @@ namespace Encyclopedia
         /// </summary>
         public void OpenEncyclopedia()
         {
+            PrepareForUse();
+            if (isOpen) return;
+            EnsureUIInitialized();
             if (encyclopediaPanel != null)
             {
-                encyclopediaPanel.SetActive(true);
-                isOpen = true;
 
                 Debug.Log("[EncyclopediaUI] 图鉴开始打开...");
 
@@ -1532,6 +1596,22 @@ namespace Encyclopedia
                 {
                     Debug.LogError("[EncyclopediaUI] 数据未加载!");
                     return;
+                }
+
+                encyclopediaPanel.SetActive(true);
+                isOpen = true;
+                playerBeforeOpen = FindFirstObjectByType<FirstPersonController>(FindObjectsInactive.Include);
+                previousMouseLook = playerBeforeOpen != null && playerBeforeOpen.enableMouseLook;
+                inputScope = Core.GameInputState.Acquire(CloseEncyclopedia);
+                layerScope = ModalCanvasLayerGuard.Activate(dedicatedCanvas);
+                hiddenMobileControls = MobileControlsUI.ActiveInstance;
+                if (hiddenMobileControls != null && hiddenMobileControls.gameObject.activeInHierarchy)
+                {
+                    hiddenMobileControls.SetVirtualControlsVisible(false);
+                }
+                else
+                {
+                    hiddenMobileControls = null;
                 }
 
                 Debug.Log($"[EncyclopediaUI] 数据验证通过: {EncyclopediaData.Instance.AllEntries?.Count ?? 0} 个条目");
@@ -1550,6 +1630,8 @@ namespace Encyclopedia
         /// </summary>
         public void CloseEncyclopedia()
         {
+            CloseDetailPanel();
+            ReleaseInput();
             if (encyclopediaPanel != null)
             {
                 encyclopediaPanel.SetActive(false);
@@ -2402,8 +2484,30 @@ namespace Encyclopedia
             return mineralSortOrder.TryGetValue(mineralName, out string sortKey) ? sortKey : ("99" + mineralName);
         }
 
+        private void ReleaseInput()
+        {
+            layerScope?.Dispose();
+            layerScope = null;
+            inputScope?.Dispose();
+            inputScope = null;
+            if (playerBeforeOpen != null) playerBeforeOpen.SetMouseLookEnabled(previousMouseLook);
+            playerBeforeOpen = null;
+            if (hiddenMobileControls != null) hiddenMobileControls.SetVirtualControlsVisible(true);
+            hiddenMobileControls = null;
+            isOpen = false;
+        }
+
+        private void OnDisable()
+        {
+            ReleaseDetailResources();
+            ReleaseInput();
+        }
+
         private void OnDestroy()
         {
+            ReleaseDetailResources();
+            ReleaseInput();
+            if (dedicatedCanvas != null) Destroy(dedicatedCanvas.gameObject);
             // 取消事件订阅
             CollectionManager.OnStatsUpdated -= OnStatsUpdated;
 

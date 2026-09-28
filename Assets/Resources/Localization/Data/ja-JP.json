@@ -3654,7 +3654,7 @@
     },
     {
       "key": "ui.guide.menus",
-      "value": "持ちもの・図鑑・設定"
+      "value": "持ちもの・設定"
     },
     {
       "key": "ui.guide.desktop.use",
@@ -3674,11 +3674,11 @@
     },
     {
       "key": "ui.guide.desktop.menus",
-      "value": "I：バッグ　O：図鑑　Esc：設定\nH：この操作説明をいつでも開く"
+      "value": "I：バッグ　Esc：設定\nH：この操作説明をいつでも開く"
     },
     {
       "key": "ui.guide.touch.menus",
-      "value": "左上の「バッグ」「図鑑」、右上の設定ボタン。\n「？ 操作説明」から、この説明をいつでも開けます。"
+      "value": "左上の「バッグ」、右上の設定ボタン。\n「？ 操作説明」から、この説明をいつでも開けます。"
     },
     {
       "key": "ui.guide.field.line.title",
@@ -3802,7 +3802,7 @@
     },
     {
       "key": "ui.collection.equip.touch",
-      "value": "「道具」を開き、光っている「{0}」を選ぼう。"
+      "value": "道具ボタンをタップし、光っている「{0}」を選ぼう。"
     },
     {
       "key": "ui.collection.hit.desktop",
@@ -3911,6 +3911,10 @@
     {
       "key": "quest.ui.completed_cue",
       "value": "調査完了"
+    },
+    {
+      "key": "quest.npc.prompt.control.mobile",
+      "value": "右側のボタンをタップ"
     }
   ]
 }
