@@ -32,7 +32,13 @@
         <div class="orientation-body">スマートフォンを横向きにすると、<br>ゲームを続けられます。</div>
       </div>
     </div>
+    <aside id="fullscreen-help" hidden aria-label="全画面表示">
+      <span id="fullscreen-message" role="status"></span>
+      <button id="fullscreen-retry" type="button">全画面にする</button>
+      <button id="fullscreen-dismiss" type="button" aria-label="全画面の案内を閉じる">×</button>
+    </aside>
     <script src="TemplateData/performance.js"></script>
+    <script src="TemplateData/fullscreen.js"></script>
     <script src="TemplateData/loading.js" onerror="document.getElementById('loading-status').textContent='読み込めませんでした。接続を確認して、もう一度お試しください。'; document.getElementById('loading-retry').hidden=false;"></script>
     <script>
       var canvas = document.querySelector("#unity-canvas");
@@ -68,7 +74,7 @@
         streamingAssetsUrl: "StreamingAssets",
         companyName: "ZHANGSHIFENG",
         productName: "GeoModelTest",
-        productVersion: "2026.09.25-gameplay-guidance",
+        productVersion: "2026.09.28-mobile-guidance",
         matchWebGLToCanvasSize: false,
         devicePixelRatio: 1,
         showBanner: unityShowBanner,
@@ -84,11 +90,6 @@
         return window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
       }
 
-      function isIPadLike() {
-        return /iPad/.test(navigator.userAgent) ||
-          (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-      }
-
       function updateOrientationOverlay() {
         var portrait = window.innerHeight > window.innerWidth;
         var shouldBlock = isCoarsePointer() && portrait;
@@ -100,7 +101,11 @@
       ["resize", "orientationchange"].forEach((eventName) => {
         window.addEventListener(eventName, updateOrientationOverlay, { passive: true });
       });
+      ["fullscreenchange", "webkitfullscreenchange"].forEach((eventName) => {
+        document.addEventListener(eventName, updateOrientationOverlay);
+      });
       updateOrientationOverlay();
+      if (window.GeoModelFullscreen) GeoModelFullscreen.install();
 
       canvas.addEventListener("pointerdown", () => {
         try {
@@ -111,7 +116,7 @@
       });
 
       function preventBrowserGesture(event) {
-        if (event.target instanceof Element && event.target.closest('#loading-retry')) return;
+        if (event.target instanceof Element && event.target.closest('#loading-retry, #fullscreen-help')) return;
         event.preventDefault();
       }
 
@@ -130,31 +135,6 @@
       window.addEventListener("scroll", () => {
         window.scrollTo(0, 0);
       }, { passive: false });
-
-      function exitIPadFullscreenIfNeeded() {
-        if (!isIPadLike()) return;
-
-        var fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement;
-        if (!fullscreenElement) return;
-
-        try {
-          var exitFullscreen = document.exitFullscreen || document.webkitExitFullscreen;
-          if (exitFullscreen) {
-            var result = exitFullscreen.call(document);
-            if (result && typeof result.catch === "function") {
-              result.catch(function() {});
-            }
-          }
-        } catch (error) {
-          // Browser-reserved fullscreen gestures cannot always be controlled from the iframe.
-        }
-      }
-
-      ["fullscreenchange", "webkitfullscreenchange"].forEach((eventName) => {
-        document.addEventListener(eventName, exitIPadFullscreenIfNeeded);
-      });
-      setTimeout(exitIPadFullscreenIfNeeded, 250);
-      setTimeout(exitIPadFullscreenIfNeeded, 1000);
 
       document.addEventListener("contextmenu", (event) => {
         event.preventDefault();
