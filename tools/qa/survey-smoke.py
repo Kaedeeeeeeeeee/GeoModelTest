@@ -37,7 +37,7 @@ if not args.open_play:
  sql(f"insert into studies(id,study_key,status,research_entry_enabled,protocol_version) values ('{study}','survey-{study}','development',true,'survey-qa'); insert into study_participants(id,study_id,participant_code_hash,condition,protocol_version) values ('{participant}','{study}','{hash_code}','A','survey-qa');")
 http,auth=req('/auth/v1/signup',{});check('anonymous auth',http,200)
 consent=dict(consentVersion='guardian-ja-2026-09-29',guardianAgreed=True,guardianConfirmed=True,guardianName='　検証　保護者　',
- respondentId='ＱＡ－０１',guardianConsentedAt=datetime.datetime.now(datetime.timezone.utc).isoformat(),studentAssented=True,
+ respondentId='Ｐ１２３－４５６７',guardianConsentedAt=datetime.datetime.now(datetime.timezone.utc).isoformat(),studentAssented=True,
  studentAssentedAt=datetime.datetime.now(datetime.timezone.utc).isoformat())
 if args.open_play:
  check('open play without the guardian form is refused',req('/functions/v1/research-participation',{'entryMode':'open_play'},auth['access_token'])[0],428)
@@ -48,7 +48,7 @@ http,context=req('/functions/v1/research-participation',entry,auth['access_token
 if args.open_play:
  participant=context['participantId'];study=context['studyId'];code=None
  check('no code; consent from the web form',sql(f"select (participant_code_hash is null and consent_version='guardian-ja-2026-09-29' and guardian_consent_at<=now() and student_assent_at<=now())::text from study_participants where id='{participant}'"),'true')
- check('guardian form stored with normalized ID',sql(f"select guardian_name||'/'||respondent_id from guardian_consents where participant_id='{participant}'"),'検証　保護者/QA-01')
+ check('guardian form stored with normalized ID',sql(f"select guardian_name||'/'||respondent_id from guardian_consents where participant_id='{participant}'"),'検証　保護者/p1234567')
  check('starting alone is not a survey respondent',sql(f"select count(*) from survey_responses where participant_id='{participant}'"),'0')
  check('activation retry reuses anonymous participant',req('/functions/v1/research-participation',entry,auth['access_token'])[1]['participantId'],participant)
  check('later activation needs no second form',req('/functions/v1/research-participation',{'entryMode':'open_play'},auth['access_token'])[1].get('participantId'),participant)

@@ -5,7 +5,7 @@
   'use strict';
 
   // Bump when the approved wording changes so an older answer is asked again.
-  var VERSION = 'guardian-ja-2026-09-29';
+  var VERSION = 'guardian-ja-2026-09-29b';
   // Session scope: survives reloads and crash recovery in this tab, not a new visit.
   var STORAGE_KEY = 'geomodel-guardian-consent';
   var MESSAGES = {
@@ -14,7 +14,7 @@
     guardianNameMissing: '保護者氏名を入力してください。',
     guardianNameInvalid: '保護者氏名を確認してください。',
     respondentIdMissing: 'お子様の回答者IDを入力してください。',
-    respondentIdInvalid: '回答者IDは半角の英数字で入力してください。'
+    respondentIdInvalid: '回答者IDは「p」と数字7桁で入力してください（例：p1234567）。'
   };
   var root = document.documentElement;
   var memory = null;
@@ -37,11 +37,12 @@
     try { window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); } catch (_) {}
   }
 
-  // Japanese keyboards often produce full-width characters and long-vowel marks for "-".
+  // Testee IDs are "p" + 7 digits (p1234567). Japanese keyboards may give full-width or
+  // uppercase characters; spaces and dashes are typing aids, and a missing "p" is restored.
   function normalizeRespondentId(value) {
-    return String(value == null ? '' : value).normalize('NFKC')
-      .replace(/[‐-―−ー]/g, '-')
-      .replace(/\s+/g, '');
+    var id = String(value == null ? '' : value).normalize('NFKC').toLowerCase()
+      .replace(/[\s‐-―−ー-]/g, '');
+    return /^[0-9]{7}$/.test(id) ? 'p' + id : id;
   }
 
   function evaluate(values, now) {
@@ -56,7 +57,7 @@
       if (!name) errors.guardianName = MESSAGES.guardianNameMissing;
       else if (name.length > 100 || /[\u0000-\u001f\u007f-\u009f]/.test(name)) errors.guardianName = MESSAGES.guardianNameInvalid;
       if (!respondentId) errors.respondentId = MESSAGES.respondentIdMissing;
-      else if (!/^[A-Za-z0-9._-]{1,64}$/.test(respondentId)) errors.respondentId = MESSAGES.respondentIdInvalid;
+      else if (!/^p[0-9]{7}$/.test(respondentId)) errors.respondentId = MESSAGES.respondentIdInvalid;
       if (Object.keys(errors).length === 0) {
         payload = {
           consentVersion: VERSION,

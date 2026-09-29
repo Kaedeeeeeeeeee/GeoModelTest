@@ -35,16 +35,18 @@ function parseConsent(value: unknown): JsonRecord | null | "invalid" {
   const version = typeof value.consentVersion === "string" ? value.consentVersion.trim() : "";
   // trim() also removes full-width spaces typed with a Japanese keyboard.
   const guardianName = typeof value.guardianName === "string" ? value.guardianName.trim() : "";
-  // Same normalization as the web form: full-width to ASCII, dash-like marks to "-", no spaces.
-  const respondentId = typeof value.respondentId === "string"
-    ? value.respondentId.normalize("NFKC").replace(/[‐-―−ー]/gu, "-").replace(/\s+/gu, "")
+  // Testee IDs are "p" + 7 digits. Same normalization as the web form: full-width and
+  // uppercase to half-width lowercase, spaces and dashes removed, a missing "p" restored.
+  const typedId = typeof value.respondentId === "string"
+    ? value.respondentId.normalize("NFKC").toLowerCase().replace(/[\s‐-―−ー-]/gu, "")
     : "";
+  const respondentId = /^[0-9]{7}$/.test(typedId) ? "p" + typedId : typedId;
   const guardianAt = typeof value.guardianConsentedAt === "string" ? value.guardianConsentedAt : "";
   const studentAt = typeof value.studentAssentedAt === "string" ? value.studentAssentedAt : "";
   if (value.guardianAgreed !== true || value.guardianConfirmed !== true || value.studentAssented !== true ||
     version.length < 1 || version.length > 64 ||
     guardianName.length < 1 || guardianName.length > 100 || /\p{Cc}/u.test(guardianName) ||
-    !/^[A-Za-z0-9._-]{1,64}$/.test(respondentId) ||
+    !/^p[0-9]{7}$/.test(respondentId) ||
     Number.isNaN(Date.parse(guardianAt)) || Number.isNaN(Date.parse(studentAt))) {
     return "invalid";
   }

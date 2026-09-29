@@ -8,7 +8,7 @@ const rootPath = path.resolve(__dirname, '../..');
 const source = fs.readFileSync(path.join(rootPath,
   'Assets/WebGLTemplates/FixedAspect/TemplateData/guardian-consent.js'), 'utf8');
 const STORAGE_KEY = 'geomodel-guardian-consent';
-const VERSION = 'guardian-ja-2026-09-29';
+const VERSION = 'guardian-ja-2026-09-29b';
 
 function fixture(options = {}) {
   const storage = new Map();
@@ -42,7 +42,7 @@ function fixture(options = {}) {
 
 function answer(overrides = {}) {
   return Object.assign({ consentVersion: VERSION, guardianAgreed: true, guardianConfirmed: true,
-    guardianName: '山田　花子', respondentId: 'T-0001', guardianConsentedAt: '2026-09-29T01:02:03.456Z' }, overrides);
+    guardianName: '山田　花子', respondentId: 'p1234567', guardianConsentedAt: '2026-09-29T01:02:03.456Z' }, overrides);
 }
 
 function keyEvent() {
@@ -86,7 +86,9 @@ test('agreeing requires the guardian confirmation, name and respondent ID', () =
   const result = api.evaluate({ choice: 'yes', guardianConfirmed: false, guardianName: '　 ', respondentId: '' }, new Date());
   assert.deepEqual(Object.keys(result.errors).sort(), ['guardianConfirmed', 'guardianName', 'respondentId']);
   assert.equal(result.payload, null);
-  assert.ok(api.evaluate({ choice: 'yes', guardianConfirmed: true, guardianName: '山田', respondentId: 'テスト01' }, new Date()).errors.respondentId);
+  for (const typed of ['テスト01', 'p123456', 'p12345678', 'q1234567', 'T-0001']) {
+    assert.ok(api.evaluate({ choice: 'yes', guardianConfirmed: true, guardianName: '山田', respondentId: typed }, new Date()).errors.respondentId, typed);
+  }
   assert.ok(api.evaluate({ choice: 'yes', guardianConfirmed: true, guardianName: '山田\n花子', respondentId: 'A1' }, new Date()).errors.guardianName);
 });
 
@@ -94,10 +96,13 @@ test('Japanese keyboard input is normalized before it is stored', () => {
   const { api } = fixture();
   const now = new Date('2026-09-29T10:00:00Z');
   const result = api.evaluate({ choice: 'yes', guardianConfirmed: true,
-    guardianName: '　山田　花子　', respondentId: ' ＴＥＳＴー０１ ' }, now);
+    guardianName: '　山田　花子　', respondentId: ' Ｐ１２３ー４５６７ ' }, now);
   assert.deepEqual(Object.keys(result.errors), []);
-  assert.deepEqual(JSON.parse(JSON.stringify(result.payload)), answer({ respondentId: 'TEST-01', guardianConsentedAt: now.toISOString() }));
-  assert.equal(api.normalizeRespondentId('ab‐cd−ef'), 'ab-cd-ef');
+  assert.deepEqual(JSON.parse(JSON.stringify(result.payload)), answer({ guardianConsentedAt: now.toISOString() }));
+  // Testee IDs are "p" + 7 digits: fix case, width, spaces and dashes, and restore a missing "p".
+  for (const [typed, stored] of [['P1234567', 'p1234567'], ['ｐ１２３４５６７', 'p1234567'], ['p-123 4567', 'p1234567'], ['１２３４５６７', 'p1234567']]) {
+    assert.equal(api.normalizeRespondentId(typed), stored, typed);
+  }
 });
 
 test('keys typed into the form never reach Unity while the form is open', () => {
