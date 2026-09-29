@@ -112,9 +112,11 @@ namespace Backend
                 bool ended = false;
                 ResearchParticipationCoordinator.Instance.EndSession("post_game_survey", () => ended = true);
                 while (!ended) yield return null;
+                // The ticket and answers live on the server, so a failed local save must not block the survey.
+                // iPhone Safari's IndexedDB can fail here; the player then only saw 「接続を確認して…」 on every retry.
                 bool saved = false;
                 yield return WebGLFileSync.FlushAndWait(value => saved = value);
-                if (!saved) { status?.Invoke(GameUI.L("survey.retry")); yield break; }
+                if (!saved) Debug.LogWarning("[SurveyGateway] Local save did not finish; opening the survey anyway.");
                 var config = Resources.Load<SurveySettings>("SurveySettings");
                 if (config == null) { status?.Invoke(GameUI.L("survey.retry")); yield break; }
                 string url = config.PageUrl.Split('#')[0] + "#ticket=" + cached.ticket;
