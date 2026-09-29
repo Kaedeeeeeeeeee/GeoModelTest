@@ -132,6 +132,8 @@ namespace SceneSystem
         private void OnResearchConsentAccepted()
         {
             _researchConsentAccepted = true;
+            // Sent with the guardian form when New Game registers this play for research.
+            Backend.ResearchConsentRecord.RecordStudentAssent();
             _newGame.interactable = true;
             _reviewConsent.gameObject.SetActive(false);
             _newGame.Select();

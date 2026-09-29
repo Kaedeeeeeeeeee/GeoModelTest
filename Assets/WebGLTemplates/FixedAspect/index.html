@@ -7,8 +7,92 @@
     <title>ジオクエスト</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
+    <script src="TemplateData/guardian-consent.js"></script>
   </head>
   <body>
+    <!-- 保護者同意. Wording must match the approved document; bump VERSION in guardian-consent.js when it changes. -->
+    <div id="guardian-consent" role="dialog" aria-modal="true" aria-labelledby="guardian-consent-title" lang="ja">
+      <article class="consent-sheet" id="guardian-consent-form-view">
+        <p class="consent-lead">ゲームを始める前に、保護者の方がお読みください。</p>
+        <h1 id="guardian-consent-title" tabindex="-1">3D地学ゲーム型教材の評価研究への参加について</h1>
+        <p class="consent-subtitle">保護者の皆様への説明と同意のお願い</p>
+        <p>このたび、東北学院大学人間情報学研究科　稲垣研究室（以下、研究室）では、中学生を対象とした理科・地学分野の学習用3Dゲーム型教材を開発し、その使いやすさや学習への効果を検討する研究を実施します。</p>
+        <p>本研究への参加にあたり、お子様にゲーム型教材を実際に体験していただき、その際の操作状況やアンケートへの回答等を研究データとして使用させていただきます。</p>
+        <p>本調査は、JST（科学技術振興機構）第３期戦略的イノベーション創造プログラム（SIP）「ポストコロナ時代の学び方・働き方を実現するプラットフォームの構築」事業の一環として実施するものです。事業の概要は以下のサイトをご覧ください。<br><a href="https://www.jst.go.jp/sip/pos/" target="_blank" rel="noopener noreferrer">https://www.jst.go.jp/sip/pos/</a></p>
+        <p>以下の内容をご確認いただき、本研究への参加に同意いただける場合は、同意欄にチェックをお願いいたします。</p>
+
+        <h2>1．研究の目的</h2>
+        <p>本研究は、中学生が理科の地学分野について、3D空間を探索しながら学習できるゲーム型教材を開発し、その教材の使いやすさ、学習への取り組みやすさ、理解の状況等を明らかにすることを目的としています。</p>
+
+        <h2>2．研究への参加方法</h2>
+        <p>お子様には、パソコンまたはタブレット、スマートフォンから、オンライン上の3Dゲーム型教材を体験していただきます・ゲーム体験の前後に、簡単なアンケートや学習内容に関する質問に回答していただきます。</p>
+        <p>予定している参加時間は、全体で最大２５分です。</p>
+
+        <h2>3．収集する情報</h2>
+        <p>本研究では、主に以下の情報を収集します。</p>
+        <ul>
+          <li>学年等の基本的な情報</li>
+          <li>ゲーム教材内での操作記録<br>（例：移動した場所、選択した項目、回答内容、プレイ時間など）</li>
+          <li>ゲーム体験後のアンケートへの回答</li>
+          <li>（株）テスティーから提供される回答者ID</li>
+          <li>本文書に同意した際の保護者名</li>
+        </ul>
+        <p>お子様の氏名、学校名を収集することはありません。また、（株）テスティーが保有する会員情報は受け取らず、完了者の回答者IDのみ報告します。</p>
+
+        <h2>4．個人情報の取り扱い</h2>
+        <p>収集したデータは、研究用のIDを付与し、個人が直接特定されない形で管理します。研究成果を学会、研究会、論文等で発表する場合にも、個人が特定できる形で情報を公表することはありません。</p>
+        <p>収集したデータは、東北学院大学の研究データ管理に関する規程に従い、適切な方法で保管します。</p>
+        <p>研究終了後３年間保管した後、適切な方法で削除・廃棄します。</p>
+
+        <h2>5．研究への参加は自由です</h2>
+        <p>本研究に参加するかどうかは自由です。</p>
+        <p>参加しなかった場合にも、お子様または保護者の方が不利益を受けることはありません。また、研究への参加に同意した後でも、ゲームの途中で気分が悪くなった場合や、参加を続けたくないと思った場合には、いつでも中止することができます。</p>
+
+        <h2>6．予想される負担やリスク</h2>
+        <p>本研究で使用する教材は一般的な3Dゲーム教材ですが、画面を長時間見ることによる目の疲れや、3D画面の動きによる不快感、いわゆる「3D酔い」が生じる可能性があります。気分が悪くなった場合には、すぐにゲームの利用を中止してください。</p>
+
+        <h2>７．謝礼について</h2>
+        <p>研究への参加に対して、株式会社テスティーが運営するアンケートアプリ『Powl』のポイントが、完了確認後に付与されます。</p>
+
+        <h2>9．研究に関する問い合わせ先</h2>
+        <p>研究責任者：東北学院大学　人間情報学研究科<br>氏名：稲垣　忠<br>E-mail：<a href="mailto:tinagaki@g.tohoku-gakuin.ac.jp">tinagaki@g.tohoku-gakuin.ac.jp</a></p>
+        <p>研究に関してご不明な点がありましたら、上記までお問い合わせください。</p>
+
+        <form id="guardian-consent-form" class="consent-form" novalidate>
+          <h2>保護者同意</h2>
+          <p>私は、上記の説明を読み、本研究の目的、方法、収集される情報、個人情報の取り扱い、研究への参加が自由であることについて理解しました。</p>
+          <fieldset>
+            <legend>そのうえで、私が保護する中学生が本研究に参加することに、</legend>
+            <label class="consent-option"><input type="radio" name="guardianAgreed" value="yes"><span>同意します</span></label>
+            <label class="consent-option"><input type="radio" name="guardianAgreed" value="no"><span>同意しません</span></label>
+            <p class="consent-error" data-error-for="choice" role="alert" hidden></p>
+          </fieldset>
+          <fieldset>
+            <legend>私は、この回答を行う参加者の保護者または法定代理人です。</legend>
+            <label class="consent-option"><input type="checkbox" name="guardianConfirmed"><span>はい</span></label>
+            <p class="consent-error" data-error-for="guardianConfirmed" role="alert" hidden></p>
+          </fieldset>
+          <label class="consent-field">
+            <span>保護者氏名：</span>
+            <input type="text" name="guardianName" maxlength="100" autocomplete="off" enterkeyhint="next">
+          </label>
+          <p class="consent-error" data-error-for="guardianName" role="alert" hidden></p>
+          <label class="consent-field">
+            <span>お子様の回答者ID：</span>
+            <input type="text" name="respondentId" maxlength="64" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done">
+          </label>
+          <p class="consent-error" data-error-for="respondentId" role="alert" hidden></p>
+          <p class="consent-date">同意日：<span id="guardian-consent-date"></span></p>
+          <p class="consent-note">回答後は、お子様ご本人が画面の案内に沿って進めてください。</p>
+          <button type="submit" class="consent-button">回答する</button>
+        </form>
+      </article>
+      <article class="consent-sheet" id="guardian-consent-declined" hidden>
+        <h1 tabindex="-1">ご回答ありがとうございました</h1>
+        <p>保護者の方の同意が得られない場合、お子様はこの研究に参加できません。このページを閉じてください。</p>
+        <button type="button" class="consent-button consent-button-secondary" id="guardian-consent-back">回答を選び直す</button>
+      </article>
+    </div>
     <div id="unity-container">
       <canvas id="unity-canvas" width={{{ WIDTH }}} height={{{ HEIGHT }}} tabindex="-1"></canvas>
       <section id="unity-loading-bar" aria-labelledby="loading-title" aria-busy="true">
@@ -96,9 +180,14 @@
         return window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
       }
 
+      function guardianConsentPending() {
+        return !!(window.GeoModelGuardianConsent && GeoModelGuardianConsent.isPending());
+      }
+
       function updateOrientationOverlay() {
         var portrait = window.innerHeight > window.innerWidth;
-        var shouldBlock = isCoarsePointer() && portrait;
+        // The guardian form reads fine in portrait; ask for landscape only once the game shows.
+        var shouldBlock = isCoarsePointer() && portrait && !guardianConsentPending();
         orientationOverlay.classList.toggle("is-visible", shouldBlock);
         orientationOverlay.setAttribute("aria-hidden", shouldBlock ? "false" : "true");
         canvas.style.pointerEvents = shouldBlock ? "none" : "auto";
@@ -107,7 +196,7 @@
       ["resize", "orientationchange"].forEach((eventName) => {
         window.addEventListener(eventName, updateOrientationOverlay, { passive: true });
       });
-      ["fullscreenchange", "webkitfullscreenchange"].forEach((eventName) => {
+      ["fullscreenchange", "webkitfullscreenchange", "geomodel:guardian-consent-complete"].forEach((eventName) => {
         document.addEventListener(eventName, updateOrientationOverlay);
       });
       updateOrientationOverlay();
@@ -123,6 +212,9 @@
 
       function preventBrowserGesture(event) {
         if (event.target instanceof Element && event.target.closest('#loading-retry, #fullscreen-help')) return;
+        // The guardian form must scroll and take taps; pinch zoom stays blocked so the game view is not left zoomed.
+        if (event.target instanceof Element && event.target.closest('#guardian-consent') &&
+            event.type.indexOf('gesture') !== 0 && !(event.touches && event.touches.length > 1)) return;
         event.preventDefault();
       }
 
@@ -143,6 +235,8 @@
       }, { passive: false });
 
       document.addEventListener("contextmenu", (event) => {
+        // Keep copy/paste menus for the guardian form fields.
+        if (event.target instanceof Element && event.target.closest('#guardian-consent')) return;
         event.preventDefault();
       });
 

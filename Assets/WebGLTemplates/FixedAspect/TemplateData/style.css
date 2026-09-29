@@ -235,3 +235,140 @@ html, body {
 #fullscreen-retry { padding: 0 12px; }
 #fullscreen-help #fullscreen-dismiss { background: transparent; color: #edf4f1; font-size: 22px; }
 #fullscreen-help button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* 保護者同意: a scrollable document above the loading game. Shown only while the
+   html element carries .guardian-consent-pending (set by guardian-consent.js). */
+#guardian-consent {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2500;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  padding:
+    env(safe-area-inset-top)
+    env(safe-area-inset-right)
+    env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+  box-sizing: border-box;
+  background: #07181e;
+  color: #1f2d31;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+html.guardian-consent-pending #guardian-consent { display: block; }
+
+.consent-sheet {
+  max-width: 760px;
+  margin: 24px auto 40px;
+  padding: 28px clamp(18px, 5vw, 48px) 36px;
+  box-sizing: border-box;
+  background: #fbfaf6;
+  border-top: 4px solid #60cdb0;
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.consent-sheet[hidden] { display: none; }
+.consent-sheet p { margin: 0 0 12px; }
+.consent-sheet a { color: #0d6b58; }
+.consent-sheet h1 {
+  margin: 0 0 4px;
+  font-size: clamp(20px, 3.4vw, 26px);
+  line-height: 1.45;
+  outline: none;
+}
+.consent-subtitle { color: #4a5d61; font-weight: 600; margin-bottom: 20px !important; }
+.consent-lead {
+  padding: 10px 14px;
+  margin-bottom: 20px !important;
+  border-left: 4px solid #60cdb0;
+  background: #e5f4ef;
+  font-weight: 600;
+}
+.consent-sheet h2 {
+  margin: 28px 0 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #d6dedb;
+  font-size: 17px;
+  line-height: 1.5;
+}
+.consent-sheet ul { margin: 0 0 12px; padding: 0; list-style: none; }
+.consent-sheet li { position: relative; padding-left: 1.2em; margin-bottom: 4px; }
+.consent-sheet li::before { content: "・"; position: absolute; left: 0; }
+
+.consent-form {
+  margin-top: 32px;
+  padding: 4px 0 0;
+  border-top: 3px double #b9c8c4;
+}
+.consent-form fieldset { margin: 0 0 18px; padding: 0; border: 0; min-width: 0; }
+.consent-form legend { padding: 0; margin-bottom: 8px; font-weight: 600; }
+.consent-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  margin-bottom: 8px;
+  padding: 0 14px;
+  border: 1px solid #b9c8c4;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.consent-option:has(input:checked) { border-color: #1f8f74; background: #eef8f4; }
+.consent-option input { width: 22px; height: 22px; margin: 0; flex-shrink: 0; accent-color: #1f8f74; }
+.consent-field { display: block; margin: 0 0 6px; font-weight: 600; }
+.consent-field span { display: block; margin-bottom: 6px; }
+.consent-field input {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  border: 1px solid #9fb3b6;
+  border-radius: 6px;
+  background: #fff;
+  color: #1f2d31;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 400;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.consent-field input[aria-invalid="true"] { border-color: #b3261e; }
+.consent-form input:focus-visible, .consent-button:focus-visible, .consent-sheet a:focus-visible {
+  outline: 3px solid #1f8f74;
+  outline-offset: 2px;
+}
+.consent-error { margin: 4px 0 14px !important; color: #b3261e; font-size: 14px; font-weight: 600; }
+.consent-error[hidden] { display: none; }
+.consent-date { margin-top: 18px !important; font-weight: 600; }
+.consent-note { color: #4a5d61; font-size: 14px; }
+.consent-button {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 8px;
+  border: 0;
+  border-radius: 6px;
+  background: #60cdb0;
+  color: #082b29;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.consent-button-secondary { background: transparent; border: 1px solid #1f8f74; color: #0d6b58; }
+
+@media (max-width: 600px) {
+  .consent-sheet { margin: 0; border-radius: 0; min-height: 100%; }
+}

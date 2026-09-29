@@ -4,7 +4,7 @@
 -- q-columns are stable answer IDs, not display numbers. Always group by survey_version.
 -- v2 display order: q7,q8,q3,q10,q11,q2,q4,q9,q5,q1,q6,q13,q14; q12 is absent.
 -- In v2 q10 measures text length (1 short -> 5 long), rather than agreement.
-select r.id as response_id, r.study_id, r.participant_id, r.run_id,
+select r.id as response_id, r.study_id, r.participant_id, gc.respondent_id, r.run_id,
        r.session_id as completion_session_id, p.entry_mode, p.cohort, p.condition,
        r.survey_version, r.submitted_at,
        r.answers->>'q1' as q1, r.answers->>'q2' as q2,
@@ -19,6 +19,9 @@ select r.id as response_id, r.study_id, r.participant_id, r.run_id,
 from public.survey_responses r
 join public.study_participants p on p.id = r.participant_id
 join public.game_sessions s on s.id = r.session_id
+join public.studies st on st.id = r.study_id
+-- Only the respondent ID joins; guardian names stay in guardian_consents.
+left join public.guardian_consents gc on gc.participant_id = r.participant_id
 cross join lateral (
   select count(distinct question_id) filter (where attempt_index = 1 and is_correct) as first_correct,
          count(*) filter (where not is_correct) as wrong_attempts,
@@ -26,4 +29,6 @@ cross join lateral (
   from public.quiz_attempts a
   where a.participant_id = r.participant_id and a.run_id = r.run_id
 ) q
+-- Studies with the online guardian form exclude play from before the form existed.
+where not st.requires_guardian_consent or gc.participant_id is not null
 order by r.submitted_at, r.id;

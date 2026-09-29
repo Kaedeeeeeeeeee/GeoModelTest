@@ -3209,6 +3209,14 @@
       "value": "Previous research records are pending. Reconnect using the same participation code and retry before switching."
     },
     {
+      "key": "backend.consent_required",
+      "value": "Guardian consent could not be confirmed. Reload the page and start again."
+    },
+    {
+      "key": "backend.consent_invalid",
+      "value": "The consent answers could not be verified. Reload the page and answer again."
+    },
+    {
       "key": "ui.dialog.hint",
       "value": "Hint"
     },

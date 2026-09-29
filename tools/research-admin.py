@@ -137,9 +137,19 @@ class Admin:
         if args.register:
             with Path(args.register).expanduser().open(encoding='utf-8-sig',newline='') as stream:
                 register = {row['participant_id']:row['participation_code'] for row in csv.DictReader(stream)}
+        # Online guardian forms: only the respondent ID and consent time join the research export.
+        needs_form = bool(study.get('requires_guardian_consent'))
+        forms = {row['participant_id']:row for row in self.rows('guardian_consents',
+            {'study_id':'eq.'+study['id'],'select':'participant_id,respondent_id,recorded_at'})} if needs_form else {}
         rows = []
+        without_form = 0
         for participant in participants:
             pid = participant['id']
+            if needs_form and pid not in forms:
+                # Play records from before the guardian form existed are not research data.
+                without_form += 1
+                continue
+            form = forms.get(pid, {})
             sessions = self.rows('game_sessions',{'participant_id':'eq.'+pid,'select':'id,started_at,ended_at','order':'id'})
             events = self.rows('telemetry_events',{'participant_id':'eq.'+pid,'select':'id','order':'id'})
             responses = self.rows('survey_responses',{'participant_id':'eq.'+pid,'select':'*','order':'submitted_at,id'})
@@ -148,6 +158,8 @@ class Admin:
             for response in responses or ([] if study.get('entry_mode') == 'open_play' else [{}]):
                 same_run = [x for x in attempts if x['run_id']==response.get('run_id')]
                 rows.append({'participation_code':register.get(pid,''),'participant_id':pid,'study_key':args.study_key,
+                    'respondent_id':form.get('respondent_id',''),'consent_version':participant.get('consent_version') or '',
+                    'consent_recorded_at':form.get('recorded_at',''),
                     'cohort':participant['cohort'],'condition':participant['condition'],'status':participant['status'],
                     'session_count':len(sessions),'event_count':len(events),'run_id':response.get('run_id',''),
                     'response_id':response.get('id',''),'completion_session_id':response.get('session_id',''),
@@ -155,10 +167,31 @@ class Admin:
                     'first_correct':len({x['question_id'] for x in same_run if x['attempt_index']==1 and x['is_correct']}),
                     'wrong_attempts':sum(not x['is_correct'] for x in same_run),
                     'mastered':len({x['question_id'] for x in same_run if x['is_correct']}),**response.get('answers',{})})
-        fields=['participation_code','participant_id','study_key','cohort','condition','status','session_count','event_count',
+        fields=['participation_code','participant_id','study_key','respondent_id','consent_version','consent_recorded_at',
+                'cohort','condition','status','session_count','event_count',
                 'run_id','response_id','completion_session_id','submitted_at','first_correct','wrong_attempts','mastered']+[f'q{i}' for i in range(1,15)]
         private_write(args.output,csv_text(rows,fields))
         print(f'Exported {len(rows)} participant/response rows to {Path(args.output).expanduser().resolve()}.')
+        if without_form: print(f'Skipped {without_form} play records without a guardian consent form.')
+
+    def consent_records(self, args):
+        study = self.study(args.study_key)
+        forms = self.rows('guardian_consents',{'study_id':'eq.'+study['id'],'select':'*','order':'recorded_at,participant_id'})
+        fields = ['participant_id','respondent_id','guardian_name','guardian_confirmed','consent_version',
+                  'guardian_consented_at','student_assented_at','recorded_at']
+        private_write(args.output, csv_text(forms, fields))
+        print(f'Exported {len(forms)} guardian consent forms to {Path(args.output).expanduser().resolve()}. '
+              'The file contains guardian names: keep it apart from research data.')
+
+    def completers(self, args):
+        # Testee receives only the respondent IDs of children who finished the game and questionnaire.
+        study = self.study(args.study_key)
+        forms = {row['participant_id']:row['respondent_id'] for row in self.rows('guardian_consents',
+            {'study_id':'eq.'+study['id'],'select':'participant_id,respondent_id'})}
+        responses = self.rows('survey_responses',{'study_id':'eq.'+study['id'],'select':'participant_id'})
+        ids = sorted({forms[row['participant_id']] for row in responses if row['participant_id'] in forms})
+        private_write(args.output, csv_text([{'respondent_id':value} for value in ids], ['respondent_id']))
+        print(f'Exported {len(ids)} completed respondent IDs to {Path(args.output).expanduser().resolve()}.')
 
 
 def timestamp(value):
@@ -179,6 +212,10 @@ def main():
     create.add_argument('--cohort',default='internal');create.add_argument('--output',required=True)
     export=commands.add_parser('export');export.add_argument('--study-key',required=True)
     export.add_argument('--register');export.add_argument('--output',required=True)
+    forms=commands.add_parser('consent-records');forms.add_argument('--study-key',required=True)
+    forms.add_argument('--output',required=True)
+    done=commands.add_parser('completers');done.add_argument('--study-key',required=True)
+    done.add_argument('--output',required=True)
     gate=commands.add_parser('entry');gate.add_argument('--study-key',required=True)
     gate.add_argument('--state',choices=['open','closed'],required=True)
     consent=commands.add_parser('record-consent');consent.add_argument('--participant-id',required=True)
@@ -187,6 +224,8 @@ def main():
     args=parser.parse_args(); admin=Admin(args.config)
     if args.command=='create-batch': admin.create_batch(args)
     elif args.command=='export': admin.export(args)
+    elif args.command=='consent-records': admin.consent_records(args)
+    elif args.command=='completers': admin.completers(args)
     elif args.command=='entry':
         study=admin.study(args.study_key)
         admin.request('studies?id=eq.'+study['id'],{'research_entry_enabled':args.state=='open'},method='PATCH')

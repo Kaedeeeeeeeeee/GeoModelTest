@@ -28,6 +28,38 @@ function isPlainObject(value: unknown): value is JsonRecord {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+// Web guardian form plus the title-screen student assent. The database validates again.
+function parseConsent(value: unknown): JsonRecord | null | "invalid" {
+  if (value == null) return null;
+  if (!isPlainObject(value)) return "invalid";
+  const version = typeof value.consentVersion === "string" ? value.consentVersion.trim() : "";
+  // trim() also removes full-width spaces typed with a Japanese keyboard.
+  const guardianName = typeof value.guardianName === "string" ? value.guardianName.trim() : "";
+  // Same normalization as the web form: full-width to ASCII, dash-like marks to "-", no spaces.
+  const respondentId = typeof value.respondentId === "string"
+    ? value.respondentId.normalize("NFKC").replace(/[‐-―−ー]/gu, "-").replace(/\s+/gu, "")
+    : "";
+  const guardianAt = typeof value.guardianConsentedAt === "string" ? value.guardianConsentedAt : "";
+  const studentAt = typeof value.studentAssentedAt === "string" ? value.studentAssentedAt : "";
+  if (value.guardianAgreed !== true || value.guardianConfirmed !== true || value.studentAssented !== true ||
+    version.length < 1 || version.length > 64 ||
+    guardianName.length < 1 || guardianName.length > 100 || /\p{Cc}/u.test(guardianName) ||
+    !/^[A-Za-z0-9._-]{1,64}$/.test(respondentId) ||
+    Number.isNaN(Date.parse(guardianAt)) || Number.isNaN(Date.parse(studentAt))) {
+    return "invalid";
+  }
+  return {
+    consentVersion: version,
+    guardianAgreed: true,
+    guardianConfirmed: true,
+    guardianName,
+    respondentId,
+    guardianConsentedAt: guardianAt,
+    studentAssented: true,
+    studentAssentedAt: studentAt,
+  };
+}
+
 async function hmacSha256Hex(secret: string, value: string): Promise<string> {
   const encoder = new TextEncoder();
   const key = await crypto.subtle.importKey(
@@ -71,6 +103,9 @@ serve(async (req) => {
   if (!openPlay && !/^[A-Z0-9-]{8,64}$/.test(participantCode)) {
     return fail(400, "参加コードを確認してください。");
   }
+  if (!openPlay && parsed.consent != null) return fail(400, "Unexpected consent");
+  const consent = openPlay ? parseConsent(parsed.consent) : null;
+  if (consent === "invalid") return fail(422, "同意の内容を確認できませんでした。");
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -113,7 +148,7 @@ serve(async (req) => {
   if (identityRate.data !== true) return fail(429, "確認回数が多すぎます。少し待ってから再試行してください。");
 
   const { data, error } = openPlay
-    ? await supabase.rpc("activate_open_play_participant", { p_user_id: userData.user.id })
+    ? await supabase.rpc("activate_open_play_participant", { p_user_id: userData.user.id, p_consent: consent })
     : await supabase.rpc("activate_research_participant", {
       p_code_hash: await hmacSha256Hex(codePepper, participantCode),
       p_user_id: userData.user.id,
@@ -125,6 +160,8 @@ serve(async (req) => {
     if (error.code === "23505") return fail(409, "この参加コードは別の端末で有効化されています。");
     if (error.code === "42501") return fail(403, "研究参加の受付は現在停止しています。");
     if (error.code === "22023") return fail(409, "研究手順のバージョンが一致しません。");
+    if (error.code === "GC001") return fail(428, "保護者の同意が必要です。");
+    if (error.code === "GC002") return fail(422, "同意の内容を確認できませんでした。");
     return fail(500, "参加コードを有効化できませんでした。");
   }
 

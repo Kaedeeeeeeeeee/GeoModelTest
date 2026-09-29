@@ -50,9 +50,11 @@ public class ResearchConsentTests
             Assert.IsTrue(review.gameObject.activeSelf);
             review.onClick.Invoke();
             Assert.IsNotNull(Root);
+            Assert.IsNull(StudentAssentedAt, "Cancelling must not record the student's assent.");
             CheckAll(true);
             Continue.onClick.Invoke();
             yield return null;
+            Assert.IsNotNull(StudentAssentedAt, "New Game sends the time the student confirmed.");
             Assert.IsTrue(newGame.interactable);
             Assert.IsFalse(review.gameObject.activeSelf);
             Assert.AreEqual(scene, SceneManager.GetActiveScene(), "Consent must not start the game.");
@@ -75,12 +77,30 @@ public class ResearchConsentTests
 
     private void Show() => Call(Dialog, "Show", (Action)(() => _starts++));
 
+    private static Type ConsentRecord => Type.GetType("Backend.ResearchConsentRecord, Assembly-CSharp", true);
+    private static DateTime? StudentAssentedAt =>
+        (DateTime?)ConsentRecord.GetProperty("StudentAssentedAtUtc", BindingFlags.Public | BindingFlags.Static).GetValue(null);
+
     [SetUp]
     public void SetUp()
     {
         _starts = 0;
         Call(Dialog, "CloseCurrent");
+        ConsentRecord.GetMethod("ResetForTests", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, null);
         Time.timeScale = 0.75f;
+    }
+
+    [Test]
+    public void ConsentRejections_ShouldAskForReloadInsteadOfRetry()
+    {
+        var client = Type.GetType("Backend.TelemetryClient, Assembly-CSharp", true);
+        string Message(long status) => (string)client.GetMethod("ParticipationErrorMessage").Invoke(null, new object[] { status, null });
+        bool IsConsent(string message) => (bool)client.GetMethod("IsConsentError").Invoke(null, new object[] { message });
+        Assert.IsTrue(IsConsent(Message(428)), "Missing guardian form");
+        Assert.IsTrue(IsConsent(Message(422)), "Rejected guardian form");
+        Assert.AreNotEqual(Message(428), Message(422));
+        Assert.IsFalse(IsConsent(Message(500)), "Network failures keep the ordinary retry message.");
+        Assert.IsFalse(IsConsent(null));
     }
 
     [UnityTest]

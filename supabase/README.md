@@ -8,7 +8,17 @@ The research sample is **submitted questionnaires**, not every anonymous play re
 
 Migration `20260914042127_open_play_research.sql` creates the `geoquest-open-play-2026-09` study with `entry_mode = open_play`. Only one active open-play study can accept new players. The server chooses the study, condition and protocol; clients cannot supply them. The Edge function verifies the anonymous Auth user before calling the service-only enrollment function. No code or consent timestamps are invented.
 
-Existing invitation studies and their consent rules remain intact. Withdrawal, study closure, retention and run ownership checks still apply to both enrollment routes. Consent and recruitment arrangements for children remain a separate research procedure; submitted responses are not proof of guardian consent. The questionnaire explains voluntary participation and anonymous linkage to gameplay records.
+Existing invitation studies and their consent rules remain intact. Withdrawal, study closure, retention and run ownership checks still apply to both enrollment routes. The questionnaire explains voluntary participation and anonymous linkage to gameplay records.
+
+## Online guardian consent (open play)
+
+Migration `20260929090000_open_play_guardian_consent.sql` sets `requires_guardian_consent` on the open-play study. Before Unity starts, the WebGL page shows the teacher-approved 保護者同意 (`Assets/WebGLTemplates/FixedAspect/index.html`, logic in `TemplateData/guardian-consent.js`). The guardian chooses 同意します／同意しません, confirms being the guardian, and types their name and the child's Testee respondent ID. The page date is filled automatically. The answer stays in the tab's `sessionStorage`, so a reload or crash recovery does not ask again, but a new visit does. 同意しません stops on the page and sends nothing.
+
+The title-screen dialog still asks the student each time. At New Game, Unity sends the guardian answer and the student's confirmation time with the code-free activation. The first successful activation stores the form in `guardian_consents` and sets `consent_version`, `guardian_consent_at` and `student_assent_at` on the participant. Later activations reuse the stored form and never overwrite it. Without a valid form the server answers 428 or 422 and creates no play record, and ingestion and questionnaires stay closed. Records created before the requirement also need the form before they can upload again.
+
+`guardian_consents` is the only table holding a name. It is service-only like the other research tables. Research exports carry the respondent ID and consent time but never the name. Use `consent-records` to verify consent, and keep that file apart from research data. Changing the approved wording requires a new `VERSION` in `guardian-consent.js`, which asks guardians again.
+
+The wording must match the document submitted for ethics review. Change the document first, then the page.
 
 Export the new study without an invitation register:
 
@@ -16,7 +26,14 @@ Export the new study without an invitation register:
 python3 tools/research-admin.py export --study-key geoquest-open-play-2026-09 --output /private/research/respondents.csv
 ```
 
-Open-play exports include only submitted responses. Legacy invitation exports still include nonresponders for recruitment follow-up.
+Open-play exports include only submitted responses. For studies requiring the guardian form, they skip play records without one and add `respondent_id`, `consent_version` and `consent_recorded_at`. Legacy invitation exports still include nonresponders for recruitment follow-up.
+
+Guardian forms (contains names) and the respondent IDs to report to Testee:
+
+```sh
+python3 tools/research-admin.py consent-records --study-key geoquest-open-play-2026-09 --output /private/research/guardian-consents.csv
+python3 tools/research-admin.py completers --study-key geoquest-open-play-2026-09 --output /private/research/completed-respondents.csv
+```
 
 Source/backend changes require coordinated deployment before the published player uses this flow.
 
@@ -24,7 +41,7 @@ Source/backend changes require coordinated deployment before the published playe
 
 - `development` batches are for internal trials. They do not pretend that consent has been collected.
 - `active` batches require matching protocol versions, a nonempty consent version, recorded guardian consent and student assent timestamps, and an open entry. Future timestamps, withdrawn participants and expired studies are rejected.
-- The researcher records consent metadata after completing the actual consent process. Do not store signed forms, names, school identifiers or contact details in the game database.
+- The researcher records consent metadata after completing the actual consent process. Do not store signed forms, names, school identifiers or contact details in the game database. (Open play's online guardian form is the one exception, kept in `guardian_consents`.)
 - A code is bound atomically to one anonymous account. Re-entering from the same saved browser identity works. Clearing browser storage or changing devices requires researcher support; do not casually distribute one code to multiple players.
 - The database stores only HMAC-SHA256 code hashes. The raw-code issuance register remains a private researcher file. Preserve the code pepper: changing it invalidates existing codes.
 

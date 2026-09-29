@@ -62,9 +62,15 @@ namespace Backend
                     SurveyCompletionStore.Current(settings.SupabaseUrl, QuizScoreManager.Instance.RunId) == null)
                 {
                     bool activated = false;
-                    coordinator.ActivateOpenPlay((success, error) => activated = success);
+                    string activationError = null;
+                    coordinator.ActivateOpenPlay((success, error) => { activated = success; activationError = error; });
                     while (coordinator.IsActivating) yield return null;
-                    if (!activated) { status?.Invoke(GameUI.L("survey.retry")); yield break; }
+                    if (!activated)
+                    {
+                        // Retrying cannot fix a missing guardian consent; say what to do instead.
+                        status?.Invoke(TelemetryClient.IsConsentError(activationError) ? activationError : GameUI.L("survey.retry"));
+                        yield break;
+                    }
                 }
                 var client = TelemetryClient.Instance;
                 if (client?.IsResearchActive == true)

@@ -3209,6 +3209,14 @@
       "value": "仍有未上传的研究记录，请使用原参与码连接并重试，上传完成后再切换。"
     },
     {
+      "key": "backend.consent_required",
+      "value": "无法确认监护人同意。请重新加载页面，从头开始。"
+    },
+    {
+      "key": "backend.consent_invalid",
+      "value": "无法确认同意内容。请重新加载页面后再次填写。"
+    },
+    {
       "key": "ui.dialog.hint",
       "value": "提示"
     },

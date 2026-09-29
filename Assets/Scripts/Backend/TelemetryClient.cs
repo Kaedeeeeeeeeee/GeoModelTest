@@ -629,14 +629,7 @@ namespace Backend
                 yield break;
             }
 
-            string json = JsonConvert.SerializeObject(new
-            {
-                participantCode,
-                entryMode = participantCode == null ? "open_play" : "invitation",
-                gameVersion = Application.version,
-                contentVersion = ResearchContentVersion.ContentVersion,
-                storyRoute = ResearchContentVersion.StoryRoute
-            }, BackendJson.Settings);
+            string json = BuildParticipationBody(participantCode);
 
             using var request = CreateJsonPost(_settings.ParticipationFunctionUrl, json);
             request.SetRequestHeader("Authorization", $"Bearer {accessToken}");
@@ -656,6 +649,9 @@ namespace Backend
                     // Use the generic message below.
                 }
 
+                // A rejected guardian answer cannot succeed on retry; let the page ask again after reload.
+                if (request.responseCode == 422 || request.responseCode == 428)
+                    ResearchConsentRecord.DiscardGuardianAnswer();
                 failure(ParticipationErrorMessage(request.responseCode, errorResponse?.error));
                 yield break;
             }
@@ -671,6 +667,22 @@ namespace Backend
             }
         }
 
+        /// <summary>
+        /// Open play carries the guardian form and student assent; the server records them with the first activation.
+        /// </summary>
+        public static string BuildParticipationBody(string participantCode)
+        {
+            return JsonConvert.SerializeObject(new
+            {
+                participantCode,
+                entryMode = participantCode == null ? "open_play" : "invitation",
+                gameVersion = Application.version,
+                contentVersion = ResearchContentVersion.ContentVersion,
+                storyRoute = ResearchContentVersion.StoryRoute,
+                consent = participantCode == null ? ResearchConsentRecord.BuildOpenPlayConsent() : null
+            }, BackendJson.Settings);
+        }
+
         public static string ParticipationErrorMessage(long status, string serverMessage = null)
         {
             string key = status switch
@@ -678,11 +690,17 @@ namespace Backend
                 400 or 404 => "backend.invalid_code",
                 403 => "backend.closed",
                 409 => serverMessage != null && serverMessage.Contains("バージョン") ? "backend.version" : "backend.bound",
+                422 => "backend.consent_invalid",
+                428 => "backend.consent_required",
                 429 => "backend.rate_limit",
                 _ => "backend.network"
             };
             return UISystem.GameUI.L(key);
         }
+
+        public static bool IsConsentError(string message) =>
+            !string.IsNullOrEmpty(message) &&
+            (message == UISystem.GameUI.L("backend.consent_required") || message == UISystem.GameUI.L("backend.consent_invalid"));
 
         private IEnumerator PostIngest(IngestRequest payload, Action<bool> done)
         {
