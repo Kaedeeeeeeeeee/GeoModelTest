@@ -1,13 +1,13 @@
 {
-  "version": "2026.09.29-consent-form-fix",
+  "version": "2026.09.29-no-fullscreen",
   "unity": "6000.0.51f1",
   "buildType": "release",
-  "builtAt": "2026-09-29T06:37:41.000Z",
-  "sourceCommit": "8b6b640c12898a7dbee28a0105fe5f1bf1b43d7f",
+  "builtAt": "2026-09-29T11:24:02.000Z",
+  "sourceCommit": "edb563484065ea12972420f64925ed88fd8d3d81-dirty",
   "assets": {
     "Build/WebGL.data.unityweb": {
-      "bytes": 107344609,
-      "sha256": "65aa2165310afc46cd7eea400e939b8620aef26f44515ab6d19f2d383992b9ce"
+      "bytes": 107338489,
+      "sha256": "a01959b1e859ce7cbb485355cf66b7e6a0ab9eaed56e47a423c975c683480f40"
     },
     "Build/WebGL.framework.js.unityweb": {
       "bytes": 96397,
@@ -23,10 +23,6 @@
     }
   },
   "webAssets": {
-    "TemplateData/fullscreen.js": {
-      "bytes": 5138,
-      "sha256": "8b12767a34063f3a910778d5fa9d00892d668af59ccdc76ca400fb1f1c3e53aa"
-    },
     "TemplateData/guardian-consent.js": {
       "bytes": 10737,
       "sha256": "007306a8f5099a8983f701a786c00bdde73215e734eeabd4dcc964ff0511a315"
@@ -40,12 +36,12 @@
       "sha256": "0e36abece3c0aeb0a3fe0ae50fdc480fb71ed6783c8664b8ce549329fbf63bc9"
     },
     "TemplateData/style.css": {
-      "bytes": 10649,
-      "sha256": "bc0598289d8e9f6ac4d9ee6a4b4862581653c8b8a308edf3e52ac6c3d1432695"
+      "bytes": 9586,
+      "sha256": "a7ce71829a38f2ceaf6fd9134693617e269a5c73edb1cf6bdf346414ff2cd14a"
     },
     "index.html": {
-      "bytes": 15636,
-      "sha256": "e095e557712573e557ebbbc837bc824338db37940acd45393571bac9e2ad7c20"
+      "bytes": 15167,
+      "sha256": "b93dfb3c70a7e54314d72380f35cc30a01a96cacec02227e5ea5e802dc1fa1ab"
     }
   },
   "surveyAssets": {

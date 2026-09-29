@@ -198,44 +198,6 @@ html, body {
   color: #cfc8bd;
 }
 
-#fullscreen-help {
-  position: fixed;
-  z-index: 2100;
-  top: calc(env(safe-area-inset-top) + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: max-content;
-  max-width: calc(100vw - 32px);
-  padding: 4px 8px 4px 12px;
-  box-sizing: border-box;
-  border: 1px solid #4a706d;
-  border-radius: 8px;
-  color: #edf4f1;
-  background: #0d2028;
-  font: 12px/1.5 -apple-system, BlinkMacSystemFont, "Noto Sans JP", sans-serif;
-}
-#fullscreen-help[hidden], #fullscreen-help [hidden] { display: none; }
-#fullscreen-message { min-width: 0; }
-#fullscreen-help button {
-  min-width: 44px;
-  min-height: 44px;
-  flex-shrink: 0;
-  border: 0;
-  border-radius: 4px;
-  background: #60cdb0;
-  color: #082b29;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-#fullscreen-retry { padding: 0 12px; }
-#fullscreen-help #fullscreen-dismiss { background: transparent; color: #edf4f1; font-size: 22px; }
-#fullscreen-help button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-
 /* 保護者同意: a scrollable document above the loading game. Shown only while the
    html element carries .guardian-consent-pending (set by guardian-consent.js). */
 #guardian-consent {

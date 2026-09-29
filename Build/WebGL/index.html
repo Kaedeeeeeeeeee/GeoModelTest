@@ -117,13 +117,7 @@
         <div class="orientation-body">スマートフォンを横向きにすると、<br>ゲームを続けられます。</div>
       </div>
     </div>
-    <aside id="fullscreen-help" hidden aria-label="全画面表示">
-      <span id="fullscreen-message" role="status"></span>
-      <button id="fullscreen-retry" type="button">全画面にする</button>
-      <button id="fullscreen-dismiss" type="button" aria-label="全画面の案内を閉じる">×</button>
-    </aside>
     <script src="TemplateData/performance.js"></script>
-    <script src="TemplateData/fullscreen.js"></script>
     <script src="TemplateData/loading.js" onerror="document.getElementById('loading-status').textContent='読み込めませんでした。接続を確認して、もう一度お試しください。'; document.getElementById('loading-retry').hidden=false;"></script>
     <script>
       var canvas = document.querySelector("#unity-canvas");
@@ -159,7 +153,7 @@
         streamingAssetsUrl: "StreamingAssets",
         companyName: "ZHANGSHIFENG",
         productName: "GeoModelTest",
-        productVersion: "2026.09.29-consent-form-fix",
+        productVersion: "2026.09.29-no-fullscreen",
         matchWebGLToCanvasSize: false,
         devicePixelRatio: 1,
         showBanner: unityShowBanner,
@@ -195,7 +189,6 @@
         document.addEventListener(eventName, updateOrientationOverlay);
       });
       updateOrientationOverlay();
-      if (window.GeoModelFullscreen) GeoModelFullscreen.install();
 
       canvas.addEventListener("pointerdown", () => {
         try {
@@ -206,7 +199,7 @@
       });
 
       function preventBrowserGesture(event) {
-        if (event.target instanceof Element && event.target.closest('#loading-retry, #fullscreen-help')) return;
+        if (event.target instanceof Element && event.target.closest('#loading-retry')) return;
         // The guardian form must scroll and take taps; pinch zoom stays blocked so the game view is not left zoomed.
         if (event.target instanceof Element && event.target.closest('#guardian-consent') &&
             event.type.indexOf('gesture') !== 0 && !(event.touches && event.touches.length > 1)) return;
