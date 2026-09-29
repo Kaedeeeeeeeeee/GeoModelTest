@@ -45,6 +45,12 @@
     return /^[0-9]{7}$/.test(id) ? 'p' + id : id;
   }
 
+  function respondentIdError(value) {
+    var id = normalizeRespondentId(value);
+    if (!id) return MESSAGES.respondentIdMissing;
+    return /^p[0-9]{7}$/.test(id) ? '' : MESSAGES.respondentIdInvalid;
+  }
+
   function evaluate(values, now) {
     var errors = {};
     var payload = null;
@@ -56,8 +62,8 @@
       if (!values.guardianConfirmed) errors.guardianConfirmed = MESSAGES.guardianConfirmed;
       if (!name) errors.guardianName = MESSAGES.guardianNameMissing;
       else if (name.length > 100 || /[\u0000-\u001f\u007f-\u009f]/.test(name)) errors.guardianName = MESSAGES.guardianNameInvalid;
-      if (!respondentId) errors.respondentId = MESSAGES.respondentIdMissing;
-      else if (!/^p[0-9]{7}$/.test(respondentId)) errors.respondentId = MESSAGES.respondentIdInvalid;
+      var idError = respondentIdError(values.respondentId);
+      if (idError) errors.respondentId = idError;
       if (Object.keys(errors).length === 0) {
         payload = {
           consentVersion: VERSION,
@@ -87,9 +93,13 @@
 
   // Unity listens for keys on the whole window and would swallow the guardian's typing.
   // Capture listeners registered here run before Unity's, which are added later.
+  // Set by wire(): the form's own Enter handling, which must run inside this shield.
+  var enterKey = null;
   ['keydown', 'keypress', 'keyup'].forEach(function (type) {
     window.addEventListener(type, function (event) {
-      if (pending) event.stopImmediatePropagation();
+      if (!pending) return;
+      event.stopImmediatePropagation();
+      if (type === 'keydown' && enterKey) enterKey(event);
     }, true);
   });
 
@@ -111,6 +121,9 @@
       guardianName: form.elements.guardianName,
       respondentId: form.elements.respondentId
     };
+    var submit = form.querySelector('button[type="submit"]');
+    var hint = document.getElementById('guardian-consent-hint');
+    var textFields = [inputs.guardianName, inputs.respondentId];
     var lastFocus = null;
 
     document.getElementById('guardian-consent-date').textContent = formatDate(new Date());
@@ -167,19 +180,44 @@
       else complete(result.payload);
     });
 
-    // Clear a field's message as soon as it is corrected.
-    form.addEventListener('change', function () {
-      var result = evaluate(values(), new Date());
+    // The answer button stays disabled until everything the chosen answer needs is filled in,
+    // so neither the button nor the keyboard's Enter can send an incomplete form.
+    function refresh() {
+      var errors = evaluate(values(), new Date()).errors;
+      // Clear a field's message as soon as it is corrected.
       Object.keys(fields).forEach(function (key) {
-        if (!fields[key].hidden && !result.errors[key]) {
+        if (!fields[key].hidden && !errors[key]) {
           fields[key].hidden = true;
           if (inputs[key]) inputs[key].setAttribute('aria-invalid', 'false');
         }
       });
-    });
+      var ready = Object.keys(errors).length === 0;
+      submit.disabled = !ready;
+      hint.hidden = ready;
+    }
+    form.addEventListener('input', refresh);
+    form.addEventListener('change', refresh);
+    refresh();
+
     inputs.respondentId.addEventListener('blur', function () {
       inputs.respondentId.value = normalizeRespondentId(inputs.respondentId.value);
+      // With the button disabled there is no submit-time message, so explain a mistyped ID here.
+      var error = inputs.respondentId.value ? respondentIdError(inputs.respondentId.value) : '';
+      fields.respondentId.textContent = error;
+      fields.respondentId.hidden = !error;
+      inputs.respondentId.setAttribute('aria-invalid', error ? 'true' : 'false');
     });
+
+    // Enter moves to the next text field and closes the keyboard after the last one; only the
+    // answer button submits. An Enter that confirms an IME conversion is left to the IME.
+    enterKey = function (event) {
+      if (event.key !== 'Enter' || event.isComposing || event.keyCode === 229) return;
+      var index = textFields.indexOf(event.target);
+      if (index < 0) return;
+      event.preventDefault();
+      if (index + 1 < textFields.length) textFields[index + 1].focus();
+      else event.target.blur();
+    };
 
     document.getElementById('guardian-consent-back').addEventListener('click', function () {
       show(formView);

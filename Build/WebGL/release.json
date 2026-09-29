@@ -1,13 +1,13 @@
 {
-  "version": "2026.09.29-respondent-id",
+  "version": "2026.09.29-consent-form-fix",
   "unity": "6000.0.51f1",
   "buildType": "release",
-  "builtAt": "2026-09-29T05:41:10.000Z",
-  "sourceCommit": "f0e86db78a26cf9fec06443b7b7cb5c97abebbef",
+  "builtAt": "2026-09-29T06:37:41.000Z",
+  "sourceCommit": "8b6b640c12898a7dbee28a0105fe5f1bf1b43d7f",
   "assets": {
     "Build/WebGL.data.unityweb": {
-      "bytes": 107348739,
-      "sha256": "3ce88d724a42cf7fbba0daa5eb53345c5ecf5262ec5e62cc32fbeabc2cc35ac8"
+      "bytes": 107344609,
+      "sha256": "65aa2165310afc46cd7eea400e939b8620aef26f44515ab6d19f2d383992b9ce"
     },
     "Build/WebGL.framework.js.unityweb": {
       "bytes": 96397,
@@ -28,8 +28,8 @@
       "sha256": "8b12767a34063f3a910778d5fa9d00892d668af59ccdc76ca400fb1f1c3e53aa"
     },
     "TemplateData/guardian-consent.js": {
-      "bytes": 8956,
-      "sha256": "a5229b31b64da2cfa92bdf9071eb2e5ff0565c9abf2c00d7e43fbfb88390a06a"
+      "bytes": 10737,
+      "sha256": "007306a8f5099a8983f701a786c00bdde73215e734eeabd4dcc964ff0511a315"
     },
     "TemplateData/loading.js": {
       "bytes": 12153,
@@ -40,12 +40,12 @@
       "sha256": "0e36abece3c0aeb0a3fe0ae50fdc480fb71ed6783c8664b8ce549329fbf63bc9"
     },
     "TemplateData/style.css": {
-      "bytes": 10445,
-      "sha256": "e05155bce51568d283f49dcbd3a2497708277c9a455b927cf0e1f693d9983c89"
+      "bytes": 10649,
+      "sha256": "bc0598289d8e9f6ac4d9ee6a4b4862581653c8b8a308edf3e52ac6c3d1432695"
     },
     "index.html": {
-      "bytes": 15516,
-      "sha256": "03b1629190a3376b135a5b8230521c0a6a2f94559682d29b5bb61e7381772fe2"
+      "bytes": 15636,
+      "sha256": "e095e557712573e557ebbbc837bc824338db37940acd45393571bac9e2ad7c20"
     }
   },
   "surveyAssets": {
@@ -91,6 +91,5 @@
       "bytes": 985,
       "sha256": "82e790d093246c9ec6bc56dcd171dd619567eb3aa19dd3ef0dfb6126b6d874b7"
     }
-  },
-  "publishedAt": "2026-09-29T05:54:34.000Z"
+  }
 }
