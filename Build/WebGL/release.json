@@ -1,31 +1,35 @@
 {
-  "version": "2026.09.28-mobile-guidance",
+  "version": "2026.09.29-guardian-consent",
   "unity": "6000.0.51f1",
   "buildType": "release",
-  "builtAt": "2026-09-28T13:51:45.512Z",
-  "sourceCommit": "67763efebb86a2fff3ef2a1c3cdb557930b3a032",
+  "builtAt": "2026-09-29T04:22:24.000Z",
+  "sourceCommit": "e4ab7feec6c72e8828085167e7c08f272f593417",
   "assets": {
     "Build/WebGL.data.unityweb": {
-      "bytes": 107338947,
-      "sha256": "857d8820f8c3b70b5bdc1f063e208324a56d81f5f44ac47fcd841092d9aa642e"
+      "bytes": 107344229,
+      "sha256": "4b8f3395fddfe0f3ba92628ac840b26b47f818a32458e15737dbf1a3c138b084"
     },
     "Build/WebGL.framework.js.unityweb": {
-      "bytes": 96233,
-      "sha256": "2d35c3e5aa9d0f79a7f2f47eba77172c86e405a591beef56ae5d07174f653a25"
+      "bytes": 96397,
+      "sha256": "834e36775eab26bbe8b9b21fb7753a66f822bc71474370f10fb66692d820d684"
     },
     "Build/WebGL.loader.js": {
       "bytes": 47338,
-      "sha256": "cfa6000e9672f62a0d93d738e84f2a0720f2cc42f678d6d31d6182ef8059cd62"
+      "sha256": "4abd1b594f56767664238172c87021c0f4b332cb59c4dc01613c5b3781b50010"
     },
     "Build/WebGL.wasm.unityweb": {
-      "bytes": 12103891,
-      "sha256": "6721b346afbea5b0283d1379d8461f846816a2430bbdf8c3dad1b39a1afc6183"
+      "bytes": 12102666,
+      "sha256": "5a13663b684dab7567357b81030a115d89669225a8d2f08f9c52948e4049f036"
     }
   },
   "webAssets": {
     "TemplateData/fullscreen.js": {
       "bytes": 5138,
       "sha256": "8b12767a34063f3a910778d5fa9d00892d668af59ccdc76ca400fb1f1c3e53aa"
+    },
+    "TemplateData/guardian-consent.js": {
+      "bytes": 8811,
+      "sha256": "6887429d6d5c2f592e8cebc685c0e0b9ee9976f78ee6addc7da0afb94e675fc8"
     },
     "TemplateData/loading.js": {
       "bytes": 12153,
@@ -36,12 +40,12 @@
       "sha256": "0e36abece3c0aeb0a3fe0ae50fdc480fb71ed6783c8664b8ce549329fbf63bc9"
     },
     "TemplateData/style.css": {
-      "bytes": 6352,
-      "sha256": "5c780429ae6c81e30049f12d70a3ba386fe38dd624abb76c0768375d97eb59bd"
+      "bytes": 10445,
+      "sha256": "e05155bce51568d283f49dcbd3a2497708277c9a455b927cf0e1f693d9983c89"
     },
     "index.html": {
-      "bytes": 6555,
-      "sha256": "0a9e6717d39b544b0acae1d6c377ef4c45ec32e6201784c63b13d72f922c2ca1"
+      "bytes": 15492,
+      "sha256": "df870ba3be0f9b88272c8d58abc2602bda0d875a2faba9e138e4e008ed9a1a95"
     }
   },
   "surveyAssets": {
@@ -87,5 +91,6 @@
       "bytes": 985,
       "sha256": "82e790d093246c9ec6bc56dcd171dd619567eb3aa19dd3ef0dfb6126b6d874b7"
     }
-  }
+  },
+  "sourceTreeDirty": true
 }
