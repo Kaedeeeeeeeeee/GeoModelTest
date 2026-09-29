@@ -1,0 +1,25 @@
+{
+  "url": "https://html-classic.itch.zone/html/17462165-2030265/index.html",
+  "embedResolvedFrom": "https://kaedeeeeeeeeee.itch.io/geo-model-geological-drilling-simulator",
+  "version": "2026.09.28-mobile-guidance",
+  "ready": true,
+  "loadingState": "ready",
+  "canvas": [
+    1280,
+    720
+  ],
+  "fullscreenScriptLoaded": true,
+  "errors": [],
+  "normalReload": {
+    "version": "2026.09.28-mobile-guidance",
+    "ready": true,
+    "loadingState": "ready",
+    "canvas": [
+      1280,
+      720
+    ]
+  },
+  "interaction": "Consent 戻る returned to the title menu; New Game remained disabled.",
+  "testConsentAccepted": false,
+  "browser": "Claude desktop built-in browser (desktop viewport)"
+}
