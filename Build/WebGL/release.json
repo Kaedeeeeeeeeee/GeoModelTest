@@ -1,25 +1,25 @@
 {
-  "version": "2026.09.29-no-fullscreen",
+  "version": "2026.09.29-survey-open-fix",
   "unity": "6000.0.51f1",
   "buildType": "release",
-  "builtAt": "2026-09-29T11:24:02.000Z",
-  "sourceCommit": "edb563484065ea12972420f64925ed88fd8d3d81-dirty",
+  "builtAt": "2026-09-29T12:07:55.000Z",
+  "sourceCommit": "966ecdd1998a18ea64be3bd172af543eb674ce46-dirty",
   "assets": {
     "Build/WebGL.data.unityweb": {
-      "bytes": 107338489,
-      "sha256": "a01959b1e859ce7cbb485355cf66b7e6a0ab9eaed56e47a423c975c683480f40"
+      "bytes": 107338338,
+      "sha256": "efd7b5ebe48aeb96f0d2c4aa987fb68c0ec3febd7f8546b69d8d1c2c6bdb80ea"
     },
     "Build/WebGL.framework.js.unityweb": {
       "bytes": 96397,
-      "sha256": "834e36775eab26bbe8b9b21fb7753a66f822bc71474370f10fb66692d820d684"
+      "sha256": "1e78ddda976e842e0a6c6275f0510d2ba6a281ebaa46d043811899bae0719142"
     },
     "Build/WebGL.loader.js": {
       "bytes": 47338,
-      "sha256": "4abd1b594f56767664238172c87021c0f4b332cb59c4dc01613c5b3781b50010"
+      "sha256": "a9ea653f0e7e705d60f940d3eed637bd4eb7741fbde176b51fc91778baa27165"
     },
     "Build/WebGL.wasm.unityweb": {
-      "bytes": 12102666,
-      "sha256": "5a13663b684dab7567357b81030a115d89669225a8d2f08f9c52948e4049f036"
+      "bytes": 12101229,
+      "sha256": "7720649a065c66ec289be8b01c253e91a84a419dd49d5dee676dc5cb6a157d00"
     }
   },
   "webAssets": {
@@ -40,8 +40,8 @@
       "sha256": "a7ce71829a38f2ceaf6fd9134693617e269a5c73edb1cf6bdf346414ff2cd14a"
     },
     "index.html": {
-      "bytes": 15167,
-      "sha256": "b93dfb3c70a7e54314d72380f35cc30a01a96cacec02227e5ea5e802dc1fa1ab"
+      "bytes": 15169,
+      "sha256": "48dbc4817dc01903ca27e7e2805f4f2ea663f8d20d6b763854e0aafe39c7700e"
     }
   },
   "surveyAssets": {
