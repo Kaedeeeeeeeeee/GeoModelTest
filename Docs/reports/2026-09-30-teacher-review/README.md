@@ -25,4 +25,18 @@ Unity 6000.0.51f1，macOS，批处理模式。
 - EditMode 全量：84/84，含新增 `TeachingRouteContentTests`。
 - 本机 PlayerPrefs 与存档目录测试前备份、测试后恢复，逐字节一致。
 
-`images/` 为改前/改后对比图，`videos/` 为录屏，`logs/` 为两次运行的对白记录、观测值和测试结果。WebGL 未构建、未发布。
+`images/` 为改前/改后对比图，`videos/` 为录屏，`logs/` 为两次运行的对白记录、观测值和测试结果。
+
+## 发布
+
+版本 `2026.09.30-teacher-review`，itch.io 构建 **`2040900`**。
+
+| 范围 | 结果 |
+| --- | --- |
+| 源码提交 | `ebe81c2`（`release.json` 记录的是干净提交，构建本身只改了 `ProjectSettings` 的版本号） |
+| Unity WebGL 构建 | 成功，0 错误，114 MB，29 分 8 秒（代码改动触发了完整的 DiskSizeLTO 链接）。`GEOMODEL_WEBGL_VERSION=2026.09.30-teacher-review` |
+| 本地成品 | 内置浏览器打开 `tools/qa/loading-server.py` 提供的成品：版本号正确，Unity 实例加载，家长同意页显示，控制台无错误 |
+| 上传 | `butler push Build/WebGL kaedeeeeeeeeee/geo-model-geological-drilling-simulator:html5`，20 个文件 114.14 MiB |
+| 线上构建 | 等 `html_url` 返回 `complete` 后再访问 CDN。公开页面嵌入 `17462165-2040900`；20 个发布文件与 `release.json` 一致（`index.html` 只多了 itch.io 注入的 `htmlgame.js`，见 `published-assets.json`）。点「Run game」后显示家长同意页；直接打开嵌入地址读取到版本 `2026.09.30-teacher-review`，控制台无错误 |
+
+线上只做了加载检查，没有在公开版本里走完同意流程或开始新游戏（避免产生研究数据）；新功能的实机验证见上方编辑器测试。iPhone / iPad 实机未测。
