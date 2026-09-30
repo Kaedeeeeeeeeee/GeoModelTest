@@ -2418,7 +2418,7 @@
     },
     {
       "key": "story.beat2.l02",
-      "value": "Take a sample with the hammer, then check the grain size under the microscope."
+      "value": "That’s a good sample! We’ll check the grain size and the acid reaction back at the lab."
     },
     {
       "key": "story.beat2.q1.prompt",
@@ -2438,7 +2438,7 @@
     },
     {
       "key": "story.beat2.q1.fb_ok",
-      "value": "Correct! The finer the grains, the farther from the river mouth and the deeper the sea where they settled. Which means this place was once a quiet, deep seabed."
+      "value": "Correct! The finer the grains, the farther from the river mouth and the deeper the sea where they settled. Which means the outcrop area was once a quiet, deep seabed."
     },
     {
       "key": "story.beat2.q2.prompt",
@@ -2458,7 +2458,7 @@
     },
     {
       "key": "story.beat2.q2.fb_ok",
-      "value": "Right. Limestone forms from shells and coral, and releases carbon dioxide with acid. In other words, this was once a warm, shallow sea."
+      "value": "Right. Limestone forms from shells and coral, and releases carbon dioxide with acid. In other words, the outcrop area was once a warm, shallow sea."
     },
     {
       "key": "story.beat2.q3.prompt",
@@ -2482,7 +2482,7 @@
     },
     {
       "key": "story.beat2.l03",
-      "value": "You noticed? That's the very thing that's been bothering me. Let's dig deeper and make sure."
+      "value": "You noticed? That’s exactly what’s been bothering me. First, let’s head back to the lab and start with the samples."
     },
     {
       "key": "story.beat3.l01",
@@ -2490,7 +2490,7 @@
     },
     {
       "key": "story.beat3.l02",
-      "value": "A fossil was found inside the rock from one of the deeper samples."
+      "value": "Splitting the core in half and looking through a hand lens reveals a strange whitish pattern full of tiny holes."
     },
     {
       "key": "story.beat3.q1.prompt",
@@ -2690,11 +2690,11 @@
     },
     {
       "key": "story.bridge.q31.l01",
-      "value": "At the outcrop, watch the grain size and how each rock reacts to acid — that'll tell you what it is."
+      "value": "Go to the outcrop and collect some rock with the geological hammer. We’ll check the grain size and acid reaction together back at the lab."
     },
     {
       "key": "story.bridge.q31.l02",
-      "value": "Got it — I'll go observe!"
+      "value": "Got it — I’ll go get some!"
     },
     {
       "key": "story.bridge.q32.l01",
@@ -2710,11 +2710,11 @@
     },
     {
       "key": "story.bridge.q34.l02",
-      "value": "Let's put the thin section under the microscope. ...The grains are crushed very fine."
+      "value": "Welcome back! Let’s examine the samples you collected with the microscope and reagents."
     },
     {
       "key": "story.bridge.q34.l03",
-      "value": "These fractures may not be scars from surface shaking alone."
+      "value": "And the “warp” we saw in the cliff’s layers — it may not come from surface shaking alone."
     },
     {
       "key": "story.bridge.q34.l04",
@@ -2722,7 +2722,7 @@
     },
     {
       "key": "story.bridge.q34.l05",
-      "value": "Possibly. A thin section only tells us what changed near the surface."
+      "value": "It’s possible. Surface samples alone only show what changed near the surface."
     },
     {
       "key": "story.bridge.q34.l06",
@@ -2754,7 +2754,7 @@
     },
     {
       "key": "story.beat3.q1.teach3",
-      "value": "Take this coral. Even today, it only grows in warm, shallow seas."
+      "value": "Corals like this one still grow only in warm, shallow seas today."
     },
     {
       "key": "story.beat3.q3.teach1",
@@ -3174,7 +3174,7 @@
     },
     {
       "key": "story.core_return.line",
-      "value": "Well done. Let’s return to the laboratory and examine this sample closely."
+      "value": "Nice, you got it! Let’s take this sample back to the lab for a closer look."
     },
     {
       "key": "backend.checking",
@@ -3743,6 +3743,38 @@
     {
       "key": "quest.npc.prompt.control.mobile",
       "value": "Tap the matching button on the right"
+    },
+    {
+      "key": "ui.tool.switch_hint",
+      "value": "to switch"
+    },
+    {
+      "key": "sample.toast.rock_collected",
+      "value": "Rock sample collected!"
+    },
+    {
+      "key": "sample.toast.core_collected",
+      "value": "Drill core collected!"
+    },
+    {
+      "key": "sample.toast.collected",
+      "value": "Sample collected!"
+    },
+    {
+      "key": "story.core_return.l00",
+      "value": "Got it! ...Huh? Is that a whitish pattern inside the core?"
+    },
+    {
+      "key": "story.beat3.l10",
+      "value": "What’s this? It’s not just a pattern in the rock... is it?"
+    },
+    {
+      "key": "story.beat3.l11",
+      "value": "Good eye! This is a coral fossil. It was inside the core you brought back."
+    },
+    {
+      "key": "story.beat3.l12",
+      "value": "Remember the limestone? It also formed from piled-up coral and shells."
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-    "scene": "Bridge - Lab return (to drill)",
+    "scene": "Bridge - Lab return (rock identification, to drill)",
     "background": "laboratory",
     "bgm": "lab_theme",
     "dialogues": [
@@ -11,13 +11,149 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "岩石試料（がんせきしりょう）から薄片（はくへん）を作（つく）って、偏光顕微鏡（へんこうけんびきょう）で観察（かんさつ）しよう。……粒（つぶ）が細（こま）かくくだけているね。",
+            "text": "おかえり！　さっき採（と）ったサンプルを、顕微鏡（けんびきょう）と薬品（やくひん）で調（しら）べてみよう。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.bridge.q34.l02"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "この割（わ）れ方（かた）は、表面（ひょうめん）の揺（ゆ）れだけでできた傷（きず）じゃないかもしれない。",
+            "text": "れき岩（がん）、砂岩（さがん）、泥岩（でいがん）は、主（おも）にふくまれる粒（つぶ）の大（おお）きさで分（わ）けるよ。れき岩は2mm以上（いじょう）、砂岩は約（やく）0.06～2mm、泥岩は約0.06mm未満（みまん）の粒を主にふくむ。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat2.q1.teach1",
+            "illustrationKey": "02_rock_grainsize"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "それと、変（か）わり種（だね）が2つ——塩酸（えんさん）で泡（あわ）が出（で）るのが「石灰岩（せっかいがん）」、くぎでも傷（きず）がつかないかたさが「チャート」。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat2.q1.teach2"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "じゃあ、このサンプル——粒（つぶ）は 0.06mm より細（こま）かい、なめらか。これは？",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat2.q1.prompt",
+            "questionId": "q.rock_mudstone",
+            "questionVersion": "story-formative-v2-fixed-order",
+            "hint": "粒（つぶ）の大（おお）きさで分（わ）かれる岩石（がんせき）3 種類（しゅるい）のうち、一番（いちばん）細（こま）かいのは？",
+            "hintKey": "story.beat2.q1.hint",
+            "choices": [
+                {
+                    "id": "q.rock_mudstone.conglomerate",
+                    "text": "れき岩（がん）",
+                    "textKey": "story.beat2.q1.c",
+                    "isCorrect": false,
+                    "feedback": "れき岩（がん）は粒（つぶ）が 2mm 以上（いじょう）と、はっきり見（み）えるくらい大（おお）きいよ。",
+                    "feedbackKey": "story.beat2.q1.fb_ng_c"
+                },
+                {
+                    "id": "q.rock_mudstone.sandstone",
+                    "text": "砂岩（さがん）",
+                    "textKey": "story.beat2.q1.b",
+                    "isCorrect": false,
+                    "feedback": "砂岩（さがん）の粒（つぶ）はもう少（すこ）し大（おお）きいんだ（0.06–2mm）。なめらかさが手（て）がかりだよ。",
+                    "feedbackKey": "story.beat2.q1.fb_ng_b"
+                },
+                {
+                    "id": "q.rock_mudstone.mudstone",
+                    "text": "泥岩（でいがん）",
+                    "textKey": "story.beat2.q1.a",
+                    "isCorrect": true,
+                    "feedback": "せいかい！　粒（つぶ）が細（こま）かいほど、河口（かこう）から遠（とお）い深（ふか）い海（うみ）でたまるんだ。つまりあの露頭（ろとう）のあたりは昔（むかし）、静（しず）かで深（ふか）い海（うみ）の底（そこ）だった。",
+                    "feedbackKey": "story.beat2.q1.fb_ok"
+                }
+            ]
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "次（つぎ）のサンプルは、うすい塩酸（えんさん）をかけたら泡（あわ）（二酸化炭素（にさんかたんそ））が出（で）たわ。これは？",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat2.q2.prompt",
+            "illustrationKey": "03_limestone",
+            "questionId": "q.rock_limestone",
+            "questionVersion": "story-formative-v2-fixed-order",
+            "hint": "塩酸（えんさん）に反応（はんのう）する岩石（がんせき）は限（かぎ）られているよ。貝（かい）やサンゴからできた岩（いわ）は？",
+            "hintKey": "story.beat2.q2.hint",
+            "choices": [
+                {
+                    "id": "q.rock_limestone.tuff",
+                    "text": "凝灰岩（ぎょうかいがん）",
+                    "textKey": "story.beat2.q2.c",
+                    "isCorrect": false,
+                    "feedback": "凝灰岩（ぎょうかいがん）は火山灰（かざんばい）からできる岩石（がんせき）。塩酸（えんさん）には反応（はんのう）しないよ。",
+                    "feedbackKey": "story.beat2.q2.fb_ng_c"
+                },
+                {
+                    "id": "q.rock_limestone.limestone",
+                    "text": "石灰岩（せっかいがん）",
+                    "textKey": "story.beat2.q2.a",
+                    "isCorrect": true,
+                    "feedback": "そのとおり。石灰岩（せっかいがん）は貝（かい）やサンゴなどが積（つ）もってできて、塩酸（えんさん）で二酸化炭素（にさんかたんそ）を出（だ）すよ。つまりあの露頭（ろとう）のあたりは昔（むかし）、あたたかい浅（あさ）い海（うみ）だったの。",
+                    "feedbackKey": "story.beat2.q2.fb_ok"
+                },
+                {
+                    "id": "q.rock_limestone.chert",
+                    "text": "チャート",
+                    "textKey": "story.beat2.q2.b",
+                    "isCorrect": false,
+                    "feedback": "チャートは塩酸（えんさん）には反応（はんのう）しないんだ。あわが出（で）る＝石灰岩（せっかいがん）の特徴（とくちょう）だよ。",
+                    "feedbackKey": "story.beat2.q2.fb_ng_b"
+                }
+            ]
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "もうひとつ。くぎでひっかいても傷（きず）がつかないほどかたい。これは？",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat2.q3.prompt",
+            "illustrationKey": "04_chert",
+            "questionId": "q.rock_chert",
+            "questionVersion": "story-formative-v2-fixed-order",
+            "hint": "海（うみ）の小（ちい）さな生物（せいぶつ）の殻（から）が積（つ）もってできた、とてもかたい岩（いわ）は？",
+            "hintKey": "story.beat2.q3.hint",
+            "choices": [
+                {
+                    "id": "q.rock_chert.chert",
+                    "text": "チャート",
+                    "textKey": "story.beat2.q3.a",
+                    "isCorrect": true,
+                    "feedback": "正解（せいかい）！　チャートは海（うみ）の小（ちい）さな生物（せいぶつ）の殻（から）が積（つ）もってできた、とてもかたい岩石（がんせき）だよ。大昔（おおむかし）の海（うみ）が、何百万年（なんびゃくまんねん）もかけて積（つ）み上（あ）げたものなの。",
+                    "feedbackKey": "story.beat2.q3.fb_ok"
+                },
+                {
+                    "id": "q.rock_chert.conglomerate",
+                    "text": "れき岩（がん）",
+                    "textKey": "story.beat2.q3.c",
+                    "isCorrect": false,
+                    "feedback": "れき岩（がん）も粒（つぶ）の集（あつ）まりだから、くぎでガリガリ削（けず）れちゃうんだ。",
+                    "feedbackKey": "story.beat2.q3.fb_ng_c"
+                },
+                {
+                    "id": "q.rock_chert.mudstone",
+                    "text": "泥岩（でいがん）",
+                    "textKey": "story.beat2.q3.b",
+                    "isCorrect": false,
+                    "feedback": "泥岩（でいがん）は意外（いがい）とやわらかい。くぎで傷（きず）がつかないほどかたいのは別（べつ）の岩（いわ）だよ。",
+                    "feedbackKey": "story.beat2.q3.fb_ng_b"
+                }
+            ]
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "ふふ、いい目（め）をしてる。地質調査員（ちしつちょうさいん）の素質（そしつ）あり、ね。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat2.l05",
+            "illustrationKey": "-"
+        },
+        {
+            "speaker": "主人公",
+            "text": "同（おな）じ“石（いし）”でも、こんなに違（ちが）うんだ……！",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.beat2.l06"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "それと、崖（がけ）で見（み）た地層（ちそう）の「ゆがみ」。表面（ひょうめん）のゆれだけでできたものじゃないかもしれない。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.bridge.q34.l03"
         },
@@ -29,7 +165,7 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "その可能性（かのうせい）がある。薄片（はくへん）だけでは、浅（あさ）い部分（ぶぶん）の変化（へんか）しか読（よ）めない。",
+            "text": "その可能性（かのうせい）がある。表面（ひょうめん）のサンプルだけでは、浅（あさ）い部分（ぶぶん）の変化（へんか）しか読（よ）めない。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.bridge.q34.l05"
         },

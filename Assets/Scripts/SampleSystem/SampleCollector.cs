@@ -588,7 +588,16 @@ public class SampleCollector : MonoBehaviour
     {
         string localizedMessage = GetLocalizedMessage("sample.message.collected", sampleData.displayName);
         ShowMessage(localizedMessage);
-        
+
+        // 屏幕上明确告诉玩家“采到了”（老师反馈：采到岩石后要有成功提示）
+        string toastKey = sampleData.sourceToolID switch
+        {
+            "1002" => "sample.toast.rock_collected",
+            "1001" => "sample.toast.core_collected",
+            _ => "sample.toast.collected"
+        };
+        UISystem.GameToast.Show(LocalizationManager.Resolve(toastKey, "サンプルを採取できました！"));
+
         // 播放采集音效（如果有）
         AudioSource audioSource = GetComponent<AudioSource>();
         if (audioSource != null && audioSource.clip != null)

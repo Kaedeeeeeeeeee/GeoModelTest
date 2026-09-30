@@ -17,9 +17,22 @@
         },
         {
             "speaker": "ナレーション",
-            "text": "深（ふか）い層（そう）のサンプルから、岩（いわ）の中（なか）に化石（かせき）が見（み）つかった。",
+            "text": "岩芯（がんしん）を半分（はんぶん）に割（わ）って、ルーペでのぞいてみると——白（しろ）っぽくて、小（ちい）さな穴（あな）がたくさんあいた、ふしぎな模様（もよう）が見（み）えた。",
             "speakerKey": "story.speaker.narration",
             "textKey": "story.beat3.l02"
+        },
+        {
+            "speaker": "主人公",
+            "text": "これ、なに？　ただの石（いし）の模様（もよう）……じゃないよね？",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.beat3.l10"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "よく見（み）つけたね！　これは「サンゴ」の化石（かせき）。君（きみ）が採（と）ってきた岩芯（がんしん）の中（なか）に、入（はい）っていたんだよ。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.l11",
+            "illustrationKey": "05_coral_env"
         },
         {
             "speaker": "主人公",
@@ -31,8 +44,7 @@
             "speaker": "Dr.Kaede",
             "text": "ねえ、化石（かせき）って「タイムカプセル」みたいなものなの。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.q1.teach1",
-            "illustrationKey": "05_coral_env"
+            "textKey": "story.beat3.q1.teach1"
         },
         {
             "speaker": "Dr.Kaede",
@@ -42,9 +54,15 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "たとえばこのサンゴ。今（いま）も、あたたかくて浅（あさ）い海（うみ）にしか育（そだ）たないんだ。",
+            "text": "このサンゴの仲間（なかま）は、今（いま）も、あたたかくて浅（あさ）い海（うみ）にしか育（そだ）たないんだ。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q1.teach3"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "さっきの石灰岩（せっかいがん）も、サンゴや貝（かい）がらが積（つ）もってできた岩石（がんせき）だったね。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.l12"
         },
         {
             "speaker": "ナレーション",

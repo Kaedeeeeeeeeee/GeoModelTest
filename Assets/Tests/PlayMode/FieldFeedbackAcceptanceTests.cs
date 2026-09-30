@@ -189,7 +189,12 @@ public class FieldFeedbackAcceptanceTests
         yield return Press(Key.E);
         yield return Frames(8);
         Check(sample == null && ((IList)Call(inventory, "GetAllSamples")).Count == before + 1, "E collects the actual hammer sample into inventory exactly once.");
-        // Sampling naturally opens beat2. Check the picture while the teaching line is visible.
+        var toast = GameObject.Find("GameToastCanvas/Toast");
+        Check(toast != null && toast.activeInHierarchy && toast.GetComponentsInChildren<Text>().Any(t => t.text.Contains("岩石")),
+            "Collecting the rock sample shows an on-screen success message.");
+        // Rock identification now happens back in the lab (quest3.4); play it here to check its picture and quiz UI.
+        StopDialogue();
+        Call(_director, "PlaySequence", "Story/quest3.4", null, true);
         yield return AdvanceUntilPicture();
         yield return Capture("05-picture-hint");
         var banner = GameObject.Find("SubtitleCanvas/IllustrationBanner");
@@ -201,7 +206,7 @@ public class FieldFeedbackAcceptanceTests
         yield return Frames(3);
         Check(!(bool)Prop(T("Core.GameInputState"), "IsModalOpen"), "Close button restores dialogue interaction.");
         yield return AdvanceUntilChoices();
-        Check(GameObject.Find("SubtitleCanvas/ChoicePanel") != null, "Hammer collection advances to the rock-identification quiz.");
+        Check(GameObject.Find("SubtitleCanvas/ChoicePanel") != null, "The lab rock-identification sequence reaches its quiz.");
         yield return Capture("07-quiz-fixed-options");
         yield return VerifyWrongThenCorrect();
         StopDialogue();
@@ -301,6 +306,7 @@ public class FieldFeedbackAcceptanceTests
         Call(_quests, "MarkChapter4SampleIntroPlayed");
         Call(drill, "RecallTower");
         PlacePlayer(drillSite + new Vector3(0, 0.15f, -2.3f), drillSite);
+        yield return Frames(2); // Like a player, select only after the dialogue-release guard frame has passed.
         SelectTool("1001");
         yield return Frames(6);
         Check((bool)Prop(drill, "CanConfirmPlacement"), "The virtual-control tower preview can be placed.");
@@ -474,7 +480,7 @@ public class FieldFeedbackAcceptanceTests
             .Select(c => (string)Prop(c, "text")).ToArray();
         var quiz = Prop(T("StorySystem.QuizScoreManager"), "Instance");
         int count = ((IList)Prop(quiz, "Attempts")).Count;
-        var seq = Call(T("StorySystem.StorySequenceLoader"), "LoadFromResources", "Story/beat2", false);
+        var seq = Call(T("StorySystem.StorySequenceLoader"), "LoadFromResources", "Story/quest3.4", false);
         var line = ((IList)Get(seq, "dialogues")).Cast<object>().First(l => (string)Get(l, "questionId") == "q.rock_mudstone");
         var choices = ((IList)Get(line, "choices")).Cast<object>().ToArray();
         int correct = Array.FindIndex(choices, c => (bool)Get(c, "isCorrect"));

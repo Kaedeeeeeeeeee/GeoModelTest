@@ -1,12 +1,18 @@
 {
-  "scene": "Core collection — return to laboratory",
-  "background": "field_day",
-  "dialogues": [
-    {
-      "speaker": "Dr.Kaede",
-      "speakerKey": "story.speaker.drkaede",
-      "textKey": "story.core_return.line",
-      "text": "よくやった。研究室に戻って、このサンプルを詳しく調べてみよう。"
-    }
-  ]
+    "scene": "Core collection — return to laboratory",
+    "background": "field_day",
+    "dialogues": [
+        {
+            "speaker": "主人公",
+            "text": "とれた！……あれ？　岩芯（がんしん）の中（なか）に、白（しろ）っぽい模様（もよう）がある？",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.core_return.l00"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "うまくできたね！　研究室（けんきゅうしつ）に戻（もど）って、このサンプルをくわしく調（しら）べてみよう。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.core_return.line"
+        }
+    ]
 }

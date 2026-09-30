@@ -5,13 +5,13 @@
     "dialogues": [
         {
             "speaker": "Dr.Kaede",
-            "text": "露頭（ろとう）では、粒（つぶ）の大（おお）きさや、塩酸（えんさん）への反応（はんのう）をよく観察（かんさつ）してきて。岩石（がんせき）の名前（なまえ）がわかるはずよ。",
+            "text": "露頭（ろとう）で、地質（ちしつ）ハンマーを使（つか）って岩石（がんせき）を採（と）ってきて。粒（つぶ）の大（おお）きさや塩酸（えんさん）への反応（はんのう）は、戻（もど）ってから研究室（けんきゅうしつ）でいっしょに調（しら）べよう。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.bridge.q31.l01"
         },
         {
             "speaker": "主人公",
-            "text": "わかった、観察（かんさつ）してくる！",
+            "text": "わかった、採（と）ってくる！",
             "speakerKey": "story.speaker.protagonist",
             "textKey": "story.bridge.q31.l02"
         }

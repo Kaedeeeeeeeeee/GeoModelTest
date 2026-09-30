@@ -35,6 +35,8 @@ public class DrillTowerTool : PlaceableTool
     public float interactionRange = 3f; // 交互范围
     public int maxDrillDepths = 5; // 最大钻探次数
     public float depthPerDrill = 2f; // 每次钻探深度
+    [Tooltip("教学流程不需要回收钻塔：关闭时不提示也不响应 G 键回收")]
+    public bool allowRecall = false;
     
     [Header("样本排列")]
     public float sampleRingRadius = 2.5f; // 样本环形半径
@@ -166,7 +168,7 @@ public class DrillTowerTool : PlaceableTool
     /// </summary>
     void CheckTowerRecall()
     {
-        if (placedTower == null) return;
+        if (!allowRecall || placedTower == null) return;
         
         float distance = Vector3.Distance(playerCamera.transform.position, placedTower.transform.position);
         

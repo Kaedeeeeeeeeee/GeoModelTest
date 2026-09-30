@@ -93,7 +93,7 @@ namespace UISystem
         private void RefreshGuidance()
         {
             if (_card == null || _tools == null) return;
-            if (GameInputState.IsModalOpen || StoryDirector.IsStoryPlaybackActive ||
+            if (GameInputState.IsModalOpen || StoryDirector.IsStoryPlaybackActive || QuestManager.IsPickupFeedbackPending ||
                 SceneManager.GetActiveScene().name != "MainScene") return;
 
             var quests = QuestManager.Instance;

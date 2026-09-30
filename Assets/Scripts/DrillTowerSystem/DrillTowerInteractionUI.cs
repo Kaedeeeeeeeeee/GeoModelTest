@@ -41,7 +41,7 @@ public class DrillTowerInteractionUI : MonoBehaviour
     void Update()
     {
         if (Core.GameInputState.IsModalOpen || StorySystem.StoryDirector.IsStoryPlaybackActive ||
-            UISystem.CollectionGuidanceHUD.IsVisible)
+            UISystem.CollectionGuidanceHUD.IsVisible || QuestSystem.QuestManager.IsPickupFeedbackPending)
         {
             HideInteractionPrompt();
             return;
@@ -224,12 +224,7 @@ public class DrillTowerInteractionUI : MonoBehaviour
             string maxDepthText = LocalizationManager.Resolve(
                 "drill_tower.max_depth",
                 "調査できる最大の深さに達しました");
-            string recallText = LocalizationManager.ResolveForCurrentInput(
-                "drill_tower.recall_prompt",
-                "drill_tower.recall_prompt_mobile",
-                "［G］ボーリング装置を回収する",
-                "ボーリング装置を回収する");
-            promptText.text = $"{maxDepthText}\n{recallText}";
+            promptText.text = AppendRecallText(maxDepthText);
             promptText.color = Color.red;
         }
         else
@@ -246,14 +241,24 @@ public class DrillTowerInteractionUI : MonoBehaviour
                 nextDrillNumber,
                 startDepth,
                 endDepth);
-            string recallText = LocalizationManager.ResolveForCurrentInput(
-                "drill_tower.recall_prompt",
-                "drill_tower.recall_prompt_mobile",
-                "［G］ボーリング装置を回収する",
-                "ボーリング装置を回収する");
-            promptText.text = $"{drillPrompt}\n{recallText}";
+            promptText.text = AppendRecallText(drillPrompt);
             promptText.color = Color.white;
         }
+    }
+
+    /// <summary>
+    /// 教学流程不需要回收钻塔（老师反馈），只有工具允许回收时才列出回收操作。
+    /// </summary>
+    string AppendRecallText(string text)
+    {
+        var tool = FindFirstObjectByType<DrillTowerTool>();
+        if (tool == null || !tool.allowRecall) return text;
+        string recallText = LocalizationManager.ResolveForCurrentInput(
+            "drill_tower.recall_prompt",
+            "drill_tower.recall_prompt_mobile",
+            "［G］ボーリング装置を回収する",
+            "ボーリング装置を回収する");
+        return $"{text}\n{recallText}";
     }
 
     /// <summary>

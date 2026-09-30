@@ -815,6 +815,7 @@ namespace QuestSystem
         public void CancelPendingPlayback()
         {
             StopAllCoroutines();
+            IsPickupFeedbackPending = false;
             _chapter4SampleCutscenePending = false;
             _chapter4FieldIntroPending = false;
             _fieldPhaseSampleCutscenePending = false;
@@ -840,13 +841,13 @@ namespace QuestSystem
                 _chapter4SampleCutscenePending = true;
                 _chapter4SampleCutscenePlayed = true;
                 GuidanceManager.Instance?.ClearTarget();
-                StorySystem.StoryDirector.Instance.PlaySequence("Story/core-return", () =>
+                StartCoroutine(PlayAfterPickupFeedback("Story/core-return", () =>
                 {
                     _chapter4SampleCutscenePending = false;
                     CompleteObjective("q.chapter4.sample.collect");
                     SceneSystem.GameSession.SaveCheckpoint();
                     QuestUI.RefreshAll();
-                });
+                }));
             }
         }
 
@@ -1020,12 +1021,28 @@ namespace QuestSystem
             var director = StorySystem.StoryDirector.Instance;
             if (director != null)
             {
-                director.PlaySequence(FieldPhaseSampleStoryPath, finalize);
+                StartCoroutine(PlayAfterPickupFeedback(FieldPhaseSampleStoryPath, finalize));
             }
             else
             {
                 finalize.Invoke();
             }
+        }
+
+        // 采集成功的提示先单独亮一下，再打开对话，让玩家看清“采到了”（老师反馈）。
+        private const float PickupFeedbackSeconds = 1.0f;
+
+        /// <summary>采集成功到对话打开之间：采集已完成，采集引导不应再提示下一步操作。</summary>
+        public static bool IsPickupFeedbackPending { get; private set; }
+
+        private System.Collections.IEnumerator PlayAfterPickupFeedback(string storyPath, System.Action onComplete)
+        {
+            IsPickupFeedbackPending = true;
+            yield return new WaitForSecondsRealtime(PickupFeedbackSeconds);
+            IsPickupFeedbackPending = false;
+            var director = StorySystem.StoryDirector.Instance;
+            if (director != null) director.PlaySequence(storyPath, onComplete);
+            else onComplete?.Invoke();
         }
 
         // 奖励发放 ------------------------------------------------------------
