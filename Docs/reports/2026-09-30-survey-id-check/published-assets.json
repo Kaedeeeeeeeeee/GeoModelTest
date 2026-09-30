@@ -1,0 +1,27 @@
+{
+  "build": "17462165-2039338",
+  "version": "2026.09.30-survey-id-check",
+  "allMatch": true,
+  "files": {
+    "Build/WebGL.data.unityweb": "identical after decompression",
+    "Build/WebGL.framework.js.unityweb": "identical after decompression",
+    "Build/WebGL.loader.js": "identical",
+    "Build/WebGL.wasm.unityweb": "identical after decompression",
+    "StreamingAssets/Survey/config.js": "identical",
+    "StreamingAssets/Survey/index.html": "identical except itch.io htmlgame.js",
+    "StreamingAssets/Survey/preview.css": "identical",
+    "StreamingAssets/Survey/preview.html": "identical",
+    "StreamingAssets/Survey/preview.js": "identical",
+    "StreamingAssets/Survey/questions.js": "identical",
+    "StreamingAssets/Survey/questions.json": "identical",
+    "StreamingAssets/Survey/survey.css": "identical",
+    "StreamingAssets/Survey/survey.js": "identical",
+    "StreamingAssets/UnityServicesProjectConfiguration.json": "identical",
+    "TemplateData/guardian-consent.js": "identical",
+    "TemplateData/loading.js": "identical",
+    "TemplateData/performance.js": "identical",
+    "TemplateData/style.css": "identical",
+    "index.html": "identical except itch.io htmlgame.js",
+    "release.json": "identical"
+  }
+}

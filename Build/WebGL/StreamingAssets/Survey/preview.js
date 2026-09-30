@@ -111,6 +111,7 @@
   });
 
   $('previous').onclick = () => { if (step > 0) step--; show(true); };
+  $('respondent-id').addEventListener('input', () => $('respondent').classList.remove('invalid'));
   $('survey').onsubmit = event => {
     event.preventDefault();
     const missing = definition.sections[step].questions.find(id => !definition.questions.find(q => q.id === id).optional && !answers[id]);
@@ -134,12 +135,24 @@
     if (step < definition.sections.length - 1) {
       step++;
       show(true);
-    } else {
-      $('preview-form').hidden = true;
-      $('preview-complete').hidden = false;
-      $('preview-complete').focus();
-      window.scrollTo(0, 0);
+      return;
     }
+    // Format only: the real survey also compares the ID with the guardian form on the server.
+    const raw = String($('respondent-id').value ?? '').normalize('NFKC').toLowerCase().replace(/[\s‐-―−ー-]/g, '');
+    const respondentId = /^[0-9]{7}$/.test(raw) ? 'p' + raw : raw;
+    $('respondent-id').value = respondentId;
+    const invalid = !respondentId ? '回答者IDを入力してください。' : /^p[0-9]{7}$/.test(respondentId) ? '' : '回答者IDは「p」と数字7桁で入力してください（例：p1234567）。';
+    if (invalid) {
+      $('respondent').classList.add('invalid');
+      $('form-error').textContent = invalid;
+      $('form-error').hidden = false;
+      $('respondent-id').focus();
+      return;
+    }
+    $('preview-form').hidden = true;
+    $('preview-complete').hidden = false;
+    $('preview-complete').focus();
+    window.scrollTo(0, 0);
   };
   show();
 })();
