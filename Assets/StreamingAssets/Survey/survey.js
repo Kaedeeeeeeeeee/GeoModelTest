@@ -9,9 +9,12 @@
   if (location.hash) history.replaceState(null,'',location.pathname + location.search);
   let ticket = incoming || storage.get('geomodel.survey.ticket') || '';
   if (incoming) storage.set('geomodel.survey.ticket',incoming);
-  let definition, step = 0, answers = {}, busy = false;
+  let definition, step = 0, answers = {}, busy = false, respondentRequired = false, confirmedRespondent = '';
   const draftKey = 'geomodel.survey.draft.' + ticket;
   function screen(name){for(const id of ['loading','access-error','complete','questionnaire']) $(id).hidden=id!==name;}
+  // Same rules as the 保護者同意 form: full-width, uppercase, spaces and dashes are typing aids; a missing p is restored.
+  function normalizeRespondentId(value){const id=String(value??'').normalize('NFKC').toLowerCase().replace(/[\s‐-―−ー-]/g,'');return /^[0-9]{7}$/.test(id)?'p'+id:id;}
+  function markRespondent(invalid){$('respondent').classList[invalid?'add':'remove']('invalid');if(invalid)$('respondent-id').setAttribute('aria-invalid','true');else $('respondent-id').removeAttribute('aria-invalid');}
   async function call(action, extra={}) {
     const endpoint = new URL(window.GEOMODEL_SURVEY.apiUrl);
     if (endpoint.protocol !== 'https:' && !(endpoint.hostname === '127.0.0.1' && location.hostname === '127.0.0.1')) throw new Error('config');
@@ -23,7 +26,7 @@
       return data;
     } finally {clearTimeout(timer);}
   }
-  function saveDraft(){storage.set(draftKey,JSON.stringify({version:definition.version,step,answers}));updateCount();}
+  function saveDraft(){storage.set(draftKey,JSON.stringify({version:definition.version,step,answers,respondentId:$('respondent-id').value||''}));updateCount();}
   function updateCount(){const count=definition.questions.filter(q=>answers[q.id]?.trim()).length;$('answered-label').textContent=`${count} / ${definition.questions.length} 問`;}
   function render(focus=false) {
     const section=definition.sections[step];
@@ -66,9 +69,19 @@
     const tooLong=definition.questions.find(q=>q.maxLength&&(answers[q.id]||'').length>q.maxLength);
     if(tooLong){$('field-'+tooLong.id).classList.add('invalid');$('field-'+tooLong.id).setAttribute('aria-invalid','true');fail(`自由回答は${tooLong.maxLength}文字以内で入力してください。`);return;}
     if(step<definition.sections.length-1){step++;saveDraft();render(true);return;}
+    let respondentId;
+    if(respondentRequired){
+      respondentId=normalizeRespondentId($('respondent-id').value);$('respondent-id').value=respondentId;
+      const invalid=!respondentId?'回答者IDを入力してください。':/^p[0-9]{7}$/.test(respondentId)?'':'回答者IDは「p」と数字7桁で入力してください（例：p1234567）。';
+      if(invalid){markRespondent(true);fail(invalid);$('respondent-id').focus();return;}
+    }
     busy=true;$('next').disabled=true;$('previous').disabled=true;$('next').textContent='送信しています…';$('form-error').hidden=true;
-    try{await call('submit',{answers});finished();}
-    catch(error){fail(error.status===403?'回答の受付期限が切れたか、受付が停止しています。ゲームの調査報告から開き直してください。':'送信を確認できませんでした。回答はこのページに残っています。通信を確認して、もう一度送信してください。');}
+    try{await call('submit',respondentRequired?{answers,respondentId,confirmRespondentId:confirmedRespondent===respondentId}:{answers});finished();}
+    catch(error){
+      // A different ID can still be sent: pressing submit again with the same ID confirms it.
+      if(error.status===409&&error.message==='respondent_mismatch'){confirmedRespondent=respondentId;markRespondent(true);fail('はじめに保護者の方が入力した回答者IDと一致しません。もう一度確かめてください。まちがいがなければ、そのまま「回答を送信する」を押してください。');$('respondent-id').focus();}
+      else fail(error.status===403?'回答の受付期限が切れたか、受付が停止しています。ゲームの調査報告から開き直してください。':'送信を確認できませんでした。回答はこのページに残っています。通信を確認して、もう一度送信してください。');
+    }
     finally{busy=false;$('next').disabled=false;$('previous').disabled=false;$('next').textContent='回答を送信する';}
   };
   async function start(){
@@ -79,6 +92,7 @@
       if(response.submitted){finished();return;}
       definition=window.GEOMODEL_QUESTIONS;
       if(response.surveyVersion!==definition.version)throw new Error('version');
+      respondentRequired=response.respondentIdRequired===true;$('respondent').hidden=!respondentRequired;
       try{
         const draft=JSON.parse(storage.get(draftKey)||'null');
         if(draft?.version===definition.version){
@@ -88,11 +102,14 @@
             if(typeof value==='string'&&(!question.scale||definition.scales[question.scale].some(([option])=>option===value))) answers[question.id]=value;
           }
           step=Math.min(Math.max(Number(draft.step)||0,0),definition.sections.length-1);
+          if(typeof draft.respondentId==='string')$('respondent-id').value=draft.respondentId.slice(0,20);
         }
       }catch{}
       $('intro').textContent=definition.intro;$('privacy').textContent=definition.privacy;$('progress').max=definition.sections.length;saveDraft();render();screen('questionnaire');
     }catch(error){screen('access-error');$('access-text').textContent=error.status===403?'このリンクの受付期限が切れたか、受付が停止しています。ゲームの調査報告から開き直してください。':'接続を確認できませんでした。通信を確認して、もう一度お試しください。';$('access-retry').hidden=false;}
   }
+  $('respondent-id').addEventListener('input',()=>{markRespondent(false);if(definition)saveDraft();});
+  $('respondent-id').addEventListener('change',()=>{$('respondent-id').value=normalizeRespondentId($('respondent-id').value);if(definition)saveDraft();});
   $('access-retry').onclick=start;
   start();
 })();

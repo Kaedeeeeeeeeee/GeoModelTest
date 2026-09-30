@@ -158,7 +158,9 @@ class Admin:
             for response in responses or ([] if study.get('entry_mode') == 'open_play' else [{}]):
                 same_run = [x for x in attempts if x['run_id']==response.get('run_id')]
                 rows.append({'participation_code':register.get(pid,''),'participant_id':pid,'study_key':args.study_key,
-                    'respondent_id':form.get('respondent_id',''),'consent_version':participant.get('consent_version') or '',
+                    'respondent_id':form.get('respondent_id',''),'survey_respondent_id':response.get('respondent_id') or '',
+                    'respondent_id_matches':'' if response.get('respondent_id_matches') is None else str(response['respondent_id_matches']).lower(),
+                    'consent_version':participant.get('consent_version') or '',
                     'consent_recorded_at':form.get('recorded_at',''),
                     'cohort':participant['cohort'],'condition':participant['condition'],'status':participant['status'],
                     'session_count':len(sessions),'event_count':len(events),'run_id':response.get('run_id',''),
@@ -167,7 +169,8 @@ class Admin:
                     'first_correct':len({x['question_id'] for x in same_run if x['attempt_index']==1 and x['is_correct']}),
                     'wrong_attempts':sum(not x['is_correct'] for x in same_run),
                     'mastered':len({x['question_id'] for x in same_run if x['is_correct']}),**response.get('answers',{})})
-        fields=['participation_code','participant_id','study_key','respondent_id','consent_version','consent_recorded_at',
+        fields=['participation_code','participant_id','study_key','respondent_id','survey_respondent_id','respondent_id_matches',
+                'consent_version','consent_recorded_at',
                 'cohort','condition','status','session_count','event_count',
                 'run_id','response_id','completion_session_id','submitted_at','first_correct','wrong_attempts','mastered']+[f'q{i}' for i in range(1,15)]
         private_write(args.output,csv_text(rows,fields))
@@ -188,10 +191,15 @@ class Admin:
         study = self.study(args.study_key)
         forms = {row['participant_id']:row['respondent_id'] for row in self.rows('guardian_consents',
             {'study_id':'eq.'+study['id'],'select':'participant_id,respondent_id'})}
-        responses = self.rows('survey_responses',{'study_id':'eq.'+study['id'],'select':'participant_id'})
+        responses = self.rows('survey_responses',{'study_id':'eq.'+study['id'],'select':'participant_id,respondent_id,respondent_id_matches'})
         ids = sorted({forms[row['participant_id']] for row in responses if row['participant_id'] in forms})
         private_write(args.output, csv_text([{'respondent_id':value} for value in ids], ['respondent_id']))
         print(f'Exported {len(ids)} completed respondent IDs to {Path(args.output).expanduser().resolve()}.')
+        # The file keeps the guardian-form ID; a confirmed different questionnaire ID needs a manual decision.
+        mismatches = sorted({(forms[row['participant_id']], row['respondent_id']) for row in responses
+            if row['participant_id'] in forms and row.get('respondent_id_matches') is False})
+        for guardian_id, survey_id in mismatches:
+            print(f'Check: guardian form {guardian_id} but questionnaire {survey_id}.')
 
 
 def timestamp(value):

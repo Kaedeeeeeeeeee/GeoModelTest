@@ -4,7 +4,10 @@
 -- q-columns are stable answer IDs, not display numbers. Always group by survey_version.
 -- v2 display order: q7,q8,q3,q10,q11,q2,q4,q9,q5,q1,q6,q13,q14; q12 is absent.
 -- In v2 q10 measures text length (1 short -> 5 long), rather than agreement.
-select r.id as response_id, r.study_id, r.participant_id, gc.respondent_id, r.run_id,
+-- survey_respondent_id: the ID re-entered in the questionnaire (double check); false in
+-- respondent_id_matches means the student confirmed an ID different from the guardian form.
+select r.id as response_id, r.study_id, r.participant_id, gc.respondent_id,
+       r.respondent_id as survey_respondent_id, r.respondent_id_matches, r.run_id,
        r.session_id as completion_session_id, p.entry_mode, p.cohort, p.condition,
        r.survey_version, r.submitted_at,
        r.answers->>'q1' as q1, r.answers->>'q2' as q2,

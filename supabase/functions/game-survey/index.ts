@@ -46,10 +46,18 @@ serve(async req => {
       return reply(200,{ok:true,ticket,...result.data});
     }
     if (!["open","submit"].includes(body.action) || !/^[0-9a-f]{64}$/.test(token)) return reply(400,{ok:false,error:"invalid"});
-    const allowed = body.action === "open" ? ["action"] : ["action","answers"];
-    if (Object.keys(body).some(k=>!allowed.includes(k)) || (body.action === "submit" && (!body.answers || typeof body.answers !== "object" || Array.isArray(body.answers)))) return reply(400,{ok:false,error:"invalid"});
-    const result = await rpc("use_survey_ticket",{p_token_hash:await digest(token),p_answers:body.action === "submit" ? body.answers : null});
-    if (!result.response.ok) return reply(result.data.code === "22023" ? 400 : 403,{ok:false,error:result.data.code === "22023" ? "answers" : "access"});
+    const submit = body.action === "submit";
+    const allowed = submit ? ["action","answers","respondentId","confirmRespondentId"] : ["action"];
+    if (Object.keys(body).some(k=>!allowed.includes(k)) || (submit && (!body.answers || typeof body.answers !== "object" || Array.isArray(body.answers)
+      || (body.respondentId !== undefined && (typeof body.respondentId !== "string" || body.respondentId.length > 20))
+      || (body.confirmRespondentId !== undefined && typeof body.confirmRespondentId !== "boolean")))) return reply(400,{ok:false,error:"invalid"});
+    // The respondent ID double check applies only to guardian-form participants; the database decides.
+    const result = await rpc("use_survey_ticket",{p_token_hash:await digest(token),p_answers:submit ? body.answers : null,
+      p_respondent_id:submit ? body.respondentId ?? null : null,p_confirm_respondent_mismatch:submit && body.confirmRespondentId === true});
+    if (!result.response.ok) {
+      if (result.data.code === "GQ409") return reply(409,{ok:false,error:"respondent_mismatch"});
+      return reply(result.data.code === "22023" ? 400 : 403,{ok:false,error:result.data.code === "22023" ? "answers" : "access"});
+    }
     return reply(200,result.data);
   } catch (_) { return reply(400,{ok:false,error:"invalid"}); }
 });

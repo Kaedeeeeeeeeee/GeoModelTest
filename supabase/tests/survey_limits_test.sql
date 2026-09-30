@@ -49,9 +49,9 @@ begin
   v_result := public.use_survey_ticket(v_token,v_answers);
   assert v_result->>'submitted' = 'true','Both optional text fields may be omitted';
   assert (select count(*) from public.survey_responses)=v_before+2,'Only the two synthetic responses should be added';
-  assert not has_function_privilege('anon','public.use_survey_ticket(text,jsonb)','execute');
-  assert not has_function_privilege('authenticated','public.use_survey_ticket(text,jsonb)','execute');
-  assert has_function_privilege('service_role','public.use_survey_ticket(text,jsonb)','execute');
+  assert not has_function_privilege('anon','public.use_survey_ticket(text,jsonb,text,boolean)','execute');
+  assert not has_function_privilege('authenticated','public.use_survey_ticket(text,jsonb,text,boolean)','execute');
+  assert has_function_privilege('service_role','public.use_survey_ticket(text,jsonb,text,boolean)','execute');
 end $$;
 select 'PASS: 300 accepted, 301 rejected for both fields, skip rejected, blank text allowed, retry unchanged, permissions preserved' as verification;
 rollback;

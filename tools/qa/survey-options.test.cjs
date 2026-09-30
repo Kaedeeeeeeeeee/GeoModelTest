@@ -9,7 +9,8 @@ const definition = JSON.parse(fs.readFileSync(path.join(root, 'questions.json'),
 const ticket = 'a'.repeat(64);
 const draftKey = 'geomodel.survey.draft.' + ticket;
 
-async function fixture({ preview = false, draft = null } = {}) {
+// guardianId: the ID from the 保護者同意 form; the fake server then asks for the double check.
+async function fixture({ preview = false, draft = null, draftId, guardianId = null } = {}) {
   const nodes = [];
   class Element {
     constructor(tag) {
@@ -31,7 +32,7 @@ async function fixture({ preview = false, draft = null } = {}) {
   for (const match of html.matchAll(/id="([^"]+)"/g)) { const node = new Element('div'); node.id = match[1]; }
   const byId = id => nodes.find(node => node.id === id);
   const storage = new Map();
-  if (draft) storage.set(draftKey, JSON.stringify({ version: definition.version, step: 0, answers: draft }));
+  if (draft) storage.set(draftKey, JSON.stringify({ version: definition.version, step: 0, answers: draft, respondentId: draftId }));
   const requests = [];
   let offline = false;
   const context = vm.createContext({
@@ -43,7 +44,9 @@ async function fixture({ preview = false, draft = null } = {}) {
     fetch: async (_url, options) => {
       const request = JSON.parse(options.body); requests.push(request);
       if (offline && request.action === 'submit') throw new Error('offline');
-      return { ok: true, json: async () => ({ ok: true, submitted: false, surveyVersion: definition.version }) };
+      if (request.action === 'submit' && guardianId && request.respondentId !== guardianId && !request.confirmRespondentId)
+        return { ok: false, status: 409, json: async () => ({ ok: false, error: 'respondent_mismatch' }) };
+      return { ok: true, json: async () => ({ ok: true, submitted: false, surveyVersion: definition.version, respondentIdRequired: !!guardianId }) };
     }
   });
   vm.runInContext(fs.readFileSync(path.join(root, preview ? 'preview.js' : 'survey.js'), 'utf8'), context);
@@ -62,6 +65,11 @@ async function fixture({ preview = false, draft = null } = {}) {
       const input = nodes.find(node => node.tag === 'textarea' && node.name === id);
       input.value = value;
       (input.listeners.input || input.oninput)();
+    },
+    typeId(value) {
+      const input = byId('respondent-id');
+      input.value = value;
+      input.listeners.input();
     },
     submit: () => byId('survey').onsubmit({ preventDefault() {} })
   };
@@ -121,6 +129,11 @@ test('Preview requires the 11 choices but permits both free-answer fields to rem
   assert.match(f.byId('form-error').textContent, /各質問で答えを1つ選んでください/);
   for (const question of definition.questions.filter(q => q.scale)) f.select(question.id, '5');
   await f.submit();
+  assert.equal(f.byId('form-error').textContent, '回答者IDを入力してください。');
+  assert.equal(f.byId('preview-complete').hidden, true);
+  f.byId('respondent-id').value = '１２３４５６７';
+  await f.submit();
+  assert.equal(f.byId('respondent-id').value, 'p1234567');
   assert.equal(f.byId('preview-complete').hidden, false);
   assert.equal(f.requests.length, 0);
 });
@@ -147,7 +160,51 @@ test('Preview uses the same 300-character boundary for both free answers', async
     await f.submit();
     assert.equal(f.byId('form-error').textContent, '自由回答は300文字以内で入力してください。');
     f.write(id, 'あ'.repeat(300));
+    f.byId('respondent-id').value = 'p1234567';
     await f.submit();
     assert.equal(f.byId('preview-complete').hidden, false);
   }
+});
+
+test('Without a guardian form the ID field stays hidden and no ID is sent', async () => {
+  const f = await fixture({ draft: completeAnswers() });
+  assert.equal(f.byId('respondent').hidden, true);
+  await f.submit();
+  assert.equal(f.byId('complete').hidden, false);
+  assert.equal('respondentId' in f.requests.at(-1), false);
+});
+
+test('The re-entered ID is required, normalized like the guardian form, and kept in the draft', async () => {
+  const f = await fixture({ draft: completeAnswers(), guardianId: 'p1234567' });
+  assert.equal(f.byId('respondent').hidden, false);
+  await f.submit();
+  assert.equal(f.requests.filter(r => r.action === 'submit').length, 0);
+  assert.equal(f.byId('form-error').textContent, '回答者IDを入力してください。');
+  assert.ok(f.byId('respondent').classList.contains('invalid'));
+  f.typeId('p12345');
+  assert.equal(f.byId('respondent').classList.contains('invalid'), false);
+  await f.submit();
+  assert.match(f.byId('form-error').textContent, /「p」と数字7桁/);
+  f.typeId('P１２３-４５６７');
+  assert.equal(JSON.parse(f.storage.get(draftKey)).respondentId, 'P１２３-４５６７');
+  await f.submit();
+  assert.equal(f.requests.at(-1).respondentId, 'p1234567');
+  assert.equal(f.requests.at(-1).confirmRespondentId, false);
+  assert.equal(f.byId('complete').hidden, false);
+});
+
+test('A different ID is sent only after the student presses submit again', async () => {
+  const f = await fixture({ draft: completeAnswers(), draftId: 'p7654321', guardianId: 'p1234567' });
+  assert.equal(f.byId('respondent-id').value, 'p7654321');
+  await f.submit();
+  assert.equal(f.requests.at(-1).confirmRespondentId, false);
+  assert.match(f.byId('form-error').textContent, /一致しません/);
+  assert.equal(f.byId('complete').hidden, true);
+  f.typeId('p1111111');
+  await f.submit();
+  assert.equal(f.requests.at(-1).confirmRespondentId, false, 'A changed ID needs its own confirmation');
+  await f.submit();
+  assert.equal(f.requests.at(-1).respondentId, 'p1111111');
+  assert.equal(f.requests.at(-1).confirmRespondentId, true);
+  assert.equal(f.byId('complete').hidden, false);
 });
