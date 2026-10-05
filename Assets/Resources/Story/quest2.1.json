@@ -20,6 +20,18 @@
             "text": "移動（いどう）にはフェーズシフターを使（つか）うの。道具（どうぐ）の一覧（いちらん）から選（えら）んでね。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.bridge.q21.l03"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "着（つ）いたら、青（あお）い線（せん）が示（しめ）す3か所（しょ）で、地質（ちしつ）ハンマーを使（つか）って岩石（がんせき）を採（と）ってね。粒（つぶ）の大（おお）きさや塩酸（えんさん）への反応（はんのう）は、戻（もど）ってから研究室（けんきゅうしつ）でいっしょに調（しら）べよう。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.bridge.q21.l04"
+        },
+        {
+            "speaker": "主人公",
+            "text": "わかった、採（と）ってくる！",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.bridge.q21.l05"
         }
     ]
 }

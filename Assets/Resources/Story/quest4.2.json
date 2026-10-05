@@ -1,43 +1,31 @@
 {
-    "scene": "Quest 4.2 - Field Sampling Briefing",
+    "scene": "Bridge - Field drill site",
     "background": "field",
     "bgm": "field_theme",
     "dialogues": [
         {
-            "speaker": "narration",
-            "text": "前回の露頭とは違い、地面は静まり返っていた。鳥の声もなく、風すらも薄い。",
+            "speaker": "ナレーション",
+            "text": "ふたたび野外（やがい）へ。地面（じめん）には、ゆれでできた割（わ）れ目（め）がまだ残（のこ）っている。",
             "speakerKey": "story.speaker.narration",
-            "textKey": "story.quest4_2.line01"
-        },
-        {
-            "speaker": "narration",
-            "text": "主人公が立つ場所は、前回調べた露頭の少し北。地面には、ゆれでできた小さな割れ目が残っていた。",
-            "speakerKey": "story.speaker.narration",
-            "textKey": "story.quest4_2.line02"
+            "textKey": "story.bridge.q42.l01"
         },
         {
             "speaker": "主人公",
-            "text": "……前回と空気が違うな。なんか“音”がない。",
+            "text": "表面（ひょうめん）の地層（ちそう）はゆがんでいた。この下（した）は、どうなっているんだろう……。",
             "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.quest4_2.line03"
-        },
-        {
-            "speaker": "みなと",
-            "text": "映像入ったよ。うわー、なんか静かすぎて逆にこわいんだけど。",
-            "speakerKey": "story.speaker.minato",
-            "textKey": "story.quest4_2.line04"
+            "textKey": "story.bridge.q42.l02"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "今回の地点は、前回のサンプルで見つけた“ずれた層”の真上だ。あの揺れの中心に近い場所だよ。",
+            "text": "青（あお）い線（せん）の先（さき）でドリルタワーを使（つか）って、地下（ちか）の岩芯（がんしん）を取（と）り出（だ）してね。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.quest4_2.line05"
+            "textKey": "story.bridge.q42.l03"
         },
         {
             "speaker": "主人公",
-            "text": "了解。サンプルを採って戻ります。",
+            "text": "わかった。岩芯（がんしん）を取（と）って、研究室（けんきゅうしつ）に持（も）ち帰（かえ）る！",
             "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.quest4_2.line06"
+            "textKey": "story.bridge.q42.l04"
         }
     ]
 }

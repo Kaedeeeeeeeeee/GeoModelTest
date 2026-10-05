@@ -54,7 +54,7 @@ public class FieldFeedbackAcceptanceTests
         _output = Environment.GetEnvironmentVariable("GEOMODEL_FIELD_ACCEPTANCE");
         if (string.IsNullOrEmpty(_output)) Assert.Ignore("Set GEOMODEL_FIELD_ACCEPTANCE to opt into the full-scene acceptance run.");
         Directory.CreateDirectory(_output);
-        SetGameViewSize(1600, 900);
+        SetGameViewSize(960, 540);
         _backend = Resources.Load("BackendSettings");
         if (_backend != null) { _backendEnabled = (bool)Get(_backend, "enableBackend"); Set(_backend, "enableBackend", false); }
         _inputMode = InputSystem.settings.updateMode;
@@ -66,6 +66,7 @@ public class FieldFeedbackAcceptanceTests
 #endif
         _keyboard = InputSystem.AddDevice<Keyboard>();
         _mouse = InputSystem.AddDevice<Mouse>();
+        Call(T("ProgressResetService"), "ResetAll");
         PlayerPrefs.SetString("StoryFlags", "story.main.rescue|story.lab.intro|story.field.phase_intro|story.chapter4.sample_intro");
         PlayerPrefs.SetInt("FirstControlGuide.Completed.v2", 1);
         PlayerPrefs.SetInt("FirstControlGuide.FieldCompleted.v1", 1);
@@ -146,7 +147,7 @@ public class FieldFeedbackAcceptanceTests
         yield return Frames(2);
 
         ((Behaviour)_player).enabled = false; // Position the fixture at the real task site without replaying the commute.
-        foreach (string id in new[] { "1002", "1001" }) Call(T("ToolUnlockService"), "UnlockToolById", id);
+        foreach (string id in new[] { "999", "1002", "1001" }) Call(T("ToolUnlockService"), "UnlockToolById", id);
         yield return null;
         yield return null;
         PrepareQuest("q.field.phase");
@@ -171,10 +172,13 @@ public class FieldFeedbackAcceptanceTests
         SelectTool("1002");
         yield return Frames(5);
         Check(Hint().Contains("3"), "Equipped hammer explains three hits on one spot.");
-        yield return MouseClick();
-        yield return MouseClick();
+        yield return new WaitForSeconds(1.3f);
         var hammer = (Component)((Array)Get(_tools, "availableTools")).Cast<object>().First(t => t != null && (string)Get(t, "toolID") == "1002");
-        Check((int)Prop(hammer, "CurrentHitCount") == 2, "Two real primary clicks reach 2/3 hammer hits.");
+        Check((int)Prop(hammer, "CurrentHitCount") == 0, "Selecting the hammer never counts as a hammer hit.");
+        yield return MouseClick();
+        Check((int)Prop(hammer, "CurrentHitCount") == 1, "The first real primary click counts exactly once.");
+        yield return MouseClick();
+        Check((int)Prop(hammer, "CurrentHitCount") == 2, "Two real primary clicks reach 2/3 hammer hits (actual: " + Prop(hammer, "CurrentHitCount") + ").");
         yield return Capture("03-hammer-progress");
         yield return MouseClick();
         var sample = (GameObject)Prop(hammer, "PendingSample");
@@ -192,6 +196,25 @@ public class FieldFeedbackAcceptanceTests
         var toast = GameObject.Find("GameToastCanvas/Toast");
         Check(toast != null && toast.activeInHierarchy && toast.GetComponentsInChildren<Text>().Any(t => t.text.Contains("岩石")),
             "Collecting the rock sample shows an on-screen success message.");
+        for (int site = 1; site < 3; site++)
+        {
+            target = (Component)Get(guidance, "activeTarget");
+            Check((string)Prop(target, "TargetId") == "chapter3.field.sample_site_" + (site == 1 ? "b" : "c"), "The field line advances through B then C.");
+            var nextRock = GroundAt(target.transform.position);
+            PlacePlayer(nextRock + new Vector3(0, 0.15f, -1f), nextRock);
+            yield return new WaitForSeconds(1.3f);
+            Check((int)Prop(hammer, "CurrentHitCount") == 0, "The previous hammer animation has released the next site.");
+            yield return MouseClick();
+            yield return MouseClick();
+            yield return MouseClick();
+            sample = (GameObject)Prop(hammer, "PendingSample");
+            Check(sample != null, "Real hammer sampling succeeds at site " + (site + 1) + ".");
+            PlacePlayer(sample.transform.position + new Vector3(0, -0.35f, -0.6f), sample.transform.position);
+            yield return Frames(5);
+            yield return Capture("04-site-" + (site + 1) + "-pickup");
+            yield return Press(Key.E);
+            Check(LabelText(GameObject.Find("GameToastCanvas/Toast")).Contains("（" + (site + 1) + "/3）"), "Pickup feedback counts sites separately from hammer hits.");
+        }
         // Rock identification now happens back in the lab (quest3.4); play it here to check its picture and quiz UI.
         StopDialogue();
         Call(_director, "PlaySequence", "Story/quest3.4", null, true);
@@ -270,6 +293,10 @@ public class FieldFeedbackAcceptanceTests
         var hintRect = ScreenRect(GameObject.Find("CollectionGuidanceCanvas/CollectionHint").GetComponent<RectTransform>());
         foreach (string field in new[] { "inventoryButton", "toolWheelButton", "interactButton", "secondaryInteractButton" })
             Check(!hintRect.Overlaps(ScreenRect(((Button)Get(mobileUI, field)).GetComponent<RectTransform>())), "The touch guidance does not cover " + field + ".");
+        var title = GameObject.Find("CollectionGuidanceCanvas/CollectionHint/Title").GetComponent<Text>();
+        Check(title.text.Contains("\n採集地点 1/3"), "Touch tool-selection title keeps the full site progress on its own line.");
+        Check(title.preferredHeight <= title.rectTransform.rect.height + 1f, "The touch collection title fits without losing its site progress.");
+        Check(!hintRect.Overlaps(ScreenRect(GameObject.Find("QuestUICanvas/QuestPanel").GetComponent<RectTransform>())), "Touch collection and quest cards do not overlap.");
         yield return Capture("12-touch-hammer-select");
         var openTools = GameObject.Find("CollectionGuidanceCanvas/CollectionHint/OpenTools")?.GetComponent<Button>();
         Check(openTools != null && openTools.interactable, "Touch guidance provides an actionable tool-menu entrance.");
@@ -278,6 +305,10 @@ public class FieldFeedbackAcceptanceTests
         Check((bool)Prop(T("InventoryUISystem"), "IsAnyWheelOpen"), "Tapping the guidance entrance opens the real tool wheel.");
         Check((string)Prop(T("UISystem.CollectionGuidanceHUD"), "RecommendedToolId") == "1002", "Opening the touch wheel preserves the recommended hammer.");
         Check(GameObject.Find("CollectionGuidanceCanvas/CollectionHint") == null, "The guidance card yields to the open tool wheel.");
+        Call(_wheel, "SetSelectedSlot", -1);
+        Call(_wheel, "LateUpdate");
+        Check(((Graphic[])Get(_wheel, "sectorGraphics"))[2].color != (Color)Get(_wheel, "slotBackgroundColor"),
+            "Hammer recommendation highlights teaching slot 2.");
         yield return Capture("12b-touch-tool-menu");
         SelectTool("1002");
         yield return Frames(6);
@@ -294,12 +325,41 @@ public class FieldFeedbackAcceptanceTests
         sample = (GameObject)Prop(hammer, "PendingSample");
         Check(sample != null && ((IList)Call(inventory, "GetAllSamples")).Count == before,
             "Third virtual hammer press creates a sample without also collecting it.");
+        var touchCollector = sample.GetComponent(T("SampleCollector"));
+        Check(((Text)Get(touchCollector, "promptText")).text == "岩石サンプルを拾う", "Touch pickup names the rock sample.");
+        CheckTouchIcon((GameObject)Get(touchCollector, "interactionPrompt"), mobileUI, "interactButton");
+        Check(!((GameObject)Get(touchCollector, "interactionPrompt")).transform.Find("KeyCap").gameObject.activeSelf,
+            "Touch pickup hides the keyboard key cap.");
         yield return Capture("13b-touch-hammer-pickup");
+        yield return CaptureTouchSizes("rock", (Canvas)Get(touchCollector, "promptCanvas"), mobileUI);
         PlacePlayer(GroundAt(sample.transform.position) + new Vector3(0, 0.15f, -0.6f), sample.transform.position);
         yield return Frames(5);
         before = ((IList)Call(inventory, "GetAllSamples")).Count;
+        yield return new WaitForSeconds(1.3f); // Also cover a player who waits for the hammer cooldown before pickup.
+        Check((int)Prop(hammer, "CurrentHitCount") == 0 && (bool)Get(hammer, "canUse"), "The hammer has finished its previous animation before touch pickup.");
         yield return TouchAction(mobileUI, "OnInteractButtonDown", "OnInteractButtonUp");
         Check(sample == null && ((IList)Call(inventory, "GetAllSamples")).Count == before + 1, "Virtual Inspect collects the sample exactly once.");
+        Check((int)Prop(hammer, "CurrentHitCount") == 0, "Picking up after the cooldown never reuses the touch as another hammer hit.");
+        for (int site = 1; site < 3; site++)
+        {
+            target = (Component)Get(guidance, "activeTarget");
+            var touchRock = GroundAt(target.transform.position);
+            PlacePlayer(touchRock + new Vector3(0, 0.15f, -1f), touchRock);
+            yield return new WaitForSeconds(1.3f);
+            Check((int)Prop(hammer, "CurrentHitCount") == 0 && (bool)Get(hammer, "canUse"), "Touch hammer is ready at site " + (site + 1) + "; hits=" + Prop(hammer, "CurrentHitCount") + "; canUse=" + Get(hammer, "canUse") + ".");
+            for (int hit = 0; hit < 3; hit++)
+            {
+                yield return TouchAction(mobileUI, "OnInteractButtonDown", "OnInteractButtonUp");
+                Check((int)Prop(hammer, "CurrentHitCount") == hit + 1,
+                    "Touch site " + (site + 1) + " hit " + (hit + 1) + " counts once; camera=" + _camera.pixelRect + "; screen=" + Screen.width + "x" + Screen.height + ".");
+            }
+            sample = (GameObject)Prop(hammer, "PendingSample");
+            Check(sample != null, "Touch hammer sampling succeeds at site " + (site + 1) + ".");
+            PlacePlayer(sample.transform.position + new Vector3(0, -0.35f, -0.6f), sample.transform.position);
+            yield return Frames(5);
+            yield return TouchAction(mobileUI, "OnInteractButtonDown", "OnInteractButtonUp");
+            Check(LabelText(GameObject.Find("GameToastCanvas/Toast")).Contains("（" + (site + 1) + "/3）"), "Touch pickup shows the matching site progress.");
+        }
         StopDialogue();
         PrepareQuest("q.chapter4.sample");
         Call(T("StorySystem.InvestigationProgress"), "Reset");
@@ -316,7 +376,10 @@ public class FieldFeedbackAcceptanceTests
         Check(tower != null, "Virtual Inspect places the tower.");
         PlacePlayer(tower.transform.position + new Vector3(0, 0.1f, -2.3f), tower.transform.position + Vector3.up * 1.5f);
         yield return Frames(5);
+        var readyPrompt = Find("DrillTowerInteractionUI");
+        CheckTouchIcon((GameObject)Get(readyPrompt, "interactionPrompt"), mobileUI, "secondaryInteractButton");
         yield return Capture("15-touch-tower-ready");
+        yield return CaptureTouchSizes("drill", (Canvas)Get(readyPrompt, "uiCanvas"), mobileUI);
         yield return TouchAction(mobileUI, "OnSecondaryInteractButtonDown", "OnSecondaryInteractButtonUp");
         Check((bool)Get(tower, "isDrilling"), "Virtual Use starts drilling.");
         yield return new WaitForSeconds(2.3f);
@@ -330,6 +393,62 @@ public class FieldFeedbackAcceptanceTests
         yield return TouchAction(mobileUI, "OnInteractButtonDown", "OnInteractButtonUp");
         Check(core == null && ((IList)Call(inventory, "GetAllSamples")).Count == before + 1, "Virtual Inspect collects the core from ground level.");
         Check((bool)Prop(T("StorySystem.InvestigationProgress"), "HasCore"), "Touch-mode core pickup advances investigation progress.");
+        StopDialogue();
+        for (int depth = 1; depth < 5; depth++)
+        {
+            PlacePlayer(tower.transform.position + new Vector3(0, 0.1f, -0.6f), tower.transform.position + Vector3.up * 1.5f);
+            yield return Frames(5);
+            yield return TouchAction(mobileUI, "OnSecondaryInteractButtonDown", "OnSecondaryInteractButtonUp");
+            Check((bool)Get(tower, "isDrilling"), "Virtual Use drills even after collecting the first core.");
+            yield return new WaitForSeconds(2.4f);
+        }
+        var towerPrompt = Find("DrillTowerInteractionUI");
+        Call(towerPrompt, "ShowInteractionPrompt", tower);
+        Check(((Text)Get(towerPrompt, "promptText")).text.Contains("ドリルタワーをしまう") &&
+            !((Text)Get(towerPrompt, "promptText")).text.Contains("「使う」で"), "Maximum-depth touch prompt names the action without a button prefix.");
+        CheckTouchIcon((GameObject)Get(towerPrompt, "interactionPrompt"), mobileUI, "secondaryInteractButton");
+        yield return Capture("17-touch-maximum-depth-put-away");
+        yield return CaptureTouchSizes("maximum", (Canvas)Get(towerPrompt, "uiCanvas"), mobileUI);
+        var remainingCores = ((IList)Get(tower, "collectedSamples")).Cast<GameObject>().Where(c => c != null).ToArray();
+        yield return TouchAction(mobileUI, "OnSecondaryInteractButtonDown", "OnSecondaryInteractButtonUp");
+        Check(tower == null && Get(drill, "placedTower") == null && remainingCores.All(c => c != null), "Virtual Use puts away only the completed tower and leaves cores.");
+        yield return Capture("18-touch-tower-put-away");
+    }
+
+    private void CheckTouchIcon(GameObject panel, object controls, string field)
+    {
+        var hint = panel.transform.Find("TouchControl");
+        Check(hint.gameObject.activeSelf && hint.Find("Visual/Icon").GetComponent<Image>().sprite ==
+            ((Button)Get(controls, field)).transform.Find("Icon").GetComponent<Image>().sprite,
+            "The touch prompt uses the actual " + field + " artwork.");
+    }
+
+    private IEnumerator CaptureTouchSizes(string action, Canvas prompt, object controls)
+    {
+        foreach (var size in new[] { new Vector2Int(960, 540), new Vector2Int(844, 390), new Vector2Int(1024, 768) })
+        {
+            SetGameViewSize(size.x, size.y);
+            yield return Frames(8);
+            Canvas.ForceUpdateCanvases();
+            Check(Screen.width == size.x && Screen.height == size.y, "Live game view uses " + size + ".");
+            var panel = prompt.transform.Find("InteractionPrompt").GetComponent<RectTransform>();
+            Check(panel.gameObject.activeInHierarchy, action + " touch prompt is actually visible at " + size + ".");
+            var bounds = ScreenRect(panel);
+            var text = panel.Find("PromptText").GetComponent<Text>();
+            Check(text.preferredHeight <= text.rectTransform.rect.height + 1f, action + " action fits at " + size + ".");
+            Check(!bounds.Overlaps(ScreenRect(GameObject.Find("CurrentToolCanvas/CurrentTool").GetComponent<RectTransform>())),
+                action + " prompt does not cover the tool HUD at " + size + ".");
+            var guide = GameObject.Find("CollectionGuidanceCanvas/CollectionHint");
+            if (guide != null) Check(!bounds.Overlaps(ScreenRect(guide.GetComponent<RectTransform>())),
+                action + " prompt does not cover the collection card at " + size + ".");
+            foreach (string field in new[] { "interactButton", "secondaryInteractButton", "toolWheelButton", "inventoryButton" })
+                Check(!bounds.Overlaps(ScreenRect(((Button)Get(controls, field)).GetComponent<RectTransform>())),
+                    action + " prompt does not cover " + field + " at " + size + ".");
+            if (size.x == 960) Check(text.fontSize * prompt.scaleFactor >= 18f, action + " touch action is at least 18 pixels.");
+            yield return Capture(action + "-touch-" + size.x + "x" + size.y);
+        }
+        SetGameViewSize(960, 540);
+        yield return Frames(8);
     }
 
     private void StopDialogue()
@@ -348,6 +467,8 @@ public class FieldFeedbackAcceptanceTests
         ((HashSet<string>)Get(_quests, "_completedObjectives")).Clear();
         Call(T("QuestSystem.QuestUI"), "RefreshAll");
     }
+
+    private static string LabelText(GameObject go) => string.Join(" ", go.GetComponentsInChildren<Text>(true).Select(t => t.text));
 
     private string Hint() => GameObject.Find("CollectionGuidanceCanvas/CollectionHint/NextAction")?.GetComponent<Text>().text ?? "";
     private static Rect ScreenRect(RectTransform rect)
@@ -375,7 +496,15 @@ public class FieldFeedbackAcceptanceTests
         var tools = (IList)Get(_wheel, "availableTools");
         int index = Enumerable.Range(0, tools.Count).First(i => (string)Get(tools[i], "toolID") == id);
         var selectedTool = tools[index];
-        Call(_wheel, "SelectToolAndStartPreview", index);
+        bool touchWheel = (bool)Prop(T("UISystem.MobileControlHint"), "UsesTouchControls") &&
+            (bool)Prop(_wheel, "IsWheelOpen");
+        if (touchWheel)
+        {
+            var slots = (RectTransform[])Get(_wheel, "wheelSlots");
+            Check((bool)Call(_wheel, "TrySelectToolAtScreenPoint", ScreenRect(slots[index]).center, "触屏"),
+                "Touch selection reaches the reordered " + id + " slot.");
+        }
+        else Call(_wheel, "SelectToolAndStartPreview", index);
         Assert.AreSame(selectedTool, Call(_tools, "GetCurrentTool"),
             "Selecting wheel slot " + index + " should equip " + id + ".");
         Call(_wheel, "CloseWheel", false);
@@ -393,6 +522,7 @@ public class FieldFeedbackAcceptanceTests
     }
     private void PlacePlayer(Vector3 feet, Vector3 lookAt)
     {
+        ((Behaviour)_player).enabled = false;
         var controller = _player.GetComponent<CharacterController>();
         if (controller != null) controller.enabled = false;
         _player.transform.position = feet;
@@ -563,6 +693,11 @@ public class FieldFeedbackAcceptanceTests
         if (!string.IsNullOrEmpty(_output))
         {
             if (_director != null && _quests != null) StopDialogue();
+            if (_mobile != null)
+            {
+                Call(_mobile, "EnableDesktopTestMode", false);
+                Call(_mobile, "SwitchInputMode", Enum.Parse(T("MobileInputManager+InputMode"), "Desktop"));
+            }
             if (_backend != null) Set(_backend, "enableBackend", _backendEnabled);
             if (_keyboard != null) InputSystem.RemoveDevice(_keyboard);
             if (_mouse != null) InputSystem.RemoveDevice(_mouse);

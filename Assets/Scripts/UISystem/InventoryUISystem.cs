@@ -12,14 +12,22 @@ public class InventoryUISystem : MonoBehaviour
     [Header("UI References")]
     public GameObject wheelUI;
     public Transform wheelCenter;
-    public RectTransform[] wheelSlots = new RectTransform[8];
-    public Image[] slotImages = new Image[8];
-    public Text[] slotTexts = new Text[8];
+    public RectTransform[] wheelSlots = new RectTransform[0];
+    public Image[] slotImages = new Image[0];
+    public Text[] slotTexts = new Text[0];
     public Image wheelBackground;
-    public Image[] slotSeparators = new Image[8];
+    public Image[] slotSeparators = new Image[0];
+    public UISystem.WheelSectorGraphic[] sectorGraphics = new UISystem.WheelSectorGraphic[0];
+    public Image[] equippedMarkers = new Image[0];
+    private RectTransform wheelDim;
+    private UISystem.WheelSectorGraphic wheelRim;
+    private UISystem.WheelSectorGraphic deadZone;
+    private Sprite circleSprite;
+    private ToolManager wheelToolManager;
+    private LocalizationManager wheelLocalization;
+    private Rect lastWheelSafeArea;
     
     [Header("Selection")]
-    public float wheelSizePercent = 90f;
     public float selectionRadius = 100f;
     public Color normalColor = Color.white;
     public Color selectedColor = Color.yellow;
@@ -30,7 +38,6 @@ public class InventoryUISystem : MonoBehaviour
     public float separatorWidth = 4f;
     public Color slotBackgroundColor = new Color(0.3f, 0.3f, 0.3f, 0.7f);
     public Color selectedSlotBackgroundColor = new Color(0.8f, 0.8f, 0.2f, 0.9f);
-    public Color textShadowColor = new Color(0f, 0f, 0f, 0.8f);
     
     private static InventoryUISystem activeWheel;
     public static bool IsAnyWheelOpen => activeWheel != null && activeWheel.isWheelOpen;
@@ -333,103 +340,101 @@ public class InventoryUISystem : MonoBehaviour
         }
     }
 
+    public void RebuildWheelUI()
+    {
+        DestroyOldUI();
+        ConfigureWheelCanvas();
+        CreateWheelUI();
+        InitializeTools();
+    }
+
+    void ConfigureWheelCanvas()
+    {
+        canvas = GetComponentInParent<Canvas>();
+        if (canvas == null) return;
+        var scaler = canvas.GetComponent<CanvasScaler>();
+        if (scaler == null) scaler = canvas.gameObject.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1600, 900);
+        scaler.matchWidthOrHeight = 0.5f;
+    }
+
     void CreateWheelUI()
     {
-        // 创建圆形轮盘背景
-        GameObject wheelBG = new GameObject("WheelBackground");
-        wheelBG.transform.SetParent(transform);
-        
-        RectTransform bgRect = wheelBG.AddComponent<RectTransform>();
-        bgRect.sizeDelta = new Vector2(300, 300);
-        bgRect.anchorMin = new Vector2(0.5f, 0.5f);
-        bgRect.anchorMax = new Vector2(0.5f, 0.5f);
-        bgRect.pivot = new Vector2(0.5f, 0.5f);
-        bgRect.anchoredPosition = Vector2.zero;
-        bgRect.localPosition = Vector3.zero;
-        
-        // 创建圆形背景图像
-        UnityEngine.UI.Image bgImage = wheelBG.AddComponent<UnityEngine.UI.Image>();
-        bgImage.sprite = CreateCircleSprite(256);
-        bgImage.color = wheelBackgroundColor;
-        bgImage.type = UnityEngine.UI.Image.Type.Simple;
-        
-        // 初始化数组
-        wheelSlots = new RectTransform[8];
-        slotImages = new Image[8];
-        slotTexts = new Text[8];
-        
-        // 创建8个轮盘槽位
-        for (int i = 0; i < 8; i++)
-        {
-            // 创建槽位容器
-            GameObject slot = new GameObject($"Slot_{i}");
-            slot.transform.SetParent(wheelBG.transform);
-            
-            RectTransform slotRect = slot.AddComponent<RectTransform>();
-            slotRect.sizeDelta = new Vector2(80, 80);
-            slotRect.anchorMin = new Vector2(0.5f, 0.5f);
-            slotRect.anchorMax = new Vector2(0.5f, 0.5f);
-            slotRect.pivot = new Vector2(0.5f, 0.5f);
-            
-            // 添加槽位背景
-            UnityEngine.UI.Image slotBG = slot.AddComponent<UnityEngine.UI.Image>();
-            slotBG.color = new Color(0.3f, 0.3f, 0.3f, 0.7f);
-            
-            // 创建工具图标
-            GameObject iconObj = new GameObject("Icon");
-            iconObj.transform.SetParent(slot.transform);
-            
-            RectTransform iconRect = iconObj.AddComponent<RectTransform>();
-            iconRect.sizeDelta = new Vector2(50, 50);
-            iconRect.anchorMin = new Vector2(0.5f, 0.5f);
-            iconRect.anchorMax = new Vector2(0.5f, 0.5f);
-            iconRect.anchoredPosition = Vector2.zero;
-            
-            UnityEngine.UI.Image iconImage = iconObj.AddComponent<UnityEngine.UI.Image>();
-            iconImage.color = Color.white;
-            iconImage.preserveAspect = true;
-            iconImage.raycastTarget = false;
-            
-            // 创建文本
-            GameObject textObj = new GameObject("Text");
-            textObj.transform.SetParent(slot.transform);
-            
-            RectTransform textRect = textObj.AddComponent<RectTransform>();
-            textRect.sizeDelta = new Vector2(100, 20);
-            textRect.anchorMin = new Vector2(0.5f, 0.5f);
-            textRect.anchorMax = new Vector2(0.5f, 0.5f);
-            textRect.anchoredPosition = new Vector2(0, -50);
-            
-            UnityEngine.UI.Text text = textObj.AddComponent<UnityEngine.UI.Text>();
-            text.text = "";
-            
-            // 安全获取字体
-            try
-            {
-                text.font = UIFontResolver.GetUIFont();
-            }
-            catch
-            {
-                text.font = Resources.FindObjectsOfTypeAll<Font>()[0];
-            }
-            
-            text.fontSize = 10;
-            text.color = Color.white;
-            text.alignment = TextAnchor.MiddleCenter;
-            
-            // 保存引用
-            wheelSlots[i] = slotRect;
-            slotImages[i] = iconImage;
-            slotTexts[i] = text;
-        }
-        
-        // 设置引用
-        wheelUI = wheelBG;
-        wheelBackground = bgImage;
-        wheelCenter = wheelBG.transform;
-        
-        // 立即设置为隐藏状态，避免意外显示
+        circleSprite = CreateCircleSprite(512);
+        wheelBackgroundColor = UISystem.GameUI.Surface;
+        slotBackgroundColor = UISystem.GameUI.Panel;
+        selectedSlotBackgroundColor = Color.Lerp(UISystem.GameUI.Panel, UISystem.GameUI.Accent, 0.55f);
+        normalColor = UISystem.GameUI.Ink;
+        selectedColor = Color.white;
+        separatorColor = new Color(0.65f, 0.76f, 0.77f, 0.55f);
+        separatorWidth = 1.5f;
+        var wheelRect = UISystem.GameUI.Rect(transform, "WheelBackground", Vector2.one * 0.5f, Vector2.one * 0.5f);
+        wheelUI = wheelRect.gameObject;
+        wheelCenter = wheelRect;
+        wheelBackground = wheelUI.AddComponent<Image>();
+        wheelBackground.sprite = circleSprite;
+        wheelBackground.color = wheelBackgroundColor;
+        wheelBackground.raycastTarget = false;
+        wheelDim = UISystem.GameUI.Box(wheelRect, "Dim", new Color(0.01f, 0.03f, 0.05f, 0.68f),
+            Vector2.one * 0.5f, Vector2.one * 0.5f).rectTransform;
+        wheelDim.GetComponent<Image>().raycastTarget = false;
+        // Dim 在圆盘之前绘制，覆盖底下的 HUD，但不拦截右侧触屏按钮。
+        wheelBackground.enabled = false;
         wheelUI.SetActive(false);
+    }
+
+    void RebuildSectors()
+    {
+        if (wheelUI == null) return;
+        foreach (var child in wheelUI.transform.Cast<Transform>().ToArray())
+        {
+            if (child == wheelDim) continue;
+            child.gameObject.SetActive(false);
+            if (Application.isPlaying) Destroy(child.gameObject);
+            else DestroyImmediate(child.gameObject);
+        }
+        int count = availableTools.Count;
+        wheelSlots = new RectTransform[count];
+        slotImages = new Image[count];
+        slotTexts = new Text[count];
+        sectorGraphics = new UISystem.WheelSectorGraphic[count];
+        equippedMarkers = new Image[count];
+        slotSeparators = new Image[count > 1 ? count : 0];
+        for (int i = 0; i < count; i++)
+        {
+            sectorGraphics[i] = CreateSectorGraphic("Sector_" + i, slotBackgroundColor);
+            var content = UISystem.GameUI.Rect(wheelUI.transform, "Tool_" + i, Vector2.one * 0.5f, Vector2.one * 0.5f);
+            wheelSlots[i] = content;
+            slotImages[i] = UISystem.GameUI.Box(content, "Icon", normalColor, Vector2.one * 0.5f, Vector2.one * 0.5f);
+            slotImages[i].preserveAspect = true;
+            slotImages[i].raycastTarget = false;
+            slotTexts[i] = UISystem.GameUI.Label(content, "Name", "", 36, Vector2.one * 0.5f,
+                Vector2.one * 0.5f, TextAnchor.UpperCenter);
+            equippedMarkers[i] = UISystem.GameUI.Box(content, "Equipped", UISystem.GameUI.Ink,
+                Vector2.one * 0.5f, Vector2.one * 0.5f);
+            equippedMarkers[i].sprite = circleSprite;
+            equippedMarkers[i].raycastTarget = false;
+        }
+        // 内容放在所有扇形之上，避免相邻扇区盖住较长的名称。
+        foreach (var content in wheelSlots) content.SetAsLastSibling();
+        for (int i = 0; i < slotSeparators.Length; i++)
+            slotSeparators[i] = UISystem.GameUI.Box(wheelUI.transform, "Divider_" + i, separatorColor,
+                Vector2.one * 0.5f, Vector2.one * 0.5f);
+        wheelRim = CreateSectorGraphic("Rim", UISystem.GameUI.Muted);
+        deadZone = CreateSectorGraphic("DeadZone", UISystem.GameUI.Surface);
+        selectedSlot = mobileWheelCandidateSlot = -1;
+        lastScreenSize = 0f;
+        UpdateWheelSize();
+    }
+
+    UISystem.WheelSectorGraphic CreateSectorGraphic(string name, Color color)
+    {
+        var rect = UISystem.GameUI.Rect(wheelUI.transform, name, Vector2.zero, Vector2.one);
+        var graphic = rect.gameObject.AddComponent<UISystem.WheelSectorGraphic>();
+        graphic.color = color;
+        graphic.raycastTarget = false;
+        return graphic;
     }
 
     Sprite CreateCircleSprite(int size)
@@ -459,44 +464,6 @@ public class InventoryUISystem : MonoBehaviour
         return Sprite.Create(texture, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), 100f);
     }
     
-    /// <summary>
-    /// 加载自定义背景图片
-    /// </summary>
-    Sprite LoadCustomBackgroundSprite()
-    {
-        try
-        {
-            // 尝试从AssetDatabase加载（Editor模式）
-#if UNITY_EDITOR
-            Texture2D texture = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Picture/Image.png");
-            if (texture != null)
-            {
-                // 创建Sprite
-                Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-                Debug.Log("✅ 成功加载自定义TabUI背景图片");
-                return sprite;
-            }
-#endif
-            
-            // 尝试从Resources加载（运行时）
-            Texture2D resourceTexture = Resources.Load<Texture2D>("Picture/Image");
-            if (resourceTexture != null)
-            {
-                Sprite sprite = Sprite.Create(resourceTexture, new Rect(0, 0, resourceTexture.width, resourceTexture.height), new Vector2(0.5f, 0.5f));
-                Debug.Log("✅ 从Resources加载自定义TabUI背景图片");
-                return sprite;
-            }
-            
-            Debug.LogWarning("❌ 无法找到自定义背景图片，使用默认背景");
-            return null;
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"❌ 加载自定义背景图片时出错: {e.Message}");
-            return null;
-        }
-    }
-    
     void Start()
     {
         // 初始化移动端输入管理器连接
@@ -504,12 +471,14 @@ public class InventoryUISystem : MonoBehaviour
 
         playerCamera = Camera.main;
         fpController = GetFirstPersonController();
-        canvas = GetComponent<Canvas>();
+        ConfigureWheelCanvas();
 
         // 强制创建标准的UI结构
         Debug.Log("创建标准的圆形UI");
         DestroyOldUI();
         CreateWheelUI();
+        wheelLocalization = LocalizationManager.Instance;
+        if (wheelLocalization != null) wheelLocalization.OnLanguageChanged += HandleWheelLanguageChanged;
 
         if (wheelUI != null)
         {
@@ -557,99 +526,31 @@ public class InventoryUISystem : MonoBehaviour
         }
     }
     
-    bool DetectExistingUI()
-    {
-        // 查找Cycle对象（你创建的圆形背景）
-        Transform cycleTransform = transform.Find("Cycle");
-        if (cycleTransform != null)
-        {
-            Debug.Log("找到Cycle背景，设置为wheelUI");
-            wheelUI = cycleTransform.gameObject;
-            wheelBackground = cycleTransform.GetComponent<Image>();
-            wheelCenter = cycleTransform;
-            
-            // 查找Slot对象
-            wheelSlots = new RectTransform[8];
-            slotImages = new Image[8];
-            slotTexts = new Text[8];
-            
-            for (int i = 0; i < 8; i++)
-            {
-                Transform slotTransform = cycleTransform.Find($"Slot_{i}");
-                if (slotTransform != null)
-                {
-                    wheelSlots[i] = slotTransform.GetComponent<RectTransform>();
-                    
-                    // 查找Icon
-                    Transform iconTransform = slotTransform.Find("Icon");
-                    if (iconTransform != null)
-                    {
-                        slotImages[i] = iconTransform.GetComponent<Image>();
-                    }
-                    
-                    // 查找Text
-                    Transform textTransform = slotTransform.Find("Text");
-                    if (textTransform != null)
-                    {
-                        slotTexts[i] = textTransform.GetComponent<Text>();
-                    }
-                }
-            }
-            
-            Debug.Log($"成功检测到现有UI: wheelUI={wheelUI.name}, slots={System.Array.FindAll(wheelSlots, s => s != null).Length}");
-            return true;
-        }
-        
-        return false;
-    }
-    
     void DestroyOldUI()
     {
-        // 清理数组引用（先清理引用再销毁对象）
-        wheelSlots = new RectTransform[8];
-        slotImages = new Image[8]; 
-        slotTexts = new Text[8];
+        wheelSlots = new RectTransform[0];
+        slotImages = new Image[0];
+        slotTexts = new Text[0];
+        slotSeparators = new Image[0];
+        sectorGraphics = new UISystem.WheelSectorGraphic[0];
+        equippedMarkers = new Image[0];
         wheelBackground = null;
         wheelCenter = null;
-        
-        // 删除旧的UI元素（安全检查）
-        if (wheelUI != null)
+        if (wheelUI != null) DestroyImmediate(wheelUI);
+        // 只清理轮盘的旧根节点，不碰背包、仓库等系统的 Slot。
+        foreach (string name in new[] { "Cycle", "WheelBackground" })
         {
-            try
-            {
-                DestroyImmediate(wheelUI);
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogWarning($"销毁wheelUI时出错: {e.Message}");
-            }
-            wheelUI = null;
+            var old = transform.Find(name);
+            if (old != null) DestroyImmediate(old.gameObject);
         }
-        
-        // 查找并删除可能存在的旧UI对象（安全检查）
-        try
+        wheelUI = null;
+        if (circleSprite != null)
         {
-            Transform[] children = GetComponentsInChildren<Transform>();
-            foreach (Transform child in children)
-            {
-                if (child != null && child != transform && child.name != null && 
-                    (child.name.Contains("Wheel") || child.name.Contains("Slot") || child.name.Contains("Inventory")))
-                {
-                    if (child.gameObject != null)
-                    {
-                        DestroyImmediate(child.gameObject);
-                    }
-                }
-            }
+            DestroyImmediate(circleSprite.texture);
+            DestroyImmediate(circleSprite);
         }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning($"清理子对象时出错: {e.Message}");
-        }
-        
-        Debug.Log("已清理旧UI元素");
     }
-    
+
     // 调试方法：强制显示圆形布局信息
     void Update()
     {
@@ -698,30 +599,11 @@ public class InventoryUISystem : MonoBehaviour
     
     void DebugCircularLayout()
     {
-        Debug.Log("=== 圆形布局调试信息 ===");
-        Debug.Log($"wheelSlots数组长度: {(wheelSlots != null ? wheelSlots.Length : 0)}");
-        
-        if (wheelSlots != null)
-        {
-            for (int i = 0; i < wheelSlots.Length; i++)
-            {
-                if (wheelSlots[i] != null)
-                {
-                    float angle = i * 45f;
-                    Vector2 pos = wheelSlots[i].anchoredPosition;
-                    Debug.Log($"Slot {i}: 角度={angle}度, 位置=({pos.x:F1}, {pos.y:F1})");
-                }
-                else
-                {
-                    Debug.Log($"Slot {i}: null");
-                }
-            }
-        }
-        
-        Debug.Log($"wheelUI: {(wheelUI != null ? wheelUI.name : "null")}");
-        Debug.Log($"圆形布局应该显示8个slot围成圆形");
+        Debug.Log($"轮盘：{availableTools.Count} 个等分扇区，死区半径 {selectionRadius:F1}");
+        for (int i = 0; i < wheelSlots.Length; i++)
+            Debug.Log($"扇区 {i}: 中心角 {i * 360f / wheelSlots.Length:F1}°，位置 {wheelSlots[i].anchoredPosition}");
     }
-    
+
     IEnumerator DelayedInitialize()
     {
         yield return new WaitForSeconds(0.5f);
@@ -735,165 +617,128 @@ public class InventoryUISystem : MonoBehaviour
     
     private float lastScreenSize = 0f;
     
-    void UpdateWheelSize()
+    public void UpdateWheelSize()
     {
         if (wheelUI == null) return;
-        
-        // 使用80%的屏幕大小
         var rootCanvas = GetComponentInParent<Canvas>();
-        RectTransform canvasRect = rootCanvas != null ? rootCanvas.GetComponent<RectTransform>() : null;
-        float screenSize = canvasRect != null ? Mathf.Min(canvasRect.rect.width, canvasRect.rect.height) : Mathf.Min(Screen.width, Screen.height);
-        
-        // 只有屏幕大小变化时才更新
-        if (Mathf.Abs(screenSize - lastScreenSize) < 1f) return;
-        
-        float wheelSize = Mathf.Min(screenSize * 0.86f, 920f); // 改为90%屏幕大小，进一步增大轮盘
-        
-        RectTransform wheelRect = wheelUI.GetComponent<RectTransform>();
-        if (wheelRect != null)
-        {
-            wheelRect.sizeDelta = new Vector2(wheelSize, wheelSize);
-            // 确保轮盘居中
-            wheelRect.anchorMin = new Vector2(0.5f, 0.5f);
-            wheelRect.anchorMax = new Vector2(0.5f, 0.5f);
-            wheelRect.pivot = new Vector2(0.5f, 0.5f);
-            wheelRect.anchoredPosition = Vector2.zero;
-
-            // 调试信息（可根据需要开启）
-            // Debug.Log($"[InventoryUISystem] 轮盘尺寸更新 - 屏幕大小: {screenSize}, 轮盘大小: {wheelSize}x{wheelSize}");
-            // Debug.Log($"[InventoryUISystem] 轮盘位置 - anchoredPosition: {wheelRect.anchoredPosition}, localPosition: {wheelRect.localPosition}");
-        }
-        
-        selectionRadius = wheelSize * 0.2f;
-        
-        UpdateSlotPositions(wheelSize);
-        UpdateSeparators(wheelSize);
-        
+        float scale = rootCanvas != null ? Mathf.Max(0.01f, rootCanvas.scaleFactor) : 1f;
+        Rect safe = Screen.safeArea;
+        float screenSize = Mathf.Min(safe.width, safe.height) / scale;
+        if (Mathf.Abs(screenSize - lastScreenSize) < 0.1f && safe == lastWheelSafeArea) return;
+        float size = Mathf.Min(screenSize * 0.86f, 920f);
+        var rect = (RectTransform)wheelUI.transform;
+        rect.sizeDelta = Vector2.one * size;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)transform, safe.center, null, out var center);
+        rect.anchoredPosition = center;
+        wheelDim.sizeDelta = new Vector2(Screen.width, Screen.height) / scale;
+        wheelDim.anchoredPosition = -center;
+        selectionRadius = size * 0.12f;
+        UpdateSlotPositions(size, scale);
+        UpdateSeparators(size);
+        if (wheelRim != null) wheelRim.Configure(0f, 360f, size * 0.5f - 1.5f / scale, size * 0.5f, 0.6f / scale);
+        if (deadZone != null) deadZone.Configure(0f, 360f, 0f, selectionRadius, 1f / scale);
         lastScreenSize = screenSize;
-        // Debug.Log($"轮盘尺寸已更新为: {wheelSize}x{wheelSize} (屏幕大小: {screenSize})");
+        lastWheelSafeArea = safe;
     }
-    
+
     void SetupWheelAppearance()
     {
-        if (wheelBackground != null)
+        ResetSlotColors();
+    }
+
+    void UpdateSeparators(float size)
+    {
+        float count = sectorGraphics.Length;
+        float radius = size * 0.5f;
+        float length = radius - selectionRadius;
+        for (int i = 0; i < slotSeparators.Length; i++)
         {
-            wheelBackground.color = wheelBackgroundColor;
-
-            // 确保背景圆圈大小与轮盘一致
-            RectTransform bgRect = wheelBackground.GetComponent<RectTransform>();
-            RectTransform wheelRect = wheelUI.GetComponent<RectTransform>();
-            if (bgRect != null && wheelRect != null)
-            {
-                bgRect.sizeDelta = wheelRect.sizeDelta;
-                Debug.Log($"[InventoryUISystem] 背景圆圈大小已更新为: {bgRect.sizeDelta}");
-            }
-
-            Debug.Log($"[InventoryUISystem] 设置wheelBackground颜色: {wheelBackgroundColor}");
+            float angle = (i + 0.5f) * 360f / count;
+            var rect = slotSeparators[i].rectTransform;
+            rect.anchoredPosition = UISystem.ToolWheelLayout.Direction(angle) * (selectionRadius + length * 0.5f);
+            rect.sizeDelta = new Vector2(separatorWidth, length);
+            rect.localRotation = Quaternion.Euler(0f, 0f, -angle);
+            slotSeparators[i].raycastTarget = false;
         }
-        else
+    }
+
+    void UpdateSlotPositions(float size, float scale)
+    {
+        int count = wheelSlots.Length;
+        float span = count > 0 ? 360f / count : 360f;
+        float contentRadius = size * (count > 4 ? 0.22f : count == 4 ? 0.33f : 0.29f);
+        float iconSize = size * (count > 4 ? 0.12f : count == 4 ? 0.17f : 0.19f);
+        int fontSize = Mathf.CeilToInt(Mathf.Max(32f, 18f / scale));
+        float labelWidth = count > 4 ? size * 0.28f : Mathf.Max(size * 0.39f, fontSize * 8.4f);
+        for (int i = 0; i < count; i++)
         {
-            Image wheelImg = wheelUI.GetComponent<Image>();
-            if (wheelImg != null)
+            float angle = i * span;
+            sectorGraphics[i].Configure(angle - span * 0.5f, span, selectionRadius, size * 0.5f, 1f / scale);
+            var content = wheelSlots[i];
+            content.anchoredPosition = UISystem.ToolWheelLayout.Direction(angle) * contentRadius;
+            content.sizeDelta = Vector2.one * iconSize;
+            slotImages[i].rectTransform.sizeDelta = Vector2.one * iconSize;
+            slotImages[i].rectTransform.anchoredPosition = count > 4 ? Vector2.zero : Vector2.up * 16f;
+            var label = slotTexts[i];
+            label.fontSize = fontSize;
+            label.resizeTextForBestFit = false;
+            var direction = UISystem.ToolWheelLayout.Direction(angle);
+            if (count > 4)
             {
-                wheelImg.color = wheelBackgroundColor;
-                Debug.Log($"[InventoryUISystem] 设置wheelImg颜色: {wheelBackgroundColor}");
+                // 道具较多时，图标在内圈、名称在外圈；左右扇区用较窄的两行名称。
+                bool side = Mathf.Abs(direction.y) < 0.38f;
+                label.alignment = TextAnchor.MiddleCenter;
+                label.rectTransform.pivot = Vector2.one * 0.5f;
+                label.rectTransform.sizeDelta = new Vector2(size * (side ? 0.19f : 0.24f), fontSize * 3f);
+                label.rectTransform.anchoredPosition = direction * size * (side ? 0.39f : 0.37f) - content.anchoredPosition;
+            }
+            else if (count == 4)
+            {
+                CenterSectorContent(i, size, iconSize, scale);
             }
             else
             {
-                Debug.LogWarning("[InventoryUISystem] 未找到轮盘背景Image组件");
+                label.alignment = TextAnchor.UpperCenter;
+                label.rectTransform.sizeDelta = new Vector2(labelWidth, fontSize * 3f);
+                label.rectTransform.pivot = new Vector2(0.5f, 1f);
+                label.rectTransform.anchoredPosition = new Vector2(-direction.x * size * 0.035f, -iconSize * 0.5f - 1f);
             }
+            var marker = equippedMarkers[i].rectTransform;
+            marker.sizeDelta = Vector2.one * (7f / scale);
+            marker.anchoredPosition = count > 4 ? -direction * (iconSize * 0.6f + 10f) : new Vector2(0f, iconSize * 0.5f + 28f);
+            if (count == 4)
+                marker.anchoredPosition = slotImages[i].rectTransform.anchoredPosition + Vector2.up * (iconSize * 0.5f + 8f / scale);
         }
+    }
 
-        // 使用正常的轮盘背景色（深色半透明）
-        // Color testColor = new Color(1f, 0f, 0f, 0.8f); // 临时红色背景已移除
+    void CenterSectorContent(int index, float size, float iconSize, float scale)
+    {
+        var label = slotTexts[index];
+        var originalStyle = label.fontStyle;
+        label.alignment = TextAnchor.MiddleCenter;
+        label.alignByGeometry = true;
+        label.verticalOverflow = VerticalWrapMode.Overflow;
+        label.rectTransform.pivot = Vector2.one * 0.5f;
+        label.fontStyle = FontStyle.Normal;
+        float fullWidth = label.preferredWidth;
+        label.fontStyle = FontStyle.Bold;
+        fullWidth = Mathf.Max(fullWidth, label.preferredWidth);
+        float maxWidth = size * (index % 2 == 1 ? 0.28f : 0.42f);
+        float width = fullWidth > maxWidth && !label.text.Contains(" ")
+            ? Mathf.Min(maxWidth, fullWidth * 0.5f + label.fontSize * 0.4f) : maxWidth;
+        label.rectTransform.sizeDelta = new Vector2(width, label.fontSize * 3f);
+        float height = label.preferredHeight;
+        label.fontStyle = FontStyle.Normal;
+        height = Mathf.Max(height, label.preferredHeight);
+        label.fontStyle = originalStyle;
+        label.rectTransform.sizeDelta = new Vector2(width, height + 1f);
 
-        SetupSeparators();
+        // 以图标和实际文字的整体高度居中；长名称换行，悬停加粗也保留相同布局。
+        float gap = 6f / scale;
+        slotImages[index].rectTransform.anchoredPosition = Vector2.up * ((height + gap) * 0.5f);
+        label.rectTransform.anchoredPosition = Vector2.down * ((iconSize + gap) * 0.5f);
     }
-    
-    void SetupSeparators()
-    {
-        for (int i = 0; i < slotSeparators.Length; i++)
-        {
-            if (slotSeparators[i] != null)
-            {
-                slotSeparators[i].color = separatorColor;
-            }
-        }
-        
-        if (slotSeparators[0] == null)
-        {
-            
-        }
-    }
-    
-    void UpdateSeparators(float wheelSize)
-    {
-        float separatorRadius = wheelSize * 0.42f;
-        float separatorLength = wheelSize * 0.3f;
-        
-        for (int i = 0; i < slotSeparators.Length; i++)
-        {
-            if (slotSeparators[i] != null)
-            {
-                float angle = (i * 45f + 22.5f) * Mathf.Deg2Rad;
-                Vector2 separatorPos = new Vector2(Mathf.Sin(angle) * separatorRadius, Mathf.Cos(angle) * separatorRadius);
-                
-                RectTransform separatorRect = slotSeparators[i].GetComponent<RectTransform>();
-                separatorRect.anchoredPosition = separatorPos;
-                separatorRect.sizeDelta = new Vector2(separatorWidth, separatorLength);
-                separatorRect.rotation = Quaternion.Euler(0, 0, -i * 45f - 22.5f);
-                
-                slotSeparators[i].color = separatorColor;
-                slotSeparators[i].gameObject.SetActive(true);
-            }
-        }
-        
-        if (slotSeparators[0] == null)
-        {
-            
-        }
-    }
-    
-    void UpdateSlotPositions(float wheelSize)
-    {
-        // 调整为合理的参数，确保slot图标在圆圈内部且布局美观
-        float slotSize = wheelSize * 0.155f;   // slot大小为轮盘的12%，增大图标
-        float slotRadius = wheelSize * 0.34f;
-        
-        for (int i = 0; i < wheelSlots.Length; i++)
-        {
-            if (wheelSlots[i] != null)
-            {
-                // 计算圆形位置：从顶部开始，顺时针排列
-                float angle = i * 45f * Mathf.Deg2Rad;
-                Vector2 slotPos = new Vector2(Mathf.Sin(angle) * slotRadius, Mathf.Cos(angle) * slotRadius);
-                wheelSlots[i].anchoredPosition = slotPos;
-                wheelSlots[i].sizeDelta = new Vector2(slotSize, slotSize);
-                if (slotImages[i] != null)
-                {
-                    slotImages[i].rectTransform.sizeDelta = Vector2.one * slotSize * 0.76f;
-                    slotImages[i].preserveAspect = true;
-                }
-                
-                if (slotTexts[i] != null)
-                {
-                    RectTransform textRect = slotTexts[i].GetComponent<RectTransform>();
-                    textRect.sizeDelta = new Vector2(slotSize * 1.55f, slotSize * 0.65f);
-                    textRect.anchoredPosition = new Vector2(0, -slotSize * 0.8f); // 文本位置随slot缩放
-                    slotTexts[i].fontSize = Mathf.RoundToInt(Mathf.Clamp(slotSize * 0.18f, 20f, 26f));
-                    
-                    Outline outline = slotTexts[i].GetComponent<Outline>();
-                    if (outline == null)
-                    {
-                        outline = slotTexts[i].gameObject.AddComponent<Outline>();
-                    }
-                    outline.effectColor = textShadowColor;
-                    outline.effectDistance = new Vector2(1, -1);
-                }
-            }
-        }
-    }
-    
+
     // 原来的Update方法已合并到上面的新Update方法中
     
     void HandleInput()
@@ -956,6 +801,7 @@ public class InventoryUISystem : MonoBehaviour
 
         if (touch.press.wasReleasedThisFrame)
         {
+            mobileWheelCandidateSlot = GetWheelSlotAtScreenPoint(touch.position.ReadValue());
             if (mobileWheelCandidateSlot >= 0 && mobileWheelCandidateSlot < availableTools.Count)
             {
                 SelectToolAtSlot(mobileWheelCandidateSlot, "触屏");
@@ -1029,7 +875,7 @@ public class InventoryUISystem : MonoBehaviour
         if (canvas != null)
         {
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 2000; // 设置很高的层级，确保在所有UI之上
+            canvas.sortingOrder = 31000; // 在普通 HUD 之上，确认框和操作说明仍使用32767层级
             // Debug.Log($"[InventoryUISystem] Canvas设置 - RenderMode: {canvas.renderMode}, SortingOrder: {canvas.sortingOrder}");
         }
 
@@ -1177,46 +1023,23 @@ public class InventoryUISystem : MonoBehaviour
 
     int GetWheelSlotAtScreenPoint(Vector2 screenPoint)
     {
-        Camera uiCamera = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
-
-        for (int i = 0; i < wheelSlots.Length && i < availableTools.Count; i++)
-        {
-            RectTransform slot = wheelSlots[i];
-            if (slot == null || !slot.gameObject.activeInHierarchy)
-            {
-                continue;
-            }
-
-            if (RectTransformUtility.RectangleContainsScreenPoint(slot, screenPoint, uiCamera))
-            {
-                return i;
-            }
-        }
-
         return GetWheelSlotByAngle(screenPoint);
     }
 
     int GetWheelSlotByAngle(Vector2 screenPoint)
     {
-        var rootCanvas = GetComponentInParent<Canvas>();
-        Camera uiCamera = rootCanvas != null && rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay ? rootCanvas.worldCamera : null;
-        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(wheelUI.GetComponent<RectTransform>(), screenPoint, uiCamera, out Vector2 direction)) return -1;
-        if (direction.magnitude <= selectionRadius)
-        {
-            return -1;
-        }
-
-        float angle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
-        angle = (angle + 360f) % 360f;
-        int slotIndex = Mathf.FloorToInt((angle + 22.5f) / 45f) % 8;
-        return slotIndex >= 0 && slotIndex < availableTools.Count ? slotIndex : -1;
+        Camera uiCamera = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
+        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)wheelUI.transform,
+            screenPoint, uiCamera, out Vector2 direction)) return -1;
+        return UISystem.ToolWheelLayout.SectorAtAngle(Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg,
+            availableTools.Count, direction.magnitude, selectionRadius);
     }
-    
+
     void UpdateSelection()
     {
         // 获取输入位置（支持鼠标和触屏）
+        if (isMobileMode && (Touchscreen.current == null || !Touchscreen.current.primaryTouch.press.isPressed)) return;
         Vector2 inputPosition = GetInputPosition();
-        if (inputPosition == Vector2.zero) return; // 没有有效输入
 
         int newSelectedSlot = GetWheelSlotAtScreenPoint(inputPosition);
         SetSelectedSlot(newSelectedSlot >= 0 && newSelectedSlot < availableTools.Count ? newSelectedSlot : -1);
@@ -1237,27 +1060,18 @@ public class InventoryUISystem : MonoBehaviour
             return;
         }
 
-        RectTransform slotTransform = wheelSlots[selectedSlot];
-        if (slotTransform != null)
-        {
-            slotTransform.localScale = Vector3.one * 1.12f;
-
-            Image slotBackground = slotTransform.GetComponent<Image>();
-            if (slotBackground != null)
-            {
-                slotBackground.color = selectedSlotBackgroundColor;
-            }
-        }
+        sectorGraphics[selectedSlot].color = selectedSlotBackgroundColor;
 
         if (selectedSlot < slotImages.Length && slotImages[selectedSlot] != null)
         {
             slotImages[selectedSlot].color = selectedColor;
-            slotImages[selectedSlot].transform.localScale = Vector3.one * 1.16f;
+            slotImages[selectedSlot].transform.localScale = Vector3.one * 1.05f;
         }
 
         if (selectedSlot < slotTexts.Length && slotTexts[selectedSlot] != null)
         {
             slotTexts[selectedSlot].color = selectedColor;
+            slotTexts[selectedSlot].fontStyle = FontStyle.Bold;
         }
     }
     
@@ -1266,13 +1080,12 @@ public class InventoryUISystem : MonoBehaviour
         string recommended = UISystem.CollectionGuidanceHUD.RecommendedToolId;
         Color hintColor = Color.Lerp(slotBackgroundColor, UISystem.GameUI.Accent,
             0.35f + 0.12f * Mathf.Sin(Time.unscaledTime * 3f));
-        for (int i = 0; i < wheelSlots.Length && i < availableTools.Count; i++)
+        var equipped = wheelToolManager != null ? wheelToolManager.GetCurrentTool() : null;
+        for (int i = 0; i < sectorGraphics.Length; i++)
         {
-            if (i == selectedSlot || wheelSlots[i] == null) continue;
-            var background = wheelSlots[i].GetComponent<Image>();
-            if (background != null)
-                background.color = availableTools[i] != null && availableTools[i].toolID == recommended
-                    ? hintColor : slotBackgroundColor;
+            equippedMarkers[i].gameObject.SetActive(availableTools[i] == equipped || (equipped == null && availableTools[i].toolID == "0"));
+            if (i == selectedSlot) continue;
+            sectorGraphics[i].color = availableTools[i].toolID == recommended ? hintColor : slotBackgroundColor;
         }
         for (int i = 0; i < mobileToolButtons.Count && i < availableTools.Count; i++)
         {
@@ -1285,19 +1098,8 @@ public class InventoryUISystem : MonoBehaviour
 
     void ResetSlotColors()
     {
-        for (int i = 0; i < wheelSlots.Length; i++)
-        {
-            if (wheelSlots[i] != null)
-            {
-                wheelSlots[i].localScale = Vector3.one;
-
-                Image slotBackground = wheelSlots[i].GetComponent<Image>();
-                if (slotBackground != null)
-                {
-                    slotBackground.color = slotBackgroundColor;
-                }
-            }
-        }
+        foreach (var sector in sectorGraphics)
+            if (sector != null) sector.color = slotBackgroundColor;
 
         for (int i = 0; i < slotImages.Length; i++)
         {
@@ -1312,7 +1114,8 @@ public class InventoryUISystem : MonoBehaviour
         {
             if (slotTexts[i] != null)
             {
-                slotTexts[i].color = Color.white;
+                slotTexts[i].color = normalColor;
+                slotTexts[i].fontStyle = FontStyle.Normal;
             }
         }
     }
@@ -1431,17 +1234,45 @@ public class InventoryUISystem : MonoBehaviour
         playerData?.ApplyUnlockedToolsToScene();
     }
     
+    // 教学使用顺序；其余工具仍按原有 ID 规则排在后面。
+    private static readonly string[] TeachingToolOrder = { "0", "999", "1002", "1001" };
+
+    public static bool IsToolVisibleInWheel(string id) => id != "1000" && id != "1100" && id != "1101";
+
+    public static int CompareToolIds(string a, string b)
+    {
+        int indexA = System.Array.IndexOf(TeachingToolOrder, a);
+        int indexB = System.Array.IndexOf(TeachingToolOrder, b);
+        if (indexA < 0) indexA = TeachingToolOrder.Length;
+        if (indexB < 0) indexB = TeachingToolOrder.Length;
+        if (indexA != indexB) return indexA.CompareTo(indexB);
+        if (int.TryParse(a, out int idA) && int.TryParse(b, out int idB)) return idA.CompareTo(idB);
+        return string.Compare(a, b);
+    }
+
+    private void SortTools()
+    {
+        availableTools.Sort((a, b) =>
+        {
+            if (a == null && b == null) return 0;
+            if (a == null) return 1;
+            if (b == null) return -1;
+            return CompareToolIds(a.toolID, b.toolID);
+        });
+    }
+
     void InitializeTools()
     {
         // 严格使用 ToolManager 的可用工具列表，避免未解锁工具出现在轮盘
         availableTools.Clear();
 
         var toolManager = FindFirstObjectByType<ToolManager>(FindObjectsInactive.Include);
+        wheelToolManager = toolManager;
         if (toolManager != null && toolManager.availableTools != null)
         {
             foreach (var tool in toolManager.availableTools)
             {
-                if (tool != null)
+                if (tool != null && IsToolVisibleInWheel(tool.toolID))
                 {
                     availableTools.Add(tool);
                 }
@@ -1455,47 +1286,21 @@ public class InventoryUISystem : MonoBehaviour
         }
         // 不再从场景中扫描所有 CollectionTool，防止未解锁工具被显示
 
-        // 按toolID排序工具列表（数字ID从小到大排序，按顺时针方向排列）
-        availableTools.Sort((a, b) => {
-            if (a == null && b == null) return 0;
-            if (a == null) return 1;
-            if (b == null) return -1;
-            
-            // 尝试将toolID转换为数字进行比较
-            if (int.TryParse(a.toolID, out int idA) && int.TryParse(b.toolID, out int idB))
-            {
-                return idA.CompareTo(idB); // 从小到大排序
-            }
-            
-            // 如果不是数字，使用字符串比较
-            return string.Compare(a.toolID, b.toolID);
-        });
-        
+        SortTools();
+
         UpdateWheelDisplay();
     }
     
     public void AddTool(CollectionTool tool)
     {
+        // 旧存档保留解锁数据，轮盘始终隐藏简易钻和载具。
+        if (tool == null || !IsToolVisibleInWheel(tool.toolID)) return;
         if (!availableTools.Contains(tool))
         {
             availableTools.Add(tool);
             
-            // 按toolID排序工具列表（数字ID从小到大排序，按顺时针方向排列）
-            availableTools.Sort((a, b) => {
-                if (a == null && b == null) return 0;
-                if (a == null) return 1;
-                if (b == null) return -1;
-                
-                // 尝试将toolID转换为数字进行比较
-                if (int.TryParse(a.toolID, out int idA) && int.TryParse(b.toolID, out int idB))
-                {
-                    return idA.CompareTo(idB); // 从小到大排序
-                }
-                
-                // 如果不是数字，使用字符串比较
-                return string.Compare(a.toolID, b.toolID);
-            });
-            
+            SortTools();
+
             UpdateWheelDisplay();
             Debug.Log($"工具已添加到UI: {tool.toolName} (ID: {tool.toolID})");
         }
@@ -1535,70 +1340,30 @@ public class InventoryUISystem : MonoBehaviour
     
     void UpdateWheelDisplay()
     {
-        
-        
-        for (int i = 0; i < wheelSlots.Length; i++)
+        if (wheelUI == null) return;
+        if (wheelSlots.Length != availableTools.Count) RebuildSectors();
+        for (int i = 0; i < availableTools.Count; i++)
         {
-            if (i < availableTools.Count && availableTools[i] != null)
-            {
-                
-                
-                if (slotImages[i] != null)
-                {
-                    Sprite toolIcon = ToolIconResolver.GetIcon(availableTools[i]);
-                    slotImages[i].sprite = toolIcon;
-                    slotImages[i].preserveAspect = true;
-                    slotImages[i].gameObject.SetActive(true);
-                    
-                    if (toolIcon == null)
-                    {
-                        
-                        slotImages[i].color = new Color(0.6f, 0.6f, 0.6f, 1f);
-                    }
-                    else
-                    {
-                        slotImages[i].color = Color.white;
-                    }
-                }
-                else
-                {
-                    
-                }
-                
-                if (slotTexts[i] != null)
-                {
-                    // 尝试使用本地化工具名称
-                    string localizedToolName = GetLocalizedToolName(availableTools[i]);
-                    slotTexts[i].text = localizedToolName;
-                    slotTexts[i].gameObject.SetActive(true);
-                    
-                    // 添加本地化组件（如果还没有）
-                    LocalizedText localizedText = slotTexts[i].GetComponent<LocalizedText>();
-                    if (localizedText == null)
-                    {
-                        localizedText = slotTexts[i].gameObject.AddComponent<LocalizedText>();
-                    }
-                    localizedText.TextKey = GetToolNameKey(availableTools[i]);
-                }
-                else
-                {
-                    
-                }
-            }
-            else
-            {
-                if (slotImages[i] != null)
-                {
-                    slotImages[i].gameObject.SetActive(false);
-                }
-                if (slotTexts[i] != null)
-                {
-                    slotTexts[i].gameObject.SetActive(false);
-                }
-            }
+            slotImages[i].sprite = ToolIconResolver.GetIcon(availableTools[i]);
+            slotTexts[i].text = GetLocalizedToolName(availableTools[i]);
+            var localized = slotTexts[i].GetComponent<LocalizedText>();
+            if (localized == null) localized = slotTexts[i].gameObject.AddComponent<LocalizedText>();
+            localized.TextKey = GetToolNameKey(availableTools[i]);
         }
+        if (wheelSlots.Length == 4)
+            UpdateSlotPositions(((RectTransform)wheelUI.transform).rect.width, canvas.scaleFactor);
+        ResetSlotColors();
     }
-    
+
+    void HandleWheelLanguageChanged()
+    {
+        int previousSlot = selectedSlot;
+        UpdateWheelDisplay();
+        selectedSlot = -1;
+        if (isWheelOpen && previousSlot >= 0 && previousSlot < availableTools.Count)
+            SetSelectedSlot(previousSlot);
+    }
+
     /// <summary>
     /// 获取本地化工具名称
     /// </summary>
@@ -1964,7 +1729,7 @@ public class InventoryUISystem : MonoBehaviour
             if (canvas != null)
             {
                 canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                canvas.sortingOrder = 2000;
+                canvas.sortingOrder = 31000;
             }
 
             ApplyMobileToolbarLayout(true);
@@ -2066,6 +1831,20 @@ public class InventoryUISystem : MonoBehaviour
     
     void OnDestroy()
     {
+        if (wheelLocalization != null) wheelLocalization.OnLanguageChanged -= HandleWheelLanguageChanged;
+        if (circleSprite != null)
+        {
+            if (Application.isPlaying)
+            {
+                Destroy(circleSprite.texture);
+                Destroy(circleSprite);
+            }
+            else
+            {
+                DestroyImmediate(circleSprite.texture);
+                DestroyImmediate(circleSprite);
+            }
+        }
         // 取消事件监听
         if (mobileInputManager != null)
         {

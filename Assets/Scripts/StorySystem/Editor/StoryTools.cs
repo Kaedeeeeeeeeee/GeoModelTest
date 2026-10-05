@@ -15,7 +15,6 @@ namespace StorySystem.EditorTools
         private static readonly string[] AllToolIds =
         {
             "999",
-            "1000",
             "1001",
             "1002",
             "1100",
@@ -26,7 +25,6 @@ namespace StorySystem.EditorTools
         {
             "q.lab.intro",
             "q.lab.drkaede",
-            "q.lab.anomaly",
             "q.field.phase",
             "q.lab.return",
             "q.chapter4.kaede",
@@ -43,7 +41,6 @@ namespace StorySystem.EditorTools
         {
             "q.lab.intro.intro_done",
             "q.lab.drkaede.talk",
-            "q.lab.anomaly.talk",
             "q.field.phase.enter_field",
             "q.field.phase.collect_samples",
             "q.lab.return.enter_lab",

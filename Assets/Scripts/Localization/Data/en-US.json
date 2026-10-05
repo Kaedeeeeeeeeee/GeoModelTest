@@ -2610,7 +2610,7 @@
     },
     {
       "key": "story.beat4.q2.prompt",
-      "value": "Look at the cliff. The strata bend like waves! What do we call this kind of bending?"
+      "value": "Remember the cliff we saw in the field? The strata were bent like waves. What do we call this kind of bending?"
     },
     {
       "key": "story.beat4.q2.a",
@@ -2689,11 +2689,11 @@
       "value": "Use the Phase Shifter to travel. Switch tools with the Tab key."
     },
     {
-      "key": "story.bridge.q31.l01",
-      "value": "Go to the outcrop and collect some rock with the geological hammer. We’ll check the grain size and acid reaction together back at the lab."
+      "key": "story.bridge.q21.l04",
+      "value": "When you get there, use the geological hammer to collect rock at the 3 spots the blue line shows. We’ll check the grain size and acid reaction together back at the lab."
     },
     {
-      "key": "story.bridge.q31.l02",
+      "key": "story.bridge.q21.l05",
       "value": "Got it — I’ll go get some!"
     },
     {
@@ -2702,7 +2702,7 @@
     },
     {
       "key": "story.bridge.q32.l02",
-      "value": "We're here. Crack the rock with the hammer and take a sample."
+      "value": "We're here. Follow the blue line to 3 spots and crack the rock with the hammer to take samples."
     },
     {
       "key": "story.bridge.q34.l01",
@@ -2745,6 +2745,22 @@
       "value": "A fossil...! Kind of exciting, honestly."
     },
     {
+      "key": "story.bridge.q42.l01",
+      "value": "Back in the field. The cracks left by the quake are still in the ground."
+    },
+    {
+      "key": "story.bridge.q42.l02",
+      "value": "The layers at the surface were warped. I wonder what’s underneath..."
+    },
+    {
+      "key": "story.bridge.q42.l03",
+      "value": "Use the drill tower where the blue line points, and bring up a core from underground."
+    },
+    {
+      "key": "story.bridge.q42.l04",
+      "value": "Got it. I’ll get the core and bring it back to the lab!"
+    },
+    {
       "key": "story.beat3.q1.teach1",
       "value": "You know, a fossil is like a little 'time capsule.'"
     },
@@ -2782,7 +2798,7 @@
     },
     {
       "key": "story.beat4.q2.teach1",
-      "value": "Strata should stack straight by default. But squeeze them from both sides and they bend like that."
+      "value": "Strata should stack straight by default. But squeeze them from both sides and they bend like in this picture."
     },
     {
       "key": "story.beat1.q1.teach1",
@@ -3142,34 +3158,30 @@
     },
     {
       "key": "quest.step.3",
-      "value": "Examine the unusual sample"
+      "value": "Collect rocks at 3 field sites"
     },
     {
       "key": "quest.step.4",
-      "value": "Collect rocks in the field"
-    },
-    {
-      "key": "quest.step.5",
       "value": "Bring your sample to the lab"
     },
     {
-      "key": "quest.step.6",
-      "value": "Prepare the drilling investigation"
+      "key": "quest.step.5",
+      "value": "Hear Dr. Kaede explain the drilling"
     },
     {
-      "key": "quest.step.7",
+      "key": "quest.step.6",
       "value": "Reach the drilling site"
     },
     {
-      "key": "quest.step.8",
+      "key": "quest.step.7",
       "value": "Collect a core with the drill tower"
     },
     {
-      "key": "quest.step.9",
+      "key": "quest.step.8",
       "value": "Return to the lab and analyse the core"
     },
     {
-      "key": "quest.step.10",
+      "key": "quest.step.9",
       "value": "Investigation complete — view report"
     },
     {
@@ -3558,7 +3570,7 @@
     },
     {
       "key": "quest.npc.reminder.field",
-      "value": "Use the phase shifter to go to the field. Follow the blue line and collect a sample with your geological hammer."
+      "value": "Use the phase shifter to go to the field. Follow the blue line to 3 spots and collect samples with your geological hammer."
     },
     {
       "key": "quest.npc.reminder.core",
@@ -3642,19 +3654,19 @@
     },
     {
       "key": "ui.collection.hit_progress.desktop",
-      "value": "Sampling {1}/{2} — keep left-clicking the same marker."
+      "value": "Hits {1}/{2} — keep left-clicking the same marker."
     },
     {
       "key": "ui.collection.hit_progress.touch",
-      "value": "Sampling {1}/{2} — keep aiming at the marker and tapping Use."
+      "value": "Hits {1}/{2} — keep aiming at the marker and tapping Use."
     },
     {
       "key": "ui.collection.pickup.desktop",
-      "value": "Sample ready {2}/{2}! Approach it and press E to collect."
+      "value": "The rock has cracked! Approach the sample and press E to pick it up."
     },
     {
       "key": "ui.collection.pickup.touch",
-      "value": "Sample ready {2}/{2}! Approach it and tap Use to collect."
+      "value": "The rock has cracked! Approach the sample and tap Use to pick it up."
     },
     {
       "key": "ui.collection.preview.desktop",
@@ -3714,11 +3726,11 @@
     },
     {
       "key": "ui.collection.finished.desktop",
-      "value": "Maximum depth reached. Collect nearby cores and check your objective."
+      "value": "Maximum depth reached. Pick up the nearby cores, then press F to put away the tower."
     },
     {
       "key": "ui.collection.finished.touch",
-      "value": "Maximum depth reached. Collect nearby cores and check your objective."
+      "value": "Maximum depth reached. Pick up the nearby cores, then tap Operate to put away the tower."
     },
     {
       "key": "ui.dialog.zoom.desktop",
@@ -3815,6 +3827,74 @@
     {
       "key": "ui.safari.ok",
       "value": "Got it"
+    },
+    {
+      "key": "ui.collection.site_progress",
+      "value": "Site {0}/{1}"
+    },
+    {
+      "key": "sample.toast.rock_collected_progress",
+      "value": "Rock sample collected! ({0}/{1})"
+    },
+    {
+      "key": "sample.toast.outside_site",
+      "value": "This is not the sampling site. Collect at the spot the blue line points to."
+    },
+    {
+      "key": "drill_tower.put_away_prompt",
+      "value": "[F] Put away the drill tower"
+    },
+    {
+      "key": "drill_tower.put_away_action",
+      "value": "Put away the drill tower"
+    },
+    {
+      "key": "drill_tower.put_away_prompt_mobile",
+      "value": "Tap Operate to put away the drill tower"
+    },
+    {
+      "key": "drill_tower.put_away_toast",
+      "value": "Drill tower put away."
+    },
+    {
+      "key": "sample.pickup.rock",
+      "value": "Pick up rock sample"
+    },
+    {
+      "key": "sample.pickup.core",
+      "value": "Pick up core sample"
+    },
+    {
+      "key": "sample.pickup.generic",
+      "value": "Pick up sample"
+    },
+    {
+      "key": "quest.npc.action.talk",
+      "value": "Talk to Researcher Kaede"
+    },
+    {
+      "key": "quest.npc.action.continue",
+      "value": "Continue the conversation"
+    },
+    {
+      "key": "quest.npc.action.reminder",
+      "value": "Ask for a reminder"
+    },
+    {
+      "key": "drill_tower.drill_action",
+      "value": "Drill core #{0} ({1:F0}–{2:F0}m)"
+    },
+    {
+      "key": "sample.collection.mobile",
+      "value": "Collect sample"
+    },
+    {
+      "key": "quest.npc.prompt.mobile",
+      "value": "Talk to Researcher Kaede"
+    },
+    {
+      "key": "drill_tower.drill_prompt_mobile",
+      "value": "Collect a core from {1:F0}–{2:F0}m"
     }
   ]
 }

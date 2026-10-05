@@ -151,7 +151,9 @@ public class DrillTowerTool : PlaceableTool
     {
         if (placedTower == null) return;
         
-        float distance = Vector3.Distance(playerCamera.transform.position, placedTower.transform.position);
+        var camera = GetPlayerCamera();
+        if (camera == null) return;
+        float distance = Vector3.Distance(camera.transform.position, placedTower.transform.position);
         
         if (distance <= interactionRange)
         {
@@ -170,7 +172,9 @@ public class DrillTowerTool : PlaceableTool
     {
         if (!allowRecall || placedTower == null) return;
         
-        float distance = Vector3.Distance(playerCamera.transform.position, placedTower.transform.position);
+        var camera = GetPlayerCamera();
+        if (camera == null) return;
+        float distance = Vector3.Distance(camera.transform.position, placedTower.transform.position);
         
         if (distance <= interactionRange)
         {
@@ -236,9 +240,25 @@ public class DrillTowerTool : PlaceableTool
         {
             placedTower.StartDrilling();
         }
-        else
+        else if (placedTower.CanPutAway())
         {
+            PutAwayTower();
         }
+    }
+
+    /// <summary>满深度后只收起设备，已生成的岩芯留在原地。</summary>
+    void PutAwayTower()
+    {
+        if (placedTower == null || !placedTower.CanPutAway()) return;
+        foreach (var sample in placedTower.collectedSamples)
+        {
+            if (sample != null && sample.transform.IsChildOf(placedTower.transform)) sample.transform.SetParent(null, true);
+        }
+        Destroy(placedTower.gameObject);
+        placedTower = null;
+        hasPlacedObject = false;
+        canUse = true;
+        UISystem.GameToast.Show(UISystem.GameUI.L("drill_tower.put_away_toast"));
     }
     
     protected override void OnObjectPlaced(GameObject placedObject)
@@ -457,6 +477,14 @@ public class DrillTower : MonoBehaviour
         return !isDrilling && toolReference != null && currentDrillCount < toolReference.maxDrillDepths;
     }
     
+    public static bool IsReadyToPutAway(int count, int maximum, bool drilling) => !drilling && count >= maximum;
+
+    public bool CanPutAway()
+    {
+        EnsureToolReference();
+        return toolReference != null && IsReadyToPutAway(currentDrillCount, toolReference.maxDrillDepths, isDrilling);
+    }
+
     public void StartDrilling()
     {
         if (!CanDrill()) return;

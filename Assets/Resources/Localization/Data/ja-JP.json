@@ -2594,7 +2594,7 @@
     },
     {
       "key": "story.beat4.q2.prompt",
-      "value": "ねえ、あのがけ見（み）て。地層（ちそう）が波（なみ）のように曲（ま）がってる！　あの曲（ま）がりを、何（なん）て呼（よ）ぶ？"
+      "value": "野外（やがい）で見（み）たがけ、覚（おぼ）えてる？　地層（ちそう）が波（なみ）のように曲（ま）がってたよね。あの曲（ま）がりを、何（なん）て呼（よ）ぶ？"
     },
     {
       "key": "story.beat4.q2.a",
@@ -2673,11 +2673,11 @@
       "value": "移動（いどう）にはフェーズシフターを使（つか）うの。道具（どうぐ）の一覧（いちらん）から選（えら）んでね。"
     },
     {
-      "key": "story.bridge.q31.l01",
-      "value": "露頭（ろとう）で、地質（ちしつ）ハンマーを使（つか）って岩石（がんせき）を採（と）ってきて。粒（つぶ）の大（おお）きさや塩酸（えんさん）への反応（はんのう）は、戻（もど）ってから研究室（けんきゅうしつ）でいっしょに調（しら）べよう。"
+      "key": "story.bridge.q21.l04",
+      "value": "着（つ）いたら、青（あお）い線（せん）が示（しめ）す3か所（しょ）で、地質（ちしつ）ハンマーを使（つか）って岩石（がんせき）を採（と）ってね。粒（つぶ）の大（おお）きさや塩酸（えんさん）への反応（はんのう）は、戻（もど）ってから研究室（けんきゅうしつ）でいっしょに調（しら）べよう。"
     },
     {
-      "key": "story.bridge.q31.l02",
+      "key": "story.bridge.q21.l05",
       "value": "わかった、採（と）ってくる！"
     },
     {
@@ -2686,7 +2686,7 @@
     },
     {
       "key": "story.bridge.q32.l02",
-      "value": "着（つ）いたわね。ハンマーで岩（いわ）を割（わ）って、サンプルを取（と）ろう。"
+      "value": "着（つ）いたわね。青（あお）い線（せん）の先（さき）の3か所（しょ）で、ハンマーで岩（いわ）を割（わ）ってサンプルを取（と）ろう。"
     },
     {
       "key": "story.bridge.q34.l01",
@@ -2729,6 +2729,22 @@
       "value": "化石（かせき）……！　なんかワクワクするな。"
     },
     {
+      "key": "story.bridge.q42.l01",
+      "value": "ふたたび野外（やがい）へ。地面（じめん）には、ゆれでできた割（わ）れ目（め）がまだ残（のこ）っている。"
+    },
+    {
+      "key": "story.bridge.q42.l02",
+      "value": "表面（ひょうめん）の地層（ちそう）はゆがんでいた。この下（した）は、どうなっているんだろう……。"
+    },
+    {
+      "key": "story.bridge.q42.l03",
+      "value": "青（あお）い線（せん）の先（さき）でドリルタワーを使（つか）って、地下（ちか）の岩芯（がんしん）を取（と）り出（だ）してね。"
+    },
+    {
+      "key": "story.bridge.q42.l04",
+      "value": "わかった。岩芯（がんしん）を取（と）って、研究室（けんきゅうしつ）に持（も）ち帰（かえ）る！"
+    },
+    {
       "key": "story.beat3.q1.teach1",
       "value": "ねえ、化石（かせき）って「タイムカプセル」みたいなものなの。"
     },
@@ -2766,7 +2782,7 @@
     },
     {
       "key": "story.beat4.q2.teach1",
-      "value": "多（おお）くの地層（ちそう）は、できたときにはほぼ水平（すいへい）に重（かさ）なるよ。その後（ご）、両側（りょうがわ）から押（お）し縮（ちぢ）められると、あんなふうに曲（ま）がることがある。"
+      "value": "多（おお）くの地層（ちそう）は、できたときにはほぼ水平（すいへい）に重（かさ）なるよ。その後（ご）、両側（りょうがわ）から押（お）し縮（ちぢ）められると、この図（ず）のように曲（ま）がることがある。"
     },
     {
       "key": "story.beat1.q1.teach1",
@@ -3322,34 +3338,30 @@
     },
     {
       "key": "quest.step.3",
-      "value": "異常な試料を観察する"
+      "value": "野外の3か所で岩石を採集する"
     },
     {
       "key": "quest.step.4",
-      "value": "野外で岩石を採集する"
-    },
-    {
-      "key": "quest.step.5",
       "value": "試料を持って研究室へ戻る"
     },
     {
-      "key": "quest.step.6",
-      "value": "博士と掘削の準備をする"
+      "key": "quest.step.5",
+      "value": "博士から掘削の説明を聞く"
     },
     {
-      "key": "quest.step.7",
+      "key": "quest.step.6",
       "value": "野外の掘削地点へ向かう"
     },
     {
-      "key": "quest.step.8",
+      "key": "quest.step.7",
       "value": "ドリルタワーで岩芯を採取する"
     },
     {
-      "key": "quest.step.9",
+      "key": "quest.step.8",
       "value": "研究室へ戻り、岩芯を分析する"
     },
     {
-      "key": "quest.step.10",
+      "key": "quest.step.9",
       "value": "調査完了・報告書を確認する"
     },
     {
@@ -3738,7 +3750,7 @@
     },
     {
       "key": "quest.npc.reminder.field",
-      "value": "フェーズシフターで野外へ行き、青い線が示す場所で地質ハンマーを使って試料を採ってきてね。"
+      "value": "フェーズシフターで野外へ行き、青い線が示す3か所で地質ハンマーを使って試料を採ってきてね。"
     },
     {
       "key": "quest.npc.reminder.core",
@@ -3822,19 +3834,19 @@
     },
     {
       "key": "ui.collection.hit_progress.desktop",
-      "value": "採集 {1}/{2} — 同じ目印を続けて左クリック。"
+      "value": "たたいた回数 {1}/{2} — 同じ目印を続けて左クリック。"
     },
     {
       "key": "ui.collection.hit_progress.touch",
-      "value": "採集 {1}/{2} — 同じ目印に続けて「調べる」。"
+      "value": "たたいた回数 {1}/{2} — 同じ目印に続けて「調べる」。"
     },
     {
       "key": "ui.collection.pickup.desktop",
-      "value": "採集完了 {2}/{2}！試料に近づき、Eで拾おう。"
+      "value": "岩が割れました！試料に近づき、Eで拾おう。"
     },
     {
       "key": "ui.collection.pickup.touch",
-      "value": "採集完了 {2}/{2}！試料に近づき「調べる」で拾おう。"
+      "value": "岩が割れました！試料に近づき「調べる」で拾おう。"
     },
     {
       "key": "ui.collection.preview.desktop",
@@ -3894,11 +3906,11 @@
     },
     {
       "key": "ui.collection.finished.desktop",
-      "value": "最大の深さに達しました。周りの岩芯を拾い、次の目的を確認しよう。"
+      "value": "最大の深さに達しました。周りの岩芯を拾ったら、Fでドリルタワーをしまおう。"
     },
     {
       "key": "ui.collection.finished.touch",
-      "value": "最大の深さに達しました。周りの岩芯を拾い、次の目的を確認しよう。"
+      "value": "最大の深さに達しました。周りの岩芯を拾ったら、「使う」でドリルタワーをしまおう。"
     },
     {
       "key": "ui.dialog.zoom.desktop",
@@ -3995,6 +4007,62 @@
     {
       "key": "ui.safari.ok",
       "value": "わかった"
+    },
+    {
+      "key": "ui.collection.site_progress",
+      "value": "採集地点 {0}/{1}"
+    },
+    {
+      "key": "sample.toast.rock_collected_progress",
+      "value": "岩石サンプルを採取できました！（{0}/{1}）"
+    },
+    {
+      "key": "sample.toast.outside_site",
+      "value": "ここは採集地点ではありません。青い線の先で採ろう。"
+    },
+    {
+      "key": "drill_tower.put_away_prompt",
+      "value": "［F］ドリルタワーをしまう"
+    },
+    {
+      "key": "drill_tower.put_away_action",
+      "value": "ドリルタワーをしまう"
+    },
+    {
+      "key": "drill_tower.put_away_prompt_mobile",
+      "value": "「使う」でドリルタワーをしまう"
+    },
+    {
+      "key": "drill_tower.put_away_toast",
+      "value": "ドリルタワーをしまいました。"
+    },
+    {
+      "key": "sample.pickup.rock",
+      "value": "岩石サンプルを拾う"
+    },
+    {
+      "key": "sample.pickup.core",
+      "value": "岩芯を拾う"
+    },
+    {
+      "key": "sample.pickup.generic",
+      "value": "試料を拾う"
+    },
+    {
+      "key": "quest.npc.action.talk",
+      "value": "カエデ研究員に話を聞く"
+    },
+    {
+      "key": "quest.npc.action.continue",
+      "value": "続けて話を聞く"
+    },
+    {
+      "key": "quest.npc.action.reminder",
+      "value": "もう一度話を聞く"
+    },
+    {
+      "key": "drill_tower.drill_action",
+      "value": "{1:F0}～{2:F0}mのコアを採取する"
     }
   ]
 }

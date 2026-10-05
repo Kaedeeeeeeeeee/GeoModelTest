@@ -253,7 +253,7 @@ public static class RemediationReview
                 data.ClearSceneData("MainScene"); data.RestoreSceneData("MainScene"); break;
             case "unlock":
                 var persistent = GameSceneManager.Instance.GetComponent<PlayerPersistentData>();
-                foreach (string id in new[] { "1002", "1000", "1001", "999" }) persistent.MarkToolUnlocked(id);
+                foreach (string id in new[] { "1002", "1001", "999" }) persistent.MarkToolUnlocked(id);
                 persistent.ApplyUnlockedToolsToScene(); break;
             case "core":
                 QuestSystem.QuestManager.Instance.StartQuest("q.chapter4.sample");
@@ -262,7 +262,7 @@ public static class RemediationReview
             case "prepare_core":
                 StoryDirector.Instance.CancelPlayback();
                 var quests = QuestSystem.QuestManager.Instance;
-                foreach (string id in new[] { "q.lab.intro", "q.lab.drkaede", "q.lab.anomaly", "q.field.phase", "q.lab.return", "q.chapter4.kaede", "q.chapter4.field" })
+                foreach (string id in new[] { "q.lab.intro", "q.lab.drkaede", "q.field.phase", "q.lab.return", "q.chapter4.kaede", "q.chapter4.field" })
                 {
                     quests.StartQuest(id);
                     foreach (var objective in quests.GetQuest(id).objectives) quests.CompleteObjective(objective.id);

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using Core;
+using UISystem;
 using GuidanceSystem;
 using StorySystem;
 using UnityEngine.SceneManagement;
@@ -47,11 +48,41 @@ namespace QuestSystem
         private int _fieldPhaseTargetIndex = 0;
         private GuidanceTarget _chapter4SampleGuidanceTarget;
 
-        // 15分钟教学版：野外采集精简为 1 个采样点（原为 3 个），缩短流程。
+        // 三种岩石的研究室检验对应三个野外采集地点。
         private static readonly string[] FieldPhaseTargetSequence =
         {
-            "chapter3.field.sample_site_a"
+            "chapter3.field.sample_site_a",
+            "chapter3.field.sample_site_b",
+            "chapter3.field.sample_site_c"
         };
+
+        public int FieldCollectionSite => Mathf.Clamp(_fieldPhaseTargetIndex + 1, 1, FieldPhaseTargetSequence.Length);
+        public int FieldCollectionSiteTotal => FieldPhaseTargetSequence.Length;
+        public bool IsFieldHammerCollectionActive => SceneManager.GetActiveScene().name == "MainScene" &&
+            GetQuestStatus("q.field.phase") == QuestStatus.InProgress &&
+            IsObjectiveCompleted("q.field.phase.enter_field") && !IsObjectiveCompleted("q.field.phase.collect_samples");
+
+        // 在入包事件推进地点之前取得本次拾取的反馈。任务外仍使用普通成功提示。
+        public sealed class FieldSampleFeedbackResult
+        {
+            public string Message { get; }
+            public bool IsWarning { get; }
+
+            public FieldSampleFeedbackResult(string message, bool isWarning)
+            {
+                Message = message;
+                IsWarning = isWarning;
+            }
+        }
+
+        public FieldSampleFeedbackResult FieldSampleFeedback(SampleItem sample)
+        {
+            if (!IsFieldHammerCollectionActive || sample == null || sample.sourceToolID != "1002") return null;
+            if (!IsSampleFromCurrentFieldTarget(sample))
+                return new FieldSampleFeedbackResult(GameUI.L("sample.toast.outside_site"), true);
+            return new FieldSampleFeedbackResult(string.Format(GameUI.L("sample.toast.rock_collected_progress"),
+                FieldCollectionSite, FieldCollectionSiteTotal), false);
+        }
 
         private static readonly FieldInfo GuidanceTargetIdField = typeof(GuidanceTarget)
             .GetField("targetId", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -174,40 +205,15 @@ namespace QuestSystem
 
             RestoreQuestRuntimeState(q2);
 
-            // Q3：异常样本
-            var q3 = new Quest
-            {
-                id = "q.lab.anomaly",
-                titleKey = "quest.lab.anomaly.title",
-                descriptionKey = "quest.lab.anomaly.desc",
-                status = QuestStatus.NotStarted,
-                objectives = new List<QuestObjective>
-                {
-                    new QuestObjective
-                    {
-                        id = "q.lab.anomaly.talk",
-                        titleKey = "quest.lab.anomaly.obj1"
-                    }
-                }
-            };
-            _quests[q3.id] = q3;
-
-            RestoreQuestRuntimeState(q3);
+            // 原 Q3（q.lab.anomaly）的对白已并入 quest2.1：与博士只需对话一次就前往野外。
 
             if (debugLog) Debug.Log("[QuestManager] 内置任务已注册：q.lab.intro");
             if (debugLog) Debug.Log("[QuestManager] 内置任务已注册：q.lab.drkaede");
-            if (debugLog) Debug.Log("[QuestManager] 内置任务已注册：q.lab.anomaly");
 
             if (q1.status == QuestStatus.Completed && q2.status == QuestStatus.NotStarted)
             {
                 if (debugLog) Debug.Log("[QuestManager] 检测到q.lab.intro已完成，自动启动q.lab.drkaede");
                 StartQuest(q2.id);
-            }
-
-            if (q2.status == QuestStatus.Completed && q3.status == QuestStatus.NotStarted)
-            {
-                if (debugLog) Debug.Log("[QuestManager] 检测到q.lab.drkaede已完成，自动启动q.lab.anomaly");
-                StartQuest(q3.id);
             }
 
             // Q4：使用场景切换器前往野外
@@ -236,9 +242,9 @@ namespace QuestSystem
             RestoreQuestRuntimeState(q4);
             if (debugLog) Debug.Log("[QuestManager] 内置任务已注册：q.field.phase");
 
-            if (q3.status == QuestStatus.Completed && q4.status == QuestStatus.NotStarted)
+            if (q2.status == QuestStatus.Completed && q4.status == QuestStatus.NotStarted)
             {
-                if (debugLog) Debug.Log("[QuestManager] 检测到q.lab.anomaly已完成，自动启动q.field.phase");
+                if (debugLog) Debug.Log("[QuestManager] 检测到q.lab.drkaede已完成，自动启动q.field.phase");
                 StartQuest(q4.id);
             }
 
@@ -830,8 +836,6 @@ namespace QuestSystem
             if (debugLog)
                 Debug.Log($"[QuestManager] OnSampleAdded: {sample.displayName}, sourceTool={sample.sourceToolID}");
 
-            if (SceneManager.GetActiveScene().name == "MainScene" && sample.sourceToolID == "1002" && GetQuestStatus("q.field.phase") == QuestStatus.InProgress)
-                StorySystem.InvestigationProgress.MarkFieldSample();
             HandleFieldPhaseSamplingProgress(sample);
 
             bool isField = SceneManager.GetActiveScene().name == "MainScene";
@@ -941,7 +945,8 @@ namespace QuestSystem
 
         private void HandleFieldPhaseSamplingProgress(SampleItem sample)
         {
-            if (GetQuestStatus("q.field.phase") != QuestStatus.InProgress)
+            if (sample.sourceToolID != "1002" || SceneManager.GetActiveScene().name != "MainScene" ||
+                GetQuestStatus("q.field.phase") != QuestStatus.InProgress)
             {
                 return;
             }
@@ -966,6 +971,7 @@ namespace QuestSystem
                 return;
             }
 
+            StorySystem.InvestigationProgress.MarkFieldSample();
             _fieldPhaseTargetIndex++;
             if (debugLog)
             {
@@ -1050,30 +1056,24 @@ namespace QuestSystem
         {
             if (questId == "q.lab.intro")
             {
-                // 15分钟教学版：工具前置——开场即发放 锤/切换器/简易钻/钻塔，
+                // 15分钟教学版：工具前置——开场即发放 锤/切换器/钻塔，
                 // 让 beat2(采集判定) 与 beat3(钻塔+化石) 所需工具都已可用。
                 ToolUnlockService.UnlockToolById("1002"); // 地质锤
                 ToolUnlockService.UnlockToolById("999");  // 场景切换器
-                ToolUnlockService.UnlockToolById("1000"); // 简易钻探工具
                 ToolUnlockService.UnlockToolById("1001"); // 钻塔工具
 
                 // 刷新UI
                 var ui = Object.FindFirstObjectByType<InventoryUISystem>();
                 if (ui != null) ui.RefreshTools();
 
-                if (debugLog) Debug.Log("[QuestManager] 奖励已发放：地质锤(1002) + 场景切换器(999) + 简易钻(1000) + 钻塔(1001)");
+                if (debugLog) Debug.Log("[QuestManager] 奖励已发放：地质锤(1002) + 场景切换器(999) + 钻塔(1001)");
 
                 // 推进到下一任务：与Dr. Kaede对话
                 StartQuest("q.lab.drkaede");
             }
             else if (questId == "q.lab.drkaede")
             {
-                if (debugLog) Debug.Log("[QuestManager] Kaede对话完成，启动异常样本任务");
-                StartQuest("q.lab.anomaly");
-            }
-            else if (questId == "q.lab.anomaly")
-            {
-                if (debugLog) Debug.Log("[QuestManager] 异常样本任务完成，引导玩家使用场景切换器");
+                if (debugLog) Debug.Log("[QuestManager] Kaede对话完成，引导玩家使用场景切换器");
                 StartQuest("q.field.phase");
             }
             else if (questId == "q.field.phase")
@@ -1087,7 +1087,6 @@ namespace QuestSystem
                 if (debugLog) Debug.Log("[QuestManager] 玩家已返回研究室，启动与Dr.Kaede的后续会谈");
                 // 确保场景切换器依旧可用并发放章节4工具
                 ToolUnlockService.UnlockToolById("999");   // 场景切换器兜底
-                ToolUnlockService.UnlockToolById("1000"); // 简易钻探工具
                 ToolUnlockService.UnlockToolById("1001"); // 钻塔工具
 
                 var ui = Object.FindFirstObjectByType<InventoryUISystem>();

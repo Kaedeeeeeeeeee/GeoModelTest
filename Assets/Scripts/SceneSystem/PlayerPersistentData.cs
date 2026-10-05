@@ -587,7 +587,8 @@ public class PlayerPersistentData : MonoBehaviour
     /// </summary>
     void RestoreEquippedTool(SceneData sceneData)
     {
-        if (string.IsNullOrEmpty(sceneData.equippedToolID)) return;
+        if (string.IsNullOrEmpty(sceneData.equippedToolID) ||
+            !InventoryUISystem.IsToolVisibleInWheel(sceneData.equippedToolID)) return;
         
         StartCoroutine(RestoreEquippedToolCoroutine(sceneData));
     }

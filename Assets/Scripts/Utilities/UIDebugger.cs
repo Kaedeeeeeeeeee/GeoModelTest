@@ -31,7 +31,7 @@ public class UIDebugger : MonoBehaviour
         {
             Debug.Log($"  - InventoryUISystem在: {system.gameObject.name}");
             Debug.Log($"    wheelUI: {(system.wheelUI != null ? system.wheelUI.name : "null")}");
-            Debug.Log($"    wheelSlots数量: {(system.wheelSlots != null ? system.wheelSlots.Length : 0)}");
+            Debug.Log($"    轮盘扇区数量: {(system.wheelSlots != null ? system.wheelSlots.Length : 0)}");
         }
         
         // 查找所有包含"Slot"的对象

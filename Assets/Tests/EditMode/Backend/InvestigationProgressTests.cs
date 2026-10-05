@@ -48,7 +48,7 @@ public class InvestigationProgressTests
             BackendTestReflection.InvokeStatic(_progress, "MarkComplete");
         }
         Assert.AreEqual(4, BackendTestReflection.GetProperty(_progress, "ActivityCount"));
-        Assert.AreEqual(10, BackendTestReflection.InvokeStatic(_progress, "GetStep"));
+        Assert.AreEqual(9, BackendTestReflection.InvokeStatic(_progress, "GetStep"));
         var summary = BackendTestReflection.InvokeInstance(_scores, "BuildSummary");
         Assert.AreEqual(11, BackendTestReflection.GetProperty(summary, "ExpectedQuestionCount"));
     }

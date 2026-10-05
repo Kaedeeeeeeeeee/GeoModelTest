@@ -25,6 +25,8 @@ public class SampleCollector : MonoBehaviour
     public GameObject highlightEffect;
     public Material highlightMaterial;
     
+    private UISystem.InteractionPrompt sharedPrompt;
+    private QuestSystem.QuestManager.FieldSampleFeedbackResult fieldPickupFeedback;
     private bool playerInRange = false;
     private GameObject nearbyPlayer;
     private Renderer[] renderers;
@@ -146,75 +148,28 @@ public class SampleCollector : MonoBehaviour
             promptCanvas = null;
         }
         
-        // 清理场景中可能存在的重复Canvas
-        Canvas[] existingCanvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
-        foreach (Canvas canvas in existingCanvases)
-        {
-            if (canvas.gameObject.name.Contains("SamplePromptCanvas"))
-            {
-                DestroyImmediate(canvas.gameObject);
-            }
-        }
     }
-    
-    /// <summary>
-    /// 创建交互提示UI（模仿钻塔UI风格）
-    /// </summary>
+
+    /// <summary>使用与钻塔、对话一致的提示框。</summary>
     void CreateInteractionPrompt()
     {
-        // 创建Canvas
-        GameObject canvasObj = new GameObject("SamplePromptCanvas");
-        
-        promptCanvas = canvasObj.AddComponent<Canvas>();
-        promptCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        promptCanvas.sortingOrder = 95; // 比钻塔UI稍低
-        
-        CanvasScaler scaler = canvasObj.AddComponent<CanvasScaler>();
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1920, 1080);
-        
-        canvasObj.AddComponent<GraphicRaycaster>();
-        
-        // 创建交互提示面板
-        GameObject promptObj = new GameObject("InteractionPrompt");
-        promptObj.transform.SetParent(canvasObj.transform);
-        
-        RectTransform rectTransform = promptObj.AddComponent<RectTransform>();
-        rectTransform.anchorMin = new Vector2(0.5f, 0.35f); // 向上移动到35%位置，避开F键提示
-        rectTransform.anchorMax = new Vector2(0.5f, 0.35f);
-        rectTransform.anchoredPosition = Vector2.zero;
-        rectTransform.sizeDelta = new Vector2(300, 80); // 适合样本信息的大小
-        
-        // 添加背景
-        Image background = promptObj.AddComponent<Image>();
-        background.color = new Color(0, 0, 0, 0.7f);
-        
-        // 创建文本
-        GameObject textObj = new GameObject("PromptText");
-        textObj.transform.SetParent(promptObj.transform);
-        
-        RectTransform textRect = textObj.AddComponent<RectTransform>();
-        textRect.anchorMin = Vector2.zero;
-        textRect.anchorMax = Vector2.one;
-        textRect.offsetMin = Vector2.zero;
-        textRect.offsetMax = Vector2.zero;
-        
-        promptText = textObj.AddComponent<Text>();
-        promptText.text = GetLocalizedCollectionText(); // 使用本地化文本
-        promptText.font = UIFontResolver.GetUIFont();
-        promptText.fontSize = 20; // 和钻塔UI类似的字体大小
-        promptText.color = Color.white;
-        promptText.alignment = TextAnchor.MiddleCenter;
-        
-        // 提示需要根据桌面/触摸输入动态切换，因此在 Update 中直接刷新，
-        // 不挂载只支持单一键值的 LocalizedText。
-        
-        // 初始隐藏
-        promptObj.SetActive(false);
-        
-        interactionPrompt = promptObj;
+        sharedPrompt = UISystem.InteractionPrompt.Create("SamplePromptCanvas", "InteractionPrompt", 170);
+        promptCanvas = sharedPrompt.Canvas;
+        interactionPrompt = sharedPrompt.Panel.gameObject;
+        promptText = sharedPrompt.Action;
+        RefreshPrompt();
     }
-    
+
+    void RefreshPrompt()
+    {
+        if (sharedPrompt == null) return;
+        sharedPrompt.SetContent(GetLocalizedCollectionText(), "E", UISystem.MobileControlHint.UsesTouchControls);
+        bool blocked = Core.GameInputState.GameplayBlocked || StorySystem.StoryDirector.IsStoryPlaybackActive ||
+            InventoryUISystem.IsAnyWheelOpen || QuestSystem.QuestManager.IsPickupFeedbackPending;
+        float distance = nearbyPlayer != null ? Vector3.Distance(transform.position, nearbyPlayer.transform.position) : float.MaxValue;
+        sharedPrompt.SetVisible(playerInRange && !blocked, 3, distance);
+    }
+
     /// <summary>
     /// 设置视觉组件
     /// </summary>
@@ -394,32 +349,15 @@ public class SampleCollector : MonoBehaviour
     /// </summary>
     void ShowInteractionPrompt()
     {
-        if (interactionPrompt != null)
-        {
-            interactionPrompt.SetActive(true);
-            if (promptText != null && sampleData != null)
-            {
-                LocalizedText localizedText = promptText.GetComponent<LocalizedText>();
-                if (localizedText != null)
-                {
-                    localizedText.enabled = false;
-                }
-                promptText.text = GetLocalizedCollectionText();
-            }
-        }
+        RefreshPrompt();
     }
-    
-    /// <summary>
-    /// 隐藏交互提示
-    /// </summary>
+
+    /// <summary>隐藏交互提示</summary>
     void HideInteractionPrompt()
     {
-        if (interactionPrompt != null)
-        {
-            interactionPrompt.SetActive(false);
-        }
+        if (sharedPrompt != null) sharedPrompt.SetVisible(false);
     }
-    
+
     /// <summary>
     /// 启用高亮效果
     /// </summary>
@@ -459,19 +397,9 @@ public class SampleCollector : MonoBehaviour
     /// </summary>
     void UpdatePromptPosition()
     {
-        // UI现在固定显示在屏幕下方，不需要位置计算
-        // 只需要更新文本内容
-        if (interactionPrompt != null && promptText != null && sampleData != null)
-        {
-            LocalizedText localizedText = promptText.GetComponent<LocalizedText>();
-            if (localizedText != null)
-            {
-                localizedText.enabled = false;
-            }
-            promptText.text = GetLocalizedCollectionText();
-        }
+        RefreshPrompt();
     }
-    
+
     /// <summary>
     /// 获取玩家摄像机
     /// </summary>
@@ -525,7 +453,10 @@ public class SampleCollector : MonoBehaviour
     void HandleInput()
     {
         bool pressed = IsEKeyPressed();
-        if (playerInRange && pressed)
+        // 多块岩芯同时在范围内时，只拾取当前显示提示的那一块。
+        if (playerInRange && pressed && interactionPrompt != null && interactionPrompt.activeInHierarchy &&
+            !Core.GameInputState.GameplayBlocked && !StorySystem.StoryDirector.IsStoryPlaybackActive &&
+            !InventoryUISystem.IsAnyWheelOpen)
         {
             CollectSample();
         }
@@ -555,6 +486,8 @@ public class SampleCollector : MonoBehaviour
             return;
         }
         
+        fieldPickupFeedback = QuestSystem.QuestManager.Instance.FieldSampleFeedback(sampleData);
+
         // 尝试添加到背包
         bool addSuccess = false;
         try
@@ -570,6 +503,8 @@ public class SampleCollector : MonoBehaviour
 
         if (addSuccess)
         {
+            // 拾取已消费本次触摸，避免延后一帧的工具路由再次敲击岩石。
+            CollectionTool.SuppressSelectionInput();
             ShowCollectionFeedback();
             // 采集成功，销毁世界中的样本
             Destroy(gameObject);
@@ -596,7 +531,9 @@ public class SampleCollector : MonoBehaviour
             "1001" => "sample.toast.core_collected",
             _ => "sample.toast.collected"
         };
-        UISystem.GameToast.Show(LocalizationManager.Resolve(toastKey, "サンプルを採取できました！"));
+        string toastMessage = fieldPickupFeedback?.Message ?? LocalizationManager.Resolve(toastKey, "サンプルを採取できました！");
+        if (fieldPickupFeedback?.IsWarning == true) UISystem.GameToast.ShowWarning(toastMessage);
+        else UISystem.GameToast.Show(toastMessage);
 
         // 播放采集音效（如果有）
         AudioSource audioSource = GetComponent<AudioSource>();
@@ -622,12 +559,9 @@ public class SampleCollector : MonoBehaviour
     /// </summary>
     void OnDestroy()
     {
-        if (interactionPrompt != null)
-        {
-            Destroy(interactionPrompt);
-        }
+        if (promptCanvas != null) Destroy(promptCanvas.gameObject);
     }
-    
+
     /// <summary>
     /// 在Scene视图中绘制交互范围
     /// </summary>
@@ -642,15 +576,16 @@ public class SampleCollector : MonoBehaviour
     /// </summary>
     private string GetLocalizedCollectionText()
     {
-        string sampleName = sampleData?.displayName ?? "試料";
-        return LocalizationManager.ResolveForCurrentInput(
-            "sample.collection.interact",
-            "sample.collection.mobile",
-            "［E］{0}を採取する",
-            "試料を採取する",
-            sampleName);
+        return UISystem.GameUI.L(PickupActionKey(sampleData?.sourceToolID ?? sourceToolID));
     }
-    
+
+    public static string PickupActionKey(string toolId) => toolId switch
+    {
+        "1002" => "sample.pickup.rock",
+        "1001" => "sample.pickup.core",
+        _ => "sample.pickup.generic"
+    };
+
     /// <summary>
     /// 获取或创建SampleInventory实例
     /// </summary>

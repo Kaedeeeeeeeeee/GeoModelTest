@@ -2610,7 +2610,7 @@
     },
     {
       "key": "story.beat4.q2.prompt",
-      "value": "你看那悬崖。地层像波浪一样弯了！这种弯曲叫什么？"
+      "value": "还记得在野外看到的那面悬崖吗？地层像波浪一样弯着。这种弯曲叫什么？"
     },
     {
       "key": "story.beat4.q2.a",
@@ -2689,11 +2689,11 @@
       "value": "移动用「相位转移器（Phase Shifter）」。按 Tab 键切换工具就行。"
     },
     {
-      "key": "story.bridge.q31.l01",
-      "value": "去露头用地质锤采些岩石回来。颗粒大小和遇盐酸的反应，回来后我们在研究室一起查。"
+      "key": "story.bridge.q21.l04",
+      "value": "到了以后，在蓝色引导线指向的 3 个地点用地质锤采集岩石。颗粒大小和遇盐酸的反应，回来后我们在研究室一起查。"
     },
     {
-      "key": "story.bridge.q31.l02",
+      "key": "story.bridge.q21.l05",
       "value": "明白，我去采！"
     },
     {
@@ -2702,7 +2702,7 @@
     },
     {
       "key": "story.bridge.q32.l02",
-      "value": "到了。用锤子敲开岩石，取一份样本吧。"
+      "value": "到了。沿着蓝线去 3 个地点，用锤子敲开岩石取样吧。"
     },
     {
       "key": "story.bridge.q34.l01",
@@ -2745,6 +2745,22 @@
       "value": "化石……！有点期待呢。"
     },
     {
+      "key": "story.bridge.q42.l01",
+      "value": "再次来到野外。地面上还留着地震造成的裂缝。"
+    },
+    {
+      "key": "story.bridge.q42.l02",
+      "value": "地表的地层是扭曲的。那下面会是什么样子呢……"
+    },
+    {
+      "key": "story.bridge.q42.l03",
+      "value": "在蓝色引导线指向的地方使用钻塔，取出地下的岩芯吧。"
+    },
+    {
+      "key": "story.bridge.q42.l04",
+      "value": "明白。取到岩芯就带回研究室！"
+    },
+    {
       "key": "story.beat3.q1.teach1",
       "value": "化石啊，就像是「时间胶囊」一样。"
     },
@@ -2782,7 +2798,7 @@
     },
     {
       "key": "story.beat4.q2.teach1",
-      "value": "地层本来是横平竖直叠着的。但被两边挤压，就会像那样弯下去。"
+      "value": "地层本来是横平竖直叠着的。但被两边挤压，就会像这张图一样弯下去。"
     },
     {
       "key": "story.beat1.q1.teach1",
@@ -3142,34 +3158,30 @@
     },
     {
       "key": "quest.step.3",
-      "value": "观察异常样本"
+      "value": "在野外 3 个地点采集岩石"
     },
     {
       "key": "quest.step.4",
-      "value": "在野外采集岩石"
-    },
-    {
-      "key": "quest.step.5",
       "value": "带着样本返回研究室"
     },
     {
-      "key": "quest.step.6",
-      "value": "与博士准备钻探"
+      "key": "quest.step.5",
+      "value": "听博士讲解钻探方法"
     },
     {
-      "key": "quest.step.7",
+      "key": "quest.step.6",
       "value": "前往野外钻探点"
     },
     {
-      "key": "quest.step.8",
+      "key": "quest.step.7",
       "value": "用钻塔采集岩芯"
     },
     {
-      "key": "quest.step.9",
+      "key": "quest.step.8",
       "value": "返回研究室分析岩芯"
     },
     {
-      "key": "quest.step.10",
+      "key": "quest.step.9",
       "value": "调查完成，查看报告"
     },
     {
@@ -3558,7 +3570,7 @@
     },
     {
       "key": "quest.npc.reminder.field",
-      "value": "用场景切换器前往野外，在蓝色引导线指向的位置用地质锤采集样本。"
+      "value": "用场景切换器前往野外，在蓝色引导线指向的 3 个地点用地质锤采集样本。"
     },
     {
       "key": "quest.npc.reminder.core",
@@ -3642,19 +3654,19 @@
     },
     {
       "key": "ui.collection.hit_progress.desktop",
-      "value": "采集 {1}/{2} — 继续左键敲击同一标记。"
+      "value": "敲击次数 {1}/{2} — 继续左键敲击同一标记。"
     },
     {
       "key": "ui.collection.hit_progress.touch",
-      "value": "采集 {1}/{2} — 对准同一标记，继续点击「交互」。"
+      "value": "敲击次数 {1}/{2} — 对准同一标记，继续点击「交互」。"
     },
     {
       "key": "ui.collection.pickup.desktop",
-      "value": "采集完成 {2}/{2}！靠近样本，按 E 拾取。"
+      "value": "岩石敲开了！靠近样本，按 E 拾取。"
     },
     {
       "key": "ui.collection.pickup.touch",
-      "value": "采集完成 {2}/{2}！靠近样本，点击「交互」拾取。"
+      "value": "岩石敲开了！靠近样本，点击「交互」拾取。"
     },
     {
       "key": "ui.collection.preview.desktop",
@@ -3714,11 +3726,11 @@
     },
     {
       "key": "ui.collection.finished.desktop",
-      "value": "已达最大深度。拾取周围的岩芯，并查看下一步任务。"
+      "value": "已达最大深度。拾取周围的岩芯后，按 F 收起钻塔。"
     },
     {
       "key": "ui.collection.finished.touch",
-      "value": "已达最大深度。拾取周围的岩芯，并查看下一步任务。"
+      "value": "已达最大深度。拾取周围的岩芯后，点击「次操作」收起钻塔。"
     },
     {
       "key": "ui.dialog.zoom.desktop",
@@ -3815,6 +3827,74 @@
     {
       "key": "ui.safari.ok",
       "value": "知道了"
+    },
+    {
+      "key": "ui.collection.site_progress",
+      "value": "采集点 {0}/{1}"
+    },
+    {
+      "key": "sample.toast.rock_collected_progress",
+      "value": "成功采集岩石样本！（{0}/{1}）"
+    },
+    {
+      "key": "sample.toast.outside_site",
+      "value": "这里不是当前采集点。请在蓝色引导线指向的地点采集。"
+    },
+    {
+      "key": "drill_tower.put_away_prompt",
+      "value": "［F］收起钻塔"
+    },
+    {
+      "key": "drill_tower.put_away_action",
+      "value": "收起钻塔"
+    },
+    {
+      "key": "drill_tower.put_away_prompt_mobile",
+      "value": "点击「次操作」收起钻塔"
+    },
+    {
+      "key": "drill_tower.put_away_toast",
+      "value": "已收起钻塔。"
+    },
+    {
+      "key": "sample.pickup.rock",
+      "value": "拾取岩石样本"
+    },
+    {
+      "key": "sample.pickup.core",
+      "value": "拾取岩芯"
+    },
+    {
+      "key": "sample.pickup.generic",
+      "value": "拾取样本"
+    },
+    {
+      "key": "quest.npc.action.talk",
+      "value": "与 Kaede 研究员交谈"
+    },
+    {
+      "key": "quest.npc.action.continue",
+      "value": "继续听说明"
+    },
+    {
+      "key": "quest.npc.action.reminder",
+      "value": "再次交谈"
+    },
+    {
+      "key": "drill_tower.drill_action",
+      "value": "进行第{0}次钻探（{1:F0}m–{2:F0}m）"
+    },
+    {
+      "key": "sample.collection.mobile",
+      "value": "采集样本"
+    },
+    {
+      "key": "quest.npc.prompt.mobile",
+      "value": "与 Kaede 研究员交谈"
+    },
+    {
+      "key": "drill_tower.drill_prompt_mobile",
+      "value": "采集 {1:F0}m–{2:F0}m 的岩芯"
     }
   ]
 }

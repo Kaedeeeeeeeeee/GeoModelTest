@@ -24,16 +24,11 @@ Unity 3D geological drilling and sample collection system for educational geolog
 - Supports 8 tool slots with real-time mouse selection
 
 #### TabUI排序规则
-- **排序方式**: 按toolID数字从小到大排序
-- **布局方向**: 顺时针方向排列（从12点位置开始）
-- **Slot 0**: 12点位置（最小ID工具）
-- **Slot 1**: 1:30位置 
-- **Slot 2**: 3点位置
-- **Slot 3**: 4:30位置
-- **Slot 4**: 6点位置
-- **Slot 5**: 7:30位置
-- **Slot 6**: 9点位置
-- **Slot 7**: 10:30位置（最大ID工具）
+- **排序方式**: 显式教学顺序：何も持たない → フェーズシフター → 地質ハンマー → ドリルタワー
+- **布局方向**: 按当前可见道具数 N 等分成扇形，何も持たない的扇区以12点方向为中心，其余顺时针排列；4个道具时中心依次在12、3、6、9点，分隔线呈×形。中心圆形死区不选择道具，不显示方格或空槽位。
+- **其他工具**: 不在教学顺序表中的工具排在后面，按原有的数字ID（非数字则字符串）规则排序
+- **隐藏工具**: 1000（簡易ボーリング装置）、1100（无人机）、1101（钻探车）在任何时候都不显示
+- **加入路径**: InitializeTools 与增量 AddTool 使用同一排序规则
 
 ### 4. Sample Reconstruction
 - GeometricSampleReconstructor.cs: Core reconstruction logic
@@ -106,14 +101,12 @@ Assets/Scripts/
 - Safety gap: 0.005m (0.5cm)
 
 ### Tool IDs（按TabUI排序）
-- SceneSwitcherTool: "999" (scene switching) → **Slot 0** (12点位置)
-- SimpleDrillTool: "1000" (basic drilling) → **Slot 1** (1:30位置)
-- DrillTowerTool: "1001" (multi-depth drilling) → **Slot 2** (3点位置)
-- HammerTool: "1002" (geological sampling) → **Slot 3** (4:30位置)
-- DroneTool: "1100" (flying vehicle) → **Slot 4** (6点位置)
-- DrillCarTool: "1101" (ground vehicle) → **Slot 5** (7:30位置)
+- EmptyHandTool: "0"（何も持たない）→ **Slot 0**（12点位置）
+- SceneSwitcherTool: "999"（フェーズシフター）→ **Slot 1**
+- HammerTool: "1002"（地質ハンマー）→ **Slot 2**
+- DrillTowerTool: "1001"（ドリルタワー）→ **Slot 3**
 
-**说明**: 工具按ID从小到大排序，在TabUI中按顺时针方向排列，999作为最小ID排在12点位置（Slot 0）。
+**说明**: 从12点位置开始按上述教学顺序顺时针排列。SimpleDrillTool "1000"、DroneTool "1100"、DrillCarTool "1101" 保留代码和解锁数据，但始终不在轮盘显示；未来其他工具排在教学工具之后，沿用原有ID排序规则。
 
 ## Major Issues Resolved
 

@@ -134,7 +134,7 @@ public class QuestAttentionSceneTests
         _camera.transform.LookAt(_camera.transform.position + new Vector3(12, -0.3f, 28));
         foreach (var quest in ((IDictionary)QuestAttentionTests.Get(quests, "_quests")).Values)
             QuestAttentionTests.Set(quest, "status", Enum.Parse(T("QuestSystem.QuestStatus"), "NotStarted"));
-        Call(quests, "StartQuest", "q.lab.anomaly");
+        Call(quests, "StartQuest", "q.lab.drkaede");
         Call(T("QuestSystem.QuestUI"), "RefreshAll");
         yield return new WaitForSecondsRealtime(4);
         var ui = (Component)UnityEngine.Object.FindFirstObjectByType(T("QuestSystem.QuestUI"));

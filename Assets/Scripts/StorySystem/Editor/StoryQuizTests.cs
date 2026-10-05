@@ -24,7 +24,7 @@ namespace StorySystem.EditorTests
         // 教学流程实际加载的剧情资源（含内嵌选择题）。
         private static readonly string[] BeatFiles =
         {
-            "Story/quest1.1", "Story/quest1.2", "Story/quest3.1", "Story/quest3.4", "Story/quest4.2",
+            "Story/quest1.1", "Story/quest1.2", "Story/quest2.1", "Story/quest3.4", "Story/quest4.2",
             "Story/beat2", "Story/beat3", "Story/core-return", "Story/beat4"
         };
 

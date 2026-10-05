@@ -26,6 +26,13 @@ public class LocalizationDataTests
 
     private static readonly string[] RequiredKeys =
     {
+        "ui.collection.site_progress",
+        "sample.toast.outside_site",
+        "sample.toast.rock_collected_progress",
+        "sample.pickup.rock", "sample.pickup.core", "sample.pickup.generic",
+        "drill_tower.put_away_prompt", "drill_tower.put_away_action", "drill_tower.put_away_prompt_mobile",
+        "drill_tower.put_away_toast", "drill_tower.drill_action",
+        "quest.npc.action.talk", "quest.npc.action.continue", "quest.npc.action.reminder",
         "sample.collection.mobile",
         "sample.retrieve.mobile",
         "warehouse.interaction.mobile",
@@ -63,7 +70,9 @@ public class LocalizationDataTests
             "ui.safari.device.iphone", "ui.safari.device.ipad", "ui.safari.title", "ui.safari.lead", "ui.safari.step.1",
             "ui.safari.classic.step.2", "ui.safari.new.step.2", "ui.safari.step.3", "ui.safari.restore", "ui.safari.ok" })
             CollectionAssert.Contains(keys, key);
-        for (int i = 1; i <= 10; i++) CollectionAssert.Contains(keys, "quest.step." + i);
+        foreach (string key in RequiredKeys.Take(14)) CollectionAssert.Contains(keys, key);
+        for (int i = 1; i <= 9; i++) CollectionAssert.Contains(keys, "quest.step." + i);
+        CollectionAssert.DoesNotContain(keys, "quest.step.10");
         Assert.AreEqual(source, File.ReadAllText(Path.Combine(Application.dataPath, "Scripts/Localization/Data", language + ".json")));
     }
 

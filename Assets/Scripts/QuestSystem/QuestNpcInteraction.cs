@@ -29,10 +29,6 @@ namespace QuestSystem
         [Header("阶段配置（按顺序执行）")]
         [SerializeField] private QuestInteractionStage[] stages = Array.Empty<QuestInteractionStage>();
 
-        [Header("提示UI")]
-        [SerializeField] private Color promptBackgroundColor = new Color(0f, 0f, 0f, 0.65f);
-        [SerializeField] private int promptFontSize = 22;
-
         [Header("高亮设置")]
         [SerializeField] private Color highlightColor = new Color(0.55f, 0.85f, 1f, 1f);
         [SerializeField] private bool tintChildrenRenderers = true;
@@ -48,7 +44,7 @@ namespace QuestSystem
         private Text promptText;
         private Text promptControlInstruction;
         private RectTransform promptPanel;
-        private CanvasScaler promptScaler;
+        private InteractionPrompt sharedPrompt;
         private MobileControlHint promptControlHint;
         private QuestInteractionStage currentStage;
         private QuestStatus currentStageStatus;
@@ -257,67 +253,13 @@ namespace QuestSystem
         {
             if (promptCanvasGO != null) return;
 
-            promptCanvasGO = new GameObject("QuestNpcPromptCanvas");
-
-            var canvas = promptCanvasGO.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 160;
-
-            var scaler = promptCanvasGO.AddComponent<CanvasScaler>();
-            promptScaler = scaler;
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-
-            promptCanvasGO.AddComponent<GraphicRaycaster>();
-
-            var panel = new GameObject("PromptPanel");
-            panel.transform.SetParent(promptCanvasGO.transform, false);
-            var rect = panel.AddComponent<RectTransform>();
-            promptPanel = rect;
-            rect.anchorMin = new Vector2(0.5f, 0.22f);
-            rect.anchorMax = new Vector2(0.5f, 0.22f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.anchoredPosition = Vector2.zero;
-            rect.sizeDelta = new Vector2(420f, 64f);
-
-            var bg = panel.AddComponent<Image>();
-            bg.color = promptBackgroundColor;
-            bg.raycastTarget = false;
-
-            var textObj = new GameObject("PromptText");
-            textObj.transform.SetParent(panel.transform, false);
-            var textRect = textObj.AddComponent<RectTransform>();
-            textRect.anchorMin = Vector2.zero;
-            textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = new Vector2(16f, 12f);
-            textRect.offsetMax = new Vector2(-16f, -12f);
-
-            promptText = textObj.AddComponent<Text>();
-            promptText.font = UIFontResolver.GetUIFont();
-            promptText.fontSize = promptFontSize;
-            promptText.color = Color.white;
-            promptText.alignment = TextAnchor.MiddleCenter;
-            promptText.raycastTarget = false;
-            promptText.resizeTextForBestFit = true;
-            promptText.resizeTextMinSize = 18;
-            promptText.resizeTextMaxSize = promptFontSize;
-
-            promptControlHint = MobileControlHint.Create(panel.transform, "TouchControl", MobileControlHint.Control.Interact);
-            var hintRect = promptControlHint.RectTransform;
-            hintRect.anchorMin = hintRect.anchorMax = new Vector2(0f, 0.5f);
-            hintRect.anchoredPosition = new Vector2(66f, 0f);
-            hintRect.sizeDelta = new Vector2(92f, 92f);
-
-            promptControlInstruction = GameUI.Label(panel.transform, "TouchInstruction", "", 21,
-                new Vector2(0f, 0.08f), new Vector2(1f, 0.46f));
-            promptControlInstruction.rectTransform.offsetMin = new Vector2(132f, 0f);
-            promptControlInstruction.rectTransform.offsetMax = new Vector2(-18f, 0f);
-            promptControlInstruction.color = new Color(1f, 0.88f, 0.66f);
-            promptControlInstruction.resizeTextForBestFit = true;
-            promptControlInstruction.resizeTextMinSize = 17;
-            promptControlInstruction.resizeTextMaxSize = 21;
-            UpdatePromptLayout();
-
+            sharedPrompt = InteractionPrompt.Create("QuestNpcPromptCanvas", "PromptPanel", 160, MobileControlHint.Control.Interact);
+            promptCanvasGO = sharedPrompt.gameObject;
+            promptPanel = sharedPrompt.Panel;
+            promptText = sharedPrompt.Action;
+            promptControlHint = sharedPrompt.TouchControl;
+            promptControlInstruction = sharedPrompt.TouchInstruction;
+            UpdatePromptLocalization();
             promptCanvasGO.SetActive(false);
         }
 
@@ -327,6 +269,7 @@ namespace QuestSystem
             {
                 promptCanvasGO.SetActive(true);
             }
+            sharedPrompt?.SetVisible(true, 2);
             SetHighlight(true);
         }
 
@@ -336,6 +279,7 @@ namespace QuestSystem
             {
                 promptCanvasGO.SetActive(false);
             }
+            sharedPrompt?.SetVisible(false);
             SetHighlight(false);
         }
 
@@ -476,38 +420,12 @@ namespace QuestSystem
         private void UpdatePromptLocalization()
         {
             if (promptText == null) return;
-            UpdatePromptLayout();
-            string targetKey = currentStage != null ? currentStage.promptLocalizationKey : string.Empty;
             bool followup = HasNewConversation && currentStageIndex > 0 &&
                 QuestManager.Instance.GetQuestStatus(stages[currentStageIndex - 1].questId) == QuestStatus.Completed;
-            targetKey = HasNewConversation ? (followup ? "quest.npc.prompt.continue" : targetKey) : "quest.npc.prompt.reminder";
-            promptText.text = LocalizationManager.ResolveForCurrentInput(
-                targetKey,
-                HasNewConversation ? (followup ? "quest.npc.prompt.continue.mobile" : "quest.npc.prompt.mobile") : "quest.npc.prompt.reminder.mobile",
-                "［E］カエデ研究員に話を聞く",
-                "カエデ研究員に話を聞く");
-        }
-
-        private void UpdatePromptLayout()
-        {
+            string actionKey = HasNewConversation ? (followup ? "quest.npc.action.continue" : "quest.npc.action.talk") : "quest.npc.action.reminder";
+            string mobileKey = HasNewConversation ? (followup ? "quest.npc.prompt.continue.mobile" : "quest.npc.prompt.mobile") : "quest.npc.prompt.reminder.mobile";
             bool touch = MobileControlHint.UsesTouchControls;
-            promptScaler.matchWidthOrHeight = touch ? 0.5f : 0f;
-            promptPanel.sizeDelta = touch ? new Vector2(620f, 124f) : new Vector2(420f, 64f);
-            promptControlHint.gameObject.SetActive(touch);
-            promptControlInstruction.gameObject.SetActive(touch);
-            if (touch)
-            {
-                promptControlHint.Refresh();
-                promptControlInstruction.text = LocalizationManager.Resolve(
-                    "quest.npc.prompt.control.mobile", "右側のボタンをタップ");
-            }
-            var textRect = promptText.rectTransform;
-            textRect.anchorMin = new Vector2(0f, touch ? 0.47f : 0f);
-            textRect.anchorMax = new Vector2(1f, touch ? 0.93f : 1f);
-            textRect.offsetMin = touch ? new Vector2(132f, 0f) : new Vector2(16f, 12f);
-            textRect.offsetMax = touch ? new Vector2(-18f, 0f) : new Vector2(-16f, -12f);
-            promptText.alignment = touch ? TextAnchor.MiddleLeft : TextAnchor.MiddleCenter;
-            promptText.resizeTextMaxSize = touch ? Mathf.Max(promptFontSize, 26) : promptFontSize;
+            sharedPrompt.SetContent(GameUI.L(touch ? mobileKey : actionKey), "E", touch);
         }
     }
 }

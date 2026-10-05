@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
@@ -87,8 +88,11 @@ public class MobileInteractionHintTests
         Call(npc, "UpdatePromptLocalization");
         Assert.IsFalse(panel.Find("TouchControl").gameObject.activeSelf);
         Assert.IsFalse(panel.Find("TouchInstruction").gameObject.activeSelf);
-        Assert.IsTrue(text.text.Contains("E"));
-        Assert.AreEqual(new Vector2(420f, 64f), panel.sizeDelta);
+        Assert.IsFalse(text.text.Contains("［E］"));
+        Assert.AreEqual("E", panel.Find("KeyCap/Label").GetComponent<Text>().text);
+        Assert.IsTrue(panel.Find("KeyCap").gameObject.activeSelf);
+        Assert.AreEqual(160f, panel.sizeDelta.y);
+        Assert.GreaterOrEqual(text.fontSize, 30);
     }
 
     [Test]
@@ -120,6 +124,8 @@ public class MobileInteractionHintTests
         string output = Environment.GetEnvironmentVariable("GEOMODEL_MOBILE_HINT_CAPTURE");
         if (string.IsNullOrEmpty(output)) Assert.Ignore("Set GEOMODEL_MOBILE_HINT_CAPTURE for UI captures.");
         Directory.CreateDirectory(output);
+        Call(T("LocalizationManager").GetProperty("Instance").GetValue(null), "SwitchLanguage",
+            Enum.Parse(T("LanguageSettings+Language"), "Japanese"));
         var input = (Behaviour)New("CaptureInput").AddComponent(T("MobileInputManager"));
         Set(input, "currentInputMode", Enum.Parse(T("MobileInputManager+InputMode"), "Mobile"));
         Set(input, "isMobileDevice", true);
@@ -129,15 +135,27 @@ public class MobileInteractionHintTests
         npc.enabled = false;
         Call(npc, "CreatePromptUI");
         Call(npc, "UpdatePromptLocalization");
-        var prompt = ((GameObject)Get(npc, "promptCanvasGO")).GetComponent<Canvas>();
-        prompt.gameObject.SetActive(true);
+        var collector = (Behaviour)New("CaptureRockSample").AddComponent(T("SampleCollector"));
+        collector.enabled = false;
+        Set(collector, "sourceToolID", "1002");
+        Call(collector, "CreateInteractionPrompt");
+        var drillUI = (Behaviour)New("CaptureTowerUI").AddComponent(T("DrillTowerInteractionUI"));
+        drillUI.enabled = false;
+        Call(drillUI, "CreateInteractionUI");
+        var drill = (Behaviour)New("CaptureDrillTool").AddComponent(T("DrillTowerTool"));
+        drill.enabled = false;
+        var tower = (Behaviour)New("CaptureTower").AddComponent(T("DrillTower"));
+        tower.enabled = false;
+        Set(tower, "toolReference", drill);
         controls.enabled = false;
         input.enabled = false;
         var camera = New("CaptureCamera").AddComponent<Camera>();
         camera.clearFlags = CameraClearFlags.SolidColor;
         camera.backgroundColor = new Color(0.04f, 0.08f, 0.1f);
         camera.cullingMask = 1 << LayerMask.NameToLayer("UI");
-        var canvases = new[] { prompt, controls.GetComponent<Canvas>() };
+        var shared = new[] { Get(collector, "sharedPrompt"), Get(drillUI, "sharedPrompt"), Get(npc, "sharedPrompt") };
+        var canvases = shared.Select(p => (Canvas)p.GetType().GetProperty("Canvas").GetValue(p))
+            .Concat(new[] { controls.GetComponent<Canvas>() }).ToArray();
         foreach (var canvas in canvases)
         {
             canvas.renderMode = RenderMode.ScreenSpaceCamera;
@@ -145,27 +163,93 @@ public class MobileInteractionHintTests
             canvas.planeDistance = 1f;
             foreach (var child in canvas.GetComponentsInChildren<Transform>(true)) child.gameObject.layer = LayerMask.NameToLayer("UI");
         }
-        foreach (var size in new[] { new Vector2Int(844, 390), new Vector2Int(1024, 768) })
+        foreach (string action in new[] { "rock", "drill", "maximum", "npc" })
         {
-            var target = new RenderTexture(size.x, size.y, 24);
-            camera.targetTexture = target;
-            yield return null;
-            Canvas.ForceUpdateCanvases();
-            foreach (Text text in prompt.GetComponentsInChildren<Text>())
-                Assert.LessOrEqual(text.preferredHeight, text.rectTransform.rect.height + 1f, text.name + " must fit.");
-            camera.Render();
-            var previous = RenderTexture.active;
-            RenderTexture.active = target;
-            var pixels = new Texture2D(size.x, size.y, TextureFormat.RGB24, false);
-            pixels.ReadPixels(new Rect(0, 0, size.x, size.y), 0, 0);
-            pixels.Apply();
-            File.WriteAllBytes(Path.Combine(output, "npc-touch-" + size.x + "x" + size.y + ".png"), pixels.EncodeToPNG());
-            RenderTexture.active = previous;
-            camera.targetTexture = null;
-            UnityEngine.Object.Destroy(pixels);
-            target.Release();
-            UnityEngine.Object.Destroy(target);
+            foreach (var current in shared) Call(current, "SetVisible", false, 0, 0f);
+            object prompt;
+            string buttonField;
+            if (action == "rock")
+            {
+                Call(collector, "RefreshPrompt");
+                prompt = shared[0];
+                buttonField = "interactButton";
+            }
+            else if (action == "npc")
+            {
+                Call(npc, "UpdatePromptLocalization");
+                prompt = shared[2];
+                buttonField = "interactButton";
+            }
+            else
+            {
+                Set(tower, "currentDrillCount", action == "maximum" ? 5 : 0);
+                Call(drillUI, "UpdatePromptText", tower);
+                prompt = shared[1];
+                buttonField = "secondaryInteractButton";
+            }
+            var canvas = (Canvas)prompt.GetType().GetProperty("Canvas").GetValue(prompt);
+            var panel = (RectTransform)prompt.GetType().GetProperty("Panel").GetValue(prompt);
+            var text = (Text)prompt.GetType().GetProperty("Action").GetValue(prompt);
+            var hint = (Component)prompt.GetType().GetProperty("TouchControl").GetValue(prompt);
+            Call(prompt, "SetVisible", true, 2, 0f);
+            Assert.IsTrue(hint.gameObject.activeSelf);
+            Assert.AreSame(((Button)Get(controls, buttonField)).transform.Find("Icon").GetComponent<Image>().sprite,
+                hint.transform.Find("Visual/Icon").GetComponent<Image>().sprite, action + " must show the matching real control.");
+            StringAssert.DoesNotContain("「使う」で", text.text);
+            if (action == "rock") StringAssert.Contains("岩石サンプルを拾う", text.text);
+            if (action == "maximum")
+            {
+                StringAssert.Contains("調査できる最大の深さに達しました", text.text);
+                StringAssert.Contains("ドリルタワーをしまう", text.text);
+            }
+            foreach (var size in new[] { new Vector2Int(960, 540), new Vector2Int(844, 390), new Vector2Int(1024, 768) })
+            {
+                var target = new RenderTexture(size.x, size.y, 24);
+                camera.targetTexture = target;
+                yield return null;
+                Canvas.ForceUpdateCanvases();
+                foreach (Text label in canvas.GetComponentsInChildren<Text>())
+                {
+                    if (label.resizeTextForBestFit) continue; // Button artwork keeps its source label's fitted size.
+                    Assert.LessOrEqual(label.preferredHeight, label.rectTransform.rect.height + 1f, action + "/" + label.name + " must fit.");
+                }
+                Assert.IsFalse(ScreenRect(hint.GetComponent<RectTransform>(), camera).Overlaps(ScreenRect(text.rectTransform, camera)),
+                    action + " icon and action must not overlap.");
+                var panelBounds = ScreenRect(panel, camera);
+                Assert.GreaterOrEqual(panelBounds.xMin, 0f);
+                Assert.LessOrEqual(panelBounds.xMax, size.x);
+                foreach (string control in new[] { "interactButton", "secondaryInteractButton", "toolWheelButton", "inventoryButton" })
+                    Assert.IsFalse(panelBounds.Overlaps(ScreenRect(((Button)Get(controls, control)).GetComponent<RectTransform>(), camera)),
+                        action + " must not cover " + control + " at " + size);
+                if (size == new Vector2Int(960, 540)) Assert.GreaterOrEqual(text.fontSize * canvas.scaleFactor, 18f);
+                camera.Render();
+                var previous = RenderTexture.active;
+                RenderTexture.active = target;
+                var pixels = new Texture2D(size.x, size.y, TextureFormat.RGB24, false);
+                pixels.ReadPixels(new Rect(0, 0, size.x, size.y), 0, 0);
+                pixels.Apply();
+                File.WriteAllBytes(Path.Combine(output, action + "-touch-" + size.x + "x" + size.y + ".png"), pixels.EncodeToPNG());
+                RenderTexture.active = previous;
+                camera.targetTexture = null;
+                UnityEngine.Object.Destroy(pixels);
+                target.Release();
+                UnityEngine.Object.Destroy(target);
+            }
         }
+        Set(tower, "isDrilling", true);
+        Call(drillUI, "UpdatePromptText", tower);
+        var towerPanel = (GameObject)Get(drillUI, "interactionPrompt");
+        Assert.IsFalse(towerPanel.transform.Find("TouchControl").gameObject.activeSelf,
+            "A tower in progress must hide the unavailable action button.");
+    }
+
+    private static Rect ScreenRect(RectTransform rt, Camera camera)
+    {
+        var corners = new Vector3[4];
+        rt.GetWorldCorners(corners);
+        var min = RectTransformUtility.WorldToScreenPoint(camera, corners[0]);
+        var max = RectTransformUtility.WorldToScreenPoint(camera, corners[2]);
+        return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
     }
 
     [TearDown]

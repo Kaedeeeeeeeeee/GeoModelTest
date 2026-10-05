@@ -38,57 +38,11 @@ public class UISystemCreator : MonoBehaviour
     [MenuItem("Tools/修复UI大小")]
     static void FixUISize()
     {
-        InventoryUISystem[] systems = FindObjectsOfType<InventoryUISystem>();
-        foreach (var system in systems)
-        {
-            if (system.wheelUI != null)
-            {
-                RectTransform wheelRect = system.wheelUI.GetComponent<RectTransform>();
-                if (wheelRect != null)
-                {
-                    // 使用80%屏幕大小
-                    float screenSize = Mathf.Min(Screen.width, Screen.height);
-                    float wheelSize = screenSize * 0.8f;
-                    
-                    wheelRect.sizeDelta = new Vector2(wheelSize, wheelSize);
-                    wheelRect.anchorMin = new Vector2(0.5f, 0.5f);
-                    wheelRect.anchorMax = new Vector2(0.5f, 0.5f);
-                    wheelRect.pivot = new Vector2(0.5f, 0.5f);
-                    wheelRect.anchoredPosition = Vector2.zero;
-                    
-                    // 手动重新计算slot位置
-                    FixSlotPositions(system, wheelSize);
-                    
-                    Debug.Log($"已修复 {system.gameObject.name} 的轮盘大小为: {wheelSize}x{wheelSize}");
-                }
-            }
-        }
-        Debug.Log("UI大小修复完成 - 使用80%屏幕大小，slot已重新定位");
+        foreach (var system in FindObjectsByType<InventoryUISystem>(FindObjectsSortMode.None))
+            system.RebuildWheelUI();
+        Debug.Log("轮盘已按可见道具数重建等分扇区，大小不超过屏幕短边的86%。");
     }
-    
-    static void FixSlotPositions(InventoryUISystem system, float wheelSize)
-    {
-        if (system.wheelSlots == null) return;
-        
-        // 使用与InventoryUISystem相同的计算逻辑
-        float slotSize = wheelSize * 0.08f;
-        float slotRadius = (wheelSize * 0.5f) - (slotSize * 2.5f);
-        
-        for (int i = 0; i < system.wheelSlots.Length; i++)
-        {
-            if (system.wheelSlots[i] != null)
-            {
-                // 计算圆形位置：从顶部开始，顺时针排列
-                float angle = i * 45f * Mathf.Deg2Rad;
-                Vector2 slotPos = new Vector2(Mathf.Sin(angle) * slotRadius, Mathf.Cos(angle) * slotRadius);
-                system.wheelSlots[i].anchoredPosition = slotPos;
-                system.wheelSlots[i].sizeDelta = new Vector2(slotSize, slotSize);
-            }
-        }
-        
-        Debug.Log($"重新定位了 {system.wheelSlots.Length} 个slot，半径: {slotRadius}, 大小: {slotSize}");
-    }
-    
+
     [MenuItem("Tools/修复EventSystem")]
     static void FixEventSystem()
     {
@@ -206,103 +160,7 @@ public class UISystemCreator : MonoBehaviour
     
     static void CreateWheelUIManually(InventoryUISystem inventoryUI)
     {
-        // 创建圆形轮盘背景
-        GameObject wheelBG = new GameObject("WheelBackground");
-        wheelBG.transform.SetParent(inventoryUI.transform);
-        
-        RectTransform bgRect = wheelBG.AddComponent<RectTransform>();
-        bgRect.sizeDelta = new Vector2(300, 300);
-        bgRect.anchorMin = new Vector2(0.5f, 0.5f);
-        bgRect.anchorMax = new Vector2(0.5f, 0.5f);
-        bgRect.pivot = new Vector2(0.5f, 0.5f);
-        bgRect.anchoredPosition = Vector2.zero;
-        
-        // 创建圆形背景图像
-        Image bgImage = wheelBG.AddComponent<Image>();
-        bgImage.color = new Color(0.1f, 0.1f, 0.1f, 0.95f);
-        
-        // 初始化数组
-        RectTransform[] wheelSlots = new RectTransform[8];
-        Image[] slotImages = new Image[8];
-        Text[] slotTexts = new Text[8];
-        
-        // 创建8个轮盘槽位（圆形排列）
-        for (int i = 0; i < 8; i++)
-        {
-            // 创建槽位容器
-            GameObject slot = new GameObject($"Slot_{i}");
-            slot.transform.SetParent(wheelBG.transform);
-            
-            RectTransform slotRect = slot.AddComponent<RectTransform>();
-            slotRect.sizeDelta = new Vector2(60, 60);
-            slotRect.anchorMin = new Vector2(0.5f, 0.5f);
-            slotRect.anchorMax = new Vector2(0.5f, 0.5f);
-            slotRect.pivot = new Vector2(0.5f, 0.5f);
-            
-            // 计算圆形位置
-            float angle = i * 45f * Mathf.Deg2Rad;
-            float radius = 120f; // 圆形半径
-            Vector2 slotPos = new Vector2(Mathf.Sin(angle) * radius, Mathf.Cos(angle) * radius);
-            slotRect.anchoredPosition = slotPos;
-            
-            // 添加槽位背景
-            Image slotBG = slot.AddComponent<Image>();
-            slotBG.color = new Color(0.3f, 0.3f, 0.3f, 0.7f);
-            
-            // 创建工具图标
-            GameObject iconObj = new GameObject("Icon");
-            iconObj.transform.SetParent(slot.transform);
-            
-            RectTransform iconRect = iconObj.AddComponent<RectTransform>();
-            iconRect.sizeDelta = new Vector2(40, 40);
-            iconRect.anchorMin = new Vector2(0.5f, 0.5f);
-            iconRect.anchorMax = new Vector2(0.5f, 0.5f);
-            iconRect.anchoredPosition = Vector2.zero;
-            
-            Image iconImage = iconObj.AddComponent<Image>();
-            iconImage.color = Color.white;
-            
-            // 创建文本
-            GameObject textObj = new GameObject("Text");
-            textObj.transform.SetParent(slot.transform);
-            
-            RectTransform textRect = textObj.AddComponent<RectTransform>();
-            textRect.sizeDelta = new Vector2(80, 15);
-            textRect.anchorMin = new Vector2(0.5f, 0.5f);
-            textRect.anchorMax = new Vector2(0.5f, 0.5f);
-            textRect.anchoredPosition = new Vector2(0, -40);
-            
-            Text text = textObj.AddComponent<Text>();
-            text.text = $"工具{i + 1}";
-            text.font = UIFontResolver.GetUIFont();
-            text.fontSize = 10;
-            text.color = Color.white;
-            text.alignment = TextAnchor.MiddleCenter;
-            
-            // 保存引用
-            wheelSlots[i] = slotRect;
-            slotImages[i] = iconImage;
-            slotTexts[i] = text;
-        }
-        
-        // 设置InventoryUISystem的引用（通过反射）
-        var wheelUIField = typeof(InventoryUISystem).GetField("wheelUI");
-        var wheelSlotsField = typeof(InventoryUISystem).GetField("wheelSlots");
-        var slotImagesField = typeof(InventoryUISystem).GetField("slotImages");
-        var slotTextsField = typeof(InventoryUISystem).GetField("slotTexts");
-        var wheelBackgroundField = typeof(InventoryUISystem).GetField("wheelBackground");
-        var wheelCenterField = typeof(InventoryUISystem).GetField("wheelCenter");
-        
-        if (wheelUIField != null) wheelUIField.SetValue(inventoryUI, wheelBG);
-        if (wheelSlotsField != null) wheelSlotsField.SetValue(inventoryUI, wheelSlots);
-        if (slotImagesField != null) slotImagesField.SetValue(inventoryUI, slotImages);
-        if (slotTextsField != null) slotTextsField.SetValue(inventoryUI, slotTexts);
-        if (wheelBackgroundField != null) wheelBackgroundField.SetValue(inventoryUI, bgImage);
-        if (wheelCenterField != null) wheelCenterField.SetValue(inventoryUI, wheelBG.transform);
-        
-        // 初始隐藏轮盘
-        wheelBG.SetActive(false);
-        
-        Debug.Log("圆形轮盘UI创建完成 - 8个slot已按圆形排列");
+        inventoryUI.RebuildWheelUI();
+        Debug.Log("等分扇形轮盘已创建，运行时随可见道具数更新。");
     }
 }

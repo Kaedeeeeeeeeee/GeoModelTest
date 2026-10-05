@@ -17,6 +17,7 @@ public class DrillTowerInteractionUI : MonoBehaviour
     public string drillingText = "コアを採取しています…";
     public string maxDepthText = "調査できる最大の深さに達しました";
     
+    private UISystem.InteractionPrompt sharedPrompt;
     private DrillTower currentTower;
     private Camera playerCamera;
     private bool isShowingPrompt = false;
@@ -41,7 +42,7 @@ public class DrillTowerInteractionUI : MonoBehaviour
     void Update()
     {
         if (Core.GameInputState.IsModalOpen || StorySystem.StoryDirector.IsStoryPlaybackActive ||
-            UISystem.CollectionGuidanceHUD.IsVisible || QuestSystem.QuestManager.IsPickupFeedbackPending)
+            InventoryUISystem.IsAnyWheelOpen || QuestSystem.QuestManager.IsPickupFeedbackPending)
         {
             HideInteractionPrompt();
             return;
@@ -54,61 +55,13 @@ public class DrillTowerInteractionUI : MonoBehaviour
     /// </summary>
     void CreateInteractionUI()
     {
-        // 如果没有Canvas，创建一个
-        if (uiCanvas == null)
-        {
-            GameObject canvasObj = new GameObject("DrillTowerInteractionCanvas");
-            uiCanvas = canvasObj.AddComponent<Canvas>();
-            uiCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            uiCanvas.sortingOrder = 100; // 确保在最前面
-            
-            CanvasScaler scaler = canvasObj.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            
-            canvasObj.AddComponent<GraphicRaycaster>();
-        }
-        
-        // 创建交互提示
-        if (interactionPrompt == null)
-        {
-            interactionPrompt = new GameObject("InteractionPrompt");
-            interactionPrompt.transform.SetParent(uiCanvas.transform);
-            
-            RectTransform rectTransform = interactionPrompt.AddComponent<RectTransform>();
-            rectTransform.anchorMin = new Vector2(0.5f, 0.3f);
-            rectTransform.anchorMax = new Vector2(0.5f, 0.3f);
-            rectTransform.anchoredPosition = Vector2.zero;
-            rectTransform.sizeDelta = new Vector2(400, 120); // 增加宽度和高度以适应更多文本
-            
-            // 添加背景
-            Image background = interactionPrompt.AddComponent<Image>();
-            background.color = new Color(0, 0, 0, 0.7f);
-            
-            // 创建文本
-            GameObject textObj = new GameObject("PromptText");
-            textObj.transform.SetParent(interactionPrompt.transform);
-            
-            RectTransform textRect = textObj.AddComponent<RectTransform>();
-            textRect.anchorMin = Vector2.zero;
-            textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = Vector2.zero;
-            textRect.offsetMax = Vector2.zero;
-            
-            promptText = textObj.AddComponent<Text>();
-            promptText.text = basePromptText;
-            promptText.font = UIFontResolver.GetUIFont();
-            promptText.fontSize = 24;
-            promptText.color = Color.white;
-            promptText.alignment = TextAnchor.MiddleCenter;
-            
-            // 初始隐藏
-            interactionPrompt.SetActive(false);
-        }
-        
-        Debug.Log("钻塔交互UI创建完成");
+        if (sharedPrompt != null) return;
+        sharedPrompt = UISystem.InteractionPrompt.Create("DrillTowerInteractionCanvas", "InteractionPrompt", 165, UISystem.MobileControlHint.Control.Secondary);
+        uiCanvas = sharedPrompt.Canvas;
+        interactionPrompt = sharedPrompt.Panel.gameObject;
+        promptText = sharedPrompt.Action;
     }
-    
+
     /// <summary>
     /// 更新交互提示
     /// </summary>
@@ -180,7 +133,7 @@ public class DrillTowerInteractionUI : MonoBehaviour
 
         if (!isShowingPrompt)
         {
-            interactionPrompt.SetActive(true);
+            sharedPrompt.SetVisible(true, 1);
             isShowingPrompt = true;
         }
 
@@ -198,7 +151,7 @@ public class DrillTowerInteractionUI : MonoBehaviour
             // 检查UI对象是否仍然有效
             if (interactionPrompt != null)
             {
-                interactionPrompt.SetActive(false);
+                sharedPrompt.SetVisible(false);
             }
             isShowingPrompt = false;
             currentTower = null;
@@ -210,55 +163,26 @@ public class DrillTowerInteractionUI : MonoBehaviour
     /// </summary>
     void UpdatePromptText(DrillTower tower)
     {
-        if (promptText == null) return;
-
+        if (sharedPrompt == null) return;
+        bool touch = UISystem.MobileControlHint.UsesTouchControls;
+        string text;
+        bool warning = false;
         if (tower.isDrilling)
         {
-            promptText.text = LocalizationManager.Resolve(
-                "drill_tower.drilling",
-                "ボーリング調査中…");
-            promptText.color = Color.yellow;
+            text = UISystem.GameUI.L("drill_tower.drilling");
         }
-        else if (tower.currentDrillCount >= 5) // 假设最大5次钻探
+        else if (tower.CanPutAway())
         {
-            string maxDepthText = LocalizationManager.Resolve(
-                "drill_tower.max_depth",
-                "調査できる最大の深さに達しました");
-            promptText.text = AppendRecallText(maxDepthText);
-            promptText.color = Color.red;
+            text = UISystem.GameUI.L("drill_tower.max_depth") + "\n" + UISystem.GameUI.L("drill_tower.put_away_action");
+            warning = true;
         }
         else
         {
-            int nextDrillNumber = tower.currentDrillCount + 1;
-            float startDepth = tower.currentDrillCount * 2f;
-            float endDepth = startDepth + 2f;
-
-            string drillPrompt = LocalizationManager.ResolveForCurrentInput(
-                "drill_tower.drill_prompt",
-                "drill_tower.drill_prompt_mobile",
-                "［F］{1:F0}～{2:F0}mのコアを採取する",
-                "{1:F0}～{2:F0}mのコアを採取する",
-                nextDrillNumber,
-                startDepth,
-                endDepth);
-            promptText.text = AppendRecallText(drillPrompt);
-            promptText.color = Color.white;
+            float startDepth = tower.currentDrillCount * tower.toolReference.depthPerDrill;
+            text = LocalizationManager.Resolve("drill_tower.drill_action", "{1:F0}～{2:F0}mのコアを採取する",
+                tower.currentDrillCount + 1, startDepth, startDepth + tower.toolReference.depthPerDrill);
         }
-    }
-
-    /// <summary>
-    /// 教学流程不需要回收钻塔（老师反馈），只有工具允许回收时才列出回收操作。
-    /// </summary>
-    string AppendRecallText(string text)
-    {
-        var tool = FindFirstObjectByType<DrillTowerTool>();
-        if (tool == null || !tool.allowRecall) return text;
-        string recallText = LocalizationManager.ResolveForCurrentInput(
-            "drill_tower.recall_prompt",
-            "drill_tower.recall_prompt_mobile",
-            "［G］ボーリング装置を回収する",
-            "ボーリング装置を回収する");
-        return $"{text}\n{recallText}";
+        sharedPrompt.SetContent(text, "F", touch, warning, !tower.isDrilling);
     }
 
     /// <summary>
@@ -275,6 +199,7 @@ public class DrillTowerInteractionUI : MonoBehaviour
 
     void OnDestroy()
     {
+        if (uiCanvas != null) Destroy(uiCanvas.gameObject);
         // 移除语言切换事件监听器
         if (LocalizationManager.Instance != null)
         {

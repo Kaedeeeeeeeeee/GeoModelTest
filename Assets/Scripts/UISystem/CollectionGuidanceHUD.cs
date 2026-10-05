@@ -21,6 +21,7 @@ namespace UISystem
         private MobileControlHint _toolsHint;
         public static string RecommendedToolId { get; private set; }
         public static bool IsVisible { get; private set; }
+        public static RectTransform VisibleCard { get; private set; }
 
         public static void Attach(ToolManager tools)
         {
@@ -40,12 +41,13 @@ namespace UISystem
             _icon = GameUI.Box(_card, "ToolIcon", Color.white, new Vector2(0.03f, 0.61f), new Vector2(0.15f, 0.95f));
             _icon.preserveAspect = true;
             _icon.raycastTarget = false;
-            _title = GameUI.Label(_card, "Title", "", 22, new Vector2(0.18f, 0.65f), new Vector2(0.97f, 0.95f));
+            _title = GameUI.Label(_card, "Title", "", 26, new Vector2(0.18f, 0.58f), new Vector2(0.97f, 0.97f));
             _title.color = GameUI.Accent;
-            _instruction = GameUI.Label(_card, "NextAction", "", 21, new Vector2(0.04f, 0.07f), new Vector2(0.96f, 0.65f));
+            _title.verticalOverflow = VerticalWrapMode.Overflow;
+            _instruction = GameUI.Label(_card, "NextAction", "", 24, new Vector2(0.04f, 0.07f), new Vector2(0.96f, 0.55f));
             _instruction.resizeTextForBestFit = true;
-            _instruction.resizeTextMinSize = 17;
-            _instruction.resizeTextMaxSize = 21;
+            _instruction.resizeTextMinSize = 20;
+            _instruction.resizeTextMaxSize = 24;
             // The cue uses the same artwork and label as the real touch control.
             // Its own button opens the existing wheel; it never equips a tool implicitly.
             _openToolsButton = GameUI.Button(_card, "OpenTools", "", new Vector2(0.76f, 0.07f),
@@ -61,6 +63,9 @@ namespace UISystem
             _openToolsButton.gameObject.SetActive(false);
             _card.gameObject.SetActive(false);
         }
+
+        public static string HammerTitle(string toolName, int site, int total) =>
+            toolName + "　" + string.Format(GameUI.L("ui.collection.site_progress"), site, total);
 
         // Pure state resolution also used by the EditMode regression tests.
         public static string HammerStage(bool equipped, int hits, bool pendingSample)
@@ -88,6 +93,8 @@ namespace UISystem
             RefreshGuidance();
             if (_card != null && _card.gameObject.activeSelf != IsVisible)
                 _card.gameObject.SetActive(IsVisible);
+            if (IsVisible) VisibleCard = _card;
+            else if (VisibleCard == _card) VisibleCard = null;
         }
 
         private void RefreshGuidance()
@@ -140,16 +147,19 @@ namespace UISystem
             bool showToolsButton = touch && stage == "equip" && !InventoryUISystem.IsAnyWheelOpen &&
                 MobileInputManager.Instance != null && _toolsHint.Refresh();
             _openToolsButton.gameObject.SetActive(showToolsButton);
-            _instruction.rectTransform.anchorMax = new Vector2(showToolsButton ? 0.73f : 0.96f, 0.65f);
-            _title.rectTransform.anchorMax = new Vector2(showToolsButton ? 0.73f : 0.97f, 0.95f);
+            _instruction.rectTransform.anchorMax = new Vector2(showToolsButton ? 0.73f : 0.96f, 0.55f);
+            _title.rectTransform.anchorMax = new Vector2(showToolsButton ? 0.73f : 0.97f, 0.97f);
             string toolName = CurrentToolHUD.ToolName(tool);
-            _title.text = toolName;
+            _title.text = hammerQuest ? HammerTitle(toolName, quests.FieldCollectionSite, quests.FieldCollectionSiteTotal) : toolName;
+            if (hammerQuest && showToolsButton)
+                _title.text = toolName + "\n" + string.Format(GameUI.L("ui.collection.site_progress"),
+                    quests.FieldCollectionSite, quests.FieldCollectionSiteTotal);
             _instruction.text = string.Format(GameUI.L("ui.collection." + stage + (touch ? ".touch" : ".desktop")),
                 toolName, hits, required);
             _icon.sprite = ToolIconResolver.GetIcon(tool);
             float scale = Mathf.Max(0.01f, _canvas.scaleFactor);
             Rect safe = Screen.safeArea;
-            _card.sizeDelta = new Vector2(Mathf.Min(540f, safe.width / scale * 0.42f), 142f);
+            _card.sizeDelta = new Vector2(Mathf.Min(540f, safe.width / scale * 0.42f), 182f);
             // Touch controls occupy the row below the quest card.
             float top = touch ? 370f : 172f;
             _card.anchoredPosition = new Vector2(safe.xMin / scale + 20f, -(Screen.height - safe.yMax) / scale - top);
@@ -176,6 +186,7 @@ namespace UISystem
         {
             RecommendedToolId = null;
             IsVisible = false;
+            if (VisibleCard == _card) VisibleCard = null;
             if (_card != null) _card.gameObject.SetActive(false);
         }
     }

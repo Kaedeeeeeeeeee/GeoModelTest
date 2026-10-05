@@ -42,7 +42,7 @@ namespace StorySystem
         public static int ActivityCount => (Current.fieldSample ? 1 : 0) + (HasCore ? 1 : 0) +
             (Current.laboratoryAnalysis ? 1 : 0) + (IsComplete ? 1 : 0);
         public const int ActivityTotal = 4;
-        public const int StepTotal = 10;
+        public const int StepTotal = 9;
 
         public static bool AcceptCoreSample(string sampleId, string sourceToolId, bool isField, bool questActive)
         {
@@ -65,10 +65,10 @@ namespace StorySystem
 
         public static int GetStep()
         {
-            if (IsComplete) return 10;
+            if (IsComplete) return StepTotal;
             var qm = QuestManager.Instance;
-            if (NeedsLabAnalysis) return qm.GetQuestStatus("q.chapter4.return") == QuestStatus.InProgress ? 9 : 8;
-            string[] stages = { "q.lab.intro", "q.lab.drkaede", "q.lab.anomaly", "q.field.phase", "q.lab.return",
+            if (NeedsLabAnalysis) return qm.GetQuestStatus("q.chapter4.return") == QuestStatus.InProgress ? 8 : 7;
+            string[] stages = { "q.lab.intro", "q.lab.drkaede", "q.field.phase", "q.lab.return",
                 "q.chapter4.kaede", "q.chapter4.field", "q.chapter4.sample" };
             for (int i = stages.Length - 1; i >= 0; i--)
                 if (qm.GetQuestStatus(stages[i]) != QuestStatus.NotStarted) return i + 1;
