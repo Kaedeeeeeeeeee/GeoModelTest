@@ -1,0 +1,27 @@
+{
+  "build": "17462165-2069453",
+  "version": "2026.10.05-teacher-review-2",
+  "allMatch": true,
+  "files": {
+    "Build/WebGL.data.unityweb": "identical",
+    "Build/WebGL.framework.js.unityweb": "identical",
+    "Build/WebGL.loader.js": "identical after decompression",
+    "Build/WebGL.wasm.unityweb": "identical",
+    "StreamingAssets/Survey/config.js": "identical after decompression",
+    "StreamingAssets/Survey/index.html": "identical except itch.io htmlgame.js",
+    "StreamingAssets/Survey/preview.css": "identical after decompression",
+    "StreamingAssets/Survey/preview.html": "identical after decompression",
+    "StreamingAssets/Survey/preview.js": "identical after decompression",
+    "StreamingAssets/Survey/questions.js": "identical after decompression",
+    "StreamingAssets/Survey/questions.json": "identical after decompression",
+    "StreamingAssets/Survey/survey.css": "identical after decompression",
+    "StreamingAssets/Survey/survey.js": "identical after decompression",
+    "StreamingAssets/UnityServicesProjectConfiguration.json": "identical after decompression",
+    "TemplateData/guardian-consent.js": "identical after decompression",
+    "TemplateData/loading.js": "identical after decompression",
+    "TemplateData/performance.js": "identical after decompression",
+    "TemplateData/style.css": "identical after decompression",
+    "index.html": "identical except itch.io htmlgame.js",
+    "release.json": "identical after decompression"
+  }
+}
