@@ -3775,6 +3775,46 @@
     {
       "key": "story.beat3.l12",
       "value": "Remember the limestone? It also formed from piled-up coral and shells."
+    },
+    {
+      "key": "ui.safari.device.iphone",
+      "value": "Playing in Safari on iPhone"
+    },
+    {
+      "key": "ui.safari.device.ipad",
+      "value": "Playing in Safari on iPad"
+    },
+    {
+      "key": "ui.safari.title",
+      "value": "Make the game screen bigger"
+    },
+    {
+      "key": "ui.safari.lead",
+      "value": "Hide Safari's toolbar to give the game more room."
+    },
+    {
+      "key": "ui.safari.step.1",
+      "value": "Tap the button at the left end of the address bar (Page Menu)."
+    },
+    {
+      "key": "ui.safari.classic.step.2",
+      "value": "Tap “…” at the top right of the menu."
+    },
+    {
+      "key": "ui.safari.new.step.2",
+      "value": "Scroll to the bottom of the menu."
+    },
+    {
+      "key": "ui.safari.step.3",
+      "value": "Tap “Hide Toolbar”."
+    },
+    {
+      "key": "ui.safari.restore",
+      "value": "To bring it back, tap the small address at the top of the screen."
+    },
+    {
+      "key": "ui.safari.ok",
+      "value": "Got it"
     }
   ]
 }

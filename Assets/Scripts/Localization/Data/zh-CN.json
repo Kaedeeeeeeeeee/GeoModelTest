@@ -3775,6 +3775,46 @@
     {
       "key": "story.beat3.l12",
       "value": "刚才的石灰岩，也是由珊瑚和贝壳堆积形成的岩石呢。"
+    },
+    {
+      "key": "ui.safari.device.iphone",
+      "value": "使用 iPhone Safari 的同学"
+    },
+    {
+      "key": "ui.safari.device.ipad",
+      "value": "使用 iPad Safari 的同学"
+    },
+    {
+      "key": "ui.safari.title",
+      "value": "把游戏画面变大"
+    },
+    {
+      "key": "ui.safari.lead",
+      "value": "隐藏 Safari 的工具栏，游戏画面就会变大。"
+    },
+    {
+      "key": "ui.safari.step.1",
+      "value": "点地址栏左端的按钮（页面菜单）。"
+    },
+    {
+      "key": "ui.safari.classic.step.2",
+      "value": "点菜单右上角的「…」。"
+    },
+    {
+      "key": "ui.safari.new.step.2",
+      "value": "把菜单往下滑到底。"
+    },
+    {
+      "key": "ui.safari.step.3",
+      "value": "点「ツールバーを非表示」（隐藏工具栏）。"
+    },
+    {
+      "key": "ui.safari.restore",
+      "value": "想恢复时，点屏幕顶部的小地址栏。"
+    },
+    {
+      "key": "ui.safari.ok",
+      "value": "知道了"
     }
   ]
 }

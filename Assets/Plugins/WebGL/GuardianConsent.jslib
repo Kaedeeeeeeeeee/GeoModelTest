@@ -1,5 +1,17 @@
 // Bridge to TemplateData/guardian-consent.js: the 保護者同意 answered on the page before Unity started.
 mergeInto(LibraryManager.library, {
+  // 0 = no consent page (another host), 1 = the guardian or student is still answering, 2 = both done.
+  GeoModelGuardianConsent_GetState: function () {
+    try {
+      var api = window.GeoModelGuardianConsent;
+      if (!api) return 0;
+      return api.isPending() ? 1 : 2;
+    } catch (e) {
+      console.warn("[GuardianConsent] could not read the consent state:", e);
+      return 0;
+    }
+  },
+
   GeoModelGuardianConsent_GetPayload: function () {
     var json = "";
     try {

@@ -59,7 +59,9 @@ public class LocalizationDataTests
             "ui.history.title", "ui.tool.current", "report.wrong_attempts", "report.practice", "backend.bound", "backend.pending_upload", "survey.open_first",
             "ui.consent.eyebrow", "ui.consent.title", "ui.consent.body", "ui.consent.agreement.1", "ui.consent.agreement.2", "ui.consent.agreement.3",
             "ui.consent.hint", "ui.consent.cancel", "ui.consent.continue", "ui.consent.review",
-            "ui.tool.switch_hint", "sample.toast.rock_collected", "sample.toast.core_collected", "sample.toast.collected" })
+            "ui.tool.switch_hint", "sample.toast.rock_collected", "sample.toast.core_collected", "sample.toast.collected",
+            "ui.safari.device.iphone", "ui.safari.device.ipad", "ui.safari.title", "ui.safari.lead", "ui.safari.step.1",
+            "ui.safari.classic.step.2", "ui.safari.new.step.2", "ui.safari.step.3", "ui.safari.restore", "ui.safari.ok" })
             CollectionAssert.Contains(keys, key);
         for (int i = 1; i <= 10; i++) CollectionAssert.Contains(keys, "quest.step." + i);
         Assert.AreEqual(source, File.ReadAllText(Path.Combine(Application.dataPath, "Scripts/Localization/Data", language + ".json")));

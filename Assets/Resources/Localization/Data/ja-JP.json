@@ -3955,6 +3955,46 @@
     {
       "key": "story.beat3.l12",
       "value": "さっきの石灰岩（せっかいがん）も、サンゴや貝（かい）がらが積（つ）もってできた岩石（がんせき）だったね。"
+    },
+    {
+      "key": "ui.safari.device.iphone",
+      "value": "iPhone の Safari をお使いの方へ"
+    },
+    {
+      "key": "ui.safari.device.ipad",
+      "value": "iPad の Safari をお使いの方へ"
+    },
+    {
+      "key": "ui.safari.title",
+      "value": "ゲームの画面を広くしよう"
+    },
+    {
+      "key": "ui.safari.lead",
+      "value": "Safariのツールバーをかくすと、ゲームの画面が大きくなります。"
+    },
+    {
+      "key": "ui.safari.step.1",
+      "value": "アドレス欄の左はしにあるボタン（ページメニュー）をタップします。"
+    },
+    {
+      "key": "ui.safari.classic.step.2",
+      "value": "メニューの右上にある「…」をタップします。"
+    },
+    {
+      "key": "ui.safari.new.step.2",
+      "value": "メニューを下のほうまでスクロールします。"
+    },
+    {
+      "key": "ui.safari.step.3",
+      "value": "「ツールバーを非表示」をタップします。"
+    },
+    {
+      "key": "ui.safari.restore",
+      "value": "もとに戻すときは、画面の上の小さなアドレスをタップします。"
+    },
+    {
+      "key": "ui.safari.ok",
+      "value": "わかった"
     }
   ]
 }

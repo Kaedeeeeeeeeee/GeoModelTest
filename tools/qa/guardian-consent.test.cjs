@@ -57,11 +57,32 @@ test('a first visit shows the guardian form before anything else', () => {
   assert.equal(api.payloadJson(), '');
 });
 
-test('a reload in the same tab reuses the answer instead of asking again', () => {
+test('a reload in the same tab keeps the guardian answer but asks the student again', () => {
   const { api, classes } = fixture({ stored: answer() });
-  assert.equal(api.isPending(), false);
-  assert.ok(!classes.has('guardian-consent-pending'));
-  assert.deepEqual(JSON.parse(api.payloadJson()), answer());
+  assert.equal(api.isGuardianPending(), false);
+  assert.equal(api.isPending(), true, 'the student confirms on every page load');
+  assert.ok(classes.has('guardian-consent-pending'));
+  assert.equal(api.payloadJson(), '', 'nothing reaches the game before the student confirms');
+});
+
+test('the student must confirm all three statements', () => {
+  const { api } = fixture();
+  assert.equal(api.studentReady([true, true, true]), true);
+  for (const checks of [[], [true, true], [true, false, true], [true, true, 'true']]) {
+    assert.equal(api.studentReady(checks), false, JSON.stringify(checks));
+  }
+});
+
+test('the student sheet shows the approved wording word for word', () => {
+  const html = fs.readFileSync(path.join(rootPath, 'Assets/WebGLTemplates/FixedAspect/index.html'), 'utf8');
+  const texts = Object.fromEntries(JSON.parse(fs.readFileSync(path.join(rootPath,
+    'Assets/Resources/Localization/Data/ja-JP.json'), 'utf8')).texts.map(row => [row.key, row.value]));
+  const sheet = html.slice(html.indexOf('id="student-consent-view"'), html.indexOf('id="student-consent-declined"'));
+  const plain = sheet.replace(/<br>/g, '\n').replace(/<\/p>/g, '\n\n').replace(/<[^>]+>/g, '');
+  assert.ok(plain.includes(texts['ui.consent.title']));
+  for (const block of texts['ui.consent.body'].split('\n\n')) assert.ok(plain.includes(block), block);
+  for (const n of [1, 2, 3]) assert.ok(plain.includes(texts['ui.consent.agreement.' + n]), n);
+  assert.ok(plain.includes(texts['ui.consent.continue']));
 });
 
 test('an answer to older wording, a declined answer or corrupt storage asks again', () => {
@@ -114,10 +135,10 @@ test('keys typed into the form never reach Unity while the form is open', () => 
   shields[0].callback(event);
   assert.equal(event.stopped, true);
 
-  const done = fixture({ stored: answer() });
-  const after = keyEvent();
-  done.windowListeners.find(entry => entry.type === 'keydown').callback(after);
-  assert.equal(after.stopped, false, 'Once answered, the game receives keys normally.');
+  const studentStep = fixture({ stored: answer() });
+  const during = keyEvent();
+  studentStep.windowListeners.find(entry => entry.type === 'keydown').callback(during);
+  assert.equal(during.stopped, true, 'The student sheet is shielded too; the browser check covers keys after it.');
 });
 
 test('a rejected answer is cleared so the next load asks the guardian again', () => {

@@ -1,6 +1,7 @@
-/* 保護者同意: the guardian answers on this page before the child starts the game.
- * Loaded in <head> so the form shows before first paint while Unity downloads behind it.
- * Unity reads the answer through GuardianConsent.jslib; the server stores it at New Game. */
+/* 保護者同意, then 生徒の同意: the guardian answers on this page, then the student confirms,
+ * before the game starts. Loaded in <head> so the form shows before first paint while Unity
+ * downloads behind it. Unity reads the answers through GuardianConsent.jslib; the server
+ * stores them at New Game. */
 (function () {
   'use strict';
 
@@ -18,8 +19,12 @@
   };
   var root = document.documentElement;
   var memory = null;
-  var pending = !load();
-  if (pending) root.classList.add('guardian-consent-pending');
+  // The guardian's answer is kept for the tab; the student confirms again on every page load,
+  // as on the title screen before (nothing about the student is stored).
+  var guardianPending = !load();
+  var studentAssentedAt = '';
+  var pending = true;
+  root.classList.add('guardian-consent-pending');
 
   function load() {
     try {
@@ -78,6 +83,11 @@
     return { errors: errors, declined: values.choice === 'no' && Object.keys(errors).length === 0, payload: payload };
   }
 
+  // The student confirms all three statements; nothing else is asked.
+  function studentReady(checks) {
+    return checks.length === 3 && checks.every(function (checked) { return checked === true; });
+  }
+
   function formatDate(date) {
     return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日';
   }
@@ -109,6 +119,13 @@
     if (!overlay || !form) return;
     var formView = document.getElementById('guardian-consent-form-view');
     var declinedView = document.getElementById('guardian-consent-declined');
+    var studentView = document.getElementById('student-consent-view');
+    var studentDeclinedView = document.getElementById('student-consent-declined');
+    var studentForm = document.getElementById('student-consent-form');
+    var studentChecks = studentForm ? Array.prototype.slice.call(studentForm.querySelectorAll('input[name="studentAgreement"]')) : [];
+    var studentSubmit = studentForm ? studentForm.querySelector('button[type="submit"]') : null;
+    var studentHint = document.getElementById('student-consent-hint');
+    var views = [formView, declinedView, studentView, studentDeclinedView].filter(Boolean);
     var fields = {
       choice: form.querySelector('[data-error-for="choice"]'),
       guardianConfirmed: form.querySelector('[data-error-for="guardianConfirmed"]'),
@@ -151,15 +168,22 @@
     }
 
     function show(view) {
-      formView.hidden = view !== formView;
-      declinedView.hidden = view !== declinedView;
+      views.forEach(function (candidate) { candidate.hidden = candidate !== view; });
       overlay.scrollTop = 0;
       var heading = view.querySelector('h1');
-      if (heading) heading.focus({ preventScroll: true });
+      if (heading) {
+        if (heading.id) overlay.setAttribute('aria-labelledby', heading.id);
+        heading.focus({ preventScroll: true });
+      }
     }
 
-    function complete(payload) {
+    function guardianAnswered(payload) {
       save(payload);
+      guardianPending = false;
+      show(studentView);
+    }
+
+    function complete() {
       pending = false;
       root.classList.remove('guardian-consent-pending');
       document.dispatchEvent(new CustomEvent('geomodel:guardian-consent-complete'));
@@ -177,8 +201,30 @@
         return;
       }
       if (result.declined) show(declinedView);
-      else complete(result.payload);
+      else guardianAnswered(result.payload);
     });
+
+    function refreshStudent() {
+      var ready = studentReady(studentChecks.map(function (input) { return input.checked; }));
+      studentSubmit.disabled = !ready;
+      studentHint.hidden = ready;
+    }
+    studentForm.addEventListener('change', refreshStudent);
+    studentForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      // Guard the action too: a direct submit must never bypass the checkboxes.
+      if (!studentReady(studentChecks.map(function (input) { return input.checked; }))) return;
+      studentAssentedAt = new Date().toISOString();
+      complete();
+    });
+    document.getElementById('student-consent-decline').addEventListener('click', function () {
+      show(studentDeclinedView);
+    });
+    document.getElementById('student-consent-back').addEventListener('click', function () {
+      show(studentView);
+    });
+    refreshStudent();
+    if (!guardianPending) show(studentView);
 
     // The answer button stays disabled until everything the chosen answer needs is filled in,
     // so neither the button nor the keyboard's Enter can send an incomplete form.
@@ -237,10 +283,16 @@
   window.GeoModelGuardianConsent = {
     version: VERSION,
     isPending: function () { return pending; },
-    // Consumed by GuardianConsent.jslib. Empty until the guardian has agreed.
+    isGuardianPending: function () { return guardianPending; },
+    // Consumed by GuardianConsent.jslib. Empty until the guardian has agreed and the student confirmed.
     payloadJson: function () {
       var payload = memory || load();
-      return payload ? JSON.stringify(payload) : '';
+      if (!payload || !studentAssentedAt) return '';
+      var answer = {};
+      Object.keys(payload).forEach(function (key) { answer[key] = payload[key]; });
+      answer.studentAssented = true;
+      answer.studentAssentedAt = studentAssentedAt;
+      return JSON.stringify(answer);
     },
     // Called when the server rejects the stored answer: the next page load asks again.
     reset: function () {
@@ -248,10 +300,10 @@
       try { window.sessionStorage.removeItem(STORAGE_KEY); } catch (_) {}
     },
     normalizeRespondentId: normalizeRespondentId,
-    evaluate: evaluate
+    evaluate: evaluate,
+    studentReady: studentReady
   };
 
-  if (!pending) return;
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire);
   else wire();
 }());

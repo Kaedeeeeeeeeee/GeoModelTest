@@ -333,6 +333,16 @@ html.guardian-consent-pending #guardian-consent { display: block; }
 .consent-button:disabled { opacity: .45; cursor: not-allowed; }
 .consent-hint { margin: 8px 0 0 !important; color: #4a5d61; font-size: 14px; text-align: center; }
 .consent-hint[hidden] { display: none; }
+/* 生徒の同意 */
+.consent-people { color: #4a5d61; font-size: 14px; line-height: 1.7; margin-bottom: 18px !important; }
+#student-consent-form { margin-top: 20px; }
+#student-consent-form .consent-option { align-items: flex-start; padding: 12px 14px; line-height: 1.6; }
+#student-consent-form .consent-option input { margin-top: 2px; }
+#student-consent-decline { margin-top: 24px; }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
 
 @media (max-width: 600px) {
   .consent-sheet { margin: 0; border-radius: 0; min-height: 100%; }

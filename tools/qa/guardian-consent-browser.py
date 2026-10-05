@@ -1,4 +1,4 @@
-"""Guardian consent form in a real browser, with the Unity build loading behind it.
+"""Guardian consent form, then the student's confirmation, in a real browser with the Unity build loading behind it.
 
 Serve the checked-in template over the current build first:
     python3 tools/qa/loading-server.py --preview --port 55888
@@ -78,8 +78,43 @@ with sync_playwright() as p:
     form.locator('button[type=submit]').click()
     s = state(page)
     stored = json.loads(s['stored'])
-    assert not s['pending'] and stored['respondentId'] == 'p1234567' and stored['guardianName'] == '山田　花子', s
+    assert s['pending'] and stored['respondentId'] == 'p1234567' and stored['guardianName'] == '山田　花子', s
     results.append('Only the enabled button submits; the stored answer has the normalized ID')
+
+    # 生徒の同意 follows on the same page, before the game.
+    student = page.locator('#student-consent-view')
+    expect(student).to_be_visible()
+    expect(page.locator('#guardian-consent-form-view')).to_be_hidden()
+    assert page.evaluate('GeoModelGuardianConsent.payloadJson()') == ''
+    submit = page.locator('#student-consent-form button[type=submit]')
+    checks = page.locator('#student-consent-form input[name=studentAgreement]')
+    checks.nth(0).check()
+    checks.nth(1).check()
+    assert submit.is_disabled() and page.locator('#student-consent-hint').is_visible()
+    results.append('The student sheet follows the guardian form; two of three checks keep the button disabled')
+
+    page.locator('#student-consent-decline').click()
+    expect(page.locator('#student-consent-declined')).to_be_visible()
+    page.locator('#student-consent-back').click()
+    expect(student).to_be_visible()
+    assert checks.nth(0).is_checked() and page.evaluate('GeoModelGuardianConsent.isPending()')
+    results.append('「参加しない」 explains how to stop, and 「説明にもどる」 returns with the checks kept')
+
+    checks.nth(2).check()
+    assert not submit.is_disabled()
+    submit.click()
+    expect(page.locator('#guardian-consent')).to_be_hidden()
+    answer = json.loads(page.evaluate('GeoModelGuardianConsent.payloadJson()'))
+    assert not page.evaluate('GeoModelGuardianConsent.isPending()')
+    assert answer['studentAssented'] is True and answer['studentAssentedAt'] and answer['respondentId'] == 'p1234567', answer
+    assert 'studentAssented' not in json.loads(page.evaluate("sessionStorage.getItem('geomodel-guardian-consent')"))
+    results.append('All three checks start the game; the answer carries the student time, which is not stored for the tab')
+
+    page.reload()
+    expect(student).to_be_visible()
+    expect(page.locator('#guardian-consent-form-view')).to_be_hidden()
+    assert all(not checks.nth(i).is_checked() for i in range(3))
+    results.append('A reload asks only the student again; the guardian answer is kept for the tab')
 
     declined = browser.new_context(viewport={'width': 390, 'height': 844}, is_mobile=True, has_touch=True).new_page()
     declined.on('pageerror', lambda error: errors.append(str(error)))

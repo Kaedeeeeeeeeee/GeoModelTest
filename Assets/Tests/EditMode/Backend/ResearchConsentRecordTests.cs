@@ -66,6 +66,19 @@ public class ResearchConsentRecordTests
     }
 
     [Test]
+    public void OpenPlay_ShouldCarryTheStudentConfirmationMadeOnThePage()
+    {
+        // The web page now asks the student too and adds the time to the guardian's answer.
+        SetGuardian(Guardian.Replace("}", ",\"studentAssented\":true,\"studentAssentedAt\":\"2026-10-01T02:03:04.567Z\"}"));
+        var body = JsonUtility.FromJson<Body>(RequestBody(null));
+        Assert.AreEqual("open_play", body.entryMode);
+        Assert.IsTrue(body.consent.guardianAgreed && body.consent.studentAssented);
+        Assert.AreEqual("2026-10-01T02:03:04.567Z", body.consent.studentAssentedAt,
+            "The page's confirmation time must reach the server unchanged.");
+        Assert.AreEqual("p1234567", body.consent.respondentId);
+    }
+
+    [Test]
     public void OpenPlay_ShouldOmitConsentUntilBothAnswersExist()
     {
         SetGuardian(Guardian);
