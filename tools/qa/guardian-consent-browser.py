@@ -54,16 +54,16 @@ with sync_playwright() as p:
     page.keyboard.type('p123')
     page.keyboard.press('Enter')
     s = state(page)
-    assert s['focused'] != 'respondentId' and 'p' in s['idError'] and s['disabled'] and s['pending'], s
+    assert s['focused'] != 'respondentId' and '数字' in s['idError'] and s['disabled'] and s['pending'], s
     results.append('Enter in the ID field closes the keyboard and explains a mistyped ID at once')
 
-    respondent.fill('Ｐ１２３４５６７')
+    respondent.fill('０１２３ ４５６７')
     s = state(page)
     assert not s['disabled'] and not s['hint'] and s['idError'] == '', s
     respondent.press('Enter')
     s = state(page)
-    assert respondent.input_value() == 'p1234567' and s['pending'] and s['stored'] is None, s
-    results.append('A full-width ID enables the button and shows as p1234567; Enter still does not submit')
+    assert respondent.input_value() == '01234567' and s['pending'] and s['stored'] is None, s
+    results.append('A full-width ID enables the button and shows as 01234567 (leading zero kept); Enter still does not submit')
 
     # An Enter that confirms an IME conversion belongs to the IME, not to field navigation.
     name.focus()
@@ -78,7 +78,7 @@ with sync_playwright() as p:
     form.locator('button[type=submit]').click()
     s = state(page)
     stored = json.loads(s['stored'])
-    assert s['pending'] and stored['respondentId'] == 'p1234567' and stored['guardianName'] == '山田　花子', s
+    assert s['pending'] and stored['respondentId'] == '01234567' and stored['guardianName'] == '山田　花子', s
     results.append('Only the enabled button submits; the stored answer has the normalized ID')
 
     # 生徒の同意 follows on the same page, before the game.
@@ -106,7 +106,7 @@ with sync_playwright() as p:
     expect(page.locator('#guardian-consent')).to_be_hidden()
     answer = json.loads(page.evaluate('GeoModelGuardianConsent.payloadJson()'))
     assert not page.evaluate('GeoModelGuardianConsent.isPending()')
-    assert answer['studentAssented'] is True and answer['studentAssentedAt'] and answer['respondentId'] == 'p1234567', answer
+    assert answer['studentAssented'] is True and answer['studentAssentedAt'] and answer['respondentId'] == '01234567', answer
     assert 'studentAssented' not in json.loads(page.evaluate("sessionStorage.getItem('geomodel-guardian-consent')"))
     results.append('All three checks start the game; the answer carries the student time, which is not stored for the tab')
 

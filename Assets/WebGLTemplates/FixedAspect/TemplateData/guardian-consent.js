@@ -15,7 +15,7 @@
     guardianNameMissing: '保護者氏名を入力してください。',
     guardianNameInvalid: '保護者氏名を確認してください。',
     respondentIdMissing: 'お子様の回答者IDを入力してください。',
-    respondentIdInvalid: '回答者IDは「p」と数字7桁で入力してください（例：p1234567）。'
+    respondentIdInvalid: '回答者IDは数字（1〜10桁）で入力してください。'
   };
   var root = document.documentElement;
   var memory = null;
@@ -42,18 +42,17 @@
     try { window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); } catch (_) {}
   }
 
-  // Testee IDs are "p" + 7 digits (p1234567). Japanese keyboards may give full-width or
-  // uppercase characters; spaces and dashes are typing aids, and a missing "p" is restored.
+  // Testee IDs are digits only, 1 to 10 of them; the length differs per person (Testee,
+  // 2026-10-02). Japanese keyboards may give full-width digits; spaces and dashes are typing
+  // aids. Leading zeros are kept: the ID is text, not a number.
   function normalizeRespondentId(value) {
-    var id = String(value == null ? '' : value).normalize('NFKC').toLowerCase()
-      .replace(/[\s‐-―−ー-]/g, '');
-    return /^[0-9]{7}$/.test(id) ? 'p' + id : id;
+    return String(value == null ? '' : value).normalize('NFKC').replace(/[\s‐-―−ー-]/g, '');
   }
 
   function respondentIdError(value) {
     var id = normalizeRespondentId(value);
     if (!id) return MESSAGES.respondentIdMissing;
-    return /^p[0-9]{7}$/.test(id) ? '' : MESSAGES.respondentIdInvalid;
+    return /^[0-9]{1,10}$/.test(id) ? '' : MESSAGES.respondentIdInvalid;
   }
 
   function evaluate(values, now) {

@@ -138,10 +138,9 @@
       return;
     }
     // Format only: the real survey also compares the ID with the guardian form on the server.
-    const raw = String($('respondent-id').value ?? '').normalize('NFKC').toLowerCase().replace(/[\s‐-―−ー-]/g, '');
-    const respondentId = /^[0-9]{7}$/.test(raw) ? 'p' + raw : raw;
+    const respondentId = String($('respondent-id').value ?? '').normalize('NFKC').replace(/[\s‐-―−ー-]/g, '');
     $('respondent-id').value = respondentId;
-    const invalid = !respondentId ? '回答者IDを入力してください。' : /^p[0-9]{7}$/.test(respondentId) ? '' : '回答者IDは「p」と数字7桁で入力してください（例：p1234567）。';
+    const invalid = !respondentId ? '回答者IDを入力してください。' : /^[0-9]{1,10}$/.test(respondentId) ? '' : '回答者IDは数字（1〜10桁）で入力してください。';
     if (invalid) {
       $('respondent').classList.add('invalid');
       $('form-error').textContent = invalid;

@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(31);
+select plan(32);
 insert into auth.users(id,created_at,updated_at,is_anonymous) values
 ('c2222222-2222-4222-8222-222222222221',now(),now(),true),
 ('c2222222-2222-4222-8222-222222222222',now(),now(),true),
@@ -10,7 +10,7 @@ insert into auth.users(id,created_at,updated_at,is_anonymous) values
 ('c2222222-2222-4222-8222-222222222225',now(),now(),true);
 create temp table form as select jsonb_build_object(
   'consentVersion','guardian-ja-2026-09-29','guardianAgreed',true,'guardianConfirmed',true,
-  'guardianName','山田　花子','respondentId','p1234567','guardianConsentedAt',now()-interval '5 minutes',
+  'guardianName','山田　花子','respondentId','0012345','guardianConsentedAt',now()-interval '5 minutes',
   'studentAssented',true,'studentAssentedAt',now()-interval '1 minute') as body;
 create function pg_temp.rejects(p_user uuid, p_patch jsonb) returns text language plpgsql as $$
 begin
@@ -36,20 +36,21 @@ select is(pg_temp.rejects('c2222222-2222-4222-8222-222222222221','{"guardianConf
 select is(pg_temp.rejects('c2222222-2222-4222-8222-222222222221','{"studentAssented":false}'),'GC002','student assent required');
 select is(pg_temp.rejects('c2222222-2222-4222-8222-222222222221','{"guardianName":""}'),'GC002','empty guardian name rejected');
 select is(pg_temp.rejects('c2222222-2222-4222-8222-222222222221',jsonb_build_object('guardianName','山田'||chr(10)||'花子')),'GC002','control characters rejected');
-select is(pg_temp.rejects('c2222222-2222-4222-8222-222222222221','{"respondentId":"P1234567"}'),'GC002','respondent ID must arrive normalized');
-select is(pg_temp.rejects('c2222222-2222-4222-8222-222222222221','{"respondentId":"p123456"}'),'GC002','respondent ID is p and exactly 7 digits');
+select is(pg_temp.rejects('c2222222-2222-4222-8222-222222222221','{"respondentId":"１２３"}'),'GC002','respondent ID must arrive normalized');
+select is(pg_temp.rejects('c2222222-2222-4222-8222-222222222221','{"respondentId":"p1234567"}'),'GC002','respondent ID is digits only (no p)');
+select is(pg_temp.rejects('c2222222-2222-4222-8222-222222222221','{"respondentId":"12345678901"}'),'GC002','respondent ID has at most 10 digits');
 select is(pg_temp.rejects('c2222222-2222-4222-8222-222222222221','{"guardianConsentedAt":"not a date"}'),'GC002','malformed timestamp rejected');
 select is(pg_temp.rejects('c2222222-2222-4222-8222-222222222221',jsonb_build_object('studentAssentedAt',now()+interval '2 days')),'GC002','far-future device time rejected');
 select is((select count(*) from guardian_consents c join study_participants p on p.id=c.participant_id where p.auth_user_id='c2222222-2222-4222-8222-222222222221'),0::bigint,'no partial forms stored');
 
 create temp table activated as select activate_open_play_participant('c2222222-2222-4222-8222-222222222221',(select body from form)) as result;
 select is((select result->>'ok' from activated),'true','valid form activates the player');
-select is((select guardian_name||'/'||respondent_id from guardian_consents where participant_id=(select (result->>'participantId')::uuid from activated)),'山田　花子/p1234567','form stored with name and respondent ID');
+select is((select guardian_name||'/'||respondent_id from guardian_consents where participant_id=(select (result->>'participantId')::uuid from activated)),'山田　花子/0012345','form stored with name and respondent ID (leading zeros kept)');
 select ok((select consent_version='guardian-ja-2026-09-29' and guardian_consent_at<=now() and student_assent_at<=now() from study_participants where auth_user_id='c2222222-2222-4222-8222-222222222221'),'participant consent metadata set');
 select ok(research_participant_is_eligible((select (result->>'participantId')::uuid from activated)),'consented player can upload');
 select is(activate_open_play_participant('c2222222-2222-4222-8222-222222222221')->>'participantId',(select result->>'participantId' from activated),'later activation reuses the stored form');
-select is((activate_open_play_participant('c2222222-2222-4222-8222-222222222221',(select body from form)||'{"guardianName":"別人","respondentId":"p7654321"}'))->>'ok','true','repeat form is accepted');
-select is((select guardian_name||'/'||respondent_id from guardian_consents where participant_id=(select (result->>'participantId')::uuid from activated)),'山田　花子/p1234567','first form is kept');
+select is((activate_open_play_participant('c2222222-2222-4222-8222-222222222221',(select body from form)||'{"guardianName":"別人","respondentId":"7654321"}'))->>'ok','true','repeat form is accepted');
+select is((select guardian_name||'/'||respondent_id from guardian_consents where participant_id=(select (result->>'participantId')::uuid from activated)),'山田　花子/0012345','first form is kept');
 
 -- Check effects in later statements: a statement cannot see its own function's writes.
 create temp table skewed as select activate_open_play_participant('c2222222-2222-4222-8222-222222222222',(select body from form)||jsonb_build_object('guardianConsentedAt',now()+interval '2 minutes','studentAssentedAt',now()+interval '3 minutes')) as result;

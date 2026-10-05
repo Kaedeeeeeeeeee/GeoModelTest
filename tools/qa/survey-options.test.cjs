@@ -131,9 +131,13 @@ test('Preview requires the 11 choices but permits both free-answer fields to rem
   await f.submit();
   assert.equal(f.byId('form-error').textContent, '回答者IDを入力してください。');
   assert.equal(f.byId('preview-complete').hidden, true);
-  f.byId('respondent-id').value = '１２３４５６７';
+  f.byId('respondent-id').value = 'p1234567';
   await f.submit();
-  assert.equal(f.byId('respondent-id').value, 'p1234567');
+  assert.equal(f.byId('form-error').textContent, '回答者IDは数字（1〜10桁）で入力してください。');
+  assert.equal(f.byId('preview-complete').hidden, true);
+  f.byId('respondent-id').value = '００１２３';
+  await f.submit();
+  assert.equal(f.byId('respondent-id').value, '00123');
   assert.equal(f.byId('preview-complete').hidden, false);
   assert.equal(f.requests.length, 0);
 });
@@ -160,7 +164,7 @@ test('Preview uses the same 300-character boundary for both free answers', async
     await f.submit();
     assert.equal(f.byId('form-error').textContent, '自由回答は300文字以内で入力してください。');
     f.write(id, 'あ'.repeat(300));
-    f.byId('respondent-id').value = 'p1234567';
+    f.byId('respondent-id').value = '1234567';
     await f.submit();
     assert.equal(f.byId('preview-complete').hidden, false);
   }
@@ -175,36 +179,40 @@ test('Without a guardian form the ID field stays hidden and no ID is sent', asyn
 });
 
 test('The re-entered ID is required, normalized like the guardian form, and kept in the draft', async () => {
-  const f = await fixture({ draft: completeAnswers(), guardianId: 'p1234567' });
+  const f = await fixture({ draft: completeAnswers(), guardianId: '01234567' });
   assert.equal(f.byId('respondent').hidden, false);
   await f.submit();
   assert.equal(f.requests.filter(r => r.action === 'submit').length, 0);
   assert.equal(f.byId('form-error').textContent, '回答者IDを入力してください。');
   assert.ok(f.byId('respondent').classList.contains('invalid'));
-  f.typeId('p12345');
+  f.typeId('p1234567');
   assert.equal(f.byId('respondent').classList.contains('invalid'), false);
   await f.submit();
-  assert.match(f.byId('form-error').textContent, /「p」と数字7桁/);
-  f.typeId('P１２３-４５６７');
-  assert.equal(JSON.parse(f.storage.get(draftKey)).respondentId, 'P１２３-４５６７');
+  assert.match(f.byId('form-error').textContent, /数字（1〜10桁）/);
+  f.typeId('12345678901');
   await f.submit();
-  assert.equal(f.requests.at(-1).respondentId, 'p1234567');
+  assert.match(f.byId('form-error').textContent, /数字（1〜10桁）/);
+  assert.equal(f.requests.filter(r => r.action === 'submit').length, 0);
+  f.typeId('０１２３-４５６７');
+  assert.equal(JSON.parse(f.storage.get(draftKey)).respondentId, '０１２３-４５６７');
+  await f.submit();
+  assert.equal(f.requests.at(-1).respondentId, '01234567');
   assert.equal(f.requests.at(-1).confirmRespondentId, false);
   assert.equal(f.byId('complete').hidden, false);
 });
 
 test('A different ID is sent only after the student presses submit again', async () => {
-  const f = await fixture({ draft: completeAnswers(), draftId: 'p7654321', guardianId: 'p1234567' });
-  assert.equal(f.byId('respondent-id').value, 'p7654321');
+  const f = await fixture({ draft: completeAnswers(), draftId: '7654321', guardianId: '1234567' });
+  assert.equal(f.byId('respondent-id').value, '7654321');
   await f.submit();
   assert.equal(f.requests.at(-1).confirmRespondentId, false);
   assert.match(f.byId('form-error').textContent, /一致しません/);
   assert.equal(f.byId('complete').hidden, true);
-  f.typeId('p1111111');
+  f.typeId('1111');
   await f.submit();
   assert.equal(f.requests.at(-1).confirmRespondentId, false, 'A changed ID needs its own confirmation');
   await f.submit();
-  assert.equal(f.requests.at(-1).respondentId, 'p1111111');
+  assert.equal(f.requests.at(-1).respondentId, '1111');
   assert.equal(f.requests.at(-1).confirmRespondentId, true);
   assert.equal(f.byId('complete').hidden, false);
 });

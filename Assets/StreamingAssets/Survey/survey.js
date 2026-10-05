@@ -13,7 +13,8 @@
   const draftKey = 'geomodel.survey.draft.' + ticket;
   function screen(name){for(const id of ['loading','access-error','complete','questionnaire']) $(id).hidden=id!==name;}
   // Same rules as the 保護者同意 form: full-width, uppercase, spaces and dashes are typing aids; a missing p is restored.
-  function normalizeRespondentId(value){const id=String(value??'').normalize('NFKC').toLowerCase().replace(/[\s‐-―−ー-]/g,'');return /^[0-9]{7}$/.test(id)?'p'+id:id;}
+  // Testee IDs: 1-10 digits, kept as text so leading zeros survive.
+  function normalizeRespondentId(value){return String(value??'').normalize('NFKC').replace(/[\s‐-―−ー-]/g,'');}
   function markRespondent(invalid){$('respondent').classList[invalid?'add':'remove']('invalid');if(invalid)$('respondent-id').setAttribute('aria-invalid','true');else $('respondent-id').removeAttribute('aria-invalid');}
   async function call(action, extra={}) {
     const endpoint = new URL(window.GEOMODEL_SURVEY.apiUrl);
@@ -72,7 +73,7 @@
     let respondentId;
     if(respondentRequired){
       respondentId=normalizeRespondentId($('respondent-id').value);$('respondent-id').value=respondentId;
-      const invalid=!respondentId?'回答者IDを入力してください。':/^p[0-9]{7}$/.test(respondentId)?'':'回答者IDは「p」と数字7桁で入力してください（例：p1234567）。';
+      const invalid=!respondentId?'回答者IDを入力してください。':/^[0-9]{1,10}$/.test(respondentId)?'':'回答者IDは数字（1〜10桁）で入力してください。';
       if(invalid){markRespondent(true);fail(invalid);$('respondent-id').focus();return;}
     }
     busy=true;$('next').disabled=true;$('previous').disabled=true;$('next').textContent='送信しています…';$('form-error').hidden=true;

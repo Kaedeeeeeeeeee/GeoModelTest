@@ -42,7 +42,7 @@ function fixture(options = {}) {
 
 function answer(overrides = {}) {
   return Object.assign({ consentVersion: VERSION, guardianAgreed: true, guardianConfirmed: true,
-    guardianName: '山田　花子', respondentId: 'p1234567', guardianConsentedAt: '2026-09-29T01:02:03.456Z' }, overrides);
+    guardianName: '山田　花子', respondentId: '1234567', guardianConsentedAt: '2026-09-29T01:02:03.456Z' }, overrides);
 }
 
 function keyEvent() {
@@ -107,8 +107,12 @@ test('agreeing requires the guardian confirmation, name and respondent ID', () =
   const result = api.evaluate({ choice: 'yes', guardianConfirmed: false, guardianName: '　 ', respondentId: '' }, new Date());
   assert.deepEqual(Object.keys(result.errors).sort(), ['guardianConfirmed', 'guardianName', 'respondentId']);
   assert.equal(result.payload, null);
-  for (const typed of ['テスト01', 'p123456', 'p12345678', 'q1234567', 'T-0001']) {
+  // Testee IDs are digits only, 1 to 10 of them (the old "p" + 7 digit form is gone).
+  for (const typed of ['テスト01', 'p1234567', 'P1234567', '12345678901', '１２３４５６７８９０１', '12.34', 'T-0001', '-']) {
     assert.ok(api.evaluate({ choice: 'yes', guardianConfirmed: true, guardianName: '山田', respondentId: typed }, new Date()).errors.respondentId, typed);
+  }
+  for (const typed of ['1', '0', '0012345', '1234567890']) {
+    assert.deepEqual(Object.keys(api.evaluate({ choice: 'yes', guardianConfirmed: true, guardianName: '山田', respondentId: typed }, new Date()).errors), [], typed);
   }
   assert.ok(api.evaluate({ choice: 'yes', guardianConfirmed: true, guardianName: '山田\n花子', respondentId: 'A1' }, new Date()).errors.guardianName);
 });
@@ -117,11 +121,11 @@ test('Japanese keyboard input is normalized before it is stored', () => {
   const { api } = fixture();
   const now = new Date('2026-09-29T10:00:00Z');
   const result = api.evaluate({ choice: 'yes', guardianConfirmed: true,
-    guardianName: '　山田　花子　', respondentId: ' Ｐ１２３ー４５６７ ' }, now);
+    guardianName: '　山田　花子　', respondentId: ' １２３ー４５６７ ' }, now);
   assert.deepEqual(Object.keys(result.errors), []);
   assert.deepEqual(JSON.parse(JSON.stringify(result.payload)), answer({ guardianConsentedAt: now.toISOString() }));
-  // Testee IDs are "p" + 7 digits: fix case, width, spaces and dashes, and restore a missing "p".
-  for (const [typed, stored] of [['P1234567', 'p1234567'], ['ｐ１２３４５６７', 'p1234567'], ['p-123 4567', 'p1234567'], ['１２３４５６７', 'p1234567']]) {
+  // Width, spaces and dashes are fixed; leading zeros stay, and nothing is added.
+  for (const [typed, stored] of [['１２３４５６７', '1234567'], ['123-4567', '1234567'], ['12 34', '1234'], ['００１２', '0012'], ['１', '1'], ['１２３４５６７８９０', '1234567890']]) {
     assert.equal(api.normalizeRespondentId(typed), stored, typed);
   }
 });

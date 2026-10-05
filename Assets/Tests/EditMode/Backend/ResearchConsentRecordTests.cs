@@ -8,7 +8,7 @@ public class ResearchConsentRecordTests
 {
     private const string Guardian =
         "{\"consentVersion\":\"guardian-ja-2026-09-29\",\"guardianAgreed\":true,\"guardianConfirmed\":true," +
-        "\"guardianName\":\"山田　花子\",\"respondentId\":\"p1234567\",\"guardianConsentedAt\":\"2026-09-29T01:02:03.456Z\"}";
+        "\"guardianName\":\"山田　花子\",\"respondentId\":\"0012345\",\"guardianConsentedAt\":\"2026-09-29T01:02:03.456Z\"}";
 
     private static Type Record => BackendTestReflection.GetType("Backend.ResearchConsentRecord");
     private static Type Client => BackendTestReflection.GetType("Backend.TelemetryClient");
@@ -57,7 +57,7 @@ public class ResearchConsentRecordTests
         Assert.AreEqual("open_play", body.entryMode);
         Assert.AreEqual("guardian-ja-2026-09-29", body.consent.consentVersion);
         Assert.AreEqual("山田　花子", body.consent.guardianName);
-        Assert.AreEqual("p1234567", body.consent.respondentId);
+        Assert.AreEqual("0012345", body.consent.respondentId);
         Assert.AreEqual("2026-09-29T01:02:03.456Z", body.consent.guardianConsentedAt,
             "The page's answer time must reach the server unchanged.");
         Assert.IsTrue(body.consent.guardianAgreed && body.consent.guardianConfirmed && body.consent.studentAssented);
@@ -75,7 +75,7 @@ public class ResearchConsentRecordTests
         Assert.IsTrue(body.consent.guardianAgreed && body.consent.studentAssented);
         Assert.AreEqual("2026-10-01T02:03:04.567Z", body.consent.studentAssentedAt,
             "The page's confirmation time must reach the server unchanged.");
-        Assert.AreEqual("p1234567", body.consent.respondentId);
+        Assert.AreEqual("0012345", body.consent.respondentId);
     }
 
     [Test]

@@ -12,7 +12,7 @@ begin
   insert into public.studies(id,study_key,status,research_entry_enabled,protocol_version)
     values(v_study,'survey-respondent-'||v_study,'development',true,'survey-respondent-qa');
 
-  -- Participant A has a 保護者同意 form with p1234567; participant B has none.
+  -- Participant A has a 保護者同意 form with 0012345; participant B has none.
   for i in 1..2 loop
     declare
       v_user uuid := gen_random_uuid(); v_participant uuid := gen_random_uuid(); v_session uuid := gen_random_uuid();
@@ -27,7 +27,7 @@ begin
       if i = 1 then
         insert into public.guardian_consents(participant_id,study_id,consent_version,guardian_name,respondent_id,
             guardian_confirmed,guardian_consented_at,student_assented_at)
-          values(v_participant,v_study,'qa','QA','p1234567',true,now(),now());
+          values(v_participant,v_study,'qa','QA','0012345',true,now(),now());
         v_guardian := v_participant; v_token := v_hash;
       else
         v_plain := v_participant; v_plain_token := v_hash;
@@ -47,33 +47,44 @@ begin
     if sqlerrm <> 'Enter the respondent ID' then raise; end if;
   end;
   begin
-    perform public.use_survey_ticket(v_token,v_answers,'P1234567');
+    perform public.use_survey_ticket(v_token,v_answers,'００１２３４５');
     raise exception 'Unnormalized respondent ID incorrectly accepted';
   exception when sqlstate '22023' then
     if sqlerrm <> 'Enter the respondent ID' then raise; end if;
   end;
   begin
-    perform public.use_survey_ticket(v_token,v_answers,'p7654321');
+    perform public.use_survey_ticket(v_token,v_answers,'p0012345');
+    raise exception 'The old p + 7 digit form incorrectly accepted';
+  exception when sqlstate '22023' then
+    if sqlerrm <> 'Enter the respondent ID' then raise; end if;
+  end;
+  begin
+    perform public.use_survey_ticket(v_token,v_answers,'12345');
+    raise exception 'Dropping leading zeros must count as a different ID';
+  exception when sqlstate 'GQ409' then null;
+  end;
+  begin
+    perform public.use_survey_ticket(v_token,v_answers,'7654321');
     raise exception 'Unconfirmed different ID incorrectly accepted';
   exception when sqlstate 'GQ409' then null;
   end;
   assert not exists(select 1 from public.survey_responses where participant_id=v_guardian),
     'A rejected submission must not store anything';
 
-  v_result := public.use_survey_ticket(v_token,v_answers,'p7654321',true);
+  v_result := public.use_survey_ticket(v_token,v_answers,'7654321',true);
   assert (v_result->>'submitted')::boolean, 'A confirmed different ID must be accepted';
   select * into v_row from public.survey_responses where participant_id=v_guardian;
-  assert v_row.respondent_id = 'p7654321' and v_row.respondent_id_matches = false, 'The mismatch must be kept for review';
+  assert v_row.respondent_id = '7654321' and v_row.respondent_id_matches = false, 'The mismatch must be kept for review';
   assert not (v_row.answers ? 'respondentId'), 'The ID is stored beside the answers, not inside them';
 
   -- A second run for the same participant with the matching ID.
   update public.survey_tickets set run_id=gen_random_uuid() where token_hash=v_token;
-  v_result := public.use_survey_ticket(v_token,v_answers,'p1234567');
+  v_result := public.use_survey_ticket(v_token,v_answers,'0012345');
   assert (select respondent_id_matches from public.survey_responses where id=(v_result->>'receiptId')::uuid),
     'A matching ID must be recorded as matching';
 
   begin
-    perform public.use_survey_ticket(v_plain_token,v_answers,'p1234567');
+    perform public.use_survey_ticket(v_plain_token,v_answers,'0012345');
     raise exception 'ID incorrectly accepted without a guardian form';
   exception when sqlstate '22023' then
     if sqlerrm <> 'Unexpected respondent ID' then raise; end if;
