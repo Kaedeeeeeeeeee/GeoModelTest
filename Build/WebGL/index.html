@@ -10,7 +10,7 @@
     <script src="TemplateData/guardian-consent.js"></script>
   </head>
   <body>
-    <!-- 保護者同意. Wording must match the approved document; bump VERSION in guardian-consent.js when it changes. -->
+    <!-- 保護者同意, then 生徒の同意. Guardian wording must match the approved document; bump VERSION in guardian-consent.js when it changes. -->
     <div id="guardian-consent" role="dialog" aria-modal="true" aria-labelledby="guardian-consent-title" lang="ja">
       <article class="consent-sheet" id="guardian-consent-form-view">
         <p class="consent-lead">ゲームを始める前に、保護者の方がお読みください。</p>
@@ -79,7 +79,7 @@
           <p class="consent-error" data-error-for="guardianName" role="alert" hidden></p>
           <label class="consent-field">
             <span>お子様の回答者ID：</span>
-            <input type="text" name="respondentId" maxlength="20" placeholder="例：p1234567" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done">
+            <input type="text" name="respondentId" maxlength="20" inputmode="numeric" placeholder="数字のみ（1〜10桁）" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done">
           </label>
           <p class="consent-error" data-error-for="respondentId" role="alert" hidden></p>
           <p class="consent-date">同意日：<span id="guardian-consent-date"></span></p>
@@ -92,6 +92,32 @@
         <h1 tabindex="-1">ご回答ありがとうございました</h1>
         <p>保護者の方の同意が得られない場合、お子様はこの研究に参加できません。このページを閉じてください。</p>
         <button type="button" class="consent-button consent-button-secondary" id="guardian-consent-back">回答を選び直す</button>
+      </article>
+      <!-- 生徒の同意 (was the in-game title dialog). Wording must stay identical to ui.consent.* (approved text);
+           tools/qa/guardian-consent.test.cjs checks it. -->
+      <article class="consent-sheet" id="student-consent-view" hidden>
+        <p class="consent-lead">ここからは、ゲームをする生徒の皆さんが読んでください。</p>
+        <h1 id="student-consent-title" tabindex="-1">理科 3D ゲーム型教材に関する研究に参加する生徒の皆さんへ</h1>
+        <p class="consent-people">研究開発責任者<br>稲垣忠（東北学院大学人間情報学研究科教授）<br>研究開発担当者<br>張詩楓（東北学院大学人間情報学研究科博士前期課程）</p>
+        <p>このゲームは、理科（地学分野）の学習用 3D ゲーム教材です。ゲームの改善および学習効果の検証を行うため、あなたのゲーム中の操作を記録します。また、ゲーム終了後にアンケートへの回答にご協力いただきます。所要時間は教材体験が 15 分程度、アンケートは 5 分程度を想定しています。操作記録やアンケートの回答は、個人が特定されない形で研究に使用します。</p>
+        <p>参加するかどうかは、あなた自身で決めることができます。また、参加した後でも、気分が悪くなったり、やめたいと思ったりしたときは、いつでも途中でやめることができます。</p>
+        <p>内容を確認したうえで、次の項目にチェックしてください。</p>
+        <form id="student-consent-form" class="consent-form" novalidate>
+          <fieldset>
+            <legend class="visually-hidden">確認する項目</legend>
+            <label class="consent-option"><input type="checkbox" name="studentAgreement"><span>保護者から、この研究に参加することについて同意を得ています。</span></label>
+            <label class="consent-option"><input type="checkbox" name="studentAgreement"><span>上の説明を読み、研究の内容について理解しました。</span></label>
+            <label class="consent-option"><input type="checkbox" name="studentAgreement"><span>自分の意思で、この研究に参加することに同意します。</span></label>
+          </fieldset>
+          <button type="submit" class="consent-button">同意してゲームを開始する</button>
+          <p class="consent-hint" id="student-consent-hint">3つすべてにチェックすると押せます。</p>
+          <button type="button" class="consent-button consent-button-secondary" id="student-consent-decline">参加しない</button>
+        </form>
+      </article>
+      <article class="consent-sheet" id="student-consent-declined" hidden>
+        <h1 tabindex="-1">わかりました</h1>
+        <p>参加しない場合は、ゲームを始めずに、このページを閉じてください。</p>
+        <button type="button" class="consent-button consent-button-secondary" id="student-consent-back">説明にもどる</button>
       </article>
     </div>
     <div id="unity-container">
@@ -153,7 +179,7 @@
         streamingAssetsUrl: "StreamingAssets",
         companyName: "ZHANGSHIFENG",
         productName: "GeoModelTest",
-        productVersion: "2026.09.30-teacher-review",
+        productVersion: "2026.10.05-consent-id",
         matchWebGLToCanvasSize: false,
         devicePixelRatio: 1,
         showBanner: unityShowBanner,
@@ -175,7 +201,7 @@
 
       function updateOrientationOverlay() {
         var portrait = window.innerHeight > window.innerWidth;
-        // The guardian form reads fine in portrait; ask for landscape only once the game shows.
+        // The guardian and student forms read fine in portrait; ask for landscape only once the game shows.
         var shouldBlock = isCoarsePointer() && portrait && !guardianConsentPending();
         orientationOverlay.classList.toggle("is-visible", shouldBlock);
         orientationOverlay.setAttribute("aria-hidden", shouldBlock ? "false" : "true");
