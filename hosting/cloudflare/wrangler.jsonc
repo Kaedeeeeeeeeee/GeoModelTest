@@ -1,0 +1,13 @@
+{
+  "name": "geo-q",
+  "main": "src/worker.js",
+  "compatibility_date": "2025-09-01",
+  // deploy.sh copies Build/WebGL here without the .unityweb files (those go to R2).
+  "assets": { "directory": ".stage" },
+  "r2_buckets": [{ "binding": "BUILDS", "bucket_name": "geo-q-builds" }],
+  // deploy.sh overrides this with release.json's version.
+  "vars": { "RELEASE": "" },
+  "routes": [{ "pattern": "geo-q.jp", "custom_domain": true }],
+  "workers_dev": true,
+  "observability": { "enabled": true }
+}
