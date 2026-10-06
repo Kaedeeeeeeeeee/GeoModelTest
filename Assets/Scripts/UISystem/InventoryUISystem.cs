@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +46,7 @@ public class InventoryUISystem : MonoBehaviour
     private bool wheelOpenedByMobileInput = false; // 标记轮盘是否由移动端输入打开
     private int selectedSlot = -1;
     private int mobileWheelCandidateSlot = -1;
+    private double wheelOpenedInputTime;
     private Camera playerCamera;
     private FirstPersonController fpController;
     private Canvas canvas;
@@ -792,6 +794,10 @@ public class InventoryUISystem : MonoBehaviour
         if (touchscreen == null) return;
 
         var touch = touchscreen.primaryTouch;
+        // The opening gesture may still be held or released in this input frame.
+        // Its start time predates OpenWheel regardless of script execution order.
+        if (touch.startTime.ReadValue() <= wheelOpenedInputTime) return;
+
         if (touch.press.isPressed)
         {
             int slotIndex = GetWheelSlotAtScreenPoint(touch.position.ReadValue());
@@ -799,9 +805,13 @@ public class InventoryUISystem : MonoBehaviour
             SetSelectedSlot(mobileWheelCandidateSlot);
         }
 
-        if (touch.press.wasReleasedThisFrame)
+        var phase = touch.phase.ReadValue();
+        // A very short tap can begin and end in one input update before ButtonControl
+        // has observed its first press. The touch's start time still proves ownership.
+        if (touch.press.wasReleasedThisFrame || phase == UnityEngine.InputSystem.TouchPhase.Ended)
         {
-            mobileWheelCandidateSlot = GetWheelSlotAtScreenPoint(touch.position.ReadValue());
+            mobileWheelCandidateSlot = phase == UnityEngine.InputSystem.TouchPhase.Ended
+                ? GetWheelSlotAtScreenPoint(touch.position.ReadValue()) : -1;
             if (mobileWheelCandidateSlot >= 0 && mobileWheelCandidateSlot < availableTools.Count)
             {
                 SelectToolAtSlot(mobileWheelCandidateSlot, "触屏");
@@ -881,6 +891,7 @@ public class InventoryUISystem : MonoBehaviour
 
         activeWheel = this;
         CollectionTool.SuppressSelectionInput();
+        wheelOpenedInputTime = InputState.currentTime;
         isWheelOpen = true;
         mobileWheelCandidateSlot = -1;
         selectedSlot = -1;
@@ -986,6 +997,7 @@ public class InventoryUISystem : MonoBehaviour
     void HandleTouchSelection()
     {
         if (Touchscreen.current == null) return;
+        if (Touchscreen.current.primaryTouch.startTime.ReadValue() <= wheelOpenedInputTime) return;
 
         TrySelectToolAtScreenPoint(Touchscreen.current.primaryTouch.position.ReadValue(), "触屏");
     }
@@ -1038,7 +1050,8 @@ public class InventoryUISystem : MonoBehaviour
     void UpdateSelection()
     {
         // 获取输入位置（支持鼠标和触屏）
-        if (isMobileMode && (Touchscreen.current == null || !Touchscreen.current.primaryTouch.press.isPressed)) return;
+        if (isMobileMode && (Touchscreen.current == null || !Touchscreen.current.primaryTouch.press.isPressed ||
+            Touchscreen.current.primaryTouch.startTime.ReadValue() <= wheelOpenedInputTime)) return;
         Vector2 inputPosition = GetInputPosition();
 
         int newSelectedSlot = GetWheelSlotAtScreenPoint(inputPosition);

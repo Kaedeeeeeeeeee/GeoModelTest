@@ -34,6 +34,9 @@ namespace QuestSystem
         [SerializeField] private bool tintChildrenRenderers = true;
 
         private bool playerInRange;
+        private const float KaedeTalkingDistance = 1.5f;
+        private bool _usesKaedeRange;
+        private readonly Collider[] _kaedeRangeHits = new Collider[32];
         private bool isInteracting;
         private bool previousInteractState;
         private GameObject promptCanvasGO;
@@ -91,6 +94,7 @@ namespace QuestSystem
 
         private void Update()
         {
+            UpdateKaedeRange();
             if (isInteracting || StoryDirector.IsStoryPlaybackActive || GameInputState.GameplayBlocked || InventoryUISystem.IsAnyWheelOpen)
             {
                 HidePrompt();
@@ -105,7 +109,7 @@ namespace QuestSystem
             if (!playerInRange) { HidePrompt(); return; }
             UpdatePromptLocalization();
             ShowPrompt();
-            if (IsInteractTriggered()) BeginInteraction();
+            if (IsInteractTriggered() && promptPanel != null && promptPanel.gameObject.activeInHierarchy) BeginInteraction();
         }
 
         private void BeginInteraction()
@@ -211,6 +215,30 @@ namespace QuestSystem
 
         private void EnsureCollider()
         {
+            if (Array.Exists(stages, stage => stage != null && stage.questId == "q.lab.drkaede"))
+            {
+                // The same scene object serves every Kaede stage. Account for its 1.2 Y
+                // scale without changing the model, transform or quest marker position.
+                var oldBox = GetComponent<BoxCollider>();
+                if (oldBox != null) oldBox.enabled = false;
+                CapsuleCollider body = null;
+                foreach (var capsule in GetComponents<CapsuleCollider>())
+                {
+                    if (capsule.isTrigger) capsule.enabled = false;
+                    else body = capsule;
+                }
+                if (body == null) body = gameObject.AddComponent<CapsuleCollider>();
+                float verticalScale = Mathf.Max(0.001f, Mathf.Abs(transform.lossyScale.y));
+                float horizontalScale = Mathf.Max(0.001f, Mathf.Abs(transform.lossyScale.x), Mathf.Abs(transform.lossyScale.z));
+                body.direction = 1;
+                body.isTrigger = false;
+                body.radius = 0.3f / horizontalScale;
+                body.height = 1.8f / verticalScale;
+                body.center = new Vector3(0f, 0.9f / verticalScale, 0f);
+                _usesKaedeRange = true;
+                return;
+            }
+
             Collider col = GetComponent<Collider>();
             if (col == null)
             {
@@ -221,6 +249,32 @@ namespace QuestSystem
             else
             {
                 col.isTrigger = true;
+            }
+        }
+
+        private void UpdateKaedeRange()
+        {
+            if (!_usesKaedeRange) return;
+            // Discover the controller in a wider volume, then use its center
+            // rather than its contact/query shape to enforce the talking distance.
+            // This world-space volume has no collider, so ordinary interaction rays
+            // cannot hit it. Keep the full-height range independent of model scaling.
+            Bounds bounds = new Bounds(transform.position + Vector3.up * 1.5f, new Vector3(2f, 3f, 2f));
+            float radius = Mathf.Max(bounds.extents.x, bounds.extents.z);
+            Vector3 halfAxis = Vector3.up * Mathf.Max(0f, bounds.extents.y - radius);
+            int count = Physics.OverlapCapsuleNonAlloc(bounds.center - halfAxis, bounds.center + halfAxis,
+                Mathf.Max(radius, KaedeTalkingDistance), _kaedeRangeHits, ~0, QueryTriggerInteraction.Collide);
+            playerInRange = false;
+            for (int i = 0; i < count; i++)
+            {
+                // Held tool colliders must not extend the player's talking distance.
+                if (!(_kaedeRangeHits[i] is CharacterController player) || !IsPlayerCollider(player)) continue;
+                Vector3 offset = player.transform.position - transform.position;
+                offset.y = 0f;
+                if (offset.sqrMagnitude > KaedeTalkingDistance * KaedeTalkingDistance) continue;
+                if (player.bounds.max.y < bounds.min.y || player.bounds.min.y > bounds.max.y) continue;
+                playerInRange = true;
+                break;
             }
         }
 
@@ -296,6 +350,7 @@ namespace QuestSystem
 
         private void OnTriggerEnter(Collider other)
         {
+            if (_usesKaedeRange) return;
             if (!IsPlayerCollider(other)) return;
 
             playerInRange = true;
@@ -304,6 +359,7 @@ namespace QuestSystem
 
         private void OnTriggerExit(Collider other)
         {
+            if (_usesKaedeRange) return;
             if (!IsPlayerCollider(other)) return;
 
             playerInRange = false;
