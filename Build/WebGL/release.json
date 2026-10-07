@@ -1,25 +1,25 @@
 {
-  "version": "2026.10.06-wheel-kaede-fix",
+  "version": "2026.10.07-mountain-sites",
   "unity": "6000.0.51f1",
   "buildType": "release",
-  "builtAt": "2026-10-06T13:00:24.000Z",
-  "sourceCommit": "203de2cbd6c6db09f2ee7fdbc2db92c2397e0154",
+  "builtAt": "2026-10-07T05:35:25.000Z",
+  "sourceCommit": "bb38ebe27d7063c6d1a20bbe7b4b01e4d7d4b0c9",
   "assets": {
     "Build/WebGL.data.unityweb": {
-      "bytes": 108220569,
-      "sha256": "4886a62fb03b6a1823b580f2239d6340f7310b6e6c3fac7bd1b5c25c3e106d0e"
+      "bytes": 108220937,
+      "sha256": "c11a07a8b5c24b2be73443fddc9897337b2dfbb20440ee0b21bb76f5e8dc5c6c"
     },
     "Build/WebGL.framework.js.unityweb": {
       "bytes": 96719,
-      "sha256": "f206249db4f16ecd0cd0668c516bb3d1695636d53cebeb42c9c8866a72ad77b7"
+      "sha256": "8a08ec6a8f70e26360e4851fa0fb7558400e04bd1443c3d02783d847cf14907d"
     },
     "Build/WebGL.loader.js": {
       "bytes": 47338,
-      "sha256": "55cf9a91fe31b295c28e1b6760e7235db531eccdf99e92a8c04baa35eb3304d6"
+      "sha256": "c074e419b1718741917ed0a1019649b7234c952bab4ff16c06865ecf1f1aa41f"
     },
     "Build/WebGL.wasm.unityweb": {
-      "bytes": 12108651,
-      "sha256": "bc678e298141ff02c5ea59d65c2908e73e1745dbe6b12247d835e8f26daec3a8"
+      "bytes": 12108376,
+      "sha256": "6f3d988e5f0d8e164ce4377832524071bbb8dc89b35d2bad8cb68a09f8e0637a"
     }
   },
   "webAssets": {
@@ -40,8 +40,8 @@
       "sha256": "e302c2a151aa4815d87e64dee4f6760f64edf71df059dff4d3a7266cc0e4f50d"
     },
     "index.html": {
-      "bytes": 18391,
-      "sha256": "6ef738a5416ad040007d48b672ab03fa88bdb3c6ea2d3813bed4beb2bdbdf290"
+      "bytes": 18390,
+      "sha256": "c1cfba951aab5f383370cceda21f7da7ce9055f72b50dae569b364c54ae2b143"
     }
   },
   "surveyAssets": {
