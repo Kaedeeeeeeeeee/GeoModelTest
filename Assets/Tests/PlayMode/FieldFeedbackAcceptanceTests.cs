@@ -158,8 +158,7 @@ public class FieldFeedbackAcceptanceTests
         var guidance = Prop(T("GuidanceSystem.GuidanceManager"), "Instance");
         var target = (Component)Get(guidance, "activeTarget");
         Check(target != null, "Hammer task uses its real configured guidance target.");
-        Vector3 rock = GroundAt(target.transform.position);
-        PlacePlayer(rock + new Vector3(0, 0.15f, -1.0f), rock);
+        PlaceAtHammerTarget(target);
         Call(guidance, "RegisterPlayer", _player.transform);
         Call(_tools, "UnequipCurrentTool");
         yield return Frames(5);
@@ -200,8 +199,7 @@ public class FieldFeedbackAcceptanceTests
         {
             target = (Component)Get(guidance, "activeTarget");
             Check((string)Prop(target, "TargetId") == "chapter3.field.sample_site_" + (site == 1 ? "b" : "c"), "The field line advances through B then C.");
-            var nextRock = GroundAt(target.transform.position);
-            PlacePlayer(nextRock + new Vector3(0, 0.15f, -1f), nextRock);
+            PlaceAtHammerTarget(target);
             yield return new WaitForSeconds(1.3f);
             Check((int)Prop(hammer, "CurrentHitCount") == 0, "The previous hammer animation has released the next site.");
             yield return MouseClick();
@@ -279,7 +277,7 @@ public class FieldFeedbackAcceptanceTests
         ((HashSet<string>)Get(_quests, "_completedObjectives")).Add("q.field.phase.enter_field");
         Set(_quests, "_fieldPhaseTargetIndex", 0);
         Call(_quests, "ActivateCurrentFieldTarget");
-        PlacePlayer(rock + new Vector3(0, 0.15f, -1.0f), rock);
+        PlaceAtHammerTarget((Component)Get(guidance, "activeTarget"));
         Call(_mobile, "EnableDesktopTestMode", true);
         Call(_mobile, "SwitchInputMode", Enum.Parse(T("MobileInputManager+InputMode"), "Mobile"));
         var mobileUI = (Component)UnityEngine.Object.FindFirstObjectByType(T("MobileControlsUI"), FindObjectsInactive.Include);
@@ -343,8 +341,7 @@ public class FieldFeedbackAcceptanceTests
         for (int site = 1; site < 3; site++)
         {
             target = (Component)Get(guidance, "activeTarget");
-            var touchRock = GroundAt(target.transform.position);
-            PlacePlayer(touchRock + new Vector3(0, 0.15f, -1f), touchRock);
+            PlaceAtHammerTarget(target);
             yield return new WaitForSeconds(1.3f);
             Check((int)Prop(hammer, "CurrentHitCount") == 0 && (bool)Get(hammer, "canUse"), "Touch hammer is ready at site " + (site + 1) + "; hits=" + Prop(hammer, "CurrentHitCount") + "; canUse=" + Get(hammer, "canUse") + ".");
             for (int hit = 0; hit < 3; hit++)
@@ -403,6 +400,10 @@ public class FieldFeedbackAcceptanceTests
             yield return new WaitForSeconds(2.4f);
         }
         var towerPrompt = Find("DrillTowerInteractionUI");
+        PlaceAtTowerWithoutNearbyPickup(tower, towerPrompt);
+        yield return Frames(5);
+        Check(((GameObject)Get(towerPrompt, "interactionPrompt")).activeInHierarchy,
+            "The normal shared-prompt priority selects the completed tower from the mountain capture pose.");
         Call(towerPrompt, "ShowInteractionPrompt", tower);
         Check(((Text)Get(towerPrompt, "promptText")).text.Contains("ドリルタワーをしまう") &&
             !((Text)Get(towerPrompt, "promptText")).text.Contains("「使う」で"), "Maximum-depth touch prompt names the action without a button prefix.");
@@ -510,6 +511,55 @@ public class FieldFeedbackAcceptanceTests
         Call(_wheel, "CloseWheel", false);
         Assert.AreSame(selectedTool, Call(_tools, "GetCurrentTool"),
             "Closing the wheel should preserve " + id + ".");
+    }
+
+    private void PlaceAtHammerTarget(Component target)
+    {
+        string id = (string)Prop(target, "TargetId");
+        int index = Array.IndexOf(new[]
+        {
+            "chapter3.field.sample_site_a", "chapter3.field.sample_site_b", "chapter3.field.sample_site_c"
+        }, id);
+        Assert.GreaterOrEqual(index, 0, "The hammer fixture must use a configured field site.");
+        var sceneTargets = FieldSiteTestData.GetHammerTargetsFromMainScene();
+        Assert.AreSame(sceneTargets[index], target.transform, "The active hammer target belongs to the loaded MainScene asset.");
+        Vector3 foot = sceneTargets[index].position;
+        var faces = FieldSiteTestData.HammerFacePoints;
+        // This existing UI/tool fixture positions the view directly. Field route acceptance
+        // covers the commute with the real CharacterController separately.
+        PlacePlayer(foot + Vector3.up * 0.08f, faces[index]);
+        Vector3 eye = foot + Vector3.up * 1.08f;
+        _camera.transform.position = eye + (faces[index] - eye).normalized * 0.065f;
+        _camera.transform.LookAt(faces[index]);
+    }
+
+    private void PlaceAtTowerWithoutNearbyPickup(Component tower, Component towerPrompt)
+    {
+        // The cores have priority 3; the tower has priority 1. On the mountain, the old
+        // fixed south offset can overlap a core after its drop onto the uneven terrace.
+        // Start beside the already collected first (north) core, then find a real standable
+        // pose that remains in tower range without requesting any sample-pickup prompt.
+        var collectors = UnityEngine.Object.FindObjectsByType(T("SampleCollector"), FindObjectsSortMode.None).Cast<Component>().ToArray();
+        for (int angle = 0; angle < 360; angle += 15)
+        {
+            var candidate = tower.transform.position + Quaternion.Euler(0f, angle, 0f) * Vector3.forward * 2f;
+            var ground = Physics.RaycastAll(candidate + Vector3.up * 50f, Vector3.down, 100f)
+                .OrderBy(h => h.distance).FirstOrDefault(h => !h.collider.isTrigger && h.collider.GetComponent(T("GeologyLayer")) != null);
+            if (ground.collider == null || Vector3.Angle(ground.normal, Vector3.up) > 20f) continue;
+            PlacePlayer(ground.point + Vector3.up * 0.08f, tower.transform.position + Vector3.up * 1.5f);
+            if (Vector3.Distance(_camera.transform.position, tower.transform.position) > (float)Get(towerPrompt, "promptDistance")) continue;
+            bool pickupInRange = false;
+            foreach (var collector in collectors)
+            {
+                if (collector == null) continue;
+                Call(collector, "CheckPlayerInteraction");
+                pickupInRange |= (bool)Get(collector, "playerInRange");
+            }
+            if (pickupInRange) continue;
+            Check(true, "Maximum-depth tower capture uses a standable mountain pose in tower range and outside every core pickup radius: " + _player.transform.position + ".");
+            return;
+        }
+        Assert.Fail("No standable mountain terrace pose keeps the tower in range without a higher-priority core pickup.");
     }
 
     private Vector3 GroundAt(Vector3 site)

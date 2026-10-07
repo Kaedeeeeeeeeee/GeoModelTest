@@ -167,6 +167,8 @@ public class HammerTool : CollectionTool
             currentCollection = new HammerCollectionState
             {
                 targetPosition = hit.point,
+                sourceLayer = hit.collider.GetComponent<GeologyLayer>(),
+                surfaceNormal = hit.normal,
                 currentHits = 1, // 第一次敲击
                 requiredHits = requiredHits,
                 lastHitTime = Time.time,
@@ -476,6 +478,17 @@ public class HammerTool : CollectionTool
     void GenerateSlabSample(Vector3 position)
     {
         Debug.Log($"开始生成薄片样本，采集位置: {position}");
+
+        // A hammer takes the rock actually struck, including vertical outcrop faces.
+        // Projecting the hit down from the sky can select a different layer on the crest.
+        if (currentCollection != null && currentCollection.sourceLayer != null)
+        {
+            var layer = currentCollection.sourceLayer;
+            var renderer = layer.GetComponent<Renderer>();
+            Material material = layer.layerMaterial != null ? layer.layerMaterial : renderer?.sharedMaterial;
+            GenerateSlabSampleWithMaterial(position, material, layer, null);
+            return;
+        }
         
         // 第1步：精确地表检测（学习钻塔工具的方法）
         Vector3 preciseCollectionPosition = GetPreciseSurfacePosition(position);
@@ -595,6 +608,59 @@ public class HammerTool : CollectionTool
         if (slabSample != null)
         {
             PendingSample = slabSample;
+            if (reconstructedSample == null && sourceLayer != null)
+            {
+                var mesh = slabSample.GetComponent<MeshFilter>().sharedMesh;
+                float volume = mesh.bounds.size.x * mesh.bounds.size.y * mesh.bounds.size.z;
+                string sampleId = System.Guid.NewGuid().ToString("N");
+                reconstructedSample = new GeometricSampleReconstructor.ReconstructedSample
+                {
+                    sampleID = sampleId,
+                    sampleContainer = slabSample,
+                    totalHeight = 0.06f,
+                    totalVolume = volume,
+                    centerOfMass = position,
+                    originalData = new LayerGeometricCutter.GeometricSampleData
+                    {
+                        sampleID = sampleId,
+                        drillingPosition = position,
+                        drillingDirection = currentCollection != null ? -currentCollection.surfaceNormal : Vector3.down,
+                        drillingDepth = 0.06f,
+                        drillingRadius = 0.4f,
+                        totalVolume = volume,
+                        collectionTime = System.DateTime.Now
+                    },
+                    physics = new GeometricSampleReconstructor.SamplePhysics
+                    {
+                        rigidbody = slabSample.GetComponent<Rigidbody>(),
+                        colliders = slabSample.GetComponents<Collider>(),
+                        totalMass = 0.5f,
+                        isFloating = true
+                    },
+                    layerSegments = new[]
+                    {
+                        new GeometricSampleReconstructor.LayerSegment
+                        {
+                            segmentObject = slabSample,
+                            sourceLayer = sourceLayer,
+                            geometry = mesh,
+                            material = originalMaterial,
+                            cutResult = new LayerGeometricCutter.LayerCutResult
+                            {
+                                isValid = true,
+                                originalLayer = sourceLayer,
+                                resultMesh = mesh,
+                                volume = volume,
+                                depthStart = 0f,
+                                depthEnd = 0.06f,
+                                centerOfMass = position
+                            },
+                            relativeDepth = 0f
+                        }
+                    }
+                };
+                reconstructedSample.originalData.layerResults = new[] { reconstructedSample.layerSegments[0].cutResult };
+            }
             AttachGeometricSampleInfo(slabSample, reconstructedSample, position);
             // 集成到样本收集系统
             IntegrateSlabSample(slabSample);
@@ -661,6 +727,11 @@ public class HammerTool : CollectionTool
         // 设置样本数据
         collector.sourceToolID = toolID; // "1002"
         collector.sampleData = SampleItem.CreateFromGeologicalSample(slabSample, toolID);
+        var sampleInfo = slabSample.GetComponent<GeometricSampleInfo>();
+        if (collector.sampleData != null && sampleInfo != null)
+        {
+            collector.sampleData.originalCollectionPosition = sampleInfo.collectionPosition;
+        }
         
         // 标记为薄片样本
         if (collector.sampleData != null)
@@ -671,6 +742,13 @@ public class HammerTool : CollectionTool
             collector.sampleData.depthStart = 0f; // 表面采集
             collector.sampleData.depthEnd = 0.06f; // 薄片厚度
             collector.sampleData.totalDepth = 0.06f; // 更新总深度为薄片厚度
+            if (collector.sampleData.geologicalLayers?.Count == 1)
+            {
+                var layerInfo = collector.sampleData.geologicalLayers[0];
+                layerInfo.thickness = 0.06f;
+                layerInfo.depthStart = 0f;
+                layerInfo.depthEnd = 0.06f;
+            }
 
             int layerCount = collector.sampleData.geologicalLayers?.Count ?? 0;
             string firstLayerName = layerCount > 0 ? collector.sampleData.geologicalLayers[0].layerName : "None";
@@ -686,7 +764,8 @@ public class HammerTool : CollectionTool
     protected override bool CanUseOnTarget(RaycastHit hit)
     {
         // 检查距离限制
-        float distance = Vector3.Distance(transform.position, hit.point);
+        var camera = GetPlayerCamera();
+        float distance = Vector3.Distance(camera != null ? camera.transform.position : transform.position, hit.point);
         if (distance > collectionRange)
         {
             ShowMessage(LocalizationManager.Resolve(
@@ -933,6 +1012,8 @@ public class HammerTool : CollectionTool
 public class HammerCollectionState
 {
     public Vector3 targetPosition;     // 敲击目标位置
+    public GeologyLayer sourceLayer;   // The layer hit on the actual outcrop face.
+    public Vector3 surfaceNormal;
     public int currentHits = 0;        // 当前敲击次数
     public int requiredHits = 3;       // 需要的敲击次数
     public float lastHitTime;          // 上次敲击时间

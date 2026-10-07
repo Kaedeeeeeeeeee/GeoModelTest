@@ -143,7 +143,24 @@ public class PlayerPersistentData : MonoBehaviour
     /// </summary>
     public void RestoreSceneData(string sceneName)
     {
-        if (!enableDataPersistence) return;
+        RestoreSceneDataInternal(sceneName, false);
+    }
+
+    public void RestoreSceneDataAfterFieldReturn(string sceneName)
+    {
+        RestoreSceneDataInternal(sceneName, sceneName == "MainScene");
+    }
+
+    private void RestoreSceneDataInternal(string sceneName, bool useFieldArrival)
+    {
+        if (!enableDataPersistence)
+        {
+            if (useFieldArrival)
+            {
+                StartCoroutine(SetPlayerToFixedPosition(FieldSiteLayout.ArrivalPosition, FieldSiteLayout.ArrivalRotation));
+            }
+            return;
+        }
         
         Debug.Log($"恢复场景数据: {sceneName}");
         if (!sceneDataMap.ContainsKey(sceneName))
@@ -163,8 +180,11 @@ public class PlayerPersistentData : MonoBehaviour
                 sceneData.playerPosition = LaboratorySpawnPosition;
                 sceneData.playerRotation = LaboratorySpawnRotation;
             }
-            // 恢复玩家位置和旋转
-            RestorePlayerTransform(sceneData);
+            // A field return restores tools and samples, but keeps the saved checkpoint unchanged.
+            if (!useFieldArrival)
+            {
+                RestorePlayerTransform(sceneData);
+            }
             
             // 恢复装备的工具
             RestoreEquippedTool(sceneData);
@@ -180,12 +200,19 @@ public class PlayerPersistentData : MonoBehaviour
         else
         {
             Debug.Log($"场景 {sceneName} 没有保存的数据，使用默认状态");
-            SetDefaultSceneState(sceneName);
+            if (!useFieldArrival)
+            {
+                SetDefaultSceneState(sceneName);
+            }
             // 没有场景存档也要恢复全局工具
             EnsureUnlockedToolsApplied();
         }
 
-        if (sceneName == "Laboratory Scene")
+        if (useFieldArrival)
+        {
+            StartCoroutine(SetPlayerToFixedPosition(FieldSiteLayout.ArrivalPosition, FieldSiteLayout.ArrivalRotation));
+        }
+        else if (sceneName == "Laboratory Scene")
         {
             StartCoroutine(SetPlayerToFixedPosition(LaboratorySpawnPosition, LaboratorySpawnRotation));
         }

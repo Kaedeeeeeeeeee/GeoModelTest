@@ -319,7 +319,14 @@ public class GameSceneManager : MonoBehaviour
         int sceneIndex = index;
         buttonComponent.onClick.AddListener(() => {
             Debug.Log($"[GameSceneManager] 按钮被点击 - 场景: {availableScenes[sceneIndex].sceneName}");
-            SwitchToScene(availableScenes[sceneIndex].sceneName);
+            if (selectionOwner != null)
+            {
+                SwitchToSceneFromPhaseShifter(availableScenes[sceneIndex].sceneName);
+            }
+            else
+            {
+                SwitchToScene(availableScenes[sceneIndex].sceneName);
+            }
         });
         
         return button;
@@ -371,6 +378,27 @@ public class GameSceneManager : MonoBehaviour
     /// </summary>
     public void SwitchToScene(string sceneName)
     {
+        BeginSceneSwitch(sceneName, false);
+    }
+
+    /// <summary>
+    /// A field entrance is used only for a phase-shifter trip from the laboratory.
+    /// Title-menu resume and New Game continue to restore their normal scene state.
+    /// </summary>
+    public void SwitchToSceneFromPhaseShifter(string sceneName)
+    {
+        BeginSceneSwitch(sceneName, true);
+    }
+
+    private static bool ShouldUseFieldArrival(string sourceSceneName, string destinationSceneName,
+        bool fromPhaseShifter)
+    {
+        return fromPhaseShifter && sourceSceneName == "Laboratory Scene" &&
+            destinationSceneName == "MainScene";
+    }
+
+    private void BeginSceneSwitch(string sceneName, bool fromPhaseShifter)
+    {
         if (isSceneLoading)
         {
             Debug.LogWarning("正在加载场景，请稍后");
@@ -389,13 +417,14 @@ public class GameSceneManager : MonoBehaviour
         GeoModel.AudioSystem.AudioManager.Instance.PlayUI(
             GeoModel.AudioSystem.AudioKeys.SFX.SceneTeleport);
 
-        StartCoroutine(LoadSceneAsync(sceneName));
+        bool useFieldArrival = ShouldUseFieldArrival(currentSceneName, sceneName, fromPhaseShifter);
+        StartCoroutine(LoadSceneAsync(sceneName, useFieldArrival));
     }
     
     /// <summary>
     /// 异步加载场景
     /// </summary>
-    IEnumerator LoadSceneAsync(string sceneName)
+    IEnumerator LoadSceneAsync(string sceneName, bool useFieldArrival)
     {
         isSceneLoading = true;
         
@@ -444,7 +473,7 @@ public class GameSceneManager : MonoBehaviour
         // 恢复场景数据
         if (SceneSystem.GameSession.IsGameplayScene(sceneName))
         {
-            yield return StartCoroutine(RestoreSceneData(sceneName));
+            yield return StartCoroutine(RestoreSceneData(sceneName, useFieldArrival));
             PlayerPrefs.SetString(SceneSystem.GameSession.ResumeSceneKey, sceneName);
             PlayerPrefs.Save();
         }
@@ -468,13 +497,20 @@ public class GameSceneManager : MonoBehaviour
     /// <summary>
     /// 恢复场景数据
     /// </summary>
-    IEnumerator RestoreSceneData(string sceneName)
+    IEnumerator RestoreSceneData(string sceneName, bool useFieldArrival)
     {
         yield return new WaitForSeconds(0.1f); // 等待场景初始化
         
         if (playerData != null)
         {
-            playerData.RestoreSceneData(sceneName);
+            if (useFieldArrival)
+            {
+                playerData.RestoreSceneDataAfterFieldReturn(sceneName);
+            }
+            else
+            {
+                playerData.RestoreSceneData(sceneName);
+            }
             if (sceneName == "Laboratory Scene")
             {
                 playerData.ForceSetPlayerToLaboratorySpawn();

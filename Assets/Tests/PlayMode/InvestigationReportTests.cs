@@ -13,7 +13,7 @@ using UnityEngine.UI;
 public class InvestigationReportTests
 {
     private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance;
-    private const string Server = "https://survey-preview-test.invalid";
+    private const string Server = "http://127.0.0.1:1";
     private readonly Dictionary<string, string> _prefs = new Dictionary<string, string>();
     private readonly string[] _keys =
     {
@@ -23,6 +23,7 @@ public class InvestigationReportTests
     };
     private UnityEngine.Object _settings;
     private string _settingsJson;
+    private Action<string> _reviewOpenUrl;
     private IEnumerator _report;
     private bool _closed;
     private Keyboard _keyboard;
@@ -55,6 +56,10 @@ public class InvestigationReportTests
         _settingsJson = JsonUtility.ToJson(_settings);
         Set(_settings, "supabaseUrl", Server);
         Set(_settings, "publishableKey", "local-ui-test-key");
+        Set(_settings, "enableBackend", true);
+        var openUrl = RuntimeType("Backend.SurveyGateway").GetField("ReviewOpenUrl", Flags);
+        _reviewOpenUrl = (Action<string>)openUrl.GetValue(null);
+        openUrl.SetValue(null, (Action<string>)(_ => Assert.Fail("Report UI tests must not open an external website.")));
         // Stop the unrelated scene transition after a successful close assertion.
         Set(Instance("SceneSystem.GameSession"), "_returning", true);
         Call("StorySystem.InvestigationProgress", "MarkComplete");
@@ -164,6 +169,7 @@ public class InvestigationReportTests
         Call("Core.GameInputState", "ReleaseAll");
         Set(Instance("SceneSystem.GameSession"), "_returning", false);
         JsonUtility.FromJsonOverwrite(_settingsJson, _settings);
+        RuntimeType("Backend.SurveyGateway").GetField("ReviewOpenUrl", Flags).SetValue(null, _reviewOpenUrl);
         foreach (var pair in _prefs)
         {
             if (pair.Value == null) PlayerPrefs.DeleteKey(pair.Key);

@@ -96,7 +96,7 @@ namespace QuestSystem
         private const string Chapter4SampleAnalysisStoryPath = "Story/beat3";   // 采样后：钻塔 + 化石测验
         private const string Chapter4SampleCompletionStoryPath = "Story/beat4"; // 对比 + 地层倾斜 + 收尾
         private const string Chapter4SampleGuidanceTargetId = "chapter4.sample.site";
-        private static readonly Vector3 Chapter4SampleTargetPosition = new Vector3(-10f, 14f, -28f);
+        private static readonly Vector3 Chapter4SampleTargetPosition = FieldSiteLayout.DrillPosition;
         private const string FieldPhaseSampleStoryPath = "Story/beat2";         // 野外采集 + 岩石判定测验
 
         // 事件（供UI订阅）

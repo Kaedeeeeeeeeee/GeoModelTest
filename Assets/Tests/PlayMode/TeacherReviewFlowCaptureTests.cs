@@ -173,8 +173,7 @@ public class TeacherReviewFlowCaptureTests
         int before;
         var outsideTarget = UnityEngine.Object.FindObjectsByType(T("GuidanceSystem.GuidanceTarget"), FindObjectsSortMode.None)
             .Cast<Component>().First(t => (string)Prop(t, "TargetId") == sites[1]);
-        Vector3 outsideRock = GroundAt(outsideTarget.transform.position);
-        PlacePlayer(outsideRock + new Vector3(0, 0.15f, -1f), outsideRock);
+        PlaceAtHammerTarget(outsideTarget);
         Call(guidance, "RegisterPlayer", Player().transform);
         SelectTool("1002");
         yield return new WaitForSecondsRealtime(1.1f);
@@ -198,9 +197,8 @@ public class TeacherReviewFlowCaptureTests
         {
             target = (Component)Get(guidance, "activeTarget");
             Check(target != null && (string)Prop(target, "TargetId") == sites[site], "Blue guide line targets site " + (site + 1) + ".");
-            Vector3 rock = GroundAt(target.transform.position);
-            Observe("A.site" + (site + 1) + ".ground", rock);
-            PlacePlayer(rock + new Vector3(0, 0.15f, -1.0f), rock);
+            PlaceAtHammerTarget(target);
+            Observe("A.site" + (site + 1) + ".ground", Player().transform.position);
             Call(guidance, "RegisterPlayer", Player().transform);
             SelectTool("1002");
             yield return new WaitForSecondsRealtime(1.1f);
@@ -592,6 +590,26 @@ public class TeacherReviewFlowCaptureTests
         Assert.IsTrue((bool)Call(wheel, "TrySelectToolAtScreenPoint", ScreenRect(slots[index]).center, "鼠标"),
             "The mouse path reaches the reordered " + id + " slot.");
         Assert.AreSame(tools[index], Call(_tools(), "GetCurrentTool"), "Wheel selection equips " + id + ".");
+    }
+
+    private void PlaceAtHammerTarget(Component target)
+    {
+        string id = (string)Prop(target, "TargetId");
+        int index = Array.IndexOf(new[]
+        {
+            "chapter3.field.sample_site_a", "chapter3.field.sample_site_b", "chapter3.field.sample_site_c"
+        }, id);
+        Assert.GreaterOrEqual(index, 0, "The hammer fixture must use a configured field site.");
+        var sceneTargets = FieldSiteTestData.GetHammerTargetsFromMainScene();
+        Assert.AreSame(sceneTargets[index], target.transform, "The active hammer target belongs to the loaded MainScene asset.");
+        Vector3 foot = sceneTargets[index].position;
+        var faces = FieldSiteTestData.HammerFacePoints;
+        // Route walking has its own CharacterController acceptance test; this fixture
+        // keeps the existing UI/tool capture flow at each real exposed cliff face.
+        PlacePlayer(foot + Vector3.up * 0.08f, faces[index]);
+        Vector3 eye = foot + Vector3.up * 1.08f;
+        Camera.main.transform.position = eye + (faces[index] - eye).normalized * 0.065f;
+        Camera.main.transform.LookAt(faces[index]);
     }
 
     private Vector3 GroundAt(Vector3 site)
