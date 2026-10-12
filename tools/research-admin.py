@@ -192,14 +192,16 @@ class Admin:
         forms = {row['participant_id']:row['respondent_id'] for row in self.rows('guardian_consents',
             {'study_id':'eq.'+study['id'],'select':'participant_id,respondent_id'})}
         responses = self.rows('survey_responses',{'study_id':'eq.'+study['id'],'select':'participant_id,respondent_id,respondent_id_matches'})
-        ids = sorted({forms[row['participant_id']] for row in responses if row['participant_id'] in forms})
+        # Testee's specification (2026-10-02) takes the ID re-entered in the questionnaire as the correct one.
+        # Responses from before that double check carry none and keep the guardian-form ID.
+        ids = sorted({row.get('respondent_id') or forms[row['participant_id']] for row in responses if row['participant_id'] in forms})
         private_write(args.output, csv_text([{'respondent_id':value} for value in ids], ['respondent_id']))
         print(f'Exported {len(ids)} completed respondent IDs to {Path(args.output).expanduser().resolve()}.')
-        # The file keeps the guardian-form ID; a confirmed different questionnaire ID needs a manual decision.
+        # A confirmed different questionnaire ID is what the file reports; list each one for review.
         mismatches = sorted({(forms[row['participant_id']], row['respondent_id']) for row in responses
             if row['participant_id'] in forms and row.get('respondent_id_matches') is False})
         for guardian_id, survey_id in mismatches:
-            print(f'Check: guardian form {guardian_id} but questionnaire {survey_id}.')
+            print(f'Check: reported questionnaire ID {survey_id}; the guardian form has {guardian_id}.')
 
 
 def timestamp(value):
