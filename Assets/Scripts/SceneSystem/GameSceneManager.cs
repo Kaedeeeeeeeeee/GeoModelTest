@@ -18,6 +18,7 @@ public class GameSceneManager : MonoBehaviour
     private Core.GameInputState.Scope selectionInput;
     private ModalCanvasLayerGuard.Scope selectionLayer;
     private SceneSwitcherTool selectionOwner;
+    private UnityEngine.UI.Outline recommendedSceneOutline;
     public GameObject sceneSelectionUI;
     public Transform sceneButtonContainer;
     public GameObject sceneButtonPrefab;
@@ -102,6 +103,7 @@ public class GameSceneManager : MonoBehaviour
         {
             Debug.Log("[GameSceneManager] 激活场景选择UI");
             sceneSelectionUI.SetActive(true);
+            HighlightRecommendedScene();
 
             selectionOwner = owner;
             if (selectionInput == null) selectionInput = Core.GameInputState.Acquire(CancelSceneSelection);
@@ -135,6 +137,34 @@ public class GameSceneManager : MonoBehaviour
         Debug.Log("隐藏场景选择UI");
     }
     
+    /// <summary>
+    /// 标出当前任务要去的场景，让相位切换器流程的最后一步也有引导
+    /// </summary>
+    void HighlightRecommendedScene()
+    {
+        recommendedSceneOutline = null;
+        if (sceneButtonContainer == null) return;
+
+        string recommended = UISystem.CollectionGuidanceHUD.RecommendedDestination();
+        foreach (Transform button in sceneButtonContainer)
+        {
+            var outline = button.GetComponent<UnityEngine.UI.Outline>();
+            if (outline == null) continue;
+            outline.enabled = recommended != null && button.name == $"SceneButton_{recommended}";
+            if (outline.enabled) recommendedSceneOutline = outline;
+        }
+    }
+
+    void Update()
+    {
+        if (recommendedSceneOutline == null || !recommendedSceneOutline.isActiveAndEnabled) return;
+
+        // 与工具轮盘、移动端按钮的推荐高亮使用同一呼吸节奏
+        Color color = UISystem.GameUI.Accent;
+        color.a = 0.65f + 0.2f * Mathf.Sin(Time.unscaledTime * 3f);
+        recommendedSceneOutline.effectColor = color;
+    }
+
     public void CancelSceneSelection()
     {
         var owner = selectionOwner;
@@ -287,6 +317,12 @@ public class GameSceneManager : MonoBehaviour
         UnityEngine.UI.Button buttonComponent = button.AddComponent<UnityEngine.UI.Button>();
         buttonComponent.targetGraphic = buttonImage;
         buttonComponent.interactable = !isCurrentScene;
+
+        // 任务目的地的高亮描边，显示选择界面时再决定是否启用
+        var recommendationOutline = button.AddComponent<UnityEngine.UI.Outline>();
+        recommendationOutline.effectDistance = new Vector2(6f, -6f);
+        recommendationOutline.effectColor = UISystem.GameUI.Accent;
+        recommendationOutline.enabled = false;
         
         // 按钮文本
         GameObject buttonText = new GameObject("Text");

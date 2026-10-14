@@ -144,6 +144,7 @@ public class MobileControlsUI : MonoBehaviour
     private FirstPersonController pausedPlayerController;
     private bool pausedPlayerControllerWasEnabled;
     private Outline toolWheelGuidanceOutline;
+    private Outline interactGuidanceOutline;
 
     void Awake()
     {
@@ -258,24 +259,31 @@ public class MobileControlsUI : MonoBehaviour
 
     void UpdateToolWheelGuidance()
     {
-        if (toolWheelButton == null) return;
-        if (toolWheelGuidanceOutline == null || toolWheelGuidanceOutline.gameObject != toolWheelButton.gameObject)
-        {
-            toolWheelGuidanceOutline = toolWheelButton.gameObject.AddComponent<Outline>();
-            toolWheelGuidanceOutline.effectDistance = new Vector2(5f, -5f);
-            toolWheelGuidanceOutline.useGraphicAlpha = true;
-        }
-
-        bool highlight = UISystem.CollectionGuidanceHUD.IsVisible &&
-            !string.IsNullOrEmpty(UISystem.CollectionGuidanceHUD.RecommendedToolId) &&
+        bool cue = UISystem.CollectionGuidanceHUD.IsVisible &&
             !InventoryUISystem.IsAnyWheelOpen && !Core.GameInputState.GameplayBlocked &&
             !StorySystem.StoryDirector.IsStoryPlaybackActive;
-        toolWheelGuidanceOutline.enabled = highlight;
+        UpdateGuidanceOutline(toolWheelButton, ref toolWheelGuidanceOutline,
+            cue && !string.IsNullOrEmpty(UISystem.CollectionGuidanceHUD.RecommendedToolId));
+        UpdateGuidanceOutline(interactButton, ref interactGuidanceOutline,
+            cue && UISystem.CollectionGuidanceHUD.HighlightPrimaryAction);
+    }
+
+    void UpdateGuidanceOutline(Button button, ref Outline outline, bool highlight)
+    {
+        if (button == null) return;
+        if (outline == null || outline.gameObject != button.gameObject)
+        {
+            outline = button.gameObject.AddComponent<Outline>();
+            outline.effectDistance = new Vector2(5f, -5f);
+            outline.useGraphicAlpha = true;
+        }
+
+        outline.enabled = highlight;
         if (highlight)
         {
             Color color = UISystem.GameUI.Accent;
             color.a = 0.65f + 0.2f * Mathf.Sin(Time.unscaledTime * 3f);
-            toolWheelGuidanceOutline.effectColor = color;
+            outline.effectColor = color;
         }
     }
 

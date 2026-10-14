@@ -1,0 +1,57 @@
+PASS A laboratory without a field objective shows no trip cue.
+PASS A pending field objective recommends the field from the laboratory: MainScene
+PASS The cue first recommends the phase shifter: 999
+PASS Desktop cue names the tool to pick: Tabで道具を開き、光っている「フェーズシフター」を選ぼう。
+PASS The card is titled with the phase shifter: フェーズシフター
+PASS The open wheel keeps the recommendation and hides the card.
+PASS Only the phase-shifter sector is highlighted.
+PASS The real wheel equips the phase shifter.
+PASS With the shifter in hand the cue asks for the primary action.
+PASS Desktop cue names the action and destination: 左クリックして、移動先の「野外調査エリア」を選ぼう。
+PASS The shipped primary action opens the destination list.
+PASS The destination list replaces the card.
+PASS Only the field destination is outlined in the laboratory.
+PASS The destination outline breathes like the other cues.
+PASS Cancelling the trip restarts the cue from tool selection.
+PASS The scene contains its real virtual controls.
+PASS Touch cue points at the tool button: 道具ボタンをタップし、光っている「フェーズシフター」を選ぼう。
+PASS Touch step 1 outlines only the real tool button.
+PASS Touch step 1 offers the tool-menu entrance on the card.
+PASS touch step 1: the card does not cover inventoryButton.
+PASS touch step 1: the card does not cover toolWheelButton.
+PASS touch step 1: the card does not cover interactButton.
+PASS touch step 1: the card does not cover secondaryInteractButton.
+PASS touch step 1: the card and the quest card do not overlap.
+PASS touch step 1: the whole instruction is visible.
+PASS The card entrance opens the wheel with the shifter recommended.
+PASS Touch selection reaches the phase-shifter slot.
+PASS Touch selection equips the phase shifter.
+PASS Touch cue names the button and destination: 「調べる」をタップして、移動先の「野外調査エリア」を選ぼう。
+PASS Touch step 2 outlines only the real interact button.
+PASS The tool-menu entrance leaves once the shifter is in hand.
+PASS touch step 2: the card does not cover inventoryButton.
+PASS touch step 2: the card does not cover toolWheelButton.
+PASS touch step 2: the card does not cover interactButton.
+PASS touch step 2: the card does not cover secondaryInteractButton.
+PASS touch step 2: the card and the quest card do not overlap.
+PASS touch step 2: the whole instruction is visible.
+PASS The interact button opens the destination list.
+PASS The field destination is outlined for touch as well.
+PASS The interact outline stops once the list is open.
+PASS Arriving in the field ends the trip cue: /
+PASS The scene contains its real virtual controls.
+PASS A pending return objective recommends the laboratory from the field: Laboratory Scene/999
+PASS Return cue starts at the tool button: 道具ボタンをタップし、光っている「フェーズシフター」を選ぼう。
+PASS Return cue names the laboratory: 「調べる」をタップして、移動先の「G-Lab研究室」を選ぼう。
+PASS Return step 2 outlines the interact button.
+PASS The interact button opens the destination list in the field.
+PASS Only the laboratory destination is outlined in the field.
+PASS Free travel outlines no destination.
+PASS English touch cue is localized: Tap Use, then choose Laboratory.
+TEXT English touch: Tap Use, then choose Laboratory.
+PASS ChineseSimplified touch cue is localized: 点击「交互」使用，然后在场景选择中选择「研究室」。
+TEXT ChineseSimplified touch: 点击「交互」使用，然后在场景选择中选择「研究室」。
+PASS English desktop cue is localized: Left-click to use it, then choose Laboratory.
+TEXT English desktop: Left-click to use it, then choose Laboratory.
+PASS ChineseSimplified desktop cue is localized: 按左键使用，然后在场景选择中选择「研究室」。
+TEXT ChineseSimplified desktop: 按左键使用，然后在场景选择中选择「研究室」。

@@ -8,9 +8,15 @@ using UnityEngine.UI;
 
 namespace UISystem
 {
-    /// <summary>Shows only the next action for the active field collection objective.</summary>
+    /// <summary>
+    /// Shows only the next action for the active field collection objective, or for the
+    /// phase-shifter trip when that objective can only progress in the other scene.
+    /// </summary>
     public sealed class CollectionGuidanceHUD : MonoBehaviour
     {
+        private const string FieldScene = "MainScene";
+        private const string LabScene = "Laboratory Scene";
+        private const string PhaseShifterId = "999";
         private ToolManager _tools;
         private Canvas _canvas;
         private RectTransform _card;
@@ -22,6 +28,8 @@ namespace UISystem
         public static string RecommendedToolId { get; private set; }
         public static bool IsVisible { get; private set; }
         public static RectTransform VisibleCard { get; private set; }
+        /// <summary>True while the cue asks for the primary action with the phase shifter in hand.</summary>
+        public static bool HighlightPrimaryAction { get; private set; }
 
         public static void Attach(ToolManager tools)
         {
@@ -86,10 +94,37 @@ namespace UISystem
             return nearby ? "drill" : "approach";
         }
 
+        // A field objective only progresses outdoors and a return objective only in the laboratory.
+        // Work that is still pending in the current scene keeps the player there.
+        public static string TravelDestination(string scene, bool fieldObjective, bool labObjective)
+        {
+            if (scene == LabScene) return fieldObjective && !labObjective ? FieldScene : null;
+            if (scene == FieldScene) return labObjective && !fieldObjective ? LabScene : null;
+            return null;
+        }
+
+        /// <summary>The scene the active quest sends the player to, or null when they are already there.</summary>
+        public static string RecommendedDestination()
+        {
+            var quests = QuestManager.Instance;
+            bool field = Pending(quests, "q.field.phase", "q.field.phase.collect_samples") ||
+                Pending(quests, "q.chapter4.field", "q.chapter4.field.enter_field") ||
+                Pending(quests, "q.chapter4.sample", "q.chapter4.sample.collect") ||
+                Pending(quests, "q.chapter5.field", "q.chapter5.field.enter_field");
+            bool lab = Pending(quests, "q.lab.return", "q.lab.return.enter_lab") ||
+                Pending(quests, "q.chapter4.return", "q.chapter4.return.enter_lab") ||
+                Pending(quests, "q.chapter5.return", "q.chapter5.return.enter_lab");
+            return TravelDestination(SceneManager.GetActiveScene().name, field, lab);
+        }
+
+        private static bool Pending(QuestManager quests, string questId, string objectiveId) =>
+            quests.GetQuestStatus(questId) == QuestStatus.InProgress && !quests.IsObjectiveCompleted(objectiveId);
+
         private void LateUpdate()
         {
             RecommendedToolId = null;
             IsVisible = false;
+            HighlightPrimaryAction = false;
             RefreshGuidance();
             if (_card != null && _card.gameObject.activeSelf != IsVisible)
                 _card.gameObject.SetActive(IsVisible);
@@ -99,9 +134,26 @@ namespace UISystem
 
         private void RefreshGuidance()
         {
-            if (_card == null || _tools == null) return;
-            if (GameInputState.IsModalOpen || StoryDirector.IsStoryPlaybackActive || QuestManager.IsPickupFeedbackPending ||
-                SceneManager.GetActiveScene().name != "MainScene") return;
+            if (_card == null || _tools == null || _tools.availableTools == null) return;
+            if (GameInputState.IsModalOpen || StoryDirector.IsStoryPlaybackActive || QuestManager.IsPickupFeedbackPending) return;
+
+            bool touch = FirstControlGuide.UsesTouch();
+            string destination = RecommendedDestination();
+            if (destination != null)
+            {
+                var shifter = FindTool(PhaseShifterId);
+                if (shifter == null) return;
+                // Selecting the shifter does not use it, so the cue stays until the destination list opens.
+                bool holding = _tools.GetCurrentTool() == shifter;
+                if (holding) HighlightPrimaryAction = true;
+                else RecommendedToolId = PhaseShifterId;
+                string shifterName = CurrentToolHUD.ToolName(shifter);
+                Present(shifter, touch, ShowsToolsButton(touch, !holding), shifterName, string.Format(
+                    GameUI.L("ui.collection." + (holding ? "shift_use" : "equip") + (touch ? ".touch" : ".desktop")),
+                    shifterName, GameUI.L(destination == FieldScene ? "scene.main.name" : "scene.laboratory.name")));
+                return;
+            }
+            if (SceneManager.GetActiveScene().name != FieldScene) return;
 
             var quests = QuestManager.Instance;
             bool hammerQuest = quests.GetQuestStatus("q.field.phase") == QuestStatus.InProgress &&
@@ -110,13 +162,8 @@ namespace UISystem
                 !quests.IsObjectiveCompleted("q.chapter4.sample.collect");
             if (!hammerQuest && !towerQuest) return;
 
-            if (_tools.availableTools == null) return;
             string id = towerQuest ? "1001" : "1002";
-            CollectionTool tool = null;
-            foreach (var candidate in _tools.availableTools)
-            {
-                if (candidate != null && candidate.toolID == id) { tool = candidate; break; }
-            }
+            CollectionTool tool = FindTool(id);
             if (tool == null) return;
             bool equipped = _tools.GetCurrentTool() == tool;
             string stage;
@@ -143,19 +190,36 @@ namespace UISystem
             if (!operationStarted && GuidanceManager.Current != null && !GuidanceManager.Current.IsPlayerNearActiveTarget)
                 stage = "travel";
             if (stage == "equip") RecommendedToolId = id;
-            bool touch = FirstControlGuide.UsesTouch();
-            bool showToolsButton = touch && stage == "equip" && !InventoryUISystem.IsAnyWheelOpen &&
-                MobileInputManager.Instance != null && _toolsHint.Refresh();
+            bool showToolsButton = ShowsToolsButton(touch, stage == "equip");
+            string toolName = CurrentToolHUD.ToolName(tool);
+            string title = hammerQuest ? HammerTitle(toolName, quests.FieldCollectionSite, quests.FieldCollectionSiteTotal) : toolName;
+            if (hammerQuest && showToolsButton)
+                title = toolName + "\n" + string.Format(GameUI.L("ui.collection.site_progress"),
+                    quests.FieldCollectionSite, quests.FieldCollectionSiteTotal);
+            Present(tool, touch, showToolsButton, title, string.Format(
+                GameUI.L("ui.collection." + stage + (touch ? ".touch" : ".desktop")), toolName, hits, required));
+        }
+
+        private CollectionTool FindTool(string id)
+        {
+            foreach (var candidate in _tools.availableTools)
+            {
+                if (candidate != null && candidate.toolID == id) return candidate;
+            }
+            return null;
+        }
+
+        private bool ShowsToolsButton(bool touch, bool equipStage) =>
+            touch && equipStage && !InventoryUISystem.IsAnyWheelOpen &&
+            MobileInputManager.Instance != null && _toolsHint.Refresh();
+
+        private void Present(CollectionTool tool, bool touch, bool showToolsButton, string title, string instruction)
+        {
             _openToolsButton.gameObject.SetActive(showToolsButton);
             _instruction.rectTransform.anchorMax = new Vector2(showToolsButton ? 0.73f : 0.96f, 0.55f);
             _title.rectTransform.anchorMax = new Vector2(showToolsButton ? 0.73f : 0.97f, 0.97f);
-            string toolName = CurrentToolHUD.ToolName(tool);
-            _title.text = hammerQuest ? HammerTitle(toolName, quests.FieldCollectionSite, quests.FieldCollectionSiteTotal) : toolName;
-            if (hammerQuest && showToolsButton)
-                _title.text = toolName + "\n" + string.Format(GameUI.L("ui.collection.site_progress"),
-                    quests.FieldCollectionSite, quests.FieldCollectionSiteTotal);
-            _instruction.text = string.Format(GameUI.L("ui.collection." + stage + (touch ? ".touch" : ".desktop")),
-                toolName, hits, required);
+            _title.text = title;
+            _instruction.text = instruction;
             _icon.sprite = ToolIconResolver.GetIcon(tool);
             float scale = Mathf.Max(0.01f, _canvas.scaleFactor);
             Rect safe = Screen.safeArea;
@@ -177,6 +241,7 @@ namespace UISystem
             // completed or a player moved since the previous frame's visible cue.
             RecommendedToolId = null;
             IsVisible = false;
+            HighlightPrimaryAction = false;
             RefreshGuidance();
             if (IsVisible && !string.IsNullOrEmpty(RecommendedToolId))
                 MobileInputManager.Instance?.TriggerToolWheelInput();
@@ -186,6 +251,7 @@ namespace UISystem
         {
             RecommendedToolId = null;
             IsVisible = false;
+            HighlightPrimaryAction = false;
             if (VisibleCard == _card) VisibleCard = null;
             if (_card != null) _card.gameObject.SetActive(false);
         }

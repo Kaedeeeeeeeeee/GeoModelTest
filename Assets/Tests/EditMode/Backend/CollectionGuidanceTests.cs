@@ -32,4 +32,19 @@ public class CollectionGuidanceTests
             BackendTestReflection.GetType("UISystem.CollectionGuidanceHUD"), "TowerStage",
             equipped, placing, valid, placed, drilling, pending, canDrill, nearby));
     }
+
+    [TestCase("Laboratory Scene", true, false, "MainScene")]
+    [TestCase("MainScene", false, true, "Laboratory Scene")]
+    [TestCase("MainScene", true, false, null)]
+    [TestCase("Laboratory Scene", false, true, null)]
+    [TestCase("Laboratory Scene", false, false, null)]
+    [TestCase("MainScene", false, false, null)]
+    [TestCase("Laboratory Scene", true, true, null)]
+    [TestCase("MainScene", true, true, null)]
+    [TestCase("StartScene", true, false, null)]
+    public void Travel_ShouldPointToTheOtherSceneOnlyWhenTheObjectiveIsThere(string scene, bool field, bool lab, string expected)
+    {
+        Assert.AreEqual(expected, BackendTestReflection.InvokeStatic(
+            BackendTestReflection.GetType("UISystem.CollectionGuidanceHUD"), "TravelDestination", scene, field, lab));
+    }
 }

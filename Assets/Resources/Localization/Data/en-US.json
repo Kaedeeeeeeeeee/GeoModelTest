@@ -3645,6 +3645,14 @@
       "value": "Tap Tools, then choose the glowing {0}."
     },
     {
+      "key": "ui.collection.shift_use.desktop",
+      "value": "Left-click to use it, then choose {1}."
+    },
+    {
+      "key": "ui.collection.shift_use.touch",
+      "value": "Tap Use, then choose {1}."
+    },
+    {
       "key": "ui.collection.hit.desktop",
       "value": "Approach the rock. Left-click the same spot {2} times."
     },

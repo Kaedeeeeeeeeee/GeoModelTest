@@ -3825,6 +3825,14 @@
       "value": "道具ボタンをタップし、光っている「{0}」を選ぼう。"
     },
     {
+      "key": "ui.collection.shift_use.desktop",
+      "value": "左クリックして、移動先の「{1}」を選ぼう。"
+    },
+    {
+      "key": "ui.collection.shift_use.touch",
+      "value": "「調べる」をタップして、移動先の「{1}」を選ぼう。"
+    },
+    {
       "key": "ui.collection.hit.desktop",
       "value": "岩に近づき、同じ目印を左クリックで{2}回たたこう。"
     },
