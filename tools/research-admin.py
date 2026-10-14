@@ -193,7 +193,8 @@ class Admin:
             {'study_id':'eq.'+study['id'],'select':'participant_id,respondent_id'})}
         responses = self.rows('survey_responses',{'study_id':'eq.'+study['id'],
             'select':'participant_id,respondent_id,submitted_at','order':'submitted_at.asc,id.asc'})
-        # A child can answer again after New Game, so each participant reports one ID.
+        # A child can answer again after New Game, so each participant reports one ID unless a person confirms
+        # that children sharing one browser (and so one participant) each finished.
         # Testee's specification (2026-10-02) takes the ID re-entered in the questionnaire as the correct one.
         # Responses from before that double check carry none and keep the guardian-form ID.
         entered = {}
@@ -201,28 +202,30 @@ class Admin:
             if row['participant_id'] not in forms: continue
             ids = entered.setdefault(row['participant_id'], {})
             if row.get('respondent_id'): ids.setdefault(row['respondent_id'], row['submitted_at'])
-        chosen = dict(args.choose or [])
+        chosen = {}
+        for participant, respondent in args.choose or []: chosen.setdefault(participant, set()).add(respondent)
         unknown = sorted(set(chosen)-set(entered))
         if unknown: raise ValueError('--choose names a participant without a completed questionnaire: '+', '.join(unknown))
         reported, conflicts = {}, []
         for participant, ids in entered.items():
             if participant in chosen:
-                if chosen[participant] not in set(ids)|{forms[participant]}:
-                    raise ValueError(f'--choose {participant}: {chosen[participant]} is neither a questionnaire nor the guardian-form ID.')
+                stray = sorted(chosen[participant]-set(ids)-{forms[participant]})
+                if stray: raise ValueError(f'--choose {participant}: {", ".join(stray)} is neither a questionnaire nor the guardian-form ID.')
                 reported[participant] = chosen[participant]
             elif len(ids) > 1: conflicts.append(participant)
-            else: reported[participant] = next(iter(ids), forms[participant])
+            else: reported[participant] = {next(iter(ids), forms[participant])}
         if conflicts:
             # Reporting both IDs would count one child twice and could credit another child; a person decides.
             for participant in conflicts:
                 entries = ', '.join(f'{value} (submitted {at})' for value, at in entered[participant].items())
                 print(f'Conflict: participant {participant} entered {entries}; the guardian form has {forms[participant]}.', file=sys.stderr)
-            raise ValueError('No file was written. Pick one ID for each participant above with --choose PARTICIPANT_ID=RESPONDENT_ID.')
-        ids = sorted(set(reported.values()))
+            raise ValueError('No file was written. Pick the ID for each participant above with --choose PARTICIPANT_ID=RESPONDENT_ID; '
+                             'repeat --choose for a participant when children sharing one browser each finished.')
+        ids = sorted(set().union(*reported.values()))
         private_write(args.output, csv_text([{'respondent_id':value} for value in ids], ['respondent_id']))
         print(f'Exported {len(ids)} completed respondent IDs to {Path(args.output).expanduser().resolve()}.')
         # A confirmed different questionnaire ID is what the file reports; list each one for review.
-        for guardian_id, survey_id in sorted({(forms[p], value) for p, value in reported.items() if value != forms[p]}):
+        for guardian_id, survey_id in sorted({(forms[p], value) for p, values in reported.items() for value in values if value != forms[p]}):
             print(f'Check: reported questionnaire ID {survey_id}; the guardian form has {guardian_id}.')
 
 
