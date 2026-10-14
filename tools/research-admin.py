@@ -191,17 +191,46 @@ class Admin:
         study = self.study(args.study_key)
         forms = {row['participant_id']:row['respondent_id'] for row in self.rows('guardian_consents',
             {'study_id':'eq.'+study['id'],'select':'participant_id,respondent_id'})}
-        responses = self.rows('survey_responses',{'study_id':'eq.'+study['id'],'select':'participant_id,respondent_id,respondent_id_matches'})
+        responses = self.rows('survey_responses',{'study_id':'eq.'+study['id'],
+            'select':'participant_id,respondent_id,submitted_at','order':'submitted_at.asc,id.asc'})
+        # A child can answer again after New Game, so each participant reports one ID.
         # Testee's specification (2026-10-02) takes the ID re-entered in the questionnaire as the correct one.
         # Responses from before that double check carry none and keep the guardian-form ID.
-        ids = sorted({row.get('respondent_id') or forms[row['participant_id']] for row in responses if row['participant_id'] in forms})
+        entered = {}
+        for row in responses:
+            if row['participant_id'] not in forms: continue
+            ids = entered.setdefault(row['participant_id'], {})
+            if row.get('respondent_id'): ids.setdefault(row['respondent_id'], row['submitted_at'])
+        chosen = dict(args.choose or [])
+        unknown = sorted(set(chosen)-set(entered))
+        if unknown: raise ValueError('--choose names a participant without a completed questionnaire: '+', '.join(unknown))
+        reported, conflicts = {}, []
+        for participant, ids in entered.items():
+            if participant in chosen:
+                if chosen[participant] not in set(ids)|{forms[participant]}:
+                    raise ValueError(f'--choose {participant}: {chosen[participant]} is neither a questionnaire nor the guardian-form ID.')
+                reported[participant] = chosen[participant]
+            elif len(ids) > 1: conflicts.append(participant)
+            else: reported[participant] = next(iter(ids), forms[participant])
+        if conflicts:
+            # Reporting both IDs would count one child twice and could credit another child; a person decides.
+            for participant in conflicts:
+                entries = ', '.join(f'{value} (submitted {at})' for value, at in entered[participant].items())
+                print(f'Conflict: participant {participant} entered {entries}; the guardian form has {forms[participant]}.', file=sys.stderr)
+            raise ValueError('No file was written. Pick one ID for each participant above with --choose PARTICIPANT_ID=RESPONDENT_ID.')
+        ids = sorted(set(reported.values()))
         private_write(args.output, csv_text([{'respondent_id':value} for value in ids], ['respondent_id']))
         print(f'Exported {len(ids)} completed respondent IDs to {Path(args.output).expanduser().resolve()}.')
         # A confirmed different questionnaire ID is what the file reports; list each one for review.
-        mismatches = sorted({(forms[row['participant_id']], row['respondent_id']) for row in responses
-            if row['participant_id'] in forms and row.get('respondent_id_matches') is False})
-        for guardian_id, survey_id in mismatches:
+        for guardian_id, survey_id in sorted({(forms[p], value) for p, value in reported.items() if value != forms[p]}):
             print(f'Check: reported questionnaire ID {survey_id}; the guardian form has {guardian_id}.')
+
+
+def respondent_choice(value):
+    participant, separator, respondent = value.partition('=')
+    if not separator or not (respondent.isascii() and respondent.isdigit()) or not 1<=len(respondent)<=10:
+        raise argparse.ArgumentTypeError('Use PARTICIPANT_ID=RESPONDENT_ID with a 1-10 digit respondent ID.')
+    return str(uuid.UUID(participant)), respondent
 
 
 def timestamp(value):
@@ -226,6 +255,7 @@ def main():
     forms.add_argument('--output',required=True)
     done=commands.add_parser('completers');done.add_argument('--study-key',required=True)
     done.add_argument('--output',required=True)
+    done.add_argument('--choose',type=respondent_choice,action='append',metavar='PARTICIPANT_ID=RESPONDENT_ID')
     gate=commands.add_parser('entry');gate.add_argument('--study-key',required=True)
     gate.add_argument('--state',choices=['open','closed'],required=True)
     consent=commands.add_parser('record-consent');consent.add_argument('--participant-id',required=True)
