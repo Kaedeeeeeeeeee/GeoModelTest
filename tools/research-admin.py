@@ -227,10 +227,12 @@ class Admin:
 
 
 def respondent_choice(value):
+    # completers accepts only an ID that participant entered or has on the guardian form,
+    # which also covers the p + 7 digit IDs recorded before 2026-10-05.
     participant, separator, respondent = value.partition('=')
-    if not separator or not (respondent.isascii() and respondent.isdigit()) or not 1<=len(respondent)<=10:
-        raise argparse.ArgumentTypeError('Use PARTICIPANT_ID=RESPONDENT_ID with a 1-10 digit respondent ID.')
-    return str(uuid.UUID(participant)), respondent
+    if not separator or not respondent.strip():
+        raise argparse.ArgumentTypeError('Use PARTICIPANT_ID=RESPONDENT_ID.')
+    return str(uuid.UUID(participant)), respondent.strip()
 
 
 def timestamp(value):
