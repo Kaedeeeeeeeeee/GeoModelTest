@@ -176,32 +176,62 @@ public class TeacherFeedbackTests
         var localization = T("LocalizationManager").GetProperty("Instance").GetValue(null);
         var languageType = T("LanguageSettings+Language");
         var original = Read(localization, "CurrentLanguage");
-        foreach (string language in new[] { "Japanese", "ChineseSimplified", "English" })
+        int originalView = GameViewSelection.Index;
+        try
         {
-            Call(localization, "SwitchLanguage", Enum.Parse(languageType, language));
-            foreach (bool touch in new[] { false, true })
+            // The guide scales with the screen, so check the phone and tablet shapes the scene fixtures capture
+            // instead of whatever game view the previous fixture left.
+            foreach (var size in new[] { new Vector2Int(960, 540), new Vector2Int(844, 390), new Vector2Int(1024, 768) })
             {
-                Static("UISystem.FirstControlGuide", "Show", touch);
-                var canvas = GameObject.Find("FirstControlGuide");
-                var guide = canvas.GetComponent(T("UISystem.FirstControlGuide"));
-                for (int page = 0; page < 4; page++)
+                SetGameViewSize(size.x, size.y);
+                for (int frame = 0; frame < 8; frame++) yield return null;
+                Assert.AreEqual(size, new Vector2Int(Screen.width, Screen.height), "The game view uses " + size + ".");
+                foreach (string language in new[] { "Japanese", "ChineseSimplified", "English" })
                 {
-                    if (page > 0) Call(guide, "ChangePage", 1);
-                    yield return null;
-                    Canvas.ForceUpdateCanvases();
-                    foreach (var label in canvas.GetComponentsInChildren<Text>())
+                    Call(localization, "SwitchLanguage", Enum.Parse(languageType, language));
+                    foreach (bool touch in new[] { false, true })
                     {
-                        Assert.IsFalse(label.text.StartsWith("ui.guide."), label.name);
-                        if (label.name != "Instruction") continue;
-                        Assert.LessOrEqual(label.preferredHeight, label.rectTransform.rect.height + 2f, language + " / " + page + " / " + label.text);
+                        Static("UISystem.FirstControlGuide", "Show", touch);
+                        var canvas = GameObject.Find("FirstControlGuide");
+                        var guide = canvas.GetComponent(T("UISystem.FirstControlGuide"));
+                        for (int page = 0; page < 4; page++)
+                        {
+                            if (page > 0) Call(guide, "ChangePage", 1);
+                            yield return null;
+                            Canvas.ForceUpdateCanvases();
+                            foreach (var label in canvas.GetComponentsInChildren<Text>())
+                            {
+                                Assert.IsFalse(label.text.StartsWith("ui.guide."), label.name);
+                                if (label.name != "Instruction") continue;
+                                // Best fit shrinks the copy down to its minimum size; only below that is a line cut off.
+                                Assert.LessOrEqual(HeightAtSmallestFit(label), label.rectTransform.rect.height + 2f,
+                                    size + " / " + language + " / " + (touch ? "touch" : "desktop") + " / " + page + " / " + label.text);
+                            }
+                        }
+                        Static("UISystem.FirstControlGuide", "CloseCurrent");
+                        yield return null;
                     }
                 }
-                Static("UISystem.FirstControlGuide", "CloseCurrent");
-                yield return null;
             }
         }
-        Call(localization, "SwitchLanguage", original);
+        finally
+        {
+            // The language is saved, so a failure must not leave later runs in English.
+            Call(localization, "SwitchLanguage", original);
+            if (originalView >= 0) GameViewSelection.Index = originalView;
+        }
     }
+
+    private static float HeightAtSmallestFit(Text label)
+    {
+        var settings = label.GetGenerationSettings(new Vector2(label.GetPixelAdjustedRect().size.x, 0f));
+        settings.resizeTextForBestFit = false;
+        if (label.resizeTextForBestFit) settings.fontSize = label.resizeTextMinSize;
+        return label.cachedTextGeneratorForLayout.GetPreferredHeight(label.text, settings) / label.pixelsPerUnit;
+    }
+
+    private static void SetGameViewSize(int width, int height) => typeof(FieldFeedbackAcceptanceTests).GetMethod("SetGameViewSize", Flags)
+        .Invoke(new FieldFeedbackAcceptanceTests(), new object[] { width, height });
 
     [UnityTest]
     public IEnumerator Npc_ShouldShowNewQuestMarkerThenRepeatReminderAfterCompletion()

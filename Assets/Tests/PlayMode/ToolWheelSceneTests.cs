@@ -37,6 +37,8 @@ public class ToolWheelSceneTests
     private readonly List<string> _checks = new List<string>();
     private readonly List<string> _geometry = new List<string> { "context\tsector\tgraphic\tseparator_margin_px\tdead_zone_clearance_px\touter_clearance_px" };
     private readonly List<GameObject> _fixtures = new List<GameObject>();
+    private readonly RealSceneFixtureCleanup _cleanup = new RealSceneFixtureCleanup();
+    private int _viewSizeIndex = -1;
 
     private void Check(bool condition, string message)
     {
@@ -51,6 +53,8 @@ public class ToolWheelSceneTests
         _output = Environment.GetEnvironmentVariable("GEOMODEL_TOOL_WHEEL_CAPTURE");
         if (string.IsNullOrEmpty(_output)) Assert.Ignore("Set GEOMODEL_TOOL_WHEEL_CAPTURE to capture the actual wheel.");
         Directory.CreateDirectory(_output);
+        _cleanup.Capture();
+        _viewSizeIndex = GameViewSelection.Index;
         SetSize(960, 540);
         _backend = Resources.Load("BackendSettings");
         if (_backend != null) { _backendEnabled = (bool)Get(_backend, "enableBackend"); Set(_backend, "enableBackend", false); }
@@ -413,6 +417,10 @@ public class ToolWheelSceneTests
         }
         foreach (var fixture in _fixtures) UnityEngine.Object.Destroy(fixture);
         if (_backend != null) Set(_backend, "enableBackend", _backendEnabled);
+        SwitchLanguage("Japanese");
+        if (_viewSizeIndex >= 0) GameViewSelection.Index = _viewSizeIndex;
+        // Remove the real field while the test devices are still valid for its UI modules.
+        yield return _cleanup.Restore();
         if (_keyboard != null) InputSystem.RemoveDevice(_keyboard);
         if (_mouse != null) InputSystem.RemoveDevice(_mouse);
         if (_touchscreen != null) InputSystem.RemoveDevice(_touchscreen);
@@ -421,8 +429,5 @@ public class ToolWheelSceneTests
 #if UNITY_EDITOR
         InputSystem.settings.editorInputBehaviorInPlayMode = _editorBehavior;
 #endif
-        SwitchLanguage("Japanese");
-        SetSize(960, 540);
-        yield return null;
     }
 }

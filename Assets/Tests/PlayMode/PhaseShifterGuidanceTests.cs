@@ -38,6 +38,7 @@ public class PhaseShifterGuidanceTests
     private int _viewSizeIndex = -1;
     private string _output;
     private readonly List<string> _checks = new List<string>();
+    private readonly RealSceneFixtureCleanup _cleanup = new RealSceneFixtureCleanup();
 
     private void Check(bool condition, string message)
     {
@@ -52,7 +53,8 @@ public class PhaseShifterGuidanceTests
         _output = Environment.GetEnvironmentVariable("GEOMODEL_PHASE_SHIFTER_GUIDANCE");
         if (string.IsNullOrEmpty(_output)) Assert.Ignore("Set GEOMODEL_PHASE_SHIFTER_GUIDANCE to verify the trip guidance in the actual scenes.");
         Directory.CreateDirectory(_output);
-        _viewSizeIndex = ViewSizeIndex;
+        _cleanup.Capture();
+        _viewSizeIndex = GameViewSelection.Index;
         SetSize(960, 540);
         _backend = Resources.Load("BackendSettings");
         if (_backend != null) { _backendEnabled = (bool)Get(_backend, "enableBackend"); Set(_backend, "enableBackend", false); }
@@ -370,22 +372,6 @@ public class PhaseShifterGuidanceTests
     private IEnumerator Capture(string name) => (IEnumerator)typeof(TeacherReviewFlowCaptureTests).GetMethod("CaptureTo", Flags)
         .Invoke(new TeacherReviewFlowCaptureTests(), new object[] { Path.Combine(_output, name + ".png") });
 
-    // Guide and prompt fixtures measure their layout at whatever game view the previous fixture left.
-    private static int ViewSizeIndex
-    {
-#if UNITY_EDITOR
-        get => (int)Prop(UnityEditor.EditorWindow.GetWindow(typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.GameView")), "selectedSizeIndex");
-        set
-        {
-            var view = UnityEditor.EditorWindow.GetWindow(typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.GameView"));
-            view.GetType().GetProperty("selectedSizeIndex", Flags).SetValue(view, value);
-        }
-#else
-        get => -1;
-        set { }
-#endif
-    }
-
     [UnityTearDown]
     public IEnumerator Cleanup()
     {
@@ -398,6 +384,10 @@ public class PhaseShifterGuidanceTests
             Call(_mobile, "SwitchInputMode", Enum.Parse(T("MobileInputManager+InputMode"), "Desktop"));
         }
         if (_backend != null) Set(_backend, "enableBackend", _backendEnabled);
+        SwitchLanguage("Japanese");
+        if (_viewSizeIndex >= 0) GameViewSelection.Index = _viewSizeIndex;
+        // Remove the real scenes while the test devices are still valid for their UI modules.
+        yield return _cleanup.Restore();
         if (_keyboard != null) InputSystem.RemoveDevice(_keyboard);
         if (_mouse != null) InputSystem.RemoveDevice(_mouse);
         InputSystem.settings.updateMode = _updateMode;
@@ -405,16 +395,5 @@ public class PhaseShifterGuidanceTests
 #if UNITY_EDITOR
         InputSystem.settings.editorInputBehaviorInPlayMode = _editorBehavior;
 #endif
-        SwitchLanguage("Japanese");
-        if (_viewSizeIndex >= 0) ViewSizeIndex = _viewSizeIndex;
-        // Later fixtures build their own scenes, so the real field must not stay loaded for them.
-        var empty = SceneManager.CreateScene("PhaseShifterGuidanceCleanup");
-        SceneManager.SetActiveScene(empty);
-        for (int i = SceneManager.sceneCount - 1; i >= 0; i--)
-        {
-            var scene = SceneManager.GetSceneAt(i);
-            if (scene != empty) yield return SceneManager.UnloadSceneAsync(scene);
-        }
-        yield return null;
     }
 }

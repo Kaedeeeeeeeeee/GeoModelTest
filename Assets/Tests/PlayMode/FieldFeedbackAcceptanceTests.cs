@@ -40,6 +40,8 @@ public class FieldFeedbackAcceptanceTests
     private readonly List<string> _checks = new List<string>();
     private UnityEngine.Object _backend;
     private bool _backendEnabled;
+    private int _viewSizeIndex = -1;
+    private readonly RealSceneFixtureCleanup _cleanup = new RealSceneFixtureCleanup();
 
     private void Check(bool condition, string message)
     {
@@ -54,6 +56,8 @@ public class FieldFeedbackAcceptanceTests
         _output = Environment.GetEnvironmentVariable("GEOMODEL_FIELD_ACCEPTANCE");
         if (string.IsNullOrEmpty(_output)) Assert.Ignore("Set GEOMODEL_FIELD_ACCEPTANCE to opt into the full-scene acceptance run.");
         Directory.CreateDirectory(_output);
+        _cleanup.Capture();
+        _viewSizeIndex = GameViewSelection.Index;
         SetGameViewSize(960, 540);
         _backend = Resources.Load("BackendSettings");
         if (_backend != null) { _backendEnabled = (bool)Get(_backend, "enableBackend"); Set(_backend, "enableBackend", false); }
@@ -71,6 +75,8 @@ public class FieldFeedbackAcceptanceTests
         PlayerPrefs.SetInt("FirstControlGuide.Completed.v2", 1);
         PlayerPrefs.SetInt("FirstControlGuide.FieldCompleted.v1", 1);
         Call(Prop(T("StorySystem.QuizScoreManager"), "Instance"), "StartNewRun");
+        // The checks read the Japanese copy; a language saved by an earlier run must not change them.
+        Call(Prop(T("LocalizationManager"), "Instance"), "SwitchLanguage", Enum.Parse(T("LanguageSettings+Language"), "Japanese"));
         yield return SceneManager.LoadSceneAsync("MainScene");
         yield return new WaitForSecondsRealtime(4f);
         _director = Prop(T("StorySystem.StoryDirector"), "Instance");
@@ -194,7 +200,8 @@ public class FieldFeedbackAcceptanceTests
         Check(sample == null && ((IList)Call(inventory, "GetAllSamples")).Count == before + 1, "E collects the actual hammer sample into inventory exactly once.");
         var toast = GameObject.Find("GameToastCanvas/Toast");
         Check(toast != null && toast.activeInHierarchy && toast.GetComponentsInChildren<Text>().Any(t => t.text.Contains("岩石")),
-            "Collecting the rock sample shows an on-screen success message.");
+            "Collecting the rock sample shows an on-screen success message: " +
+            (toast == null ? "no toast" : "active=" + toast.activeInHierarchy + " text=" + LabelText(toast)));
         for (int site = 1; site < 3; site++)
         {
             target = (Component)Get(guidance, "activeTarget");
@@ -329,9 +336,15 @@ public class FieldFeedbackAcceptanceTests
         Check(!((GameObject)Get(touchCollector, "interactionPrompt")).transform.Find("KeyCap").gameObject.activeSelf,
             "Touch pickup hides the keyboard key cap.");
         yield return Capture("13b-touch-hammer-pickup");
-        yield return CaptureTouchSizes("rock", (Canvas)Get(touchCollector, "promptCanvas"), mobileUI);
+        // The sample falls from the outcrop and can settle at the edge of the pickup range. Stand beside it,
+        // as a player walks up to it, so the prompt layout is not measured against where the bounce ended.
+        var drop = sample.GetComponent(T("SampleDropController"));
+        float settleDeadline = Time.realtimeSinceStartup + 5f;
+        while (drop != null && !(bool)Call(drop, "HasLanded") && Time.realtimeSinceStartup < settleDeadline) yield return null;
+        Check(drop == null || (bool)Call(drop, "HasLanded"), "The touch rock sample settles before its prompt is measured.");
         PlacePlayer(GroundAt(sample.transform.position) + new Vector3(0, 0.15f, -0.6f), sample.transform.position);
         yield return Frames(5);
+        yield return CaptureTouchSizes("rock", (Canvas)Get(touchCollector, "promptCanvas"), mobileUI);
         before = ((IList)Call(inventory, "GetAllSamples")).Count;
         yield return new WaitForSeconds(1.3f); // Also cover a player who waits for the hammer cooldown before pickup.
         Check((int)Prop(hammer, "CurrentHitCount") == 0 && (bool)Get(hammer, "canUse"), "The hammer has finished its previous animation before touch pickup.");
@@ -749,6 +762,9 @@ public class FieldFeedbackAcceptanceTests
                 Call(_mobile, "SwitchInputMode", Enum.Parse(T("MobileInputManager+InputMode"), "Desktop"));
             }
             if (_backend != null) Set(_backend, "enableBackend", _backendEnabled);
+            if (_viewSizeIndex >= 0) GameViewSelection.Index = _viewSizeIndex;
+            // Remove the real field while the test devices are still valid for its UI modules.
+            yield return _cleanup.Restore();
             if (_keyboard != null) InputSystem.RemoveDevice(_keyboard);
             if (_mouse != null) InputSystem.RemoveDevice(_mouse);
             InputSystem.settings.updateMode = _inputMode;
