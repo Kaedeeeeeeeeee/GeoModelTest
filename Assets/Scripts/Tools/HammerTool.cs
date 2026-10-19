@@ -83,6 +83,15 @@ public class HammerTool : CollectionTool
         }
     }
     
+    protected override void Update()
+    {
+        base.Update();
+        if (isEquipped)
+        {
+            CheckCollectionTimeout();
+        }
+    }
+
     protected override void HandleInput()
     {
         if (!canUse) return;
@@ -105,9 +114,6 @@ public class HammerTool : CollectionTool
         {
             CancelCollection();
         }
-        
-        // 检查超时
-        CheckCollectionTimeout();
     }
 
     public override bool RequestPrimaryUse()
@@ -117,6 +123,7 @@ public class HammerTool : CollectionTool
             return false;
         }
 
+        CheckCollectionTimeout();
         if (currentCollection == null)
         {
             StartCollection();
@@ -163,31 +170,30 @@ public class HammerTool : CollectionTool
                 return;
             }
             
-            // 创建采集状态
-            currentCollection = new HammerCollectionState
-            {
-                targetPosition = hit.point,
-                sourceLayer = hit.collider.GetComponent<GeologyLayer>(),
-                surfaceNormal = hit.normal,
-                currentHits = 1, // 第一次敲击
-                requiredHits = requiredHits,
-                lastHitTime = Time.time,
-                targetName = hit.collider != null ? hit.collider.gameObject.name : "",
-                targetTag = hit.collider != null ? hit.collider.gameObject.tag : ""
-            };
-            
-            // 显示目标标记
-            ShowTargetMarker(hit.point);
-            
-            // 播放第一次敲击动画和音效
-            PlayHammerHit();
-            
-            Debug.Log($"开始采集 - 位置: {hit.point}, 需要敲击: {requiredHits}次");
+            BeginCollection(hit);
         }
         else
         {
             ShowMessage(LocalizationManager.Resolve("hammer.message.no_target", "採取できる岩石に照準を合わせてください。"));
         }
+    }
+
+    void BeginCollection(RaycastHit hit)
+    {
+        currentCollection = new HammerCollectionState
+        {
+            targetPosition = hit.point,
+            sourceLayer = hit.collider.GetComponent<GeologyLayer>(),
+            surfaceNormal = hit.normal,
+            currentHits = 1,
+            requiredHits = requiredHits,
+            lastHitTime = Time.time,
+            targetName = hit.collider.gameObject.name,
+            targetTag = hit.collider.gameObject.tag
+        };
+        ShowTargetMarker(hit.point);
+        PlayHammerHit();
+        Debug.Log($"开始采集 - 位置: {hit.point}, 需要敲击: {requiredHits}次");
     }
     
     /// <summary>
@@ -214,6 +220,8 @@ public class HammerTool : CollectionTool
             
             if (distance <= hitTolerance)
             {
+                // The completed marker remains briefly for its animation, but cannot produce a second sample.
+                if (currentCollection.currentHits >= currentCollection.requiredHits) return;
                 // 有效敲击
                 currentCollection.currentHits++;
                 currentCollection.lastHitTime = Time.time;
@@ -234,7 +242,9 @@ public class HammerTool : CollectionTool
             }
             else
             {
-                ShowMessage(LocalizationManager.Resolve("hammer.message.aim_at_marker", "目印の範囲をたたいてください。"));
+                if (!CanUseOnTarget(hit)) return;
+                CancelCollection();
+                BeginCollection(hit);
             }
         }
     }
@@ -267,7 +277,7 @@ public class HammerTool : CollectionTool
         GameEventBus.RaiseToolUsed(toolID, toolName, currentCollection.targetName, currentCollection.targetTag);
         
         // 延迟清理采集状态，让动画播放完成
-        StartCoroutine(DelayedCleanup());
+        StartCoroutine(DelayedCleanup(currentCollection));
         
         // 设置冷却时间
         lastUseTime = Time.time;
@@ -280,10 +290,13 @@ public class HammerTool : CollectionTool
     /// <summary>
     /// 延迟清理协程
     /// </summary>
-    System.Collections.IEnumerator DelayedCleanup()
+    System.Collections.IEnumerator DelayedCleanup(HammerCollectionState completedCollection)
     {
         yield return new WaitForSeconds(1.2f); // 等待完成动画
-        CancelCollection();
+        if (currentCollection == completedCollection)
+        {
+            CancelCollection();
+        }
     }
     
     /// <summary>
@@ -603,7 +616,13 @@ public class HammerTool : CollectionTool
         }
         
         // 使用直接材质方法生成样本
-        GameObject slabSample = generator.GenerateSlabSampleWithMaterial(position + Vector3.up * 0.5f, originalMaterial, sourceLayer);
+        // Keep the whole slab outside the struck face, including sloping/vertical outcrops.
+        Vector3 normal = currentCollection != null ? currentCollection.surfaceNormal : Vector3.up;
+        float radius = generator.baseRadius * (1f + Mathf.Abs(generator.irregularityFactor) * 0.5f);
+        float clearance = radius * (Mathf.Abs(normal.x) + Mathf.Abs(normal.z)) +
+                          (generator.thickness * 0.5f + Mathf.Abs(generator.noiseStrength)) * Mathf.Abs(normal.y) + 0.05f;
+        Vector3 spawnPosition = position + normal * clearance + Vector3.up * 0.5f;
+        GameObject slabSample = generator.GenerateSlabSampleWithMaterial(spawnPosition, originalMaterial, sourceLayer);
         
         if (slabSample != null)
         {
@@ -975,7 +994,7 @@ public class HammerTool : CollectionTool
     void ShowMessage(string message)
     {
         Debug.Log($"[地质锤] {message}");
-        // TODO: 集成UI消息系统
+        UISystem.GameToast.Show(message);
     }
     
     void OnDestroy()

@@ -1,25 +1,32 @@
 {
-  "version": "2026.10.14-phase-shifter-guide",
+  "version": "2026.10.16-hammer-slab-fix",
   "unity": "6000.0.51f1",
   "buildType": "release",
-  "builtAt": "2026-10-14T04:04:09.000Z",
-  "sourceCommit": "6c4911a80817726b978867e3ef52c275ef87df26",
+  "builtAt": "2026-10-16T12:50:58.518Z",
+  "sourceCommit": "4a57044985ae331ae736f3b067b9958e02777a17",
+  "sourceDirty": true,
+  "sourceFiles": {
+    "Assets/Scripts/Tools/HammerTool.cs": "bd300c906b639f5423c6cd29280d066301e683f9c9f5c4569845d1a77eb62209",
+    "Assets/Scripts/SampleSystem/SampleDropController.cs": "a5a758a901c9234b2ec62222fde8d6601b2ae608393e8d4ed4ab02ad78447694",
+    "Assets/Scripts/Utilities/SlabSampleGenerator.cs": "81f82f96a1e7407ac82e13096d51ebd0b66c79852cb02bb472bb02a50bf84cb4"
+  },
+  "sourcePatchSHA256": "f49ef8b594a087142c47549b0ba1a2f41225ac674caa8addc7db3b7c45df21bb",
   "assets": {
     "Build/WebGL.data.unityweb": {
-      "bytes": 108222007,
-      "sha256": "d85bfb51f9699145eda2e2bd6a96cbba1dbbac53202eea4a9279003d9ed36172"
+      "bytes": 108223033,
+      "sha256": "27dda777494fdebf4d483a53ed36941a39426445adbe579346d924e8d3f619ba"
     },
     "Build/WebGL.framework.js.unityweb": {
-      "bytes": 96719,
-      "sha256": "c7e0927b12b9df146e36d9637f8c8e00e84e8bd5bd39989c9f9a8d1c6b286559"
+      "bytes": 96720,
+      "sha256": "fe1d215ac5989a7683b8ccece8e8b1bd2eee3ef5af0cbd0118e6619afb28f76a"
     },
     "Build/WebGL.loader.js": {
       "bytes": 47338,
-      "sha256": "c9ee079a1c04b360513fa3c1362efa50c4bf8baa2b9540f01a3e1e3a22a3cf04"
+      "sha256": "f668f1e3815cebda7350b7a368614aedbfbbf7b9fc4d5dfbee81108a633b9745"
     },
     "Build/WebGL.wasm.unityweb": {
-      "bytes": 12109740,
-      "sha256": "db144ad7fb298855e1cb7a2c99a7bcd887adfa111e2169311c508b9f2c06def4"
+      "bytes": 12110943,
+      "sha256": "e0b439172761a6ad010f013df5ddd2d9cbb0f2a9a649491deb2a35d69d7f87b6"
     }
   },
   "webAssets": {
@@ -40,8 +47,8 @@
       "sha256": "e302c2a151aa4815d87e64dee4f6760f64edf71df059dff4d3a7266cc0e4f50d"
     },
     "index.html": {
-      "bytes": 18395,
-      "sha256": "b92e1e9d2479dd2ba0c399149509b354e8aaa535cb4a969d78d5d01d6fffefbb"
+      "bytes": 18391,
+      "sha256": "a102dd55a71aa3a15575b2586ab736e9c94b7e3d7b620d3c5777d61614348e15"
     }
   },
   "surveyAssets": {

@@ -183,6 +183,24 @@ public class FieldOutcropSceneTests
             }
             var sample = (GameObject)Prop(hammer, "PendingSample");
             Assert.IsNotNull(sample, "Three real hammer uses generate a world sample at " + SiteNames[site] + ".");
+            var drop = sample.GetComponent(T("SampleDropController"));
+            float landingDeadline = Time.realtimeSinceStartup + 6f;
+            while (drop != null && !(bool)Call(drop, "HasLanded") && Time.realtimeSinceStartup < landingDeadline)
+                yield return null;
+            Assert.IsNotNull(drop, "The real slab uses the ground-safe drop controller.");
+            var sampleBody = sample.GetComponent<Rigidbody>();
+            Record("SLAB_STATE site=" + (site + 1) + " position=" + sample.transform.position +
+                " velocity=" + sampleBody.linearVelocity + " sleeping=" + sampleBody.IsSleeping() +
+                " dropping=" + Call(drop, "IsDropping") + " grounded=" + Get(drop, "isGrounded") +
+                " grounded_time=" + Get(drop, "groundedTime") + " ground=" + Get(drop, "hasGroundSurface") +
+                " timescale=" + Time.timeScale + " floor=" + GroundAt(sample.transform.position).point);
+            Assert.IsTrue((bool)Call(drop, "HasLanded"), "The actual cliff sample must settle within six seconds.");
+            var solid = sample.GetComponent<BoxCollider>();
+            Assert.IsNotNull(solid);
+            var landingSurface = GroundAt(sample.transform.position);
+            Assert.GreaterOrEqual(solid.bounds.min.y, landingSurface.point.y - 0.03f,
+                "The collectible stays above the actual geological surface at " + SiteNames[site] + ".");
+            CaptureLandedSample(camera, sample, face.normal, site + 1);
             var collector = sample.GetComponent(T("SampleCollector"));
             Assert.IsNotNull(collector);
             var sampleData = Get(collector, "sampleData");
@@ -321,6 +339,39 @@ public class FieldOutcropSceneTests
 
     private static string[] SampleLayers(object sample) => ((IEnumerable)Get(sample, "geologicalLayers")).Cast<object>()
         .Select(layer => (string)Get(layer, "layerName")).ToArray();
+
+    private static void CaptureLandedSample(Camera camera, GameObject sample, Vector3 normal, int site)
+    {
+        string output = Environment.GetEnvironmentVariable("GEOMODEL_HAMMER_QA_OUTPUT");
+        if (string.IsNullOrEmpty(output)) return;
+        Directory.CreateDirectory(output);
+        Vector3 position = camera.transform.position;
+        Quaternion rotation = camera.transform.rotation;
+        var previousTarget = camera.targetTexture;
+        var previousActive = RenderTexture.active;
+        var target = new RenderTexture(960, 540, 24);
+        var image = new Texture2D(960, 540, TextureFormat.RGB24, false);
+        try
+        {
+            camera.transform.position = sample.transform.position + normal * 0.9f + Vector3.up * 0.7f;
+            camera.transform.LookAt(sample.transform.position);
+            camera.targetTexture = target;
+            camera.Render();
+            RenderTexture.active = target;
+            image.ReadPixels(new Rect(0, 0, 960, 540), 0, 0);
+            image.Apply();
+            File.WriteAllBytes(Path.Combine(output, "landed-sample-" + site + ".png"), image.EncodeToPNG());
+        }
+        finally
+        {
+            camera.transform.SetPositionAndRotation(position, rotation);
+            camera.targetTexture = previousTarget;
+            RenderTexture.active = previousActive;
+            target.Release();
+            UnityEngine.Object.Destroy(target);
+            UnityEngine.Object.Destroy(image);
+        }
+    }
 
     private static Component Tool(string id) => (Component)((Array)Get(Find("ToolManager"), "availableTools")).Cast<object>()
         .First(tool => tool != null && (string)Get(tool, "toolID") == id);

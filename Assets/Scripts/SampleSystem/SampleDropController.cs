@@ -40,6 +40,10 @@ public class SampleDropController : MonoBehaviour
     // 落地检测
     private bool isGrounded = false;
     private float groundedTime = 0f;
+    private RaycastHit groundSurface;
+    private bool hasGroundSurface;
+    private float lastGroundContactTime = float.NegativeInfinity;
+    private const float SurfaceClearance = 0.02f;
     
     
     void Start()
@@ -86,10 +90,10 @@ public class SampleDropController : MonoBehaviour
         rb.angularDamping = 2.0f; // 角速度阻力
         
         // 冻结XZ轴移动和所有旋转，保持垂直状态
-        rb.freezeRotation = true; // 完全禁止旋转
-        rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+        rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ |
+                         RigidbodyConstraints.FreezeRotation;
         
-        // 替换为MeshCollider以获得更精确的碰撞
+        // 配置样本的实体碰撞器
         SetupMeshColliders();
         
         // 添加物理材质以增加真实感
@@ -108,6 +112,28 @@ public class SampleDropController : MonoBehaviour
     {
         // 获取所有现有的碰撞器
         Collider[] existingColliders = GetComponentsInChildren<Collider>();
+
+        var slabMesh = GetComponent<MeshFilter>();
+        if (GetComponent<SlabSampleMarker>() != null && slabMesh != null && slabMesh.sharedMesh != null)
+        {
+            // Keep the slab's CCD-compatible box; rebuilding it as a thin convex mesh loses sweep CCD.
+            foreach (var collider in existingColliders)
+            {
+                if (!collider.isTrigger && !(collider is BoxCollider))
+                {
+                    collider.enabled = false;
+                    if (Application.isPlaying) Destroy(collider);
+                    else DestroyImmediate(collider);
+                }
+            }
+            var box = GetComponent<BoxCollider>();
+            if (box == null) box = gameObject.AddComponent<BoxCollider>();
+            box.center = slabMesh.sharedMesh.bounds.center;
+            box.size = slabMesh.sharedMesh.bounds.size;
+            rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            colliders = GetComponentsInChildren<Collider>();
+            return;
+        }
         
         // 移除非触发器的原始碰撞器，保留交互触发器
         foreach (Collider col in existingColliders)
@@ -194,6 +220,9 @@ public class SampleDropController : MonoBehaviour
         isDropping = true;
         hasLanded = false;
         bounceCount = 0;
+        isGrounded = false;
+        groundedTime = 0f;
+        lastGroundContactTime = float.NegativeInfinity;
         
         // 设置初始位置（在地面上方2.5m）
         Vector3 dropPosition = FindDropPosition();
@@ -202,6 +231,7 @@ public class SampleDropController : MonoBehaviour
         // 只设置垂直掉落，不添加水平速度
         if (rb != null)
         {
+            rb.position = dropPosition;
             rb.linearVelocity = Vector3.zero; // 纯重力掉落
             rb.angularVelocity = Vector3.zero; // 不旋转
         }
@@ -215,13 +245,12 @@ public class SampleDropController : MonoBehaviour
     Vector3 FindDropPosition()
     {
         Vector3 dropPos = initialPosition;
-        
-        // 射线检测找到地面
-        RaycastHit hit;
-        if (Physics.Raycast(initialPosition, Vector3.down, out hit, 100f, groundLayer))
+
+        Physics.SyncTransforms();
+        hasGroundSurface = TryFindGround(initialPosition + Vector3.up * 0.1f, 100f, out groundSurface);
+        if (hasGroundSurface)
         {
-            // 在地面上方设置掉落高度（2.5m）
-            dropPos.y = hit.point.y + dropHeight;
+            dropPos.y = groundSurface.point.y + Mathf.Max(dropHeight, BottomOffset() + SurfaceClearance);
         }
         else
         {
@@ -231,10 +260,66 @@ public class SampleDropController : MonoBehaviour
         
         return dropPos;
     }
+
+    bool IsGroundCollider(Collider candidate)
+    {
+        return candidate != null && candidate.enabled && !candidate.isTrigger &&
+               !candidate.transform.IsChildOf(transform) &&
+               candidate.GetComponentInParent<SampleCollector>() == null &&
+               candidate.GetComponentInParent<PlacedSampleCollector>() == null &&
+               candidate.GetComponentInParent<FirstPersonController>() == null;
+    }
+
+    bool TryFindGround(Vector3 origin, float distance, out RaycastHit nearest)
+    {
+        nearest = default;
+        float nearestDistance = float.PositiveInfinity;
+        foreach (var hit in Physics.RaycastAll(origin, Vector3.down, distance, groundLayer, QueryTriggerInteraction.Ignore))
+        {
+            if (!IsGroundCollider(hit.collider) || hit.normal.y < 0.2f || hit.distance >= nearestDistance) continue;
+            nearest = hit;
+            nearestDistance = hit.distance;
+        }
+        return !float.IsPositiveInfinity(nearestDistance);
+    }
+
+    float BottomOffset()
+    {
+        float offset = 0f;
+        foreach (var collider in colliders)
+        {
+            if (collider == null || !collider.enabled || collider.isTrigger) continue;
+            offset = Mathf.Max(offset, transform.position.y - collider.bounds.min.y);
+        }
+        return offset;
+    }
+
+    bool RecoverBelowGround()
+    {
+        if (!hasGroundSurface || !IsGroundCollider(groundSurface.collider)) return false;
+        if (rb.position.y - BottomOffset() >= groundSurface.point.y - SurfaceClearance) return false;
+        LandOnSurface(groundSurface.point);
+        return true;
+    }
+
+    void LandOnSurface(Vector3 point)
+    {
+        Vector3 position = rb.position;
+        position.y = point.y + BottomOffset() + SurfaceClearance;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.position = position;
+        transform.position = position;
+        // A recovered collectible must stay reachable even if the missed contact repeats.
+        rb.useGravity = false;
+        rb.isKinematic = true;
+        OnLanded();
+    }
     
     void Update()
     {
         if (!isDropping) return;
+        if (RecoverBelowGround()) return;
         
         CheckGroundStatus();
         UpdateLandingLogic();
@@ -245,6 +330,7 @@ public class SampleDropController : MonoBehaviour
         // 在掉落过程中持续施加额外的向下重力
         if (isDropping && !hasLanded && rb != null)
         {
+            if (RecoverBelowGround()) return;
             // 施加额外的向下力，确保样本快速下降
             rb.AddForce(Vector3.down * additionalGravity, ForceMode.Acceleration);
         }
@@ -253,10 +339,11 @@ public class SampleDropController : MonoBehaviour
     void CheckGroundStatus()
     {
         // 地面检测
-        RaycastHit hit;
         Vector3 rayStart = transform.position + Vector3.up * 0.1f;
-        
-        if (Physics.Raycast(rayStart, Vector3.down, out hit, groundCheckDistance + 0.2f, groundLayer))
+
+        // A slab can rest on its edge on a slope while its centre ray remains above the ground.
+        bool hasSupportContact = Time.time - lastGroundContactTime <= Time.fixedDeltaTime * 2f;
+        if (hasSupportContact || TryFindGround(rayStart, BottomOffset() + groundCheckDistance + 0.1f, out _))
         {
             if (!isGrounded)
             {
@@ -296,14 +383,33 @@ public class SampleDropController : MonoBehaviour
         // 检查是否撞击地面
         if (IsGroundCollision(collision))
         {
+            RememberGroundContact(collision);
             HandleGroundImpact(collision);
+        }
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        if (isDropping && !hasLanded && IsGroundCollision(collision))
+        {
+            RememberGroundContact(collision);
+        }
+    }
+
+    void RememberGroundContact(Collision collision)
+    {
+        for (int i = 0; i < collision.contactCount; i++)
+        {
+            if (collision.GetContact(i).normal.y < 0.2f) continue;
+            lastGroundContactTime = Time.time;
+            return;
         }
     }
     
     bool IsGroundCollision(Collision collision)
     {
         // 检查碰撞对象是否在地面层级中
-        return ((1 << collision.gameObject.layer) & groundLayer) != 0;
+        return ((1 << collision.gameObject.layer) & groundLayer) != 0 && IsGroundCollider(collision.collider);
     }
     
     void HandleGroundImpact(Collision collision)
@@ -487,14 +593,13 @@ public class SampleDropController : MonoBehaviour
                 rb.angularVelocity = Vector3.zero;
             }
             
-            // 放置在地面上
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, Vector3.down, out hit, 100f, groundLayer))
+            if (TryFindGround(transform.position + Vector3.up * 0.1f, 100f, out var hit))
             {
-                transform.position = hit.point + Vector3.up * 0.1f;
+                groundSurface = hit;
+                hasGroundSurface = true;
             }
-            
-            OnLanded();
+            if (hasGroundSurface && IsGroundCollider(groundSurface.collider)) LandOnSurface(groundSurface.point);
+            else OnLanded();
         }
     }
     

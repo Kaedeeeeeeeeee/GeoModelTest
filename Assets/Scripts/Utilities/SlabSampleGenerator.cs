@@ -59,11 +59,7 @@ public class SlabSampleGenerator : MonoBehaviour
         }
         
         // 添加物理组件
-        MeshCollider meshCollider = slabSample.AddComponent<MeshCollider>();
-        meshCollider.convex = true;
-        
-        Rigidbody rb = slabSample.AddComponent<Rigidbody>();
-        rb.mass = 0.5f;
+        Rigidbody rb = AddSlabPhysics(slabSample, slabMesh);
         
         // 根据参数决定是否添加悬浮效果
         if (enableFloating)
@@ -130,11 +126,7 @@ public class SlabSampleGenerator : MonoBehaviour
         meshRenderer.material = slabMaterial;
         
         // 添加物理组件
-        MeshCollider meshCollider = slabSample.AddComponent<MeshCollider>();
-        meshCollider.convex = true;
-        
-        Rigidbody rb = slabSample.AddComponent<Rigidbody>();
-        rb.mass = 0.5f; // 轻质薄片
+        Rigidbody rb = AddSlabPhysics(slabSample, slabMesh);
         
         // 添加样本悬浮效果
         SimpleSampleFloating floating = slabSample.AddComponent<SimpleSampleFloating>();
@@ -150,6 +142,18 @@ public class SlabSampleGenerator : MonoBehaviour
         Debug.Log($"生成薄片样本: {slabSample.name} 在位置 {position}");
         
         return slabSample;
+    }
+
+    static Rigidbody AddSlabPhysics(GameObject sample, Mesh mesh)
+    {
+        // Sweep-based CCD supports primitive colliders, not the thin convex mesh previously used here.
+        var collider = sample.AddComponent<BoxCollider>();
+        collider.center = mesh.bounds.center;
+        collider.size = mesh.bounds.size;
+        var body = sample.AddComponent<Rigidbody>();
+        body.mass = 0.5f;
+        body.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        return body;
     }
     
     /// <summary>
