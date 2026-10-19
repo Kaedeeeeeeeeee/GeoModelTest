@@ -198,6 +198,21 @@ html, body {
   color: #cfc8bd;
 }
 
+/* Rotating the phone does nothing while the system rotation lock is on. */
+.orientation-note {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(247, 244, 238, 0.18);
+  font-size: 13px;
+  line-height: 1.6;
+  color: #cfc8bd;
+}
+
+/* Wrap only between phrases, so no setting name splits across lines. */
+.orientation-note span {
+  white-space: nowrap;
+}
+
 /* 保護者同意: a scrollable document above the loading game. Shown only while the
    html element carries .guardian-consent-pending (set by guardian-consent.js). */
 #guardian-consent {
