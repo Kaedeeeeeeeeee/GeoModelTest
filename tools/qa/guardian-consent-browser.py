@@ -43,6 +43,8 @@ with sync_playwright() as p:
     form.locator('input[name=guardianConfirmed]').check()
     name = form.locator('input[name=guardianName]')
     name.click()
+    assert page.evaluate("document.getElementById('guardian-consent').style.getPropertyValue('--consent-keyboard-space')") == '', \
+        'a mouse and a real keyboard keep the page where it is'
     page.keyboard.type('yamada hanako')
     page.keyboard.press('Enter')
     s = state(page)
@@ -115,6 +117,30 @@ with sync_playwright() as p:
     expect(page.locator('#guardian-consent-form-view')).to_be_hidden()
     assert all(not checks.nth(i).is_checked() for i in range(3))
     results.append('A reload asks only the student again; the guardian answer is kept for the tab')
+
+    # Phones: the focused field rises to the top so the next field and the button stay above the
+    # keyboard. Headless Chromium has no keyboard, so this checks the lift and the extra space only;
+    # the real keyboards were checked in the iOS Simulator and the Android emulator.
+    phone = browser.new_context(viewport={'width': 390, 'height': 844}, is_mobile=True, has_touch=True).new_page()
+    phone.on('pageerror', lambda error: errors.append(str(error)))
+    phone.goto(args.url)
+    layout = """() => {
+        const overlay = document.getElementById('guardian-consent');
+        const top = overlay.getBoundingClientRect().top + parseFloat(getComputedStyle(overlay).paddingTop);
+        const label = name => document.querySelector(`input[name=${name}]`).closest('.consent-field').getBoundingClientRect().top - top;
+        return { name: label('guardianName'), id: label('respondentId'),
+            idBottom: document.querySelector('input[name=respondentId]').getBoundingClientRect().bottom,
+            space: overlay.style.getPropertyValue('--consent-keyboard-space') };
+    }"""
+    phone.locator('input[name=guardianName]').tap()
+    lifted = phone.evaluate(layout)
+    assert abs(lifted['name'] - 12) <= 1 and lifted['idBottom'] < 844 / 2, lifted
+    phone.locator('input[name=respondentId]').tap()
+    lifted = phone.evaluate(layout)
+    assert abs(lifted['id'] - 12) <= 1 and lifted['space'] not in ('', '0px'), lifted
+    phone.evaluate('document.activeElement.blur()')
+    phone.wait_for_function("document.getElementById('guardian-consent').style.getPropertyValue('--consent-keyboard-space') === '0px'")
+    results.append('On a phone the focused name or ID field rises to the top, even the last one; the space goes on blur')
 
     declined = browser.new_context(viewport={'width': 390, 'height': 844}, is_mobile=True, has_touch=True).new_page()
     declined.on('pageerror', lambda error: errors.append(str(error)))

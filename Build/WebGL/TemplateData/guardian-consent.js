@@ -253,6 +253,97 @@
       inputs.respondentId.setAttribute('aria-invalid', error ? 'true' : 'false');
     });
 
+    // Phones: lift the focused text field to the top of what the keyboard leaves visible. Safari
+    // only scrolls it to just above the keyboard, where iOS 26 floats its ∧ ∨ ✓ bar over it, and
+    // the ID field below the name stays hidden until the keyboard closes (Testee, 2026-10-20).
+    // Extra padding under the form, only while a field has focus, lets the last field rise too.
+    var FIELD_TOP_GAP = 12;
+    // Room for the bar Safari floats above the keyboard but counts as visible.
+    var KEYBOARD_BAR_GAP = 64;
+    // The form gets shorter when the hint under the answer button hides; keep the field still.
+    var FORM_CHANGE_SLACK = 48;
+    // A smaller drop in the visible height is a toolbar, not a keyboard.
+    var KEYBOARD_MIN_HEIGHT = 100;
+    var coarsePointer = window.matchMedia ? window.matchMedia('(pointer: coarse)') : null;
+    var keyboardSpace = 0;
+    var keyboardSeen = false;
+
+    function setKeyboardSpace(px) {
+      px = Math.max(0, Math.ceil(px));
+      if (px === keyboardSpace) return;
+      keyboardSpace = px;
+      overlay.style.setProperty('--consent-keyboard-space', px + 'px');
+    }
+
+    function typingField() {
+      if (!coarsePointer || !coarsePointer.matches) return null;
+      return textFields.indexOf(document.activeElement) >= 0 ? document.activeElement : null;
+    }
+
+    // The visible part of the overlay in client coordinates. While Safari pans the page for the
+    // keyboard, offsetTop and scrollY move together; the scroll handler in index.html resets both.
+    function visibleArea() {
+      var viewport = window.visualViewport;
+      var box = overlay.getBoundingClientRect();
+      var visibleTop = viewport ? viewport.offsetTop - window.scrollY : box.top;
+      var visibleBottom = viewport ? visibleTop + viewport.height : box.bottom;
+      // The overlay's own top padding is the notch / status bar inset.
+      var paddingTop = parseFloat(window.getComputedStyle(overlay).paddingTop) || 0;
+      return {
+        top: Math.max(box.top + paddingTop, visibleTop),
+        covered: Math.max(0, box.bottom - visibleBottom),
+        // Chrome may pan instead of covering the bottom, so compare heights to spot a keyboard.
+        keyboard: viewport ? box.height - viewport.height > KEYBOARD_MIN_HEIGHT : false
+      };
+    }
+
+    function liftField(input) {
+      var area = visibleArea();
+      var label = input.closest('.consent-field') || input;
+      var target = overlay.scrollTop + label.getBoundingClientRect().top - area.top - FIELD_TOP_GAP;
+      var maxScroll = overlay.scrollHeight - keyboardSpace - overlay.clientHeight;
+      // Enough to reach the target, and to scroll the answer button above an open keyboard.
+      setKeyboardSpace(Math.max(target - maxScroll + FORM_CHANGE_SLACK,
+        area.keyboard ? area.covered + KEYBOARD_BAR_GAP : 0));
+      overlay.scrollTop = target;
+    }
+
+    // Lift on focus already, before the keyboard opens, so Safari has nothing left to reveal.
+    form.addEventListener('focusin', function (event) {
+      if (typingField() === event.target) liftField(event.target);
+    });
+    form.addEventListener('focusout', function () {
+      // Moving from the name to the ID keeps the space; leaving both fields drops it.
+      setTimeout(function () {
+        if (typingField()) return;
+        keyboardSeen = false;
+        setKeyboardSpace(0);
+      }, 0);
+    });
+    // The keyboard opens, switches from kana to the number pad, or closes after the focus event.
+    // Measure once the viewport has settled, not in the middle of Safari's pan.
+    var settleTimer = 0;
+    function viewportSettled() {
+      var field = typingField();
+      if (!field) return;
+      if (visibleArea().keyboard) {
+        keyboardSeen = true;
+        liftField(field);
+      } else if (keyboardSeen) {
+        // Android's back button closes the keyboard but keeps the focus.
+        keyboardSeen = false;
+        setKeyboardSpace(0);
+      }
+    }
+    if (window.visualViewport) {
+      ['resize', 'scroll'].forEach(function (type) {
+        window.visualViewport.addEventListener(type, function () {
+          clearTimeout(settleTimer);
+          settleTimer = setTimeout(viewportSettled, 80);
+        });
+      });
+    }
+
     // Enter moves to the next text field and closes the keyboard after the last one; only the
     // answer button submits. An Enter that confirms an IME conversion is left to the IME.
     enterKey = function (event) {

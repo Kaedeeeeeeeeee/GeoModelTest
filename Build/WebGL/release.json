@@ -1,16 +1,16 @@
 {
-  "version": "2026.10.19-rotation-lock-hint",
+  "version": "2026.10.20-consent-keyboard",
   "gameVersion": "2026.10.16-hammer-slab-fix",
   "unity": "6000.0.51f1",
   "buildType": "release",
   "builtAt": "2026-10-16T12:50:58.518Z",
-  "sourceCommit": "161b00b923ce030c3f825ee6ecf11e09ea6b6f8a",
+  "sourceCommit": "1f64569809237ddc118c93d160360cb803b68359",
   "sourceDirty": true,
   "sourceFiles": {
-    "Assets/WebGLTemplates/FixedAspect/index.html": "6535a6e6d62936bf400dcc87cf9f9334dd7f98d3a6f0f150dd5b136885e4a94d",
-    "Assets/WebGLTemplates/FixedAspect/TemplateData/style.css": "769f750b602faafba873966768eb948c0cc25537e790ed08dbadcc58d136f8c2"
+    "Assets/WebGLTemplates/FixedAspect/TemplateData/guardian-consent.js": "75ffd980419cfc9c72bc426e789512f7aa97a655769be00c5c563ead43e13cae",
+    "Assets/WebGLTemplates/FixedAspect/TemplateData/style.css": "97b63dde6fc3b3784ea837613ba05dd452cb524e9ed1dccb6220019043b88e38"
   },
-  "sourcePatchSHA256": "11b7e805f36879f3529e5b653faff122af539cbc40af5e117a5bd37da6555d58",
+  "sourcePatchSHA256": "94bc94054224c3e735a1c441c964f7700109a5d2237f4e260f6aa146b2698a76",
   "assets": {
     "Build/WebGL.data.unityweb": {
       "bytes": 108223033,
@@ -31,8 +31,8 @@
   },
   "webAssets": {
     "TemplateData/guardian-consent.js": {
-      "bytes": 13267,
-      "sha256": "f26fa4136eab81e4cf297b6b016c69e199f1ef225a87f8151bafd355280f2196"
+      "bytes": 17501,
+      "sha256": "75ffd980419cfc9c72bc426e789512f7aa97a655769be00c5c563ead43e13cae"
     },
     "TemplateData/loading.js": {
       "bytes": 12153,
@@ -43,8 +43,8 @@
       "sha256": "0e36abece3c0aeb0a3fe0ae50fdc480fb71ed6783c8664b8ce549329fbf63bc9"
     },
     "TemplateData/style.css": {
-      "bytes": 10497,
-      "sha256": "769f750b602faafba873966768eb948c0cc25537e790ed08dbadcc58d136f8c2"
+      "bytes": 10639,
+      "sha256": "97b63dde6fc3b3784ea837613ba05dd452cb524e9ed1dccb6220019043b88e38"
     },
     "index.html": {
       "bytes": 18657,
