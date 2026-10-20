@@ -41,3 +41,16 @@
 模拟器测试用的是临时 XCUITest 工程和调试代理（只在 scratchpad 中，不进仓库）：Unity 构建被拦截，并记录 `visualViewport` 的变化。全程没有提交表单，也没有访问 Supabase。
 
 未覆盖：iPhone 实机（模拟器的 Safari 与实机相同，但键盘高度可能因机型和输入法略有差异；顶部对齐的方式本身不依赖键盘高度）。
+
+## 发布（2026-10-20）
+
+只换网页外壳，没有重新构建 Unity（做法同 10/19 的 `2026.10.19-rotation-lock-hint`）。
+
+| 项目 | 结果 |
+|---|---|
+| 本地成品检查 | `loading-server.py`（非 preview，直接用 `Build/WebGL`）+ `guardian-consent-browser.py`：12/12 |
+| geo-q.jp | `hosting/cloudflare/deploy.sh`，Worker 版本 `313768c7-2d26-461e-a753-f434a07edb66`，R2 路径 `releases/2026.10.20-consent-keyboard/`。20/20 个文件与 `Build/WebGL` 逐字节一致 |
+| itch.io | `butler push … :html5 --userversion 2026.10.20-consent-keyboard`，构建 **`2168794`**（差量上传 31 KB）。等 `load_url` 变为 `complete`（约 25 分钟）后才访问 CDN。18/20 个文件逐字节一致，另外两个 `index.html` 只多了 itch 注入的 `htmlgame.js` 一行 |
+| 线上加载检查 | geo-q.jp 和 itch 嵌入地址各一次，手机尺寸（390×844）的无头 Chromium，拦截 Supabase：Unity 加载；聚焦姓名栏后标签在顶部 12px；无页面错误；没有 Supabase 请求；没有提交表单 |
+
+加载画面和遥测里的版本仍是游戏本体的 `2026.10.16-hammer-slab-fix`。
