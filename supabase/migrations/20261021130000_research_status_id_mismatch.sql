@@ -40,7 +40,11 @@ begin
     'completed', (select count(*) from completers),
     'completers', coalesce((select jsonb_agg(jsonb_build_object('respondentId', respondent_id, 'completedAt', completed_at)
         order by completed_at, respondent_id) from completers), '[]'::jsonb),
+    -- guardianMismatch: one questionnaire ID, different from the guardian form.
+    -- multipleAnswers: answered again with another ID (siblings sharing a browser, or a typo the second time).
     'review', coalesce((select jsonb_agg(jsonb_build_object('guardianFormId', p.guardian_id,
+        'kind', case when (select count(*) from entered e where e.participant_id = p.participant_id) > 1
+          then 'multipleAnswers' else 'guardianMismatch' end,
         'entries', (select jsonb_agg(jsonb_build_object('respondentId', e.respondent_id, 'submittedAt', e.submitted_at)
           order by e.submitted_at) from entered e where e.participant_id = p.participant_id)) order by p.first_at)
       from participants p where p.differs), '[]'::jsonb)

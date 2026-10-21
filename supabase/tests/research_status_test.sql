@@ -76,6 +76,9 @@ begin
     'Review shows the questionnaire ID beside the guardian-form ID';
   assert (select jsonb_array_length(x->'entries') from jsonb_array_elements(v_result->'review') x where x->>'guardianFormId' = '5555') = 2,
     'Every questionnaire ID is listed';
+  assert (select x->>'kind' from jsonb_array_elements(v_result->'review') x where x->>'guardianFormId' = '2222') = 'guardianMismatch'
+    and (select x->>'kind' from jsonb_array_elements(v_result->'review') x where x->>'guardianFormId' = '5555') = 'multipleAnswers',
+    'Review tells a single differing ID apart from answering again with another ID';
   assert v_result::text not like '%状況QA保護者%', 'Guardian names must never leave the database';
   for i in 1..array_length(v_participants,1) loop
     assert v_result::text not like '%'||v_participants[i]||'%', 'Participant UUIDs must not be returned';

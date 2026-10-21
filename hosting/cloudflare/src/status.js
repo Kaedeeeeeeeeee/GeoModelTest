@@ -141,6 +141,10 @@ td.when { white-space: nowrap; }
 .review h2 { color: var(--warn); }
 .review ul { margin: 0; padding-left: 1.2em; }
 .review li + li { margin-top: 8px; }
+.review .group + .group { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--warn); }
+.review h3 { margin: 0; font-size: 14px; }
+.review h3 .count { display: inline-block; margin-left: 8px; font-weight: 500; color: var(--warn); white-space: nowrap; }
+.review .group .sub { margin: 0 0 8px; }
 .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
 .alert { margin-top: 16px; padding: 10px 14px; border-radius: 10px; background: var(--warn-soft); color: var(--warn); font-size: 14px; }
 footer { margin-top: 28px; color: var(--muted); font-size: 12.5px; }
@@ -177,8 +181,17 @@ ${message ? `<header><div><p class="eyebrow">回収状況</p><h1>${message}</h1>
 </div>
 <section class="card review" id="review" hidden>
   <h2>要確認（完了者数に含めていません）</h2>
-  <p class="sub">保護者同意フォームとアンケートで、異なる回答者IDが入力されました。どちらのIDが正しいか確認できるまで、完了者数・完了者ID一覧には含めていません。</p>
-  <ul id="review-list"></ul>
+  <p class="sub">次の方は、どの回答者IDが正しいか確認できるまで、完了者数・完了者ID一覧に含めていません。</p>
+  <div class="group" id="review-guardianMismatch" hidden>
+    <h3>保護者同意フォームとアンケートでIDが異なる<span class="count"></span></h3>
+    <p class="sub">アンケートは1回だけ送信されましたが、保護者同意フォームとは異なるIDが入力されました。</p>
+    <ul></ul>
+  </div>
+  <div class="group" id="review-multipleAnswers" hidden>
+    <h3>複数回のアンケートで異なるIDが入力された<span class="count"></span></h3>
+    <p class="sub">同じ端末からアンケートが2回以上送信され、回答ごとに異なるIDが入力されました。ごきょうだいで同じ端末を使った可能性もあります。</p>
+    <ul></ul>
+  </div>
 </section>
 <section class="card">
   <div class="row">
@@ -241,14 +254,18 @@ ${message ? `<header><div><p class="eyebrow">回収状況</p><h1>${message}</h1>
     ids = data.completers.map((item) => item.respondentId);
     $("copy").disabled = !ids.length;
 
-    const list = $("review-list");
-    list.replaceChildren();
-    for (const item of data.review) {
-      const li = document.createElement("li");
-      const id = (text) => { const span = document.createElement("span"); span.className = "mono"; span.textContent = text; return span; };
-      li.append("保護者同意フォーム ", id(item.guardianFormId), "／アンケート ");
-      item.entries.forEach((entry, index) => li.append(index ? "、" : "", id(entry.respondentId), "（" + when(entry.submittedAt) + "）"));
-      list.append(li);
+    const id = (text) => { const span = document.createElement("span"); span.className = "mono"; span.textContent = text; return span; };
+    for (const kind of ["guardianMismatch", "multipleAnswers"]) {
+      const group = $("review-" + kind);
+      const items = data.review.filter((item) => item.kind === kind);
+      group.querySelector(".count").textContent = items.length + " 名";
+      group.querySelector("ul").replaceChildren(...items.map((item) => {
+        const li = document.createElement("li");
+        li.append("保護者同意フォーム ", id(item.guardianFormId), "／アンケート ");
+        item.entries.forEach((entry, index) => li.append(index ? "、" : "", id(entry.respondentId), "（" + when(entry.submittedAt) + "）"));
+        return li;
+      }));
+      group.hidden = !items.length;
     }
     $("review").hidden = !data.review.length;
   }
