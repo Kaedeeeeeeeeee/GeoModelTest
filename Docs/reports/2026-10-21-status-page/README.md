@@ -108,3 +108,34 @@
 - Worker：a7dcc341（加入 cron `*/5 * * * *` 和 `NOTIFY_EMAIL` 绑定），之后因更换 secret 产生新版本，当前版本 6c3756fb-5c31-4a36-96cb-0eea10a3c0e3。静态资源无变化，游戏路径 200。
 - 真实发信测试：临时链接 `d723ad5c`（目标 1 名，统计起点 2026-09-01，3 名完了）。把 `STATUS_NOTIFY_TOKEN` 暂时换成它，22:51 的定时任务记下通知并发信；Gmail 收件箱收到「【回收状况】已达到目标 1 名：通知メール送信テスト（作廃予定）」，没有进垃圾邮件。之后 token 换回正式链接，测试链接作废（页面 404）。
 - 新部署的 cron 第一次执行比预期晚了几分钟（22:45 那一轮没有日志），22:51 正常执行。
+
+## 推送后的 Codex 审查与修复（2026-10-21，本地提交，未部署）
+
+推送 `4a57044..08a2cfa` 后，Codex 审查（gpt-6.1-sol）提出两点，核实后都成立：
+
+1. **[high] 通知可能永远不发。** `claim` 在发信之前就永久写入 `target_notified_at`。以下两种情况会让记录留下、邮件却没有发出，之后每一轮都返回 `notify=false`：
+   - claim 已提交但响应丢失，或 Worker 在发信前中断。
+   - 发信失败，但 `release` 也失败了，而代码没有检查 `release` 的结果。
+2. **[medium] 随机 token 会写限流表。** 函数只检查 token 格式就执行 `consume_research_rate_limit`，每个随机 token 都会新增一行限流记录。
+
+修复：
+- 迁移 `20261021150000_research_status_notice_lease.sql`：
+  - 新增 `target_notice_claim`（占位 ID）和 `target_notice_claimed_at`。
+  - `claim` 给出 10 分钟有效的占位。
+  - 新增 `confirm(token, claimId)`，只有它会写入 `target_notified_at`。
+  - `release(token, claimId)` 只对当前占位有效。
+  - 过期的占位可以重新获取。旧的占位 ID 不能确认，也不能撤销新的占位。
+- 函数 `research-status`：
+  - 新增 `confirm`；`confirm` 和 `release` 必须带 `claimId`。
+  - 先确认链接存在且未作废，再做限流。
+- Worker：发信成功后执行 `confirm`，并检查结果；发信失败时执行 `release`，同样检查结果。没有成功的部分交给占位过期后重试。
+- 代价：只有「发信成功、但 confirm 失败」时，可能在 10 分钟后再发一封。宁可重复，不可漏发。
+
+本地验证：
+- 数据库测试覆盖了：未达目标、占位不重复、响应丢失后过期重试（新 ID）、旧 ID 无效、撤销后重试、确认后永久不再占位、权限。
+- 函数：20 个随机 token 后，`research_rate_limits` 的行数不变（47 → 47），随机 token 返回 403。不带 `claimId` 的 `confirm` 返回 400，不带密钥返回 403。
+- Worker（`wrangler dev --test-scheduled`）：
+  - 外部先占位（模拟响应丢失）：占位有效期内不发信；过期后下一轮只发一封，并确认为已发送；再下一轮不发。
+  - 收件人不在允许名单内（发信失败）：占位立即撤销。
+
+上线需要：`db push`（只有 `20261021150000`）、重新部署 `research-status` 函数、部署 Worker。三者要一起上线：旧 Worker 调用的 `release(text)` 已经被删除，换成了带 `claimId` 的新版本。

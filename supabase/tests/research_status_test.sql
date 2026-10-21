@@ -10,6 +10,7 @@ declare
   v_ids text[];
   v_participants uuid[] := '{}';
   v_case record;
+  v_claim uuid;
 begin
   insert into public.studies(id,study_key,status,research_entry_enabled,protocol_version)
     values(v_study,'status-'||v_study,'development',true,'status-qa'),
@@ -98,25 +99,49 @@ begin
     and not has_function_privilege('authenticated','public.research_status(text)','execute'), 'Only service_role may read the status';
   assert not has_table_privilege('anon','public.research_status_links','select'), 'Link hashes are service-only';
 
-  -- Target notice: claimed once when the target is reached, released when the email fails.
+  -- Target notice: a 10-minute lease is claimed when the target is reached; only confirming it after the
+  -- email is sent marks the notice as sent. A lost or unreleased lease expires and is claimed again.
   assert not (public.claim_research_status_target(v_hash)->>'notify')::boolean, 'Below the target nothing is claimed';
-  assert (select target_notified_at from public.research_status_links where token_hash = v_hash) is null, 'No claim below the target';
+  assert (select target_notice_claim from public.research_status_links where token_hash = v_hash) is null, 'No claim below the target';
   update public.research_status_links set target_count = 2 where token_hash = v_hash;
   v_result := public.claim_research_status_target(v_hash);
-  assert (v_result->>'notify')::boolean and (v_result->>'completed')::int = 2, 'Reaching the target claims the notice with the status';
-  assert not (public.claim_research_status_target(v_hash)->>'notify')::boolean, 'A claimed notice is not claimed again';
-  perform public.release_research_status_target(v_hash);
-  assert (public.claim_research_status_target(v_hash)->>'notify')::boolean, 'A released notice is retried';
+  v_claim := (v_result->>'claimId')::uuid;
+  assert (v_result->>'notify')::boolean and v_claim is not null and (v_result->>'completed')::int = 2,
+    'Reaching the target claims the notice with the status and a claim ID';
+  assert (select target_notified_at from public.research_status_links where token_hash = v_hash) is null,
+    'Claiming alone does not mark the notice as sent';
+  v_result := public.claim_research_status_target(v_hash);
+  assert not (v_result->>'notify')::boolean and v_result->>'claimId' is null, 'A live lease is not claimed again';
+
+  -- Lost claim response: nobody confirms or releases; the lease expires and the next check retries.
+  update public.research_status_links set target_notice_claimed_at = now() - interval '11 minutes' where token_hash = v_hash;
+  v_result := public.claim_research_status_target(v_hash);
+  assert (v_result->>'notify')::boolean and (v_result->>'claimId')::uuid <> v_claim, 'An expired lease is claimed again with a new ID';
+  assert not public.confirm_research_status_target(v_hash, v_claim), 'A stale claim ID cannot confirm';
+  assert not public.release_research_status_target(v_hash, v_claim), 'A stale claim ID cannot release the new lease';
+  v_claim := (v_result->>'claimId')::uuid;
+
+  -- Failed email: the release gives the lease back at once.
+  assert public.release_research_status_target(v_hash, v_claim), 'The current claim can be released';
+  v_result := public.claim_research_status_target(v_hash);
+  assert (v_result->>'notify')::boolean, 'A released notice is retried';
+  v_claim := (v_result->>'claimId')::uuid;
+
+  -- Sent email: confirming is final, even after the lease time has passed.
+  assert public.confirm_research_status_target(v_hash, v_claim), 'The current claim can be confirmed';
+  assert (select target_notified_at from public.research_status_links where token_hash = v_hash) is not null, 'Confirming marks the notice as sent';
+  update public.research_status_links set target_notice_claimed_at = now() - interval '11 minutes' where token_hash = v_hash;
+  assert not (public.claim_research_status_target(v_hash)->>'notify')::boolean, 'A sent notice is never claimed again';
+  assert not public.release_research_status_target(v_hash, v_claim), 'A sent notice cannot be released';
+  assert not public.confirm_research_status_target(v_hash, v_claim), 'A sent notice is confirmed only once';
+
   begin
     perform public.claim_research_status_target(v_revoked);
     raise exception 'Revoked link incorrectly claimed';
   exception when sqlstate '42501' then null;
   end;
-  update public.research_status_links set target_notified_at = now() where token_hash = v_revoked;
-  perform public.release_research_status_target(v_revoked);
-  assert (select target_notified_at from public.research_status_links where token_hash = v_revoked) is not null,
-    'A revoked link cannot be released';
   assert not has_function_privilege('anon','public.claim_research_status_target(text)','execute')
-    and not has_function_privilege('anon','public.release_research_status_target(text)','execute'), 'Only service_role may claim notices';
+    and not has_function_privilege('anon','public.confirm_research_status_target(text,uuid)','execute')
+    and not has_function_privilege('anon','public.release_research_status_target(text,uuid)','execute'), 'Only service_role may claim notices';
 end $$;
 rollback;

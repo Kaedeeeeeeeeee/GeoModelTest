@@ -1,6 +1,8 @@
 // Emails the researcher once when Testee's status link reaches its target, so they can ask Testee to stop
-// distribution right away. Runs from the cron trigger. The database claims the notice before sending and
-// the claim is released if the email fails, so the next run retries and a sent notice is never repeated.
+// distribution right away. Runs from the cron trigger. The database hands out a 10-minute claim before
+// sending; the claim is confirmed after the email is sent and released if sending fails. A claim that is
+// neither (a lost response, a crash) expires, so the next run retries: the email is never skipped, and is
+// repeated only if a confirmation is lost.
 const jst = (value) =>
   new Intl.DateTimeFormat("ja-JP", {
     timeZone: "Asia/Tokyo", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23",
@@ -33,15 +35,15 @@ function message(status, pageUrl) {
 export async function notifyTarget(env) {
   // Nothing to do until the link token, the notice secret and the mail binding are configured.
   if (!env.STATUS_NOTIFY_TOKEN || !env.STATUS_NOTIFY_SECRET || !env.NOTIFY_EMAIL) return;
-  const call = (action) => fetch(env.STATUS_API, {
+  const call = (action, claimId) => fetch(env.STATUS_API, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${env.STATUS_NOTIFY_TOKEN}`,
-      // The link token alone only reads; claim/release also need this secret shared with Supabase.
+      // The link token alone only reads; claim/confirm/release also need this secret shared with Supabase.
       "X-Notify-Secret": env.STATUS_NOTIFY_SECRET,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ action }),
+    body: JSON.stringify({ action, claimId }),
   });
   const claimed = await call("claim");
   if (!claimed.ok) throw new Error(`Status claim failed (HTTP ${claimed.status})`);
@@ -53,9 +55,13 @@ export async function notifyTarget(env) {
       from: { email: env.NOTIFY_FROM, name: "geo-q 回収状況" },
       ...message(status, `${env.PUBLIC_ORIGIN}/status/${env.STATUS_NOTIFY_TOKEN}`),
     });
-    console.log(`Target notice sent for ${status.label}: ${status.completed}/${status.target}`);
   } catch (error) {
-    await call("release");
+    const released = await call("release", status.claimId).catch(() => null);
+    if (!released?.ok) console.error("Releasing the target notice failed; it is retried when the claim expires.");
     throw error;
   }
+  console.log(`Target notice sent for ${status.label}: ${status.completed}/${status.target}`);
+  const confirmed = await call("confirm", status.claimId);
+  const result = confirmed.ok ? await confirmed.json() : null;
+  if (!result?.done) throw new Error("The target notice was sent but not confirmed; it may be sent again when the claim expires.");
 }
