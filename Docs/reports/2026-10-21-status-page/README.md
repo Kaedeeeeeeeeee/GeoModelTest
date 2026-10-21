@@ -62,3 +62,10 @@
 - Worker：从 313768c7 更新为 **d0def1e5-bd0e-4610-b80d-2c1b2caf7b74**。静态资源无变化（未上传），`RELEASE` 仍为 `2026.10.20-consent-keyboard`。`/`、`release.json`、`.unityweb` 均 200；无效链接 404。回滚：`wrangler rollback --config hosting/cloudflare/wrangler.jsonc`。
 - 链接 ID `d006abf0-ec3e-4060-ad2c-da9a70c867af`，从 2026-10-22 00:00 JST 开始计数，目标 20。URL 只保存在研究者私有文件 `~/.config/geomodel-research/testee-status-link.txt`（权限 600），不进 Git。
 - 生产页面确认：各阶段 0，完了 0，「まだ完了者はいません。」，CSV 200，控制台无错误（`screenshots/05-production-empty.png`、`06-production-empty-iphone.png`）。
+
+## 第二次部署（2026-10-21，ID 不一致一律进要確認＋分两组，用户同意）
+
+- `db push --dry-run`：只有 `20261021130000_research_status_id_mismatch.sql`，随后正式应用。
+- Worker：d0def1e5 → **492cfa68-a80a-4fd1-a6b3-a869085e0eb2**，静态资源无变化，`RELEASE` 仍为 `2026.10.20-consent-keyboard`。
+- 生产确认：完了 0、各阶段 0；HTML 中已有两组（`review-guardianMismatch`、`review-multipleAnswers`），CSV 已无「備考」栏；游戏路径 200；控制台无错误。生产目前没有数据，两组的实际显示以本地截图为准。
+- Gmail 回信草稿中「要確認」的说明已改为新规则，未发送。
