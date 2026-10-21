@@ -4,7 +4,7 @@
 
 2026-10-21 17:13 テスティーの小川さん来信：10/22 10:00 前后开始配信（全国／12〜14岁／男女，目标完了 20 名）。monitor 跳到 geo-q.jp 以后，テスティー那边看不到回收情况，所以请我们每次都告知完了者ID和回收状况。请款只按两边ID对得上的完了者计算。
 
-用户对稲垣先生说的方案是：做一个实时更新的网页，做好后分享给テスティー。本报告是这个页面，目前只在本地做完、验证完，**还没有部署**。
+用户对稲垣先生说的方案是：做一个实时更新的网页，做好后分享给テスティー。本报告是这个页面。2026-10-21 晚在本地验证后，经用户同意部署上线（见文末「部署记录」）。
 
 ## 页面
 
@@ -44,10 +44,18 @@
 - Worker（`wrangler dev`）：页面/JSON/CSV 为 200，格式错误或无效 token 为 404，POST 为 405，原有游戏路径不受影响。
 - 浏览器：点「更新」后新完成者出现在表里，计数从 6 变为 7；手机 390px 宽没有横向滚动；深色模式；控制台无错误。
 
-## 上线步骤（尚未执行，需用户确认）
+## 上线步骤
 
 1. `supabase db push --project-ref jrqmoxbzbjxrellvsvwn --skip-vault --dry-run`，确认只多出 `20261021120000` 一个迁移后再正式执行。
 2. `supabase functions deploy research-status --project-ref jrqmoxbzbjxrellvsvwn --use-api`
 3. Worker：`.stage` 已经是当前版本 `2026.10.20-consent-keyboard`，不用重新上传 R2：`wrangler deploy --config hosting/cloudflare/wrangler.jsonc --var RELEASE:2026.10.20-consent-keyboard`
 4. 发行链接：`python3 tools/research-admin.py status-link --study-key geoquest-open-play-2026-09 --label 'テスティー様 中学生モニター調査' --counted-from 2026-10-22T00:00+09:00`
 5. 打开生产页面确认（10/22 之前应显示 0 名），再把 URL 写进给小川さん的回信。
+
+## 部署记录（2026-10-21，用户同意）
+
+- `db push --dry-run`：只有 `20261021120000_research_status_page.sql`，无 seed、无角色变更。随后正式应用。
+- Edge Function `research-status` 已部署；未知 token 由函数本身返回 403（网关未拦截，`verify_jwt = false` 生效）。
+- Worker：从 313768c7 更新为 **d0def1e5-bd0e-4610-b80d-2c1b2caf7b74**。静态资源无变化（未上传），`RELEASE` 仍为 `2026.10.20-consent-keyboard`。`/`、`release.json`、`.unityweb` 均 200；无效链接 404。回滚：`wrangler rollback --config hosting/cloudflare/wrangler.jsonc`。
+- 链接 ID `d006abf0-ec3e-4060-ad2c-da9a70c867af`，从 2026-10-22 00:00 JST 开始计数，目标 20。URL 只保存在研究者私有文件 `~/.config/geomodel-research/testee-status-link.txt`（权限 600），不进 Git。
+- 生产页面确认：各阶段 0，完了 0，「まだ完了者はいません。」，CSV 200，控制台无错误（`screenshots/05-production-empty.png`、`06-production-empty-iphone.png`）。
