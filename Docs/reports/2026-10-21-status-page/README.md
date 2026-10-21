@@ -70,7 +70,7 @@
 - 生产确认：完了 0、各阶段 0；HTML 中已有两组（`review-guardianMismatch`、`review-multipleAnswers`），CSV 已无「備考」栏；游戏路径 200；控制台无错误。生产目前没有数据，两组的实际显示以本地截图为准。
 - Gmail 回信草稿中「要確認」的说明已改为新规则，未发送。
 
-## 达到目标时自动发邮件（2026-10-21，本地完成，未部署）
+## 达到目标时自动发邮件（2026-10-21，已部署）
 
 用户希望达到目标 20 名时收到一封邮件，以便马上请テスティー停止配信。
 
@@ -89,7 +89,7 @@
   - 第 2 次：不再发信。
   - 收件人改为名单外地址时：绑定拒绝（`email to … not allowed`），占位被撤销，下一轮会重试。
 
-### 上线步骤（尚未执行，需用户确认）
+### 上线步骤
 
 1. geo-q.jp 启用 Email Routing（Cloudflare 控制台 → Email → Email Routing。会在 geo-q.jp 根域加 MX 和 SPF 的 TXT 记录；geo-q.jp 目前不收发邮件，没有影响）。
 2. 在 Email Routing 的 Destination addresses 加 f.shera.09@gmail.com，用户点 Cloudflare 发来的验证邮件。
@@ -98,3 +98,13 @@
 5. `wrangler secret put STATUS_NOTIFY_TOKEN`（填生产链接的 token，来自 `~/.config/geomodel-research/testee-status-link.txt`）和 `wrangler secret put STATUS_NOTIFY_SECRET`（与第 3 步相同）。
 6. `wrangler deploy --config hosting/cloudflare/wrangler.jsonc --var RELEASE:2026.10.20-consent-keyboard`，确认 Cron 已注册，Worker 日志里定时任务无错误。
 7. （可选）真实发信测试：临时发一个目标 1 名、统计起点较早的测试链接，把 secret 暂时换成它的 token，收到一封邮件后换回正式 token，并作废测试链接。
+
+### 部署记录（2026-10-21 22:30–22:55，用户同意）
+
+- Email Routing：用 `npx wrangler@4.151.3 email routing enable geo-q.jp` 启用（本机 wrangler 4.69 没有 `email` 子命令）。geo-q.jp 原来没有 MX/TXT 记录，启用后加了 MX（route1–3.mx.cloudflare.net）、SPF TXT 和 DKIM TXT（`cf2024-1._domainkey`）。
+- 收件地址 f.shera.09@gmail.com 已添加（ID `24891b1b…`），Cloudflare 显示已验证。
+- `STATUS_NOTIFY_SECRET`：随机生成，保存在 `~/.config/geomodel-research/status-notify-secret`（600），已设到 Supabase secrets 和 Worker secret。`STATUS_NOTIFY_TOKEN` 设为正式链接的 token。
+- `db push --dry-run` 只有 `20261021140000_research_status_target_notice.sql`，随后正式应用。函数 `research-status` 已重新部署：读取不带密钥 200；claim 不带密钥 403；带密钥 200（正式链接 0/20，notify=false）。
+- Worker：a7dcc341（加入 cron `*/5 * * * *` 和 `NOTIFY_EMAIL` 绑定），之后因更换 secret 产生新版本，当前版本 6c3756fb-5c31-4a36-96cb-0eea10a3c0e3。静态资源无变化，游戏路径 200。
+- 真实发信测试：临时链接 `d723ad5c`（目标 1 名，统计起点 2026-09-01，3 名完了）。把 `STATUS_NOTIFY_TOKEN` 暂时换成它，22:51 的定时任务记下通知并发信；Gmail 收件箱收到「【回收状况】已达到目标 1 名：通知メール送信テスト（作廃予定）」，没有进垃圾邮件。之后 token 换回正式链接，测试链接作废（页面 404）。
+- 新部署的 cron 第一次执行比预期晚了几分钟（22:45 那一轮没有日志），22:51 正常执行。
