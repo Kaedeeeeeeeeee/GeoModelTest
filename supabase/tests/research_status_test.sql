@@ -97,5 +97,22 @@ begin
   assert not has_function_privilege('anon','public.research_status(text)','execute')
     and not has_function_privilege('authenticated','public.research_status(text)','execute'), 'Only service_role may read the status';
   assert not has_table_privilege('anon','public.research_status_links','select'), 'Link hashes are service-only';
+
+  -- Target notice: claimed once when the target is reached, released when the email fails.
+  assert not (public.claim_research_status_target(v_hash)->>'notify')::boolean, 'Below the target nothing is claimed';
+  assert (select target_notified_at from public.research_status_links where token_hash = v_hash) is null, 'No claim below the target';
+  update public.research_status_links set target_count = 2 where token_hash = v_hash;
+  v_result := public.claim_research_status_target(v_hash);
+  assert (v_result->>'notify')::boolean and (v_result->>'completed')::int = 2, 'Reaching the target claims the notice with the status';
+  assert not (public.claim_research_status_target(v_hash)->>'notify')::boolean, 'A claimed notice is not claimed again';
+  perform public.release_research_status_target(v_hash);
+  assert (public.claim_research_status_target(v_hash)->>'notify')::boolean, 'A released notice is retried';
+  begin
+    perform public.claim_research_status_target(v_revoked);
+    raise exception 'Revoked link incorrectly claimed';
+  exception when sqlstate '42501' then null;
+  end;
+  assert not has_function_privilege('anon','public.claim_research_status_target(text)','execute')
+    and not has_function_privilege('anon','public.release_research_status_target(text)','execute'), 'Only service_role may claim notices';
 end $$;
 rollback;

@@ -9,8 +9,15 @@
   "vars": {
     "RELEASE": "",
     // Supabase function behind /status/<token>; it checks the token and builds the numbers.
-    "STATUS_API": "https://jrqmoxbzbjxrellvsvwn.supabase.co/functions/v1/research-status"
+    "STATUS_API": "https://jrqmoxbzbjxrellvsvwn.supabase.co/functions/v1/research-status",
+    // Target-reached email (notify.js). The link token is the secret STATUS_NOTIFY_TOKEN.
+    "PUBLIC_ORIGIN": "https://geo-q.jp",
+    "NOTIFY_FROM": "status@geo-q.jp",
+    "NOTIFY_TO": "f.shera.09@gmail.com"
   },
+  // Email Routing sends only to verified destination addresses; this binding is limited to the researcher.
+  "send_email": [{ "name": "NOTIFY_EMAIL", "destination_address": "f.shera.09@gmail.com" }],
+  "triggers": { "crons": ["*/5 * * * *"] },
   "routes": [{ "pattern": "geo-q.jp", "custom_domain": true }],
   "workers_dev": true,
   "observability": { "enabled": true }

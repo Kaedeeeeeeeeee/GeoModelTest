@@ -4,8 +4,10 @@
 // and all of them must be sent with Content-Encoding: gzip so the browser
 // decompresses them natively (the loader's JS fallback costs too much memory on
 // iPhone X). They live in R2 under releases/<RELEASE>/Build/.
-// /status/<token> is Testee's read-only collection status page (status.js).
+// /status/<token> is Testee's read-only collection status page (status.js); the cron trigger emails the
+// researcher once when that page reaches its target (notify.js).
 import { handleStatus } from "./status.js";
+import { notifyTarget } from "./notify.js";
 
 const UNITYWEB_TYPES = {
   "WebGL.data.unityweb": "application/octet-stream",
@@ -45,5 +47,9 @@ export default {
     if (!("body" in object)) return new Response(null, { status: 304, headers });
     headers.set("Content-Length", String(object.size));
     return new Response(request.method === "HEAD" ? null : object.body, { headers, encodeBody: "manual" });
+  },
+
+  async scheduled(controller, env, ctx) {
+    ctx.waitUntil(notifyTarget(env));
   },
 };

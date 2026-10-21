@@ -44,3 +44,11 @@ hosting/cloudflare/deploy.sh
 - 作废：`python3 tools/research-admin.py revoke-status-link --link-id <ID>`，之后该页面返回 404。
 - 本地预览：`.claude/launch.json` 的 `geo-q-status-local`（`wrangler dev`，`STATUS_API` 指向本地 Supabase 栈 `127.0.0.1:55321`）。
 - 只改 Worker 代码时不必重新上传 R2：在 `.stage` 是当前版本的前提下，`wrangler deploy --config hosting/cloudflare/wrangler.jsonc --var RELEASE:<当前版本>`。
+
+### 达到目标时的通知邮件
+
+- Worker 的 Cron Trigger 每 5 分钟运行一次（`src/notify.js`）。用 secret `STATUS_NOTIFY_TOKEN`（回收状况链接的 token）请 Supabase 函数 `research-status` 执行 `claim`。完了数达到目标、且还没发过时，数据库会记下 `target_notified_at` 并返回 `notify: true`，Worker 随即从 `status@geo-q.jp` 发一封邮件给 `NOTIFY_TO`。发信失败时执行 `release` 撤销记录，下一轮重试。发过的不会再发。
+- 发信用 Email Routing 的 `send_email` 绑定 `NOTIFY_EMAIL`，`destination_address` 限定为 f.shera.09@gmail.com。这样不需要 Workers Paid，但 geo-q.jp 要启用 Email Routing，收件地址要先验证。
+- 本地测试：`.claude/launch.json` 的 `geo-q-notify-local`（`--test-scheduled`），访问 `/__scheduled?cron=*/5+*+*+*+*` 触发；本地不会真的发信，邮件写到 miniflare 的临时文件里。
+- 想重新发：`update research_status_links set target_notified_at = null where id = ...`。
+

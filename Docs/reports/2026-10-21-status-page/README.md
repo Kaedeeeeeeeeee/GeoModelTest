@@ -69,3 +69,30 @@
 - Worker：d0def1e5 → **492cfa68-a80a-4fd1-a6b3-a869085e0eb2**，静态资源无变化，`RELEASE` 仍为 `2026.10.20-consent-keyboard`。
 - 生产确认：完了 0、各阶段 0；HTML 中已有两组（`review-guardianMismatch`、`review-multipleAnswers`），CSV 已无「備考」栏；游戏路径 200；控制台无错误。生产目前没有数据，两组的实际显示以本地截图为准。
 - Gmail 回信草稿中「要確認」的说明已改为新规则，未发送。
+
+## 达到目标时自动发邮件（2026-10-21，本地完成，未部署）
+
+用户希望达到目标 20 名时收到一封邮件，以便马上请テスティー停止配信。
+
+- 迁移 `20261021140000_research_status_target_notice.sql`：`research_status_links.target_notified_at`，`claim_research_status_target()`（达到目标且未通知时原子地记下时间，返回状况＋`notify`）、`release_research_status_target()`（发信失败时撤销）。只有 service_role 可执行。
+- `research-status` 函数：请求体 `{"action":"claim"}` / `{"action":"release"}`，不带请求体仍是读取。非法动作和非 JSON 返回 400。
+- Worker：`src/notify.js` + `scheduled()`，Cron `*/5 * * * *`。发件 `status@geo-q.jp`，收件 f.shera.09@gmail.com（`send_email` 绑定的 `destination_address` 也限定为这个地址）。
+- 邮件内容：完了数／目标、各阶段人数、要確認人数、确认时间（日本时间）、页面链接、下一步（`screenshots/08-target-notice-email.png`，本地测试链接）。
+
+### 验证（本地）
+
+- 数据库测试：未达目标不占位；达到目标占位一次、返回状况；再次 claim 不再占位；release 后可重新占位；作废链接 42501；anon 无权限。
+- 本地函数：read/claim/release 为 200，`toString` 等非法动作和非 JSON 为 400。
+- `wrangler dev --test-scheduled`，用目标 6 名的本地测试链接触发：
+  - 第 1 次：发信（本地模拟器截获，收件人 f.shera.09@gmail.com，标题「【回收状况】已达到目标 6 名：…」）。
+  - 第 2 次：不再发信。
+  - 收件人改为名单外地址时：绑定拒绝（`email to … not allowed`），占位被撤销，下一轮会重试。
+
+### 上线步骤（尚未执行，需用户确认）
+
+1. geo-q.jp 启用 Email Routing（Cloudflare 控制台 → Email → Email Routing。会在 geo-q.jp 根域加 MX 和 SPF 的 TXT 记录；geo-q.jp 目前不收发邮件，没有影响）。
+2. 在 Email Routing 的 Destination addresses 加 f.shera.09@gmail.com，用户点 Cloudflare 发来的验证邮件。
+3. `supabase db push --dry-run`（只应有 `20261021140000`）→ 正式应用；`supabase functions deploy research-status`。
+4. `wrangler secret put STATUS_NOTIFY_TOKEN`（填生产链接的 token，来自 `~/.config/geomodel-research/testee-status-link.txt`）。
+5. `wrangler deploy --config hosting/cloudflare/wrangler.jsonc --var RELEASE:2026.10.20-consent-keyboard`，确认 Cron 已注册，Worker 日志里定时任务无错误。
+6. （可选）真实发信测试：临时发一个目标 1 名、统计起点较早的测试链接，把 secret 暂时换成它的 token，收到一封邮件后换回正式 token，并作废测试链接。
