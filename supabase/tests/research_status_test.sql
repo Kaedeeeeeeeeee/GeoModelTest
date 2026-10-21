@@ -112,6 +112,10 @@ begin
     raise exception 'Revoked link incorrectly claimed';
   exception when sqlstate '42501' then null;
   end;
+  update public.research_status_links set target_notified_at = now() where token_hash = v_revoked;
+  perform public.release_research_status_target(v_revoked);
+  assert (select target_notified_at from public.research_status_links where token_hash = v_revoked) is not null,
+    'A revoked link cannot be released';
   assert not has_function_privilege('anon','public.claim_research_status_target(text)','execute')
     and not has_function_privilege('anon','public.release_research_status_target(text)','execute'), 'Only service_role may claim notices';
 end $$;

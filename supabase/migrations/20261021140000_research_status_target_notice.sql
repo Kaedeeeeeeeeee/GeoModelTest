@@ -1,6 +1,7 @@
 -- 2026-10-21: the researcher wants one email when a status link reaches its target, so they can ask Testee
 -- to stop distribution. The geo-q.jp Worker checks every 5 minutes, claims the notice here before sending,
 -- and releases the claim if the email fails, so the next check retries. A claimed notice is never sent again.
+-- The research-status function accepts claim/release only with the Worker's STATUS_NOTIFY_SECRET.
 begin;
 alter table public.research_status_links add column target_notified_at timestamptz;
 
@@ -18,7 +19,7 @@ end $$;
 
 create or replace function public.release_research_status_target(p_token_hash text)
 returns void language sql security invoker set search_path = public, pg_temp as $$
-  update public.research_status_links set target_notified_at = null where token_hash = p_token_hash;
+  update public.research_status_links set target_notified_at = null where token_hash = p_token_hash and revoked_at is null;
 $$;
 
 revoke all on function public.claim_research_status_target(text) from public, anon, authenticated;

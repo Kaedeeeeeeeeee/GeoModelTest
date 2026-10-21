@@ -47,7 +47,7 @@ hosting/cloudflare/deploy.sh
 
 ### 达到目标时的通知邮件
 
-- Worker 的 Cron Trigger 每 5 分钟运行一次（`src/notify.js`）。用 secret `STATUS_NOTIFY_TOKEN`（回收状况链接的 token）请 Supabase 函数 `research-status` 执行 `claim`。完了数达到目标、且还没发过时，数据库会记下 `target_notified_at` 并返回 `notify: true`，Worker 随即从 `status@geo-q.jp` 发一封邮件给 `NOTIFY_TO`。发信失败时执行 `release` 撤销记录，下一轮重试。发过的不会再发。
+- Worker 的 Cron Trigger 每 5 分钟运行一次（`src/notify.js`）。用 secret `STATUS_NOTIFY_TOKEN`（回收状况链接的 token）请 Supabase 函数 `research-status` 执行 `claim`。链接 token 是给テスティー的，所以 `claim`/`release` 还要带 `X-Notify-Secret`（Worker 和 Supabase 两边都设了 secret `STATUS_NOTIFY_SECRET`）；只有链接 token 时只能读取。完了数达到目标、且还没发过时，数据库会记下 `target_notified_at` 并返回 `notify: true`，Worker 随即从 `status@geo-q.jp` 发一封邮件给 `NOTIFY_TO`。发信失败时执行 `release` 撤销记录，下一轮重试。发过的不会再发。
 - 发信用 Email Routing 的 `send_email` 绑定 `NOTIFY_EMAIL`，`destination_address` 限定为 f.shera.09@gmail.com。这样不需要 Workers Paid，但 geo-q.jp 要启用 Email Routing，收件地址要先验证。
 - 本地测试：`.claude/launch.json` 的 `geo-q-notify-local`（`--test-scheduled`），访问 `/__scheduled?cron=*/5+*+*+*+*` 触发；本地不会真的发信，邮件写到 miniflare 的临时文件里。
 - 想重新发：`update research_status_links set target_notified_at = null where id = ...`。

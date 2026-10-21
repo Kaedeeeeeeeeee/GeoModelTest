@@ -31,11 +31,16 @@ function message(status, pageUrl) {
 }
 
 export async function notifyTarget(env) {
-  // Nothing to do until a link token and the mail binding are configured.
-  if (!env.STATUS_NOTIFY_TOKEN || !env.NOTIFY_EMAIL) return;
+  // Nothing to do until the link token, the notice secret and the mail binding are configured.
+  if (!env.STATUS_NOTIFY_TOKEN || !env.STATUS_NOTIFY_SECRET || !env.NOTIFY_EMAIL) return;
   const call = (action) => fetch(env.STATUS_API, {
     method: "POST",
-    headers: { Authorization: `Bearer ${env.STATUS_NOTIFY_TOKEN}`, "Content-Type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${env.STATUS_NOTIFY_TOKEN}`,
+      // The link token alone only reads; claim/release also need this secret shared with Supabase.
+      "X-Notify-Secret": env.STATUS_NOTIFY_SECRET,
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ action }),
   });
   const claimed = await call("claim");

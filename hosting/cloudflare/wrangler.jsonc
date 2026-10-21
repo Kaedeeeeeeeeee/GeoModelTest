@@ -10,7 +10,8 @@
     "RELEASE": "",
     // Supabase function behind /status/<token>; it checks the token and builds the numbers.
     "STATUS_API": "https://jrqmoxbzbjxrellvsvwn.supabase.co/functions/v1/research-status",
-    // Target-reached email (notify.js). The link token is the secret STATUS_NOTIFY_TOKEN.
+    // Target-reached email (notify.js). Secrets: STATUS_NOTIFY_TOKEN (the link token) and
+    // STATUS_NOTIFY_SECRET (also set on the research-status function; claim/release need it).
     "PUBLIC_ORIGIN": "https://geo-q.jp",
     "NOTIFY_FROM": "status@geo-q.jp",
     "NOTIFY_TO": "f.shera.09@gmail.com"
