@@ -4,6 +4,9 @@
 // and all of them must be sent with Content-Encoding: gzip so the browser
 // decompresses them natively (the loader's JS fallback costs too much memory on
 // iPhone X). They live in R2 under releases/<RELEASE>/Build/.
+// /status/<token> is Testee's read-only collection status page (status.js).
+import { handleStatus } from "./status.js";
+
 const UNITYWEB_TYPES = {
   "WebGL.data.unityweb": "application/octet-stream",
   "WebGL.framework.js.unityweb": "application/javascript",
@@ -12,6 +15,9 @@ const UNITYWEB_TYPES = {
 
 export default {
   async fetch(request, env) {
+    const status = await handleStatus(request, env);
+    if (status) return status;
+
     const name = new URL(request.url).pathname.match(/^\/Build\/([^/]+)$/)?.[1];
     const type = name && UNITYWEB_TYPES[name];
     if (!type) return new Response("Not found", { status: 404, headers: { "X-Robots-Tag": "noindex" } });

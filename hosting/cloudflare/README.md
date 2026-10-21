@@ -12,7 +12,7 @@
 | `index.html`、`TemplateData/`、`WebGL.loader.js`、`StreamingAssets/`、`release.json` | Workers 静态资源 | 普通静态文件 |
 | `Build/WebGL.{data,framework.js,wasm}.unityweb` | R2 桶 `geo-q-builds` 的 `releases/<版本>/Build/` | data 有 108 MB，超过静态资源单文件 25 MiB 的上限；三个文件都是 gzip，需要返回 `Content-Encoding: gzip` 让浏览器原生解压（itch 也是这样返回的，JS 解压在 iPhone X 上太吃内存） |
 
-`src/worker.js` 只处理这三个 `.unityweb`：返回 `ETag`/`Last-Modified` + `Cache-Control: no-cache`，Unity 的数据缓存（Data Caching）第二次打开时会走 304，不会重新下载。所有响应都带 `X-Robots-Tag: noindex`，不被搜索引擎收录。
+`src/worker.js` 处理这三个 `.unityweb`，另外还有テスティー用的回收状况页 `/status/<token>`（`src/status.js`，见下文）。`.unityweb` 的处理：返回 `ETag`/`Last-Modified` + `Cache-Control: no-cache`，Unity 的数据缓存（Data Caching）第二次打开时会走 304，不会重新下载。所有响应都带 `X-Robots-Tag: noindex`，不被搜索引擎收录。
 
 后端（Supabase edge functions）的 CORS 是 `*`，换域名不需要改。玩家的存档在浏览器里按域名分开存，所以 itch 上的进度不会带到新域名上。
 
@@ -35,3 +35,12 @@ hosting/cloudflare/deploy.sh
 - `.jp` 的 whois 一律公开注册人姓名，联系信息显示的是 XServer。
 - `wrangler.jsonc` 里的 `routes` 把 `geo-q.jp` 绑为 Worker 的 Custom Domain，DNS 记录和证书由 Cloudflare 自动管理。`www.geo-q.jp` 没有绑定。
 - 上课前用 iPhone、iPad 和 PC 各打开一次，最好也在学校的网络里试一次（有些过滤服务会拦截新注册的域名）。确认没问题后，可以把 `workers_dev` 改为 `false`，关掉测试地址。
+
+## 回收状况页 `/status/<token>`（2026-10-21）
+
+给テスティー看的只读页面：完了者的回答者ID、各阶段人数（保护者同意 → 游戏通关 → 问卷回答），1 分钟自动刷新，可下载 CSV（`/status/<token>/completers.csv`）。数据来自 Supabase 函数 `research-status`（地址是 `wrangler.jsonc` 里的 `STATUS_API`）。token 的校验和统计都在 Supabase 那边做，Worker 只负责显示，不持有任何 Supabase 密钥。
+
+- 发行链接：`python3 tools/research-admin.py status-link --study-key geoquest-open-play-2026-09 --label 'テスティー様 中学生モニター調査' --counted-from 2026-10-22T00:00+09:00`。URL 只在这时显示一次，数据库里只存 token 的 SHA-256。
+- 作废：`python3 tools/research-admin.py revoke-status-link --link-id <ID>`，之后该页面返回 404。
+- 本地预览：`.claude/launch.json` 的 `geo-q-status-local`（`wrangler dev`，`STATUS_API` 指向本地 Supabase 栈 `127.0.0.1:55321`）。
+- 只改 Worker 代码时不必重新上传 R2：在 `.stage` 是当前版本的前提下，`wrangler deploy --config hosting/cloudflare/wrangler.jsonc --var RELEASE:<当前版本>`。

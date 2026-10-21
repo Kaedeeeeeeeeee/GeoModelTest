@@ -7,3 +7,7 @@ verify_jwt = true
 [functions.game-survey]
 # issue validates the game JWT; open/submit validate the restricted survey ticket.
 verify_jwt = false
+
+[functions.research-status]
+# The geo-q.jp Worker sends a status link token, not a Supabase JWT.
+verify_jwt = false

@@ -229,6 +229,24 @@ class Admin:
             print(f'Check: reported questionnaire ID {survey_id}; the guardian form has {guardian_id}.')
 
 
+    def status_link(self, args):
+        # Testee's read-only collection page on geo-q.jp. Only the token's hash is stored, so the URL is shown once.
+        study = self.study(args.study_key)
+        if not 1 <= len(args.label) <= 100: raise ValueError('The label must be 1 to 100 characters.')
+        if not 1 <= args.target <= 10000: raise ValueError('The target must be between 1 and 10000.')
+        token = secrets.token_hex(32)
+        row = self.request('research_status_links',{'token_hash':hashlib.sha256(token.encode()).hexdigest(),'study_id':study['id'],
+            'label':args.label,'counted_from':args.counted_from,'target_count':args.target},method='POST',prefer='return=representation')[0]
+        print(f'Status link {row["id"]} counts guardian forms from {row["counted_from"]}. The URL is not stored; share it now:')
+        print(f'{args.base_url.rstrip("/")}/status/{token}')
+
+    def revoke_status_link(self, args):
+        result = self.request('research_status_links?id=eq.'+str(uuid.UUID(args.link_id))+'&revoked_at=is.null',
+            {'revoked_at':dt.datetime.now(dt.timezone.utc).isoformat()},method='PATCH',prefer='return=representation')
+        if not result: raise ValueError('No active status link with that ID.')
+        print('Status link revoked; its page now answers 404.')
+
+
 def respondent_choice(value):
     # completers accepts only an ID that participant entered or has on the guardian form,
     # which also covers the p + 7 digit IDs recorded before 2026-10-05.
@@ -242,6 +260,13 @@ def timestamp(value):
     parsed = dt.datetime.fromisoformat(value.replace('Z','+00:00'))
     if parsed.tzinfo is None or parsed > dt.datetime.now(dt.timezone.utc):
         raise ValueError('Consent timestamps must include a timezone and must not be in the future.')
+    return parsed.isoformat()
+
+
+def zoned_timestamp(value):
+    # The cutoff may be in the future (a link made the day before launch), but it must name its timezone.
+    parsed = dt.datetime.fromisoformat(value.replace('Z','+00:00'))
+    if parsed.tzinfo is None: raise ValueError('The timestamp must include a timezone, e.g. 2026-10-22T00:00+09:00.')
     return parsed.isoformat()
 
 
@@ -261,6 +286,10 @@ def main():
     done=commands.add_parser('completers');done.add_argument('--study-key',required=True)
     done.add_argument('--output',required=True)
     done.add_argument('--choose',type=respondent_choice,action='append',metavar='PARTICIPANT_ID=RESPONDENT_ID')
+    status=commands.add_parser('status-link');status.add_argument('--study-key',required=True)
+    status.add_argument('--label',required=True);status.add_argument('--counted-from',type=zoned_timestamp,required=True)
+    status.add_argument('--target',type=int,default=20);status.add_argument('--base-url',default='https://geo-q.jp')
+    revoke=commands.add_parser('revoke-status-link');revoke.add_argument('--link-id',required=True)
     gate=commands.add_parser('entry');gate.add_argument('--study-key',required=True)
     gate.add_argument('--state',choices=['open','closed'],required=True)
     consent=commands.add_parser('record-consent');consent.add_argument('--participant-id',required=True)
@@ -271,6 +300,8 @@ def main():
     elif args.command=='export': admin.export(args)
     elif args.command=='consent-records': admin.consent_records(args)
     elif args.command=='completers': admin.completers(args)
+    elif args.command=='status-link': admin.status_link(args)
+    elif args.command=='revoke-status-link': admin.revoke_status_link(args)
     elif args.command=='entry':
         study=admin.study(args.study_key)
         admin.request('studies?id=eq.'+study['id'],{'research_entry_enabled':args.state=='open'},method='PATCH')

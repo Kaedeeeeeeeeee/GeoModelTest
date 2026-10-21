@@ -35,6 +35,13 @@ python3 tools/research-admin.py consent-records --study-key geoquest-open-play-2
 python3 tools/research-admin.py completers --study-key geoquest-open-play-2026-09 --output /private/research/completed-respondents.csv
 ```
 
+Testee cannot see anything after a monitor leaves for geo-q.jp, so they get a read-only status page instead of mailed lists (migration `20261021120000_research_status_page.sql`, function `research-status`, page in `hosting/cloudflare/src/status.js`). `research_status_links` stores only the SHA-256 of each link token, the study, a `counted_from` cutoff (guardian forms recorded earlier, such as test plays, are left out) and the target count. `research_status()` returns stage counts and the completers by the same rule as `completers`; a participant who re-entered two different IDs is listed for review and not counted. It never returns guardian names or participant UUIDs. Create and revoke links:
+
+```sh
+python3 tools/research-admin.py status-link --study-key geoquest-open-play-2026-09 --label 'テスティー様 中学生モニター調査' --counted-from 2026-10-22T00:00+09:00
+python3 tools/research-admin.py revoke-status-link --link-id LINK_ID
+```
+
 Source/backend changes require coordinated deployment before the published player uses this flow.
 
 ## Legacy invitation eligibility and identity
@@ -50,7 +57,7 @@ Source/backend changes require coordinated deployment before the published playe
 1. Enable anonymous sign-in in Supabase Auth. The existing Sendai project already has it enabled.
 2. Back up schema and data before upgrading. Apply pending migrations with `supabase db push --project-ref PROJECT_REF --skip-vault`; use `--dry-run` first. Baseline migration filenames match the cloud's original history. Do not replay or reset those migrations.
 3. Put `PARTICIPANT_CODE_PEPPER` (random, at least 32 characters) in a private environment file and run `supabase secrets set --project-ref PROJECT_REF --env-file PRIVATE_FILE`. Supabase supplies the service-role credential to hosted functions. Never place service credentials or the pepper in Unity assets, browser JavaScript or Git.
-4. Deploy `research-participation`, `game-ingest-v2` and `game-survey` with `supabase functions deploy research-participation game-ingest-v2 game-survey --project-ref PROJECT_REF --use-api`. The committed config keeps gateway JWT checks enabled on activation/logging; the survey endpoint validates a game JWT for issuance and a scoped ticket for answering.
+4. Deploy `research-participation`, `game-ingest-v2`, `game-survey` and `research-status` with `supabase functions deploy research-participation game-ingest-v2 game-survey research-status --project-ref PROJECT_REF --use-api`. The committed config keeps gateway JWT checks enabled on activation/logging; the survey endpoint validates a game JWT for issuance and a scoped ticket for answering.
 5. Leave the existing `game-ingest` v1 deployment intact for old clients. The new Unity asset explicitly calls `game-ingest-v2`.
 6. The timeout migration schedules a once-per-minute Cron job. It closes abandoned research sessions after 120 seconds without a heartbeat, using the last heartbeat as the end time. Legacy sessions without a participant binding are excluded.
 7. Build WebGL and deploy the complete build, including `StreamingAssets/Survey`. Verify the public itch embed against the deployed backend.
