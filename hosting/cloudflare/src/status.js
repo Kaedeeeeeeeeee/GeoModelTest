@@ -28,11 +28,8 @@ async function loadStatus(env, token) {
 }
 
 function csv(status) {
-  const rows = [["回答者ID", "完了日時（日本時間）", "備考"]];
-  for (const item of status.completers) {
-    const note = item.guardianFormIds.length ? `保護者同意フォームのID: ${item.guardianFormIds.join(" / ")}` : "";
-    rows.push([item.respondentId, csvDate(item.completedAt), note]);
-  }
+  const rows = [["回答者ID", "完了日時（日本時間）"]];
+  for (const item of status.completers) rows.push([item.respondentId, csvDate(item.completedAt)]);
   // Excel opens a UTF-8 CSV correctly only with the BOM.
   return "﻿" + rows.map((row) => row.map((cell) => `"${cell.replaceAll('"', '""')}"`).join(",")).join("\r\n") + "\r\n";
 }
@@ -139,7 +136,6 @@ th { font-size: 12px; font-weight: 600; color: var(--muted); border-top: 0; }
 td.num { color: var(--muted); width: 2.5em; }
 td.id { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 15px; letter-spacing: .02em; }
 td.when { white-space: nowrap; }
-td.note { font-size: 13px; color: var(--warn); }
 .empty { color: var(--muted); text-align: center; padding: 24px 8px; }
 .review { border-color: var(--warn); background: var(--warn-soft); }
 .review h2 { color: var(--warn); }
@@ -181,7 +177,7 @@ ${message ? `<header><div><p class="eyebrow">回収状況</p><h1>${message}</h1>
 </div>
 <section class="card review" id="review" hidden>
   <h2>要確認（完了者数に含めていません）</h2>
-  <p class="sub">同じ端末から2回以上回答があり、異なるIDが入力されました。こちらで確認のうえご連絡いたします。</p>
+  <p class="sub">保護者同意フォームとアンケートで、異なる回答者IDが入力されました。どちらのIDが正しいか確認できるまで、完了者数・完了者ID一覧には含めていません。</p>
   <ul id="review-list"></ul>
 </section>
 <section class="card">
@@ -190,7 +186,7 @@ ${message ? `<header><div><p class="eyebrow">回収状況</p><h1>${message}</h1>
     <div class="actions"><button type="button" id="copy">IDをコピー</button><a class="button primary" id="csv" href="" download>CSVをダウンロード</a></div>
   </div>
   <table>
-    <thead><tr><th>#</th><th>回答者ID</th><th>完了日時</th><th>備考</th></tr></thead>
+    <thead><tr><th>#</th><th>回答者ID</th><th>完了日時</th></tr></thead>
     <tbody id="rows"></tbody>
   </table>
 </section>
@@ -198,7 +194,7 @@ ${message ? `<header><div><p class="eyebrow">回収状況</p><h1>${message}</h1>
   <ul>
     <li>保護者同意：保護者同意フォームを送信した人数です。</li>
     <li>ゲームクリア：ゲームを最後まで進め、アンケートを開ける状態になった人数です。</li>
-    <li>完了：ゲームクリア後にアンケートを送信した人です。IDはアンケートで再入力されたものを使います。保護者同意フォームと異なる場合は備考に記載しています。</li>
+    <li>完了：ゲームクリア後にアンケートを送信し、保護者同意フォームとアンケートで同じ回答者IDが入力された人です。異なるIDが入力された場合は「要確認」に表示します。</li>
     <li>このページは1分ごとに自動で更新されます。保護者の氏名などの個人情報は表示していません。</li>
     <li>URLを知っている方は誰でも閲覧できます。関係者以外には共有しないでください。</li>
   </ul>
@@ -235,13 +231,12 @@ ${message ? `<header><div><p class="eyebrow">回収状況</p><h1>${message}</h1>
     rows.replaceChildren();
     data.completers.forEach((item, index) => {
       const tr = document.createElement("tr");
-      const note = item.guardianFormIds.length ? "保護者同意フォームのID: " + item.guardianFormIds.join(" / ") : "";
-      tr.append(cell(String(index + 1), "num"), cell(item.respondentId, "id"), cell(when(item.completedAt), "when"), cell(note, "note"));
+      tr.append(cell(String(index + 1), "num"), cell(item.respondentId, "id"), cell(when(item.completedAt), "when"));
       rows.append(tr);
     });
     if (!data.completers.length) {
       const tr = document.createElement("tr");
-      const td = cell("まだ完了者はいません。", "empty"); td.colSpan = 4; tr.append(td); rows.append(tr);
+      const td = cell("まだ完了者はいません。", "empty"); td.colSpan = 3; tr.append(td); rows.append(tr);
     }
     ids = data.completers.map((item) => item.respondentId);
     $("copy").disabled = !ids.length;
@@ -250,9 +245,9 @@ ${message ? `<header><div><p class="eyebrow">回収状況</p><h1>${message}</h1>
     list.replaceChildren();
     for (const item of data.review) {
       const li = document.createElement("li");
-      li.append("保護者同意フォームのID ");
-      const form = document.createElement("span"); form.className = "mono"; form.textContent = item.guardianFormId; li.append(form);
-      li.append("／アンケートで入力: " + item.entries.map((entry) => entry.respondentId + "（" + when(entry.submittedAt) + "）").join("、"));
+      const id = (text) => { const span = document.createElement("span"); span.className = "mono"; span.textContent = text; return span; };
+      li.append("保護者同意フォーム ", id(item.guardianFormId), "／アンケート ");
+      item.entries.forEach((entry, index) => li.append(index ? "、" : "", id(entry.respondentId), "（" + when(entry.submittedAt) + "）"));
       list.append(li);
     }
     $("review").hidden = !data.review.length;

@@ -23,9 +23,9 @@ begin
   for v_case in
     select * from (values
       ('1111', false, true,  array['1111'],         v_study),  -- plain completer
-      ('2222', false, true,  array['3333'],         v_study),  -- confirmed a different ID: 3333 is reported
+      ('2222', false, true,  array['3333'],         v_study),  -- questionnaire ID differs from the guardian form: review
       ('4444', false, true,  array[null]::text[],   v_study),  -- response from before the double check
-      ('5555', false, true,  array['5555','6666'],  v_study),  -- two different IDs: review, not counted
+      ('5555', false, true,  array['5555','6666'],  v_study),  -- answered twice, the second time with another ID: review
       ('1111', false, true,  array['1111'],         v_study),  -- same child in a second browser: counted once
       ('7777', false, true,  array[]::text[],       v_study),  -- cleared the game, no questionnaire yet
       ('8888', false, false, array[]::text[],       v_study),  -- consented only
@@ -66,14 +66,16 @@ begin
   assert (v_result->>'gameCleared')::int = 6, 'Cleared means a questionnaire ticket was issued: '||(v_result->>'gameCleared');
   assert (v_result->>'surveyed')::int = 5, 'Participants with a submitted questionnaire: '||(v_result->>'surveyed');
   select array_agg(x->>'respondentId' order by x->>'respondentId') into v_ids from jsonb_array_elements(v_result->'completers') x;
-  assert v_ids = array['1111','3333','4444'], 'Completers follow research-admin.py completers: '||array_to_string(v_ids,',');
-  assert (v_result->>'completed')::int = 3, 'The same ID from two browsers counts once';
-  assert (select x->'guardianFormIds' from jsonb_array_elements(v_result->'completers') x where x->>'respondentId' = '3333') = '["2222"]'::jsonb,
-    'A different guardian-form ID is shown so Testee can reconcile it';
-  assert (select x->'guardianFormIds' from jsonb_array_elements(v_result->'completers') x where x->>'respondentId' = '1111') = '[]'::jsonb,
-    'Matching IDs carry no note';
-  assert jsonb_array_length(v_result->'review') = 1 and v_result->'review'->0->>'guardianFormId' = '5555'
-    and jsonb_array_length(v_result->'review'->0->'entries') = 2, 'Two different re-entered IDs go to review';
+  assert v_ids = array['1111','4444'], 'Only participants whose IDs agree are completers: '||array_to_string(v_ids,',');
+  assert (v_result->>'completed')::int = 2, 'The same ID from two browsers counts once';
+  assert not exists (select 1 from jsonb_array_elements(v_result->'completers') x where x ? 'guardianFormIds'),
+    'Completers carry no second ID any more';
+  select array_agg(x->>'guardianFormId' order by x->>'guardianFormId') into v_ids from jsonb_array_elements(v_result->'review') x;
+  assert v_ids = array['2222','5555'], 'Any ID differing from the guardian form goes to review: '||array_to_string(v_ids,',');
+  assert (select x->'entries' from jsonb_array_elements(v_result->'review') x where x->>'guardianFormId' = '2222')->0->>'respondentId' = '3333',
+    'Review shows the questionnaire ID beside the guardian-form ID';
+  assert (select jsonb_array_length(x->'entries') from jsonb_array_elements(v_result->'review') x where x->>'guardianFormId' = '5555') = 2,
+    'Every questionnaire ID is listed';
   assert v_result::text not like '%状況QA保護者%', 'Guardian names must never leave the database';
   for i in 1..array_length(v_participants,1) loop
     assert v_result::text not like '%'||v_participants[i]||'%', 'Participant UUIDs must not be returned';
