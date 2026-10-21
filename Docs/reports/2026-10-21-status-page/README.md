@@ -139,3 +139,8 @@
   - 收件人不在允许名单内（发信失败）：占位立即撤销。
 
 上线需要：`db push`（只有 `20261021150000`）、重新部署 `research-status` 函数、部署 Worker。三者要一起上线：旧 Worker 调用的 `release(text)` 已经被删除，换成了带 `claimId` 的新版本。
+
+### 修复的部署记录（2026-10-21，用户同意）
+
+- `db push --dry-run` 只有 `20261021150000_research_status_notice_lease.sql`，随后正式应用；`research-status` 函数重新部署；Worker 部署为 **75644962-9020-4313-87a7-c617eafc2ca6**（静态资源无变化，cron `*/5 * * * *` 和 `NOTIFY_EMAIL` 绑定保持不变，secret `STATUS_NOTIFY_TOKEN`、`STATUS_NOTIFY_SECRET` 仍在）。
+- 线上确认：游戏路径、回收状况页、CSV 均 200；10 个随机 token 全部 403，`research_rate_limits` 行数不变（59 → 59）；读取 200；不带密钥 claim 403；带密钥 claim → 0/20、`notify=false`、无 claimId；随机 claimId 的 confirm → `done=false`。
