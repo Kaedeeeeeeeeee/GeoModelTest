@@ -694,7 +694,7 @@
     },
     {
       "key": "quest.lab.intro.desc",
-      "value": "カエデ研究員の案内を聞き、調査道具を受け取ろう"
+      "value": "Dr.Kaedeの案内を聞き、調査道具を受け取ろう"
     },
     {
       "key": "quest.lab.intro.obj1",
@@ -702,7 +702,7 @@
     },
     {
       "key": "quest.lab.drkaede.title",
-      "value": "調査ミッション2：カエデ研究員に話を聞こう"
+      "value": "調査ミッション2：Dr.Kaedeに話を聞こう"
     },
     {
       "key": "quest.lab.drkaede.desc",
@@ -714,7 +714,7 @@
     },
     {
       "key": "quest.lab.drkaede.prompt",
-      "value": "［E］カエデ研究員に話を聞く"
+      "value": "［E］Dr.Kaedeに話を聞く"
     },
     {
       "key": "quest.lab.anomaly.title",
@@ -774,7 +774,7 @@
     },
     {
       "key": "quest.chapter4.kaede.prompt",
-      "value": "［E］カエデ研究員に話を聞く"
+      "value": "［E］Dr.Kaedeに話を聞く"
     },
     {
       "key": "quest.chapter4.field.title",
@@ -826,7 +826,7 @@
     },
     {
       "key": "quest.chapter5.kaede.prompt",
-      "value": "［E］カエデ研究員に話を聞く"
+      "value": "［E］Dr.Kaedeに話を聞く"
     },
     {
       "key": "quest.chapter5.field.title",
@@ -854,7 +854,7 @@
     },
     {
       "key": "quest.chapter6.kaede.title",
-      "value": "最終報告をカエデ研究員に伝えよう"
+      "value": "最終報告をDr.Kaedeに伝えよう"
     },
     {
       "key": "quest.chapter6.kaede.desc",
@@ -866,7 +866,7 @@
     },
     {
       "key": "quest.chapter6.kaede.prompt",
-      "value": "［E］カエデ研究員に話を聞く"
+      "value": "［E］Dr.Kaedeに話を聞く"
     },
     {
       "key": "quest.ui.completed",
@@ -3178,7 +3178,7 @@
     },
     {
       "key": "quest.npc.prompt.mobile",
-      "value": "カエデ研究員に話を聞く"
+      "value": "Dr.Kaedeに話を聞く"
     },
     {
       "key": "workbench.interaction.prompt",
@@ -3334,7 +3334,7 @@
     },
     {
       "key": "quest.step.2",
-      "value": "博士の説明を聞く"
+      "value": "Dr.Kaedeの説明を聞く"
     },
     {
       "key": "quest.step.3",
@@ -3346,7 +3346,7 @@
     },
     {
       "key": "quest.step.5",
-      "value": "博士から掘削の説明を聞く"
+      "value": "Dr.Kaedeから掘削の説明を聞く"
     },
     {
       "key": "quest.step.6",
@@ -4058,7 +4058,7 @@
     },
     {
       "key": "quest.npc.action.talk",
-      "value": "カエデ研究員に話を聞く"
+      "value": "Dr.Kaedeに話を聞く"
     },
     {
       "key": "quest.npc.action.continue",

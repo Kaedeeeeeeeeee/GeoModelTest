@@ -3154,7 +3154,7 @@
     },
     {
       "key": "quest.step.2",
-      "value": "听取博士说明"
+      "value": "听取Dr.Kaede的说明"
     },
     {
       "key": "quest.step.3",
@@ -3166,7 +3166,7 @@
     },
     {
       "key": "quest.step.5",
-      "value": "听博士讲解钻探方法"
+      "value": "听Dr.Kaede讲解钻探方法"
     },
     {
       "key": "quest.step.6",
@@ -3878,7 +3878,7 @@
     },
     {
       "key": "quest.npc.action.talk",
-      "value": "与 Kaede 研究员交谈"
+      "value": "与Dr.Kaede交谈"
     },
     {
       "key": "quest.npc.action.continue",
@@ -3898,7 +3898,7 @@
     },
     {
       "key": "quest.npc.prompt.mobile",
-      "value": "与 Kaede 研究员交谈"
+      "value": "与Dr.Kaede交谈"
     },
     {
       "key": "drill_tower.drill_prompt_mobile",

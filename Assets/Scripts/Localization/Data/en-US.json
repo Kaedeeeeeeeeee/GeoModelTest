@@ -3878,7 +3878,7 @@
     },
     {
       "key": "quest.npc.action.talk",
-      "value": "Talk to Researcher Kaede"
+      "value": "Talk to Dr. Kaede"
     },
     {
       "key": "quest.npc.action.continue",
@@ -3898,7 +3898,7 @@
     },
     {
       "key": "quest.npc.prompt.mobile",
-      "value": "Talk to Researcher Kaede"
+      "value": "Talk to Dr. Kaede"
     },
     {
       "key": "drill_tower.drill_prompt_mobile",
