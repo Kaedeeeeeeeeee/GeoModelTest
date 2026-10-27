@@ -564,3 +564,10 @@ LocalizationManager.Instance.SwitchLanguage(LanguageSettings.Language.English);
 ---
 Last updated: 2025-07-19
 Project status: Complete multi-language internationalization system (v1.8) with warehouse management (v1.7)
+
+# 合并到 main 必须经过 PR 和 Codex 审查
+
+- 不直接 push 到 `main`。改动推到分支（云端线程用自动建的 `claude/project-thread-*` 分支即可），通过 PR 合并。
+- PR 不要停在草稿：工作完成后把 PR 转为正式（`gh pr ready`，或开 PR 时不加 `--draft`）。草稿 PR 不会触发 GitHub 上的 Codex bot（`chatgpt-codex-connector[bot]`）审查。做不到时告诉用户需要手动点 "Ready for review"。
+- 转为正式后等 bot 审完（汇总评论里 `codex-review-state` 的 `code_review.commit_sha` 等于分支 HEAD 且 `status` 为 `completed`），逐条核实它的行内评论：P0/P1 修复后推到同一分支（bot 会自动重审），误报说明理由，P2/P3 转告用户。
+- 有未处理的 P0/P1 时不合并。
