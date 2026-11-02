@@ -50,7 +50,15 @@
 - Node：`tools/qa/guardian-consent.test.cjs` 14/14 通过，新增 4 项（新访问者先检查、已同意者不检查；只有 `open:false` 才显示募集終了；各种错误照常显示同意书；不响应时 5 秒后显示同意书；页面上的画面和配置）。`tools/qa/*.test.cjs` 共 30/30 通过。
 - 浏览器（本地页面接本地 Supabase）：开放时显示同意书；建一个 `closes_entry` 链接、目标设为本地已有的完成数后，刷新即显示「募集終了」；已同意的人刷新后直接进入学生同意页，也不发检查请求；控制台无错误。截图用 Playwright 生成（桌面 1280×800、iPhone 13），测试链接用完已删除。
 
-## 上线步骤（未执行，需用户确认）
+## 部署记录（2026-11-02 晚，用户同意）
+
+- 数据库：`db push --dry-run` 只有 `20261102120000_research_entry_status.sql`，随后正式应用。PostgREST schema cache 刷新后（约 10 秒），用 publishable key 调用 RPC 返回 `{"open": true}`。正式链接 `d006abf0…` 的 `closes_entry = true`，测试链接（已作废）为 false。当时 7/20 完成，18 人同意。
+- 页面：shell-only 发布 `2026.11.02-entry-closed`。从 HEAD 中已提交的发布文件导出到临时目录（二进制仍为 `2026.10.16-hammer-slab-fix`，与 HEAD 逐字节一致），只替换 `index.html`、`TemplateData/guardian-consent.js`、`TemplateData/style.css`。`release.json` 的 `sourceCommit` 为 99b69eb，`sourceDirty: false`。工作区 `Build/WebGL` 中另一个会话 19:47 build 的 first-trip-coach 二进制没有被动用，也没有上线。
+- 发布前冒烟测试：临时目录的页面连生产 RPC，请求 200，显示同意书，不显示募集終了。
+- geo-q.jp：Worker **384f9094-e0bc-40d3-9aee-56e1f290918e**，R2 `releases/2026.11.02-entry-closed/`。20/20 个文件和临时目录逐字节一致，`release.json` 版本正确。回滚：`wrangler rollback --config hosting/cloudflare/wrangler.jsonc`。
+- itch.io：`butler push … --userversion 2026.11.02-entry-closed`，build #2277978（上一版 #2168794）。
+
+## 上线步骤（留作参考）
 
 1. 数据库：`supabase db push --project-ref jrqmoxbzbjxrellvsvwn --skip-vault --dry-run`，确认只多出 `20261102120000` 后正式执行。之后用 service key 确认正式链接的 `closes_entry` 已变为 true，`research_entry_status()` 返回 `open: true`（当前 7/20）。
 2. 页面：按 shell-only 方式发布（只改模板，不 build Unity）。**注意**：`Build/WebGL/Build/*` 现在是还没发布的 first-trip-coach 版本，不能直接上传。要以 HEAD 中已提交的已发布文件（`2026.10.16-hammer-slab-fix` 二进制，`release.json` 版本 `2026.10.20-consent-keyboard`）为基础，套用本次对 `index.html`、`TemplateData/*` 的修改，新版本号例如 `2026.11.02-entry-closed`，再走 itch.io 和 geo-q.jp 的发布流程。

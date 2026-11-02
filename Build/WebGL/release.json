@@ -1,16 +1,16 @@
 {
-  "version": "2026.10.20-consent-keyboard",
+  "version": "2026.11.02-entry-closed",
   "gameVersion": "2026.10.16-hammer-slab-fix",
   "unity": "6000.0.51f1",
   "buildType": "release",
   "builtAt": "2026-10-16T12:50:58.518Z",
-  "sourceCommit": "1f64569809237ddc118c93d160360cb803b68359",
-  "sourceDirty": true,
+  "sourceCommit": "99b69eb8efb37298b5170d36109f1280959bc268",
+  "sourceDirty": false,
   "sourceFiles": {
-    "Assets/WebGLTemplates/FixedAspect/TemplateData/guardian-consent.js": "75ffd980419cfc9c72bc426e789512f7aa97a655769be00c5c563ead43e13cae",
-    "Assets/WebGLTemplates/FixedAspect/TemplateData/style.css": "97b63dde6fc3b3784ea837613ba05dd452cb524e9ed1dccb6220019043b88e38"
+    "Assets/WebGLTemplates/FixedAspect/index.html": "207d332b4dc33a49a28f8b01e1da7dc9e2df7d322a566bdcf744ae8bb5ab9f6a",
+    "Assets/WebGLTemplates/FixedAspect/TemplateData/guardian-consent.js": "7c5ef2f059f7b23e302e4d4ba892fde4e581bab65fbdae3951b04c2879a6740b",
+    "Assets/WebGLTemplates/FixedAspect/TemplateData/style.css": "e171b69926333aabfe6726f5cd1cd896a81600464d7f8a4b36b263da980fe0f2"
   },
-  "sourcePatchSHA256": "94bc94054224c3e735a1c441c964f7700109a5d2237f4e260f6aa146b2698a76",
   "assets": {
     "Build/WebGL.data.unityweb": {
       "bytes": 108223033,
@@ -31,8 +31,8 @@
   },
   "webAssets": {
     "TemplateData/guardian-consent.js": {
-      "bytes": 17501,
-      "sha256": "75ffd980419cfc9c72bc426e789512f7aa97a655769be00c5c563ead43e13cae"
+      "bytes": 19408,
+      "sha256": "7c5ef2f059f7b23e302e4d4ba892fde4e581bab65fbdae3951b04c2879a6740b"
     },
     "TemplateData/loading.js": {
       "bytes": 12153,
@@ -43,12 +43,12 @@
       "sha256": "0e36abece3c0aeb0a3fe0ae50fdc480fb71ed6783c8664b8ce549329fbf63bc9"
     },
     "TemplateData/style.css": {
-      "bytes": 10639,
-      "sha256": "97b63dde6fc3b3784ea837613ba05dd452cb524e9ed1dccb6220019043b88e38"
+      "bytes": 10989,
+      "sha256": "e171b69926333aabfe6726f5cd1cd896a81600464d7f8a4b36b263da980fe0f2"
     },
     "index.html": {
-      "bytes": 18657,
-      "sha256": "d704c56e725977ab893159b8bfb9ae604bf19c89ea9feea4959d97fa6069edb8"
+      "bytes": 19430,
+      "sha256": "a9aaba46d213986b62a5b2a665e282475a3141bb2b07110b89623ce2b473ed22"
     }
   },
   "surveyAssets": {
