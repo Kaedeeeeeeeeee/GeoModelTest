@@ -1063,7 +1063,8 @@ public class MobileControlsUI : MonoBehaviour
         return button != null &&
                button.gameObject.activeInHierarchy &&
                button.enabled &&
-               button.interactable;
+               button.interactable &&
+               !UISystem.PhaseShifterCoach.BlocksControl(button);
     }
 
     void ApplySafeAreaOffset(RectTransform rect, float left, float right, float top, float bottom)
@@ -2031,6 +2032,7 @@ public class MobileControlsUI : MonoBehaviour
 
         if (rawJoystickTouchId == NoTouchId &&
             phase == TouchPhase.Began &&
+            !UISystem.PhaseShifterCoach.IsBlockingTouch &&
             IsScreenPointInRect(GetRectTransform(joystickContainer), position))
         {
             rawJoystickTouchId = touchId;

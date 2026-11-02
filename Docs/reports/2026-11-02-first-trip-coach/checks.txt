@@ -33,11 +33,13 @@ PASS The touch coach names the tool button: 研究室と野外を行き来する
 光っている「道具」ボタンをタップしよう。
 PASS A tap on the tool button reaches the real button through the dim.
 PASS A tap elsewhere lands on the dim.
+PASS Raw touches reach only the tool button as well.
 PASS English coach text is localized and fits: This tool takes you between the lab and the field. You will use it many times, so learn it now.  Tap the glowing Tools button.
 PASS ChineseSimplified coach text is localized and fits: 这个工具用来往返研究室和野外。之后会用很多次，现在就记住吧。  点击发光的「道具」按钮。
 PASS Japanese coach text is localized and fits: 研究室と野外を行き来する道具だよ。これから何度も使うので、いま覚えよう。  光っている「道具」ボタンをタップしよう。
 PASS With the shifter in hand the real interact button is the opening.
 PASS The tool button is dimmed on the use step.
+PASS Raw touches follow the use step.
 PASS Touch cue points at the tool button: 道具ボタンをタップし、光っている「フェーズシフター」を選ぼう。
 PASS Touch step 1 outlines only the real tool button.
 PASS Touch step 1 offers the tool-menu entrance on the card.
@@ -59,6 +61,9 @@ PASS touch step 2: the card does not cover interactButton.
 PASS touch step 2: the card does not cover secondaryInteractButton.
 PASS touch step 2: the card and the quest card do not overlap.
 PASS touch step 2: the whole instruction is visible.
+PASS The player stands within Kaede's talk range.
+PASS Kaede offers no repeat talk while the shifter is in hand.
+PASS The interact button starts no conversation beside Kaede.
 PASS The interact button opens the destination list.
 PASS The field destination is outlined for touch as well.
 PASS The interact outline stops once the list is open.

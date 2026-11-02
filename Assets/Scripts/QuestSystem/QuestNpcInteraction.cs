@@ -107,6 +107,14 @@ namespace QuestSystem
             RefreshCurrentStage();
             UpdateQuestMarker();
             if (!playerInRange) { HidePrompt(); return; }
+            // Touch shares one button for talking and using a tool. The player is still beside Kaede
+            // when told to use the shifter, and a repeated reminder would send them back to the same step.
+            if (!HasNewConversation && (UISystem.PhaseShifterCoach.IsCoaching || UISystem.CollectionGuidanceHUD.HighlightPrimaryAction))
+            {
+                HidePrompt();
+                previousInteractState = mobileInput != null && mobileInput.IsInteracting;
+                return;
+            }
             UpdatePromptLocalization();
             ShowPrompt();
             if (IsInteractTriggered() && promptPanel != null && promptPanel.gameObject.activeInHierarchy) BeginInteraction();

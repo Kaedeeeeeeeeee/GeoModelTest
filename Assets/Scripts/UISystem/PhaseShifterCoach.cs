@@ -24,6 +24,7 @@ namespace UISystem
         // Touch targets stay fully lit, with room for the breathing outline around them.
         private const float HolePadding = 14f;
         private static bool _confirmationPending;
+        private static Button _touchTarget;
 
         private Canvas _canvas;
         private readonly Image[] _dim = new Image[4];
@@ -38,6 +39,11 @@ namespace UISystem
         public Step Current { get; private set; }
         public bool IsDimming { get; private set; }
         public bool IsBlockingOutsideTarget { get; private set; }
+        public static bool IsCoaching { get; private set; }
+        public static bool IsBlockingTouch { get; private set; }
+
+        /// <summary>The virtual controls also read raw touches, which pass under the dim panels.</summary>
+        public static bool BlocksControl(Button button) => IsBlockingTouch && button != _touchTarget;
 
         private struct Card
         {
@@ -95,7 +101,7 @@ namespace UISystem
             }
             _card = BuildCard(_canvas.transform, "CoachCard");
             _confirmation = BuildCard(_canvas.transform, "CoachConfirmation");
-            SetAnchors(_confirmation.Root, new Vector2(0.3f, 0.7f), new Vector2(0.7f, 0.86f));
+            SetAnchors(_confirmation.Root, new Vector2(0.37f, 0.7f), new Vector2(0.695f, 0.86f));
             _confirmation.Title.gameObject.SetActive(false);
             _confirmation.Body.rectTransform.anchorMax = new Vector2(0.96f, 0.93f);
         }
@@ -147,6 +153,7 @@ namespace UISystem
             }
             if (Current != Step.None) _confirmationPending = true;
 
+            IsCoaching = Current != Step.None;
             RefreshDim(touch);
             RefreshCards(shifter, touch, destinationName, manager);
             return Current != Step.None;
@@ -174,6 +181,8 @@ namespace UISystem
             bool hasTarget = target != null && target.gameObject.activeInHierarchy;
             // Without a real control to leave open, the dim must never swallow input.
             IsBlockingOutsideTarget = IsDimming && hasTarget;
+            IsBlockingTouch = IsBlockingOutsideTarget;
+            _touchTarget = hasTarget ? target : null;
 
             Vector2 holeMin = Vector2.zero, holeMax = Vector2.zero;
             if (hasTarget)
@@ -211,7 +220,7 @@ namespace UISystem
             {
                 // The destination list is a top modal, so its label has to live on the list's canvas.
                 _listCard = BuildCard(manager.sceneSelectionUI.transform, "CoachCard");
-                SetAnchors(_listCard.Root, new Vector2(0.012f, 0.36f), new Vector2(0.285f, 0.72f));
+                SetAnchors(_listCard.Root, new Vector2(0.012f, 0.36f), new Vector2(0.26f, 0.72f));
                 // That canvas scales from 1920 wide, against 1600 for this one.
                 _listCard.Title.fontSize = 34;
                 _listCard.Body.fontSize = 36;
@@ -221,7 +230,7 @@ namespace UISystem
             if (!inList)
             {
                 // The wheel fills the middle of the screen, so its step reads from beside it.
-                if (Current == Step.PickShifter) SetAnchors(card.Root, new Vector2(0.012f, 0.36f), new Vector2(0.285f, 0.72f));
+                if (Current == Step.PickShifter) SetAnchors(card.Root, new Vector2(0.012f, 0.36f), new Vector2(0.26f, 0.72f));
                 else SetAnchors(card.Root, new Vector2(0.28f, 0.4f), new Vector2(0.72f, 0.72f));
             }
             card.Title.text = string.Format(GameUI.L("ui.shifter_coach.title"), StepNumber(Current));
@@ -235,6 +244,9 @@ namespace UISystem
             Current = Step.None;
             IsDimming = false;
             IsBlockingOutsideTarget = false;
+            IsCoaching = false;
+            IsBlockingTouch = false;
+            _touchTarget = null;
             foreach (var panel in _dim)
                 if (panel != null) panel.gameObject.SetActive(false);
             if (_card.Root != null) _card.Root.gameObject.SetActive(false);

@@ -189,6 +189,19 @@ public class PhaseShifterGuidanceTests
         CheckCardLayout(controls, "touch step 2");
         yield return Capture("07-lab-touch-use-shifter");
 
+        // The player is still beside Kaede when told to use the shifter, so talking must not take the button.
+        var kaede = Kaede();
+        var player = Find("FirstPersonController").gameObject;
+        var body = player.GetComponent<CharacterController>();
+        if (body != null) body.enabled = false;
+        player.transform.position = kaede.transform.position + kaede.transform.forward * 1.2f;
+        if (body != null) body.enabled = true;
+        Physics.SyncTransforms();
+        yield return new WaitForSecondsRealtime(0.5f);
+        Check((bool)Get(kaede, "playerInRange"), "The player stands within Kaede's talk range.");
+        var prompt = Get(kaede, "promptPanel") as RectTransform;
+        Check(prompt == null || !prompt.gameObject.activeInHierarchy, "Kaede offers no repeat talk while the shifter is in hand.");
+
         // The real interact button reaches the shifter through the shipped mobile routing.
         yield return WaitUntilUsable(shifter);
         Call(controls, "OnInteractButtonDown");
@@ -196,6 +209,7 @@ public class PhaseShifterGuidanceTests
         Call(controls, "OnInteractButtonUp");
         yield return Frames(6);
         selection = (GameObject)Get(_manager, "sceneSelectionUI");
+        Check(!(bool)Prop(T("StorySystem.StoryDirector"), "IsStoryPlaybackActive"), "The interact button starts no conversation beside Kaede.");
         Check(selection != null && selection.activeInHierarchy, "The interact button opens the destination list.");
         Check(SceneOutline(selection, "MainScene").enabled, "The field destination is outlined for touch as well.");
         Check(!ControlOutline(controls, "interactGuidanceOutline").enabled, "The interact outline stops once the list is open.");
@@ -333,6 +347,8 @@ public class PhaseShifterGuidanceTests
         Check(TopTarget(controls, "toolWheelButton") == ((Button)Get(controls, "toolWheelButton")).gameObject,
             "A tap on the tool button reaches the real button through the dim.");
         Check(TopTarget(controls, "interactButton")?.name.StartsWith("Dim") == true, "A tap elsewhere lands on the dim.");
+        Check(Touchable(controls, "toolWheelButton") && !Touchable(controls, "interactButton") && !Touchable(controls, "menuButton"),
+            "Raw touches reach only the tool button as well.");
         yield return Capture("c5-coach-touch-open");
         foreach (string language in new[] { "English", "ChineseSimplified", "Japanese" })
         {
@@ -349,6 +365,7 @@ public class PhaseShifterGuidanceTests
         Check(CoachStep() == "UseShifter" && TopTarget(controls, "interactButton") == ((Button)Get(controls, "interactButton")).gameObject,
             "With the shifter in hand the real interact button is the opening.");
         Check(TopTarget(controls, "toolWheelButton")?.name.StartsWith("Dim") == true, "The tool button is dimmed on the use step.");
+        Check(Touchable(controls, "interactButton") && !Touchable(controls, "toolWheelButton"), "Raw touches follow the use step.");
         yield return Capture("c6-coach-touch-use");
         Call(_tools, "UnequipCurrentTool");
         yield return Frames(8);
@@ -367,6 +384,9 @@ public class PhaseShifterGuidanceTests
         return hits[0].gameObject.GetComponentInParent<Button>()?.gameObject ?? hits[0].gameObject;
     }
 
+    private static bool Touchable(Component controls, string button) => (bool)Call(controls, "IsButtonTouchable", Get(controls, button));
+    private static Component Kaede() => UnityEngine.Object.FindObjectsByType(T("QuestSystem.QuestNpcInteraction"), FindObjectsSortMode.None)
+        .Cast<Component>().First(npc => ((IEnumerable)Get(npc, "stages")).Cast<object>().Any(stage => stage != null && (string)Get(stage, "questId") == "q.lab.drkaede"));
     private static Component Coach() => (Component)UnityEngine.Object.FindFirstObjectByType(T("UISystem.PhaseShifterCoach"));
     private static string CoachStep() => Prop(Coach(), "Current").ToString();
     private static bool CoachDimming() => (bool)Prop(Coach(), "IsDimming");

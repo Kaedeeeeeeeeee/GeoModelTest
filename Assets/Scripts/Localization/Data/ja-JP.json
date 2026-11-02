@@ -3838,7 +3838,7 @@
     },
     {
       "key": "ui.shifter_coach.title",
-      "value": "フェーズシフターの使い方 {0}/3"
+      "value": "フェーズシフター {0}/3"
     },
     {
       "key": "ui.shifter_coach.why",
