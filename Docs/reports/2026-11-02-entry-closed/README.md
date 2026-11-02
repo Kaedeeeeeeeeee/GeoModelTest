@@ -64,3 +64,7 @@
 1. 数据库：`supabase db push --project-ref jrqmoxbzbjxrellvsvwn --skip-vault --dry-run`，确认只多出 `20261102120000` 后正式执行。之后用 service key 确认正式链接的 `closes_entry` 已变为 true，`research_entry_status()` 返回 `open: true`（当前 7/20）。
 2. 页面：按 shell-only 方式发布（只改模板，不 build Unity）。**注意**：`Build/WebGL/Build/*` 现在是还没发布的 first-trip-coach 版本，不能直接上传。要以 HEAD 中已提交的已发布文件（`2026.10.16-hammer-slab-fix` 二进制，`release.json` 版本 `2026.10.20-consent-keyboard`）为基础，套用本次对 `index.html`、`TemplateData/*` 的修改，新版本号例如 `2026.11.02-entry-closed`，再走 itch.io 和 geo-q.jp 的发布流程。
 3. 生产确认：页面正常显示同意书；向 RPC 发请求返回 `{"open": true}`。
+
+## 之后
+
+同日稍晚，另一个会话在本次发布的基础上发布了 `2026.11.02-first-trip-coach`（commit a24cd6c，geo-q Worker b613574c，itch build 2278122）。它的同意页文件和本次完全相同，所以「募集終了」仍然有效；线上的游戏版本（`game_version`）从此变为 `2026.11.02-first-trip-coach`。
