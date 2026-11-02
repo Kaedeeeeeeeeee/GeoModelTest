@@ -3833,6 +3833,38 @@
       "value": "「調べる」をタップして、移動先の「{1}」を選ぼう。"
     },
     {
+      "key": "ui.collection.shift_recall",
+      "value": "さっきと同じ手順で「{1}」へ移動しよう。"
+    },
+    {
+      "key": "ui.shifter_coach.title",
+      "value": "フェーズシフターの使い方 {0}/3"
+    },
+    {
+      "key": "ui.shifter_coach.why",
+      "value": "研究室と野外を行き来する道具だよ。これから何度も使うので、いま覚えよう。"
+    },
+    {
+      "key": "ui.shifter_coach.open.desktop",
+      "value": "Tabキーを押して、道具を開こう。"
+    },
+    {
+      "key": "ui.shifter_coach.open.touch",
+      "value": "光っている「道具」ボタンをタップしよう。"
+    },
+    {
+      "key": "ui.shifter_coach.pick",
+      "value": "光っている「{0}」を選ぼう。"
+    },
+    {
+      "key": "ui.shifter_coach.choose",
+      "value": "光っている「{1}」を選ぼう。これで移動できるよ。"
+    },
+    {
+      "key": "ui.shifter_coach.done",
+      "value": "移動できたね！次からも同じ手順で移動できるよ。"
+    },
+    {
       "key": "ui.collection.hit.desktop",
       "value": "岩に近づき、同じ目印を左クリックで{2}回たたこう。"
     },

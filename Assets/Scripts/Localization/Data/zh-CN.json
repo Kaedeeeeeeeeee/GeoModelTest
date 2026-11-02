@@ -3653,6 +3653,38 @@
       "value": "点击「交互」使用，然后在场景选择中选择「{1}」。"
     },
     {
+      "key": "ui.collection.shift_recall",
+      "value": "用刚才同样的步骤前往「{1}」。"
+    },
+    {
+      "key": "ui.shifter_coach.title",
+      "value": "相位切换器的用法 {0}/3"
+    },
+    {
+      "key": "ui.shifter_coach.why",
+      "value": "这个工具用来往返研究室和野外。之后会用很多次，现在就记住吧。"
+    },
+    {
+      "key": "ui.shifter_coach.open.desktop",
+      "value": "按 Tab 键打开道具。"
+    },
+    {
+      "key": "ui.shifter_coach.open.touch",
+      "value": "点击发光的「道具」按钮。"
+    },
+    {
+      "key": "ui.shifter_coach.pick",
+      "value": "选择发光的「{0}」。"
+    },
+    {
+      "key": "ui.shifter_coach.choose",
+      "value": "选择发光的「{1}」，就能移动了。"
+    },
+    {
+      "key": "ui.shifter_coach.done",
+      "value": "移动成功！之后也用同样的步骤移动。"
+    },
+    {
       "key": "ui.collection.hit.desktop",
       "value": "靠近岩石，对准同一位置，左键敲击 {2} 次。"
     },

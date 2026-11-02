@@ -3653,6 +3653,38 @@
       "value": "Tap Use, then choose {1}."
     },
     {
+      "key": "ui.collection.shift_recall",
+      "value": "Use the same steps as before to go to {1}."
+    },
+    {
+      "key": "ui.shifter_coach.title",
+      "value": "How to use the phase shifter {0}/3"
+    },
+    {
+      "key": "ui.shifter_coach.why",
+      "value": "This tool takes you between the lab and the field. You will use it many times, so learn it now."
+    },
+    {
+      "key": "ui.shifter_coach.open.desktop",
+      "value": "Press Tab to open your tools."
+    },
+    {
+      "key": "ui.shifter_coach.open.touch",
+      "value": "Tap the glowing Tools button."
+    },
+    {
+      "key": "ui.shifter_coach.pick",
+      "value": "Choose the glowing {0}."
+    },
+    {
+      "key": "ui.shifter_coach.choose",
+      "value": "Choose the glowing {1} to travel there."
+    },
+    {
+      "key": "ui.shifter_coach.done",
+      "value": "You made it! The same steps will take you anywhere from now on."
+    },
+    {
       "key": "ui.collection.hit.desktop",
       "value": "Approach the rock. Left-click the same spot {2} times."
     },

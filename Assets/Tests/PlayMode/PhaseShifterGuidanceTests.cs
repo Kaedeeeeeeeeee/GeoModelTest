@@ -94,9 +94,16 @@ public class PhaseShifterGuidanceTests
         Check(Destination() == null && Recommended() == null && !Highlight() && Card() == null,
             "A laboratory without a field objective shows no trip cue.");
 
-        // Step 1: the quest sends the player outdoors, so the cue starts at the tool list.
+        // The first trip is coached through the real controls.
         PrepareQuest("q.field.phase");
         yield return Frames(8);
+        yield return CheckDesktopCoach();
+        ReleaseCoach();
+        yield return Frames(8);
+        Check(CoachStep() == "None" && !CoachDimming() && Card() != null,
+            "A player who stays on a dimmed step gets the screen back and the ordinary card.");
+
+        // Step 1: the quest sends the player outdoors, so the cue starts at the tool list.
         Check(Destination() == "MainScene", "A pending field objective recommends the field from the laboratory: " + Destination());
         Check(Recommended() == "999" && !Highlight(), "The cue first recommends the phase shifter: " + Recommended());
         Check(Hint() == "Tabで道具を開き、光っている「フェーズシフター」を選ぼう。", "Desktop cue names the tool to pick: " + Hint());
@@ -149,6 +156,12 @@ public class PhaseShifterGuidanceTests
         // The same trip on the virtual controls.
         var controls = EnableTouch();
         SetSize(844, 390);
+        PrepareQuest(null);
+        yield return Frames(4);
+        PrepareQuest("q.field.phase");
+        yield return Frames(10);
+        yield return CheckTouchCoach(controls);
+        ReleaseCoach();
         yield return Frames(10);
         Check(Hint() == "道具ボタンをタップし、光っている「フェーズシフター」を選ぼう。", "Touch cue points at the tool button: " + Hint());
         Check(ControlOutline(controls, "toolWheelGuidanceOutline").enabled && !ControlOutline(controls, "interactGuidanceOutline").enabled,
@@ -196,6 +209,9 @@ public class PhaseShifterGuidanceTests
         Check(Destination() == null && Recommended() != "999" && !Highlight(),
             "Arriving in the field ends the trip cue: " + Destination() + "/" + Recommended());
         yield return Capture("09-field-arrived");
+        var confirmation = GameObject.Find("PhaseShifterCoachCanvas/CoachConfirmation");
+        Check(confirmation != null && confirmation.GetComponentInChildren<Text>().text == "移動できたね！次からも同じ手順で移動できるよ。",
+            "The first arrival confirms that the same steps work next time.");
 
         // The way back uses the same steps with the laboratory as the destination.
         PrepareQuest("q.lab.return");
@@ -204,6 +220,10 @@ public class PhaseShifterGuidanceTests
         yield return Frames(10);
         Check(Destination() == "Laboratory Scene" && Recommended() == "999",
             "A pending return objective recommends the laboratory from the field: " + Destination() + "/" + Recommended());
+        Check(CoachStep() == "None" && !CoachDimming(), "The way back is not coached.");
+        Check(Hint() == "さっきと同じ手順で「G-Lab研究室」へ移動しよう。", "The way back first asks the player to recall the steps: " + Hint());
+        yield return Capture("10a-field-recall");
+        yield return new WaitForSecondsRealtime((float)Get(Hud, "TripCueDelay") + 0.5f);
         Check(Hint() == "道具ボタンをタップし、光っている「フェーズシフター」を選ぼう。", "Return cue starts at the tool button: " + Hint());
         yield return Capture("10-field-touch-select-shifter");
         Call(_wheel, "SelectToolAndStartPreview", Slot("999"));
@@ -224,8 +244,17 @@ public class PhaseShifterGuidanceTests
             "Only the laboratory destination is outlined in the field.");
         yield return Capture("12-field-touch-destination-list");
 
-        // Without a trip objective the list stays neutral.
+        // A later trip starts from memory: the wheel still marks the tool, and the steps return after a pause.
         Call(_manager, "CancelSceneSelection");
+        PrepareQuest("q.chapter4.return");
+        Call(_tools, "UnequipCurrentTool");
+        yield return Frames(8);
+        Check(Destination() == "Laboratory Scene" && Recommended() == "999" && Card() == null,
+            "A later trip shows no card at first but keeps the wheel recommendation.");
+        yield return new WaitForSecondsRealtime((float)Get(Hud, "TripCueDelay") + 0.5f);
+        Check(Hint() == "道具ボタンをタップし、光っている「フェーズシフター」を選ぼう。", "A later trip brings the steps back after a pause: " + Hint());
+
+        // Without a trip objective the list stays neutral.
         PrepareQuest(null);
         yield return Frames(6);
         Call(_manager, "ShowSceneSelectionUI", shifter);
@@ -259,6 +288,91 @@ public class PhaseShifterGuidanceTests
         }
         File.WriteAllLines(Path.Combine(_output, "checks.txt"), _checks);
     }
+
+    private IEnumerator CheckDesktopCoach()
+    {
+        Check(CoachStep() == "OpenTools" && CoachDimming() && !CoachBlocking() && Card() == null,
+            "The first trip dims the desktop screen without swallowing input and replaces the card.");
+        Check(CoachBody().Contains("研究室と野外を行き来する道具") && CoachBody().Contains("Tabキーを押して"),
+            "Coach step 1 explains why the tool matters and the next key: " + CoachBody());
+        yield return Capture("c1-coach-desktop-open");
+
+        yield return Tap(Key.Tab);
+        yield return Frames(4);
+        Check(CoachStep() == "PickShifter" && !CoachDimming() && Recommended() == "999", "The open wheel is coached from beside it: " + CoachStep() + "/" + Prop(_wheel, "IsWheelOpen") + "/" + Recommended());
+        Check(CoachBody() == "光っている「フェーズシフター」を選ぼう。", "Coach names the tool to pick: " + CoachBody());
+        yield return Capture("c2-coach-desktop-wheel");
+
+        Call(_wheel, "SelectToolAndStartPreview", Slot("999"));
+        Call(_wheel, "CloseWheel", false);
+        yield return Frames(8);
+        var shifter = Call(_tools, "GetCurrentTool");
+        Check(CoachStep() == "UseShifter" && CoachDimming(), "Holding the shifter moves the coach to the primary action.");
+        Check(CoachBody() == "左クリックして、移動先の「野外調査エリア」を選ぼう。", "Coach names the primary action: " + CoachBody());
+        yield return Capture("c3-coach-desktop-use");
+
+        yield return WaitUntilUsable(shifter);
+        Check((bool)Call(shifter, "RequestPrimaryUse"), "The coached primary action opens the destination list.");
+        yield return Frames(4);
+        var selection = (GameObject)Get(_manager, "sceneSelectionUI");
+        var listCard = selection.transform.Find("CoachCard");
+        Check(CoachStep() == "ChooseDestination" && listCard != null && listCard.gameObject.activeInHierarchy && !CoachDimming(),
+            "The destination list carries the last coach step.");
+        Check(listCard.Find("Instruction").GetComponent<Text>().text.Contains("野外調査エリア"), "The last step names the destination.");
+        yield return Capture("c4-coach-desktop-list");
+
+        Call(_manager, "CancelSceneSelection");
+        yield return Frames(8);
+        Check(CoachStep() == "OpenTools", "Cancelling the list restarts the coach from the tool menu.");
+    }
+
+    private IEnumerator CheckTouchCoach(Component controls)
+    {
+        Check(CoachStep() == "OpenTools" && CoachBlocking(), "The touch coach leaves only the real tool button open.");
+        Check(CoachBody().Contains("「道具」ボタンをタップ"), "The touch coach names the tool button: " + CoachBody());
+        Check(TopTarget(controls, "toolWheelButton") == ((Button)Get(controls, "toolWheelButton")).gameObject,
+            "A tap on the tool button reaches the real button through the dim.");
+        Check(TopTarget(controls, "interactButton")?.name.StartsWith("Dim") == true, "A tap elsewhere lands on the dim.");
+        yield return Capture("c5-coach-touch-open");
+        foreach (string language in new[] { "English", "ChineseSimplified", "Japanese" })
+        {
+            SwitchLanguage(language);
+            yield return Frames(6);
+            var body = GameObject.Find("PhaseShifterCoachCanvas/CoachCard/Instruction").GetComponent<Text>();
+            Check(!body.text.Contains("ui.") && !body.text.Contains("{") && body.cachedTextGenerator.characterCountVisible >= body.text.Replace("\n", "").Length,
+                language + " coach text is localized and fits: " + body.text.Replace("\n", " "));
+        }
+
+        Call(_wheel, "SelectToolAndStartPreview", Slot("999"));
+        Call(_wheel, "CloseWheel", false);
+        yield return Frames(8);
+        Check(CoachStep() == "UseShifter" && TopTarget(controls, "interactButton") == ((Button)Get(controls, "interactButton")).gameObject,
+            "With the shifter in hand the real interact button is the opening.");
+        Check(TopTarget(controls, "toolWheelButton")?.name.StartsWith("Dim") == true, "The tool button is dimmed on the use step.");
+        yield return Capture("c6-coach-touch-use");
+        Call(_tools, "UnequipCurrentTool");
+        yield return Frames(8);
+    }
+
+    private static GameObject TopTarget(Component controls, string button)
+    {
+        var data = new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current)
+        {
+            position = ScreenRect(((Button)Get(controls, button)).GetComponent<RectTransform>()).center
+        };
+        var hits = new List<UnityEngine.EventSystems.RaycastResult>();
+        UnityEngine.EventSystems.EventSystem.current.RaycastAll(data, hits);
+        if (hits.Count == 0) return null;
+        // Button graphics may be children, so report the button that would take the press.
+        return hits[0].gameObject.GetComponentInParent<Button>()?.gameObject ?? hits[0].gameObject;
+    }
+
+    private static Component Coach() => (Component)UnityEngine.Object.FindFirstObjectByType(T("UISystem.PhaseShifterCoach"));
+    private static string CoachStep() => Prop(Coach(), "Current").ToString();
+    private static bool CoachDimming() => (bool)Prop(Coach(), "IsDimming");
+    private static bool CoachBlocking() => (bool)Prop(Coach(), "IsBlockingOutsideTarget");
+    private static string CoachBody() => GameObject.Find("PhaseShifterCoachCanvas/CoachCard/Instruction")?.GetComponent<Text>().text ?? "";
+    private static void ReleaseCoach() => Set(Coach(), "_stepSince", Time.unscaledTime - 1000f);
 
     private void StopDialogue()
     {
