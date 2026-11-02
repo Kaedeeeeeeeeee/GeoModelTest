@@ -42,6 +42,8 @@ python3 tools/research-admin.py status-link --study-key geoquest-open-play-2026-
 python3 tools/research-admin.py revoke-status-link --link-id LINK_ID
 ```
 
+A link with `closes_entry` also closes recruitment once its completed count reaches the target (migration `20261102120000`, decided 2026-11-02 after Testee asked). The guardian consent page calls `research_entry_status()` with the publishable key before showing the form; it returns only `{"open": …}` and is `false` also when the open-play study takes no entry. On `false` the page shows 募集終了 instead of the form. Activation is deliberately not blocked, so players who opened the page earlier still finish and answer; a network error shows the form. Set the flag with SQL on the service connection (`update public.research_status_links set closes_entry = true where id = …`); the migration sets it for Testee's link.
+
 Source/backend changes require coordinated deployment before the published player uses this flow.
 
 ## Legacy invitation eligibility and identity

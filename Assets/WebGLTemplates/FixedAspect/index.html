@@ -11,7 +11,11 @@
   </head>
   <body>
     <!-- 保護者同意, then 生徒の同意. Guardian wording must match the approved document; bump VERSION in guardian-consent.js when it changes. -->
-    <div id="guardian-consent" role="dialog" aria-modal="true" aria-labelledby="guardian-consent-title" lang="ja">
+    <!-- research_entry_status() answers whether recruitment is open; the publishable key is public by design. -->
+    <div id="guardian-consent" role="dialog" aria-modal="true" aria-labelledby="guardian-consent-title" lang="ja"
+         data-entry-status-url="https://jrqmoxbzbjxrellvsvwn.supabase.co/rest/v1/rpc/research_entry_status"
+         data-entry-status-key="sb_publishable_I6XaH_6yZCpIcTcGHHQG3w_Vw7kX_fb">
+      <p class="consent-checking" id="guardian-consent-checking" role="status">読み込んでいます…</p>
       <article class="consent-sheet" id="guardian-consent-form-view">
         <p class="consent-lead">ゲームを始める前に、保護者の方がお読みください。</p>
         <h1 id="guardian-consent-title" tabindex="-1">3D地学ゲーム型教材の評価研究への参加について</h1>
@@ -92,6 +96,11 @@
         <h1 tabindex="-1">ご回答ありがとうございました</h1>
         <p>保護者の方の同意が得られない場合、お子様はこの研究に参加できません。このページを閉じてください。</p>
         <button type="button" class="consent-button consent-button-secondary" id="guardian-consent-back">回答を選び直す</button>
+      </article>
+      <article class="consent-sheet" id="guardian-consent-closed" hidden>
+        <h1 tabindex="-1">モニター調査の募集は終了しました</h1>
+        <p>目標人数に達したため、募集を終了いたしました。ご協力ありがとうございました。</p>
+        <p>このページを閉じてください。</p>
       </article>
       <!-- 生徒の同意 (was the in-game title dialog). Wording must stay identical to ui.consent.* (approved text);
            tools/qa/guardian-consent.test.cjs checks it. -->

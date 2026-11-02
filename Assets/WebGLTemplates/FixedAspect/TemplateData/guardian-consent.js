@@ -25,6 +25,10 @@
   var studentAssentedAt = '';
   var pending = true;
   root.classList.add('guardian-consent-pending');
+  // A new visitor first asks whether recruitment is still open (2026-11-02); the form stays hidden
+  // until the answer comes. Someone who already agreed in this tab is never turned away.
+  var ENTRY_TIMEOUT_MS = 5000;
+  if (guardianPending) root.classList.add('guardian-entry-checking');
 
   function load() {
     try {
@@ -87,6 +91,36 @@
     return checks.length === 3 && checks.every(function (checked) { return checked === true; });
   }
 
+  // Calls done(false) only when the server says entry is closed. A network error, a timeout or an
+  // unexpected answer shows the form, so a bad connection never turns away someone still welcome.
+  function checkEntry(url, key, done) {
+    var settled = false;
+    function finish(open) {
+      if (settled) return;
+      settled = true;
+      done(open);
+    }
+    if (!url || typeof window.fetch !== 'function') return finish(true);
+    var controller = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = setTimeout(function () {
+      if (controller) controller.abort();
+      finish(true);
+    }, ENTRY_TIMEOUT_MS);
+    window.fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: key || '' },
+      body: '{}',
+      cache: 'no-store',
+      signal: controller ? controller.signal : undefined
+    }).then(function (response) {
+      return response.ok ? response.json() : null;
+    }).then(function (data) {
+      finish(!(data && data.open === false));
+    }).catch(function () {
+      finish(true);
+    }).then(function () { clearTimeout(timer); });
+  }
+
   function formatDate(date) {
     return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日';
   }
@@ -120,11 +154,12 @@
     var declinedView = document.getElementById('guardian-consent-declined');
     var studentView = document.getElementById('student-consent-view');
     var studentDeclinedView = document.getElementById('student-consent-declined');
+    var closedView = document.getElementById('guardian-consent-closed');
     var studentForm = document.getElementById('student-consent-form');
     var studentChecks = studentForm ? Array.prototype.slice.call(studentForm.querySelectorAll('input[name="studentAgreement"]')) : [];
     var studentSubmit = studentForm ? studentForm.querySelector('button[type="submit"]') : null;
     var studentHint = document.getElementById('student-consent-hint');
-    var views = [formView, declinedView, studentView, studentDeclinedView].filter(Boolean);
+    var views = [formView, declinedView, studentView, studentDeclinedView, closedView].filter(Boolean);
     var fields = {
       choice: form.querySelector('[data-error-for="choice"]'),
       guardianConfirmed: form.querySelector('[data-error-for="guardianConfirmed"]'),
@@ -224,6 +259,13 @@
     });
     refreshStudent();
     if (!guardianPending) show(studentView);
+    else {
+      // The game stays behind the page while closed: Unity waits until isPending() turns false.
+      checkEntry(overlay.getAttribute('data-entry-status-url'), overlay.getAttribute('data-entry-status-key'), function (open) {
+        root.classList.remove('guardian-entry-checking');
+        if (!open && closedView) show(closedView);
+      });
+    }
 
     // The answer button stays disabled until everything the chosen answer needs is filled in,
     // so neither the button nor the keyboard's Enter can send an incomplete form.
@@ -390,6 +432,7 @@
       try { window.sessionStorage.removeItem(STORAGE_KEY); } catch (_) {}
     },
     normalizeRespondentId: normalizeRespondentId,
+    checkEntry: checkEntry,
     evaluate: evaluate,
     studentReady: studentReady
   };

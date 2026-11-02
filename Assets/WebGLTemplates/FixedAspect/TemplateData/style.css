@@ -255,6 +255,10 @@ html.guardian-consent-pending #guardian-consent { display: block; }
   overflow-wrap: anywhere;
 }
 .consent-sheet[hidden] { display: none; }
+/* While the page asks whether recruitment is open (.guardian-entry-checking), the form waits. */
+.consent-checking { display: none; margin: 48px auto; color: #c9dcd8; text-align: center; font-size: 15px; }
+html.guardian-entry-checking .consent-checking { display: block; }
+html.guardian-entry-checking #guardian-consent-form-view { display: none; }
 .consent-sheet p { margin: 0 0 12px; }
 .consent-sheet a { color: #0d6b58; }
 .consent-sheet h1 {

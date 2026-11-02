@@ -26,6 +26,7 @@ function fixture(options = {}) {
       removeItem: key => storage.delete(key)
     },
     location: { search: '' },
+    fetch: options.fetch,
     addEventListener(type, callback, capture) { windowListeners.push({ type, callback, capture }); }
   };
   const document = {
@@ -34,7 +35,7 @@ function fixture(options = {}) {
     getElementById: () => null,
     addEventListener() {}
   };
-  const context = { window, document, URLSearchParams };
+  const context = { window, document, URLSearchParams, setTimeout, clearTimeout, AbortController };
   vm.createContext(context);
   vm.runInContext(source, context);
   return { api: window.GeoModelGuardianConsent, classes, storage, windowListeners };
@@ -150,4 +151,49 @@ test('a rejected answer is cleared so the next load asks the guardian again', ()
   api.reset();
   assert.equal(storage.has(STORAGE_KEY), false);
   assert.equal(api.payloadJson(), '');
+});
+
+test('a new visitor waits for the recruitment check; a returning one does not', () => {
+  assert.ok(fixture().classes.has('guardian-entry-checking'), 'The form stays hidden until the answer comes');
+  assert.equal(fixture({ stored: answer() }).classes.has('guardian-entry-checking'), false,
+    'Someone who already agreed in this tab is never turned away');
+});
+
+function entryAnswer(fetch) {
+  const { api } = fixture({ fetch });
+  return new Promise(resolve => api.checkEntry('https://example.test/rpc', 'key', resolve));
+}
+
+test('only a closed answer from the server shows 募集終了', async () => {
+  const calls = [];
+  const reply = (ok, body) => (url, init) => { calls.push({ url, init }); return Promise.resolve({ ok, json: () => Promise.resolve(body) }); };
+  assert.equal(await entryAnswer(reply(true, { open: false })), false);
+  assert.equal(calls[0].url, 'https://example.test/rpc');
+  assert.equal(calls[0].init.method, 'POST');
+  assert.equal(calls[0].init.headers.apikey, 'key');
+  assert.equal(await entryAnswer(reply(true, { open: true })), true);
+  // Anything unexpected keeps the form: a bad connection must not turn away someone still welcome.
+  assert.equal(await entryAnswer(reply(false, { open: false })), true, 'HTTP error');
+  assert.equal(await entryAnswer(reply(true, null)), true, 'empty body');
+  assert.equal(await entryAnswer(() => Promise.reject(new Error('offline'))), true, 'network error');
+  assert.equal(await entryAnswer(undefined), true, 'no fetch');
+  const { api } = fixture({ fetch: reply(true, { open: false }) });
+  assert.equal(await new Promise(resolve => api.checkEntry('', 'key', resolve)), true, 'no URL');
+});
+
+test('a server that never answers shows the form after the timeout', async () => {
+  const { api } = fixture({ fetch: (url, init) => new Promise((_, reject) => init.signal.addEventListener('abort', () => reject(new Error('aborted')))) });
+  const started = Date.now();
+  assert.equal(await new Promise(resolve => api.checkEntry('https://example.test/rpc', 'key', resolve)), true);
+  assert.ok(Date.now() - started >= 4900);
+});
+
+test('the 募集終了 sheet and its check are on the page', () => {
+  const html = fs.readFileSync(path.join(rootPath, 'Assets/WebGLTemplates/FixedAspect/index.html'), 'utf8');
+  assert.match(html, /data-entry-status-url="https:\/\/[a-z]+\.supabase\.co\/rest\/v1\/rpc\/research_entry_status"/);
+  assert.match(html, /data-entry-status-key="sb_publishable_/);
+  const sheet = html.slice(html.indexOf('id="guardian-consent-closed"'), html.indexOf('</article>', html.indexOf('id="guardian-consent-closed"')));
+  assert.ok(sheet.includes('hidden'));
+  assert.ok(sheet.includes('モニター調査の募集は終了しました'));
+  assert.equal(sheet.includes('<button'), false, 'Nothing on the sheet leads into the game');
 });
