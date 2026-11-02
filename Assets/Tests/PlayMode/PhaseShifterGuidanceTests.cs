@@ -313,8 +313,16 @@ public class PhaseShifterGuidanceTests
 
         yield return Tap(Key.Tab);
         yield return Frames(4);
+        MoveMouse(RectTransformUtility.WorldToScreenPoint(null, ((GameObject)Get(_wheel, "wheelUI")).transform.position));
+        yield return Frames(3);
         Check(CoachStep() == "PickShifter" && !CoachDimming() && Recommended() == "999", "The open wheel is coached from beside it: " + CoachStep() + "/" + Prop(_wheel, "IsWheelOpen") + "/" + Recommended());
         Check(CoachBody() == "光っている「フェーズシフター」を選ぼう。", "Coach names the tool to pick: " + CoachBody());
+        var sectors = (Graphic[])Get(_wheel, "sectorGraphics");
+        var labels = (Text[])Get(_wheel, "slotTexts");
+        int pick = Slot("999"), hovered = (int)Get(_wheel, "selectedSlot");
+        Check(Enumerable.Range(0, sectors.Length).All(i => i == pick || i == hovered ||
+                (sectors[i].color.grayscale < sectors[pick].color.grayscale && labels[i].color.a < 0.5f)),
+            "Only the shifter sector stays lit on the coached wheel, like the other coached steps.");
         yield return Capture("c2-coach-desktop-wheel");
 
         Call(_wheel, "SelectToolAndStartPreview", Slot("999"));
@@ -359,11 +367,22 @@ public class PhaseShifterGuidanceTests
                 language + " coach text is localized and fits: " + body.text.Replace("\n", " "));
         }
 
+        Call(_wheel, "ToggleWheel", true);
+        yield return Frames(6);
+        MoveMouse(RectTransformUtility.WorldToScreenPoint(null, ((GameObject)Get(_wheel, "wheelUI")).transform.position));
+        yield return Frames(3);
+        var labels = (Text[])Get(_wheel, "slotTexts");
+        int touched = (int)Get(_wheel, "selectedSlot");
+        Check(CoachStep() == "PickShifter" && labels.Where((label, i) => i != Slot("999") && i != touched).All(label => label.color.a < 0.5f),
+            "The touch wheel also leaves only the shifter lit: " + CoachStep() + "/" + Prop(_wheel, "IsWheelOpen") + "/" +
+            string.Join(",", labels.Select(label => label.text + "=" + label.color.a.ToString("0.00"))));
+        yield return Capture("c5b-coach-touch-wheel");
         Call(_wheel, "SelectToolAndStartPreview", Slot("999"));
         Call(_wheel, "CloseWheel", false);
         yield return Frames(8);
         Check(CoachStep() == "UseShifter" && TopTarget(controls, "interactButton") == ((Button)Get(controls, "interactButton")).gameObject,
-            "With the shifter in hand the real interact button is the opening.");
+            "With the shifter in hand the real interact button is the opening: " + CoachStep() + "/" + Prop(_wheel, "IsWheelOpen") + "/" +
+            TopTarget(controls, "interactButton")?.name);
         Check(TopTarget(controls, "toolWheelButton")?.name.StartsWith("Dim") == true, "The tool button is dimmed on the use step.");
         Check(Touchable(controls, "interactButton") && !Touchable(controls, "toolWheelButton"), "Raw touches follow the use step.");
         yield return Capture("c6-coach-touch-use");

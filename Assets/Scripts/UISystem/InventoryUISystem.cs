@@ -21,6 +21,8 @@ public class InventoryUISystem : MonoBehaviour
     public UISystem.WheelSectorGraphic[] sectorGraphics = new UISystem.WheelSectorGraphic[0];
     public Image[] equippedMarkers = new Image[0];
     private RectTransform wheelDim;
+    private Image wheelDimImage;
+    private static readonly Color WheelDimColor = new Color(0.01f, 0.03f, 0.05f, 0.68f);
     private UISystem.WheelSectorGraphic wheelRim;
     private UISystem.WheelSectorGraphic deadZone;
     private Sprite circleSprite;
@@ -378,9 +380,9 @@ public class InventoryUISystem : MonoBehaviour
         wheelBackground.sprite = circleSprite;
         wheelBackground.color = wheelBackgroundColor;
         wheelBackground.raycastTarget = false;
-        wheelDim = UISystem.GameUI.Box(wheelRect, "Dim", new Color(0.01f, 0.03f, 0.05f, 0.68f),
-            Vector2.one * 0.5f, Vector2.one * 0.5f).rectTransform;
-        wheelDim.GetComponent<Image>().raycastTarget = false;
+        wheelDimImage = UISystem.GameUI.Box(wheelRect, "Dim", WheelDimColor, Vector2.one * 0.5f, Vector2.one * 0.5f);
+        wheelDimImage.raycastTarget = false;
+        wheelDim = wheelDimImage.rectTransform;
         // Dim 在圆盘之前绘制，覆盖底下的 HUD，但不拦截右侧触屏按钮。
         wheelBackground.enabled = false;
         wheelUI.SetActive(false);
@@ -1091,14 +1093,25 @@ public class InventoryUISystem : MonoBehaviour
     private void LateUpdate()
     {
         string recommended = UISystem.CollectionGuidanceHUD.RecommendedToolId;
+        // While the coach teaches this step, only the recommended sector stays lit, like its other steps.
+        bool spotlight = UISystem.PhaseShifterCoach.SpotlightsWheel;
         Color hintColor = Color.Lerp(slotBackgroundColor, UISystem.GameUI.Accent,
-            0.35f + 0.12f * Mathf.Sin(Time.unscaledTime * 3f));
+            (spotlight ? 0.72f : 0.35f) + 0.12f * Mathf.Sin(Time.unscaledTime * 3f));
+        // Darker but just as opaque, so the scene does not show through the faded sectors.
+        Color fadedSector = Color.Lerp(slotBackgroundColor, Color.black, 0.55f);
+        fadedSector.a = slotBackgroundColor.a;
+        Color fadedContent = new Color(normalColor.r, normalColor.g, normalColor.b, normalColor.a * 0.3f);
+        if (wheelDimImage != null) wheelDimImage.color = spotlight ? UISystem.PhaseShifterCoach.DimColor : WheelDimColor;
         var equipped = wheelToolManager != null ? wheelToolManager.GetCurrentTool() : null;
         for (int i = 0; i < sectorGraphics.Length; i++)
         {
             equippedMarkers[i].gameObject.SetActive(availableTools[i] == equipped || (equipped == null && availableTools[i].toolID == "0"));
             if (i == selectedSlot) continue;
-            sectorGraphics[i].color = availableTools[i].toolID == recommended ? hintColor : slotBackgroundColor;
+            bool hinted = availableTools[i].toolID == recommended;
+            bool faded = spotlight && !hinted;
+            sectorGraphics[i].color = hinted ? hintColor : faded ? fadedSector : slotBackgroundColor;
+            if (i < slotImages.Length && slotImages[i] != null) slotImages[i].color = faded ? fadedContent : normalColor;
+            if (i < slotTexts.Length && slotTexts[i] != null) slotTexts[i].color = faded ? fadedContent : normalColor;
         }
         for (int i = 0; i < mobileToolButtons.Count && i < availableTools.Count; i++)
         {

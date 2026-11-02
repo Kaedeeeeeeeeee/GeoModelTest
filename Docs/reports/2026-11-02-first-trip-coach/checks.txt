@@ -5,6 +5,7 @@ PASS Coach step 1 explains why the tool matters and the next key: 研究室と�
 Tabキーを押して、道具を開こう。
 PASS The open wheel is coached from beside it: PickShifter/True/999
 PASS Coach names the tool to pick: 光っている「フェーズシフター」を選ぼう。
+PASS Only the shifter sector stays lit on the coached wheel, like the other coached steps.
 PASS Holding the shifter moves the coach to the primary action.
 PASS Coach names the primary action: 左クリックして、移動先の「野外調査エリア」を選ぼう。
 PASS The coached primary action opens the destination list.
@@ -37,7 +38,8 @@ PASS Raw touches reach only the tool button as well.
 PASS English coach text is localized and fits: This tool takes you between the lab and the field. You will use it many times, so learn it now.  Tap the glowing Tools button.
 PASS ChineseSimplified coach text is localized and fits: 这个工具用来往返研究室和野外。之后会用很多次，现在就记住吧。  点击发光的「道具」按钮。
 PASS Japanese coach text is localized and fits: 研究室と野外を行き来する道具だよ。これから何度も使うので、いま覚えよう。  光っている「道具」ボタンをタップしよう。
-PASS With the shifter in hand the real interact button is the opening.
+PASS The touch wheel also leaves only the shifter lit: PickShifter/True/何も持たない=0.30,フェーズシフター=1.00,地質ハンマー=0.30
+PASS With the shifter in hand the real interact button is the opening: UseShifter/False/InteractButton
 PASS The tool button is dimmed on the use step.
 PASS Raw touches follow the use step.
 PASS Touch cue points at the tool button: 道具ボタンをタップし、光っている「フェーズシフター」を選ぼう。

@@ -20,7 +20,7 @@ namespace UISystem
         public const float ReleaseSeconds = 20f;
         private const float ConfirmationSeconds = 6f;
         private const string FieldScene = "MainScene";
-        private static readonly Color DimColor = new Color(0.01f, 0.03f, 0.05f, 0.82f);
+        public static readonly Color DimColor = new Color(0.01f, 0.03f, 0.05f, 0.82f);
         // Touch targets stay fully lit, with room for the breathing outline around them.
         private const float HolePadding = 14f;
         private static bool _confirmationPending;
@@ -41,6 +41,8 @@ namespace UISystem
         public bool IsBlockingOutsideTarget { get; private set; }
         public static bool IsCoaching { get; private set; }
         public static bool IsBlockingTouch { get; private set; }
+        /// <summary>The wheel draws over this coach's panels, so it dims its own other sectors.</summary>
+        public static bool SpotlightsWheel { get; private set; }
 
         /// <summary>The virtual controls also read raw touches, which pass under the dim panels.</summary>
         public static bool BlocksControl(Button button) => IsBlockingTouch && button != _touchTarget;
@@ -154,6 +156,7 @@ namespace UISystem
             if (Current != Step.None) _confirmationPending = true;
 
             IsCoaching = Current != Step.None;
+            SpotlightsWheel = Current == Step.PickShifter;
             RefreshDim(touch);
             RefreshCards(shifter, touch, destinationName, manager);
             return Current != Step.None;
@@ -245,6 +248,7 @@ namespace UISystem
             IsDimming = false;
             IsBlockingOutsideTarget = false;
             IsCoaching = false;
+            SpotlightsWheel = false;
             IsBlockingTouch = false;
             _touchTarget = null;
             foreach (var panel in _dim)
