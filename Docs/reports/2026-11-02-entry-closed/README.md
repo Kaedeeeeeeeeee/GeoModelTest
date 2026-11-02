@@ -56,7 +56,8 @@
 - 页面：shell-only 发布 `2026.11.02-entry-closed`。从 HEAD 中已提交的发布文件导出到临时目录（二进制仍为 `2026.10.16-hammer-slab-fix`，与 HEAD 逐字节一致），只替换 `index.html`、`TemplateData/guardian-consent.js`、`TemplateData/style.css`。`release.json` 的 `sourceCommit` 为 99b69eb，`sourceDirty: false`。工作区 `Build/WebGL` 中另一个会话 19:47 build 的 first-trip-coach 二进制没有被动用，也没有上线。
 - 发布前冒烟测试：临时目录的页面连生产 RPC，请求 200，显示同意书，不显示募集終了。
 - geo-q.jp：Worker **384f9094-e0bc-40d3-9aee-56e1f290918e**，R2 `releases/2026.11.02-entry-closed/`。20/20 个文件和临时目录逐字节一致，`release.json` 版本正确。回滚：`wrangler rollback --config hosting/cloudflare/wrangler.jsonc`。
-- itch.io：`butler push … --userversion 2026.11.02-entry-closed`，build #2277978（上一版 #2168794）。
+- itch.io：`butler push … --userversion 2026.11.02-entry-closed`，build #2277978（上一版 #2168794）。解压完成后核对 `html-classic.itch.zone/html/17462165-2277978/`：18 个文件逐字节一致；两个 `index.html` 只多了 itch 追加的 `htmlgame.js` 一行（和以往一样）。
+- 发布记录 commit f853afd 只通过 git index 写入 `Build/WebGL/{index.html,release.json,TemplateData/*}`，没有改动工作区（另一个会话尚未发布的 first-trip-coach build 原样保留，所以工作区里 `release.json` 显示为旧版本的修改）。
 
 ## 上线步骤（留作参考）
 
