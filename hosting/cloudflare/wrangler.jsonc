@@ -18,7 +18,9 @@
   },
   // Email Routing sends only to verified destination addresses; this binding is limited to the researcher.
   "send_email": [{ "name": "NOTIFY_EMAIL", "destination_address": "f.shera.09@gmail.com" }],
-  "triggers": { "crons": ["*/5 * * * *"] },
+  // 2026-11-09: 研究1 reached 20 completers and the notice was sent on 2026-11-07, so the 5-minute check is off.
+  // An empty list removes the schedule on deploy. Put "*/5 * * * *" back for a new status link with a target.
+  "triggers": { "crons": [] },
   "routes": [{ "pattern": "geo-q.jp", "custom_domain": true }],
   "workers_dev": true,
   "observability": { "enabled": true }
