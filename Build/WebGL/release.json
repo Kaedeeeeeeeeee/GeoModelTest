@@ -1,11 +1,16 @@
 {
-  "version": "2026.11.11-student-consent",
+  "version": "2026.11.11-two-checks",
   "gameVersion": "2026.11.11-student-consent",
   "unity": "6000.0.51f1",
   "buildType": "release",
   "builtAt": "2026-11-11T12:57:34.109Z",
-  "sourceCommit": "212e779a8d6e86075eb9bb061f854134617970a4",
+  "sourceCommit": "04f3a510750dafa2a9ca13d78b239d3b548a617c",
   "sourceDirty": false,
+  "sourceFiles": {
+    "Assets/WebGLTemplates/FixedAspect/index.html": "0b7fdd5cc22b1af37a41185d4c733550cdf96b8bf1c31c3b4b8e80ea829d807a",
+    "Assets/WebGLTemplates/FixedAspect/TemplateData/student-consent.js": "75a98b7f23bee2a2eaa8a37fc3afe6c424f83a6e6d2e845019daa5b31103d015",
+    "Assets/WebGLTemplates/FixedAspect/TemplateData/style.css": "9833c5a1676a83f8e4f1038da354a0c3be0548b406fb4898adf48ea8eadc9c22"
+  },
   "assets": {
     "Build/WebGL.data.unityweb": {
       "bytes": 108220686,
@@ -34,16 +39,16 @@
       "sha256": "0e36abece3c0aeb0a3fe0ae50fdc480fb71ed6783c8664b8ce549329fbf63bc9"
     },
     "TemplateData/student-consent.js": {
-      "bytes": 4237,
-      "sha256": "21a89e73139aa943a02b79e30c0ea13d3e60089c10f8695e4ce89cbe23ddd95d"
+      "bytes": 4316,
+      "sha256": "75a98b7f23bee2a2eaa8a37fc3afe6c424f83a6e6d2e845019daa5b31103d015"
     },
     "TemplateData/style.css": {
       "bytes": 9013,
       "sha256": "9833c5a1676a83f8e4f1038da354a0c3be0548b406fb4898adf48ea8eadc9c22"
     },
     "index.html": {
-      "bytes": 10286,
-      "sha256": "3885a450b6c573b55fa014b27b74b4e04368b5a55c98474dfd650dea570f0966"
+      "bytes": 10202,
+      "sha256": "97385c9c40d548d2c79f78eebb4a686be04160e4d7c80503ebd976b8c222bd35"
     }
   },
   "surveyAssets": {

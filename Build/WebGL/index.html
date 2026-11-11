@@ -10,8 +10,9 @@
     <script src="TemplateData/student-consent.js"></script>
   </head>
   <body>
-    <!-- 生徒の同意 before the game. The 保護者同意 page was removed on 2026-11-11. Wording is the approved
-         text; tools/qa/student-consent.test.cjs checks it word for word. -->
+    <!-- 生徒の同意 before the game. The 保護者同意 page was removed on 2026-11-11, and with it (稲垣先生, same day)
+         the 「保護者から…同意を得ています。」 statement. Wording is otherwise the approved text;
+         tools/qa/student-consent.test.cjs checks it word for word. -->
     <div id="student-consent" role="dialog" aria-modal="true" aria-labelledby="student-consent-title" lang="ja">
       <article class="consent-sheet" id="student-consent-view">
         <h1 id="student-consent-title" tabindex="-1">理科 3D ゲーム型教材に関する研究に参加する生徒の皆さんへ</h1>
@@ -22,12 +23,11 @@
         <form id="student-consent-form" class="consent-form" novalidate>
           <fieldset>
             <legend class="visually-hidden">確認する項目</legend>
-            <label class="consent-option"><input type="checkbox" name="studentAgreement"><span>保護者から、この研究に参加することについて同意を得ています。</span></label>
             <label class="consent-option"><input type="checkbox" name="studentAgreement"><span>上の説明を読み、研究の内容について理解しました。</span></label>
             <label class="consent-option"><input type="checkbox" name="studentAgreement"><span>自分の意思で、この研究に参加することに同意します。</span></label>
           </fieldset>
           <button type="submit" class="consent-button">同意してゲームを開始する</button>
-          <p class="consent-hint" id="student-consent-hint">3つすべてにチェックすると押せます。</p>
+          <p class="consent-hint" id="student-consent-hint">2つともチェックすると押せます。</p>
           <button type="button" class="consent-button consent-button-secondary" id="student-consent-decline">参加しない</button>
         </form>
       </article>
