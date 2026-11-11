@@ -1,34 +1,30 @@
 {
-  "version": "2026.11.02-first-trip-coach",
-  "gameVersion": "2026.11.02-first-trip-coach",
+  "version": "2026.11.11-student-consent",
+  "gameVersion": "2026.11.11-student-consent",
   "unity": "6000.0.51f1",
   "buildType": "release",
-  "builtAt": "2026-11-02T10:47:04.248Z",
-  "sourceCommit": "2edadf028ee4078494c6d658f3205edc43d3b034",
+  "builtAt": "2026-11-11T12:57:34.109Z",
+  "sourceCommit": "212e779a8d6e86075eb9bb061f854134617970a4",
   "sourceDirty": false,
   "assets": {
     "Build/WebGL.data.unityweb": {
-      "bytes": 108225470,
-      "sha256": "6c3a782f69cce1abecaf0ad2356388608bc3403ad2808269d541a2ef804500c4"
+      "bytes": 108220686,
+      "sha256": "e0d9a1a9a88ada4e4dd3e32206dafc855a566704173cffbf1167f9c893d4e8c9"
     },
     "Build/WebGL.framework.js.unityweb": {
-      "bytes": 96719,
-      "sha256": "5a6307b8e306079a49bac65f6e76225f48cde38fd3a1eb62bd881f6e2019c799"
+      "bytes": 96675,
+      "sha256": "1548c0a54c219859294587a6f8494bf51421a25118f14a58734c34ae3a161460"
     },
     "Build/WebGL.loader.js": {
       "bytes": 47338,
-      "sha256": "8055f5f019ee2ac4f5a93e0c6269d769809e269048e34a61d016eb6f229db9c2"
+      "sha256": "1b2cd1335b5c06cbb518429f7aa06b881038f9177bf9b176bd8c07171b91ddb9"
     },
     "Build/WebGL.wasm.unityweb": {
-      "bytes": 12116044,
-      "sha256": "ddd4c1636c54a185c7d41bcdcd08f604e6ca00f76fd03223cac5ebf0711175e4"
+      "bytes": 12114072,
+      "sha256": "3772c84966115f4e5ed949fa00efdc72b90b0e6810d1534e05c022aeaec5ba4b"
     }
   },
   "webAssets": {
-    "TemplateData/guardian-consent.js": {
-      "bytes": 19408,
-      "sha256": "7c5ef2f059f7b23e302e4d4ba892fde4e581bab65fbdae3951b04c2879a6740b"
-    },
     "TemplateData/loading.js": {
       "bytes": 12153,
       "sha256": "d8720b2a9023ccc6562b8d89da01a74b22d8df1f1d8dfd0e538490686755d05d"
@@ -37,13 +33,17 @@
       "bytes": 1277,
       "sha256": "0e36abece3c0aeb0a3fe0ae50fdc480fb71ed6783c8664b8ce549329fbf63bc9"
     },
+    "TemplateData/student-consent.js": {
+      "bytes": 4237,
+      "sha256": "21a89e73139aa943a02b79e30c0ea13d3e60089c10f8695e4ce89cbe23ddd95d"
+    },
     "TemplateData/style.css": {
-      "bytes": 10989,
-      "sha256": "e171b69926333aabfe6726f5cd1cd896a81600464d7f8a4b36b263da980fe0f2"
+      "bytes": 9013,
+      "sha256": "9833c5a1676a83f8e4f1038da354a0c3be0548b406fb4898adf48ea8eadc9c22"
     },
     "index.html": {
-      "bytes": 19431,
-      "sha256": "d20b38b593aa174cb3308dec80aca6ea52f294c168ebb90959b13dd80281d350"
+      "bytes": 10286,
+      "sha256": "3885a450b6c573b55fa014b27b74b4e04368b5a55c98474dfd650dea570f0966"
     }
   },
   "surveyAssets": {
