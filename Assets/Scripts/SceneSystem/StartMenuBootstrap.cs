@@ -17,6 +17,8 @@ namespace SceneSystem
         private Canvas _canvas;
 
         private Button _newGame;
+        // The WebGL page asks the student before the game; New Game waits for it to finish.
+        private bool _waitingForConsentPage;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void EnsureOnStartScene()
@@ -62,6 +64,7 @@ namespace SceneSystem
 
         private void BuildUI()
         {
+            _waitingForConsentPage = Backend.StudentConsentPage.State == Backend.StudentConsentPage.PageState.Pending;
             _canvas = GameUI.Canvas("StartMenuCanvas", 100);
             _canvas.transform.SetParent(transform, false);
             var background = GameUI.Box(_canvas.transform, "Background", Color.white, Vector2.zero, Vector2.one);
@@ -77,6 +80,7 @@ namespace SceneSystem
             GameUI.Label(menu.transform, "Title", "ジオクエスト", 70, new Vector2(0.13f, 0.73f), new Vector2(0.95f, 0.87f));
             GameUI.Label(menu.transform, "Subtitle", GameUI.L("ui.start.subtitle"), 24, new Vector2(0.14f, 0.63f), new Vector2(0.88f, 0.74f)).color = GameUI.Muted;
             _newGame = GameUI.Button(menu.transform, "NewGame", GameUI.L("ui.start.new_game.title"), new Vector2(0.14f, 0.51f), new Vector2(0.87f, 0.59f), OnNewGameClicked, true);
+            _newGame.interactable = !_waitingForConsentPage;
             GameUI.Button(menu.transform, "Settings", GameUI.L("ui.start.settings"), new Vector2(0.14f, 0.41f), new Vector2(0.49f, 0.49f), OnOpenSettings);
             GameUI.Button(menu.transform, "Quit", GameUI.L("ui.start.quit"), new Vector2(0.52f, 0.41f), new Vector2(0.87f, 0.49f), OnQuitGame);
             GameUI.Label(menu.transform, "Footer", GameUI.L("ui.start.footer"), 18, new Vector2(0.14f, 0.06f), new Vector2(0.90f, 0.15f)).color = GameUI.Muted;
@@ -84,6 +88,13 @@ namespace SceneSystem
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             _ = SettingsManager.Instance;
+            if (!_waitingForConsentPage) OnTitleReady();
+        }
+
+        /// <summary>New Game is ready: the student answered on the page, or there is no page.</summary>
+        private void OnTitleReady()
+        {
+            _newGame.interactable = true;
             if (!SafariToolbarGuide.TryShowOnce()) _newGame.Select();
         }
 
@@ -97,6 +108,12 @@ namespace SceneSystem
         {
             // 在 StartScene 保持鼠标可见与解锁，避免 SettingsManager 关闭时把鼠标锁回去
             var active = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            if (_waitingForConsentPage && active.name == _startSceneName && _newGame != null &&
+                Backend.StudentConsentPage.State != Backend.StudentConsentPage.PageState.Pending)
+            {
+                _waitingForConsentPage = false;
+                OnTitleReady();
+            }
             if (active.name == _startSceneName)
             {
                 if (Cursor.lockState != CursorLockMode.None || !Cursor.visible)
@@ -113,7 +130,7 @@ namespace SceneSystem
 
         private void OnNewGameClicked()
         {
-            if (Core.GameInputState.IsModalOpen) return;
+            if (_waitingForConsentPage || Core.GameInputState.IsModalOpen) return;
             if (!HasSavedProgress())
             {
                 GameSession.Instance.StartNewGame();

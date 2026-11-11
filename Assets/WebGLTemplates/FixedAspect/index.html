@@ -7,8 +7,36 @@
     <title>ジオクエスト</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
+    <script src="TemplateData/student-consent.js"></script>
   </head>
   <body>
+    <!-- 生徒の同意 before the game. The 保護者同意 page was removed on 2026-11-11. Wording is the approved
+         text; tools/qa/student-consent.test.cjs checks it word for word. -->
+    <div id="student-consent" role="dialog" aria-modal="true" aria-labelledby="student-consent-title" lang="ja">
+      <article class="consent-sheet" id="student-consent-view">
+        <h1 id="student-consent-title" tabindex="-1">理科 3D ゲーム型教材に関する研究に参加する生徒の皆さんへ</h1>
+        <p class="consent-people">研究開発責任者<br>稲垣忠（東北学院大学人間情報学研究科教授）<br>研究開発担当者<br>張詩楓（東北学院大学人間情報学研究科博士前期課程）</p>
+        <p>このゲームは、理科（地学分野）の学習用 3D ゲーム教材です。ゲームの改善および学習効果の検証を行うため、あなたのゲーム中の操作を記録します。また、ゲーム終了後にアンケートへの回答にご協力いただきます。所要時間は教材体験が 15 分程度、アンケートは 5 分程度を想定しています。操作記録やアンケートの回答は、個人が特定されない形で研究に使用します。</p>
+        <p>参加するかどうかは、あなた自身で決めることができます。また、参加した後でも、気分が悪くなったり、やめたいと思ったりしたときは、いつでも途中でやめることができます。</p>
+        <p>内容を確認したうえで、次の項目にチェックしてください。</p>
+        <form id="student-consent-form" class="consent-form" novalidate>
+          <fieldset>
+            <legend class="visually-hidden">確認する項目</legend>
+            <label class="consent-option"><input type="checkbox" name="studentAgreement"><span>保護者から、この研究に参加することについて同意を得ています。</span></label>
+            <label class="consent-option"><input type="checkbox" name="studentAgreement"><span>上の説明を読み、研究の内容について理解しました。</span></label>
+            <label class="consent-option"><input type="checkbox" name="studentAgreement"><span>自分の意思で、この研究に参加することに同意します。</span></label>
+          </fieldset>
+          <button type="submit" class="consent-button">同意してゲームを開始する</button>
+          <p class="consent-hint" id="student-consent-hint">3つすべてにチェックすると押せます。</p>
+          <button type="button" class="consent-button consent-button-secondary" id="student-consent-decline">参加しない</button>
+        </form>
+      </article>
+      <article class="consent-sheet" id="student-consent-declined" hidden>
+        <h1 tabindex="-1">わかりました</h1>
+        <p>参加しない場合は、ゲームを始めずに、このページを閉じてください。</p>
+        <button type="button" class="consent-button consent-button-secondary" id="student-consent-back">説明にもどる</button>
+      </article>
+    </div>
     <div id="unity-container">
       <canvas id="unity-canvas" width={{{ WIDTH }}} height={{{ HEIGHT }}} tabindex="-1"></canvas>
       <section id="unity-loading-bar" aria-labelledby="loading-title" aria-busy="true">
@@ -91,9 +119,14 @@
         return window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
       }
 
+      function studentConsentPending() {
+        return !!(window.GeoModelStudentConsent && GeoModelStudentConsent.isPending());
+      }
+
       function updateOrientationOverlay() {
         var portrait = window.innerHeight > window.innerWidth;
-        var shouldBlock = isCoarsePointer() && portrait;
+        // The consent sheet reads fine in portrait; ask for landscape only once the game shows.
+        var shouldBlock = isCoarsePointer() && portrait && !studentConsentPending();
         orientationOverlay.classList.toggle("is-visible", shouldBlock);
         orientationOverlay.setAttribute("aria-hidden", shouldBlock ? "false" : "true");
         canvas.style.pointerEvents = shouldBlock ? "none" : "auto";
@@ -102,7 +135,7 @@
       ["resize", "orientationchange"].forEach((eventName) => {
         window.addEventListener(eventName, updateOrientationOverlay, { passive: true });
       });
-      ["fullscreenchange", "webkitfullscreenchange"].forEach((eventName) => {
+      ["fullscreenchange", "webkitfullscreenchange", "geomodel:student-consent-complete"].forEach((eventName) => {
         document.addEventListener(eventName, updateOrientationOverlay);
       });
       updateOrientationOverlay();
@@ -117,6 +150,9 @@
 
       function preventBrowserGesture(event) {
         if (event.target instanceof Element && event.target.closest('#loading-retry')) return;
+        // The consent sheet must scroll and take taps; pinch zoom stays blocked so the game view is not left zoomed.
+        if (event.target instanceof Element && event.target.closest('#student-consent') &&
+            event.type.indexOf('gesture') !== 0 && !(event.touches && event.touches.length > 1)) return;
         event.preventDefault();
       }
 
@@ -137,6 +173,7 @@
       }, { passive: false });
 
       document.addEventListener("contextmenu", (event) => {
+        if (event.target instanceof Element && event.target.closest('#student-consent')) return;
         event.preventDefault();
       });
 

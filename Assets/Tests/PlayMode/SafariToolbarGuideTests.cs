@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
@@ -7,21 +8,30 @@ using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
-/// <summary>The title screen and the Safari toolbar hint on iPhone/iPad.</summary>
+/// <summary>The title screen after the web student consent page, and the Safari toolbar hint on iPhone/iPad.</summary>
 public class SafariToolbarGuideTests
 {
     private const BindingFlags Static = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
     private const BindingFlags Instance = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
     private static Type T(string name) => Type.GetType(name + ", Assembly-CSharp", true);
     private static Type Guide => T("UISystem.SafariToolbarGuide");
+    private static Type Page => T("Backend.StudentConsentPage");
     private static GameObject GuideRoot => GameObject.Find("SafariToolbarGuide");
 
+    private int _pageState;
     private int _device;
 
     [SetUp]
     public void SetUp()
     {
         Guide.GetMethod("ResetForTests", Static).Invoke(null, null);
+        Page.GetMethod("ResetForTests", Static).Invoke(null, null);
+        // Func<StudentConsentPage.PageState> reading the test's current state.
+        var stateType = T("Backend.StudentConsentPage+PageState");
+        Func<int> read = () => _pageState;
+        var lambda = Expression.Lambda(typeof(Func<>).MakeGenericType(stateType),
+            Expression.Convert(Expression.Invoke(Expression.Constant(read)), stateType));
+        Page.GetField("StateOverride", Static).SetValue(null, lambda.Compile());
         Guide.GetField("DeviceOverride", Static).SetValue(null, (Func<int>)(() => _device));
     }
 
@@ -29,6 +39,7 @@ public class SafariToolbarGuideTests
     public void TearDown()
     {
         Guide.GetMethod("ResetForTests", Static).Invoke(null, null);
+        Page.GetMethod("ResetForTests", Static).Invoke(null, null);
     }
 
     [Test]
@@ -45,7 +56,7 @@ public class SafariToolbarGuideTests
     }
 
     [UnityTest]
-    public IEnumerator Title_ShouldOpenWithNewGameReady_AndShowTheSafariHintOncePerPageLoad()
+    public IEnumerator Title_ShouldWaitForTheStudentConsentPage_ThenShowTheSafariHintOncePerPageLoad()
     {
         var type = T("SceneSystem.StartMenuBootstrap");
         var host = new GameObject("TitleMenuTest");
@@ -56,11 +67,18 @@ public class SafariToolbarGuideTests
         Button NewGame() => (Button)type.GetField("_newGame", Instance).GetValue(menu);
         try
         {
+            _pageState = 1; // the student is still answering on the page
             _device = 1027;
             load.Invoke(menu, new object[] { scene, LoadSceneMode.Single });
             yield return null;
-            Assert.IsTrue(NewGame().interactable, "No consent step: New Game is ready as the title appears.");
-            Assert.IsNull(NewGame().transform.parent.Find("ReviewConsent"), "The consent explanation button is gone.");
+            Assert.IsFalse(NewGame().interactable, "New Game waits for the student consent page.");
+            Assert.IsNull(GuideRoot, "Nothing covers the title before the page is done.");
+
+            _pageState = 2; // the student confirmed on the page
+            yield return null;
+            yield return null;
+            Assert.IsTrue(NewGame().interactable, "The student's consent unlocks New Game.");
+            Assert.IsNull(NewGame().transform.parent.Find("ReviewConsent"), "No in-game consent button.");
             Assert.IsNotNull(GuideRoot, "iPhone Safari gets the toolbar hint as the title appears.");
             var card = GuideRoot.transform.Find("GuideCard");
             Assert.IsNotNull(card.Find("Screenshot").GetComponent<Image>().sprite, "The real Safari screenshot is shown.");
@@ -78,7 +96,7 @@ public class SafariToolbarGuideTests
 
             load.Invoke(menu, new object[] { scene, LoadSceneMode.Single });
             yield return null;
-            Assert.IsTrue(NewGame().interactable, "Returning to the title keeps New Game ready.");
+            Assert.IsTrue(NewGame().interactable, "Returning to the title keeps this page load's consent.");
             Assert.IsNull(GuideRoot, "The hint is shown once per page load.");
         }
         finally
@@ -98,6 +116,7 @@ public class SafariToolbarGuideTests
         type.GetField("_startSceneName", Instance).SetValue(menu, scene.name);
         try
         {
+            _pageState = 2;
             _device = 0; // desktop, Android, Chrome on iPhone, in-app browsers
             type.GetMethod("SceneLoaded", Instance).Invoke(menu, new object[] { scene, LoadSceneMode.Single });
             yield return null;
