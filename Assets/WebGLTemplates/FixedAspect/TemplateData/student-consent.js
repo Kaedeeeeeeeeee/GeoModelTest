@@ -1,4 +1,4 @@
-/* 生徒の同意: the student confirms three statements on this page before the game starts.
+/* 生徒の同意: the student confirms two statements on this page before the game starts.
  * The 保護者同意 page that came first was removed on 2026-11-11 (玉川中 checks the game in
  * advance). Loaded in <head> so the sheet shows before first paint while Unity downloads behind
  * it. Unity waits and reads the answer through StudentConsent.jslib; the server stores the
@@ -7,16 +7,17 @@
   'use strict';
 
   // Bump when the approved wording changes.
-  var VERSION = 'student-ja-2026-11-11';
+  // 2026-11-11b: the statement that the guardian agreed was removed (稲垣先生).
+  var VERSION = 'student-ja-2026-11-11b';
   var root = document.documentElement;
   // Asked again on every page load, as on the title screen before; kept in memory only.
   var pending = true;
   var assentedAt = '';
   root.classList.add('student-consent-pending');
 
-  // The student confirms all three statements; nothing else is asked.
+  // The student confirms both statements; nothing else is asked.
   function studentReady(checks) {
-    return checks.length === 3 && checks.every(function (checked) { return checked === true; });
+    return checks.length === 2 && checks.every(function (checked) { return checked === true; });
   }
 
   // Unity listens for keys on the whole window and would swallow Space on a checkbox.

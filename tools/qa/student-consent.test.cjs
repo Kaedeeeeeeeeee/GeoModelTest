@@ -9,7 +9,8 @@ const templatePath = path.join(rootPath, 'Assets/WebGLTemplates/FixedAspect');
 const source = fs.readFileSync(path.join(templatePath, 'TemplateData/student-consent.js'), 'utf8');
 const html = fs.readFileSync(path.join(templatePath, 'index.html'), 'utf8');
 
-// The approved 生徒の同意 wording (ui.consent.* until 2026-11-11), word for word.
+// The approved 生徒の同意 wording (ui.consent.* until 2026-11-11), word for word, without the statement
+// that the guardian agreed (removed at 稲垣先生's request on 2026-11-11).
 const APPROVED = {
   title: '理科 3D ゲーム型教材に関する研究に参加する生徒の皆さんへ',
   body: '研究開発責任者\n稲垣忠（東北学院大学人間情報学研究科教授）\n研究開発担当者\n張詩楓（東北学院大学人間情報学研究科博士前期課程）\n\n' +
@@ -17,7 +18,6 @@ const APPROVED = {
     '参加するかどうかは、あなた自身で決めることができます。また、参加した後でも、気分が悪くなったり、やめたいと思ったりしたときは、いつでも途中でやめることができます。\n\n' +
     '内容を確認したうえで、次の項目にチェックしてください。',
   agreements: [
-    '保護者から、この研究に参加することについて同意を得ています。',
     '上の説明を読み、研究の内容について理解しました。',
     '自分の意思で、この研究に参加することに同意します。'
   ],
@@ -48,10 +48,10 @@ test('every page load starts with the student sheet in front of the game', () =>
   assert.ok(classes.has('student-consent-pending'));
 });
 
-test('the student must confirm all three statements', () => {
+test('the student must confirm both statements', () => {
   const { api } = fixture();
-  assert.equal(api.studentReady([true, true, true]), true);
-  for (const checks of [[], [true, true], [true, false, true], [true, true, 'true']]) {
+  assert.equal(api.studentReady([true, true]), true);
+  for (const checks of [[], [true], [true, false], [true, 'true'], [true, true, true]]) {
     assert.equal(api.studentReady(checks), false, JSON.stringify(checks));
   }
 });
@@ -73,7 +73,9 @@ test('the student sheet shows the approved wording word for word', () => {
   for (const block of APPROVED.body.split('\n\n')) assert.ok(plain.includes(block), block);
   APPROVED.agreements.forEach(text => assert.ok(plain.includes(text), text));
   assert.ok(plain.includes(APPROVED.continue));
-  assert.equal((sheet.match(/name="studentAgreement"/g) || []).length, 3);
+  assert.equal((sheet.match(/name="studentAgreement"/g) || []).length, 2);
+  assert.equal(sheet.includes('保護者から'), false, 'The guardian statement stays removed.');
+  assert.ok(plain.includes('2つともチェックすると押せます。'));
 });
 
 test('the 保護者同意 page stays removed', () => {
