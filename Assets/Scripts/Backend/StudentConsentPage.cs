@@ -26,7 +26,7 @@ namespace Backend
             None = 0,
             /// <summary>The student is still answering on the page.</summary>
             Pending = 1,
-            /// <summary>The student confirmed all three statements on the page.</summary>
+            /// <summary>The student confirmed every statement on the page.</summary>
             Complete = 2
         }
 
