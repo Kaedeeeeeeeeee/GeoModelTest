@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
@@ -11,7 +10,7 @@ using UnityEngine.TestTools;
 using UnityEngine.UI;
 
 /// <summary>
-/// Opt-in screenshots of the real title screen after the web consent page, with the Safari toolbar hint
+/// Opt-in screenshots of the real title screen with the Safari toolbar hint
 /// for each Safari generation. Set GEOMODEL_SAFARI_GUIDE_CAPTURE to an output folder.
 /// </summary>
 public class SafariGuideCaptureTests
@@ -28,11 +27,6 @@ public class SafariGuideCaptureTests
         if (string.IsNullOrEmpty(_output)) Assert.Ignore("Set GEOMODEL_SAFARI_GUIDE_CAPTURE to capture the Safari hint.");
         Directory.CreateDirectory(_output);
         var guide = T("UISystem.SafariToolbarGuide");
-        var record = T("Backend.ResearchConsentRecord");
-        var stateType = T("Backend.ResearchConsentRecord+PageState");
-        Func<int> complete = () => 2;
-        var lambda = Expression.Lambda(typeof(Func<>).MakeGenericType(stateType),
-            Expression.Convert(Expression.Invoke(Expression.Constant(complete)), stateType));
         var localization = T("LocalizationManager").GetProperty("Instance", Static).GetValue(null);
         localization.GetType().GetMethod("SwitchLanguage").Invoke(localization,
             new[] { Enum.Parse(T("LanguageSettings+Language"), "Japanese") });
@@ -42,7 +36,6 @@ public class SafariGuideCaptureTests
                          (2027, "ipad-safari27"), (2026, "ipad-safari26") })
             {
                 guide.GetMethod("ResetForTests", Static).Invoke(null, null);
-                record.GetField("PageStateOverride", Static).SetValue(null, lambda.Compile());
                 _device = device;
                 guide.GetField("DeviceOverride", Static).SetValue(null, (Func<int>)(() => _device));
                 yield return SceneManager.LoadSceneAsync("StartScene");
@@ -57,7 +50,6 @@ public class SafariGuideCaptureTests
         finally
         {
             guide.GetMethod("ResetForTests", Static).Invoke(null, null);
-            record.GetMethod("ResetForTests", Static).Invoke(null, null);
         }
     }
 

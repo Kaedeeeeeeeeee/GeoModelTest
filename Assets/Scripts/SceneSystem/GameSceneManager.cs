@@ -83,6 +83,8 @@ public class GameSceneManager : MonoBehaviour
         Debug.Log($"场景管理器初始化完成，当前场景: {currentSceneName}");
     }
     
+    public bool IsSceneSelectionOpen => sceneSelectionUI != null && sceneSelectionUI.activeSelf;
+
     /// <summary>
     /// 显示场景选择UI
     /// </summary>

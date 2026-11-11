@@ -17,6 +17,8 @@ namespace UISystem
         private const string FieldScene = "MainScene";
         private const string LabScene = "Laboratory Scene";
         private const string PhaseShifterId = "999";
+        // How long a practised trip goes without step-by-step instructions before they come back.
+        public const float TripCueDelay = 15f;
         private ToolManager _tools;
         private Canvas _canvas;
         private RectTransform _card;
@@ -25,6 +27,10 @@ namespace UISystem
         private Text _instruction;
         private Button _openToolsButton;
         private MobileControlHint _toolsHint;
+        private PhaseShifterCoach _coach;
+        private string _tripDestination;
+        private string _tripCue;
+        private float _tripDueAt;
         public static string RecommendedToolId { get; private set; }
         public static bool IsVisible { get; private set; }
         public static RectTransform VisibleCard { get; private set; }
@@ -70,6 +76,7 @@ namespace UISystem
             aspect.aspectRatio = 1f;
             _openToolsButton.gameObject.SetActive(false);
             _card.gameObject.SetActive(false);
+            _coach = gameObject.AddComponent<PhaseShifterCoach>();
         }
 
         public static string HammerTitle(string toolName, int site, int total) =>
@@ -103,6 +110,13 @@ namespace UISystem
             return null;
         }
 
+        // The first trip is coached, the way back only recalls it, and later trips start from the player's memory.
+        public static string TripCueLevel(bool firstTripPending, bool firstReturnPending)
+        {
+            if (firstTripPending) return "coach";
+            return firstReturnPending ? "recall" : "quiet";
+        }
+
         /// <summary>The scene the active quest sends the player to, or null when they are already there.</summary>
         public static string RecommendedDestination()
         {
@@ -126,10 +140,23 @@ namespace UISystem
             IsVisible = false;
             HighlightPrimaryAction = false;
             RefreshGuidance();
-            if (_card != null && _card.gameObject.activeSelf != IsVisible)
-                _card.gameObject.SetActive(IsVisible);
-            if (IsVisible) VisibleCard = _card;
+            // The coach also runs while the wheel or the destination list hides the card.
+            bool coaching = RefreshCoach();
+            bool showCard = IsVisible && !coaching;
+            if (_card != null && _card.gameObject.activeSelf != showCard)
+                _card.gameObject.SetActive(showCard);
+            if (showCard) VisibleCard = _card;
             else if (VisibleCard == _card) VisibleCard = null;
+        }
+
+        private bool RefreshCoach()
+        {
+            if (_coach == null || _tools == null || _tools.availableTools == null) return false;
+            var shifter = FindTool(PhaseShifterId);
+            bool firstTrip = SceneManager.GetActiveScene().name == LabScene &&
+                Pending(QuestManager.Instance, "q.field.phase", "q.field.phase.enter_field");
+            return _coach.Refresh(shifter, shifter != null && _tools.GetCurrentTool() == shifter, firstTrip,
+                FirstControlGuide.UsesTouch(), GameUI.L("scene.main.name"));
         }
 
         private void RefreshGuidance()
@@ -143,16 +170,30 @@ namespace UISystem
             {
                 var shifter = FindTool(PhaseShifterId);
                 if (shifter == null) return;
+                var tripQuests = QuestManager.Instance;
+                string cue = TripCueLevel(Pending(tripQuests, "q.field.phase", "q.field.phase.enter_field"),
+                    Pending(tripQuests, "q.lab.return", "q.lab.return.enter_lab"));
+                if (destination != _tripDestination || cue != _tripCue)
+                {
+                    _tripDestination = destination;
+                    _tripCue = cue;
+                    _tripDueAt = Time.unscaledTime;
+                }
+                bool stepByStep = cue == "coach" || Time.unscaledTime - _tripDueAt >= TripCueDelay;
                 // Selecting the shifter does not use it, so the cue stays until the destination list opens.
                 bool holding = _tools.GetCurrentTool() == shifter;
                 if (holding) HighlightPrimaryAction = true;
                 else RecommendedToolId = PhaseShifterId;
+                if (cue == "quiet" && !stepByStep) return;
                 string shifterName = CurrentToolHUD.ToolName(shifter);
-                Present(shifter, touch, ShowsToolsButton(touch, !holding), shifterName, string.Format(
-                    GameUI.L("ui.collection." + (holding ? "shift_use" : "equip") + (touch ? ".touch" : ".desktop")),
+                string instruction = stepByStep
+                    ? "ui.collection." + (holding ? "shift_use" : "equip") + (touch ? ".touch" : ".desktop")
+                    : "ui.collection.shift_recall";
+                Present(shifter, touch, ShowsToolsButton(touch, !holding), shifterName, string.Format(GameUI.L(instruction),
                     shifterName, GameUI.L(destination == FieldScene ? "scene.main.name" : "scene.laboratory.name")));
                 return;
             }
+            _tripDestination = null;
             if (SceneManager.GetActiveScene().name != FieldScene) return;
 
             var quests = QuestManager.Instance;

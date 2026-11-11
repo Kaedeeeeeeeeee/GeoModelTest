@@ -1,39 +1,30 @@
 {
-  "version": "2026.10.20-consent-keyboard",
-  "gameVersion": "2026.10.16-hammer-slab-fix",
+  "version": "2026.11.11-student-consent",
+  "gameVersion": "2026.11.11-student-consent",
   "unity": "6000.0.51f1",
   "buildType": "release",
-  "builtAt": "2026-10-16T12:50:58.518Z",
-  "sourceCommit": "1f64569809237ddc118c93d160360cb803b68359",
-  "sourceDirty": true,
-  "sourceFiles": {
-    "Assets/WebGLTemplates/FixedAspect/TemplateData/guardian-consent.js": "75ffd980419cfc9c72bc426e789512f7aa97a655769be00c5c563ead43e13cae",
-    "Assets/WebGLTemplates/FixedAspect/TemplateData/style.css": "97b63dde6fc3b3784ea837613ba05dd452cb524e9ed1dccb6220019043b88e38"
-  },
-  "sourcePatchSHA256": "94bc94054224c3e735a1c441c964f7700109a5d2237f4e260f6aa146b2698a76",
+  "builtAt": "2026-11-11T12:57:34.109Z",
+  "sourceCommit": "212e779a8d6e86075eb9bb061f854134617970a4",
+  "sourceDirty": false,
   "assets": {
     "Build/WebGL.data.unityweb": {
-      "bytes": 108223033,
-      "sha256": "27dda777494fdebf4d483a53ed36941a39426445adbe579346d924e8d3f619ba"
+      "bytes": 108220686,
+      "sha256": "e0d9a1a9a88ada4e4dd3e32206dafc855a566704173cffbf1167f9c893d4e8c9"
     },
     "Build/WebGL.framework.js.unityweb": {
-      "bytes": 96720,
-      "sha256": "fe1d215ac5989a7683b8ccece8e8b1bd2eee3ef5af0cbd0118e6619afb28f76a"
+      "bytes": 96675,
+      "sha256": "1548c0a54c219859294587a6f8494bf51421a25118f14a58734c34ae3a161460"
     },
     "Build/WebGL.loader.js": {
       "bytes": 47338,
-      "sha256": "f668f1e3815cebda7350b7a368614aedbfbbf7b9fc4d5dfbee81108a633b9745"
+      "sha256": "1b2cd1335b5c06cbb518429f7aa06b881038f9177bf9b176bd8c07171b91ddb9"
     },
     "Build/WebGL.wasm.unityweb": {
-      "bytes": 12110943,
-      "sha256": "e0b439172761a6ad010f013df5ddd2d9cbb0f2a9a649491deb2a35d69d7f87b6"
+      "bytes": 12114072,
+      "sha256": "3772c84966115f4e5ed949fa00efdc72b90b0e6810d1534e05c022aeaec5ba4b"
     }
   },
   "webAssets": {
-    "TemplateData/guardian-consent.js": {
-      "bytes": 17501,
-      "sha256": "75ffd980419cfc9c72bc426e789512f7aa97a655769be00c5c563ead43e13cae"
-    },
     "TemplateData/loading.js": {
       "bytes": 12153,
       "sha256": "d8720b2a9023ccc6562b8d89da01a74b22d8df1f1d8dfd0e538490686755d05d"
@@ -42,13 +33,17 @@
       "bytes": 1277,
       "sha256": "0e36abece3c0aeb0a3fe0ae50fdc480fb71ed6783c8664b8ce549329fbf63bc9"
     },
+    "TemplateData/student-consent.js": {
+      "bytes": 4237,
+      "sha256": "21a89e73139aa943a02b79e30c0ea13d3e60089c10f8695e4ce89cbe23ddd95d"
+    },
     "TemplateData/style.css": {
-      "bytes": 10639,
-      "sha256": "97b63dde6fc3b3784ea837613ba05dd452cb524e9ed1dccb6220019043b88e38"
+      "bytes": 9013,
+      "sha256": "9833c5a1676a83f8e4f1038da354a0c3be0548b406fb4898adf48ea8eadc9c22"
     },
     "index.html": {
-      "bytes": 18657,
-      "sha256": "d704c56e725977ab893159b8bfb9ae604bf19c89ea9feea4959d97fa6069edb8"
+      "bytes": 10286,
+      "sha256": "3885a450b6c573b55fa014b27b74b4e04368b5a55c98474dfd650dea570f0966"
     }
   },
   "surveyAssets": {

@@ -68,7 +68,15 @@ namespace StorySystem
                 returnLabel.color = canReturn ? GameUI.Ink : new Color(0.46f, 0.52f, 0.53f);
                 surveyButton.interactable = !Backend.SurveyGateway.Instance.IsBusy && Backend.SurveyGateway.IsEligible;
             }
-            surveyStatus.text = GameUI.L(Backend.SurveyGateway.IsEligible ? "survey.open_first" : "survey.research_only");
+            if (Backend.SurveyGateway.IsEligible) surveyStatus.text = GameUI.L("survey.open_first");
+            else
+            {
+                // Without the research backend (the online study ended in 2026-11) there is no survey to offer.
+                surveyButton.gameObject.SetActive(false);
+                var returnRect = (RectTransform)returnButton.transform;
+                returnRect.anchorMin = new Vector2(0.30f, 0.07f);
+                returnRect.anchorMax = new Vector2(0.70f, 0.16f);
+            }
             RefreshButtons();
             yield return null;
             while (!close)

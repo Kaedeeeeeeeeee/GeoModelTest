@@ -213,9 +213,9 @@ html, body {
   white-space: nowrap;
 }
 
-/* 保護者同意: a scrollable document above the loading game. Shown only while the
-   html element carries .guardian-consent-pending (set by guardian-consent.js). */
-#guardian-consent {
+/* 生徒の同意: a scrollable document above the loading game. Shown only while the
+   html element carries .student-consent-pending (set by student-consent.js). */
+#student-consent {
   display: none;
   position: fixed;
   inset: 0;
@@ -239,13 +239,12 @@ html, body {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
-html.guardian-consent-pending #guardian-consent { display: block; }
+html.student-consent-pending #student-consent { display: block; }
 
 .consent-sheet {
   max-width: 760px;
   margin: 24px auto 40px;
-  /* --consent-keyboard-space: set by guardian-consent.js while a phone user types in the form. */
-  padding: 28px clamp(18px, 5vw, 48px) calc(36px + var(--consent-keyboard-space, 0px));
+  padding: 28px clamp(18px, 5vw, 48px) 36px;
   box-sizing: border-box;
   background: #fbfaf6;
   border-top: 4px solid #60cdb0;
@@ -256,31 +255,12 @@ html.guardian-consent-pending #guardian-consent { display: block; }
 }
 .consent-sheet[hidden] { display: none; }
 .consent-sheet p { margin: 0 0 12px; }
-.consent-sheet a { color: #0d6b58; }
 .consent-sheet h1 {
   margin: 0 0 4px;
   font-size: clamp(20px, 3.4vw, 26px);
   line-height: 1.45;
   outline: none;
 }
-.consent-subtitle { color: #4a5d61; font-weight: 600; margin-bottom: 20px !important; }
-.consent-lead {
-  padding: 10px 14px;
-  margin-bottom: 20px !important;
-  border-left: 4px solid #60cdb0;
-  background: #e5f4ef;
-  font-weight: 600;
-}
-.consent-sheet h2 {
-  margin: 28px 0 10px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid #d6dedb;
-  font-size: 17px;
-  line-height: 1.5;
-}
-.consent-sheet ul { margin: 0 0 12px; padding: 0; list-style: none; }
-.consent-sheet li { position: relative; padding-left: 1.2em; margin-bottom: 4px; }
-.consent-sheet li::before { content: "・"; position: absolute; left: 0; }
 
 .consent-form {
   margin-top: 32px;
@@ -304,33 +284,10 @@ html.guardian-consent-pending #guardian-consent { display: block; }
 }
 .consent-option:has(input:checked) { border-color: #1f8f74; background: #eef8f4; }
 .consent-option input { width: 22px; height: 22px; margin: 0; flex-shrink: 0; accent-color: #1f8f74; }
-.consent-field { display: block; margin: 0 0 6px; font-weight: 600; }
-.consent-field span { display: block; margin-bottom: 6px; }
-.consent-field input {
-  display: block;
-  width: 100%;
-  min-height: 48px;
-  padding: 8px 12px;
-  box-sizing: border-box;
-  border: 1px solid #9fb3b6;
-  border-radius: 6px;
-  background: #fff;
-  color: #1f2d31;
-  font: inherit;
-  font-size: 17px;
-  font-weight: 400;
-  -webkit-user-select: text;
-  user-select: text;
-}
-.consent-field input[aria-invalid="true"] { border-color: #b3261e; }
-.consent-form input:focus-visible, .consent-button:focus-visible, .consent-sheet a:focus-visible {
+.consent-form input:focus-visible, .consent-button:focus-visible {
   outline: 3px solid #1f8f74;
   outline-offset: 2px;
 }
-.consent-error { margin: 4px 0 14px !important; color: #b3261e; font-size: 14px; font-weight: 600; }
-.consent-error[hidden] { display: none; }
-.consent-date { margin-top: 18px !important; font-weight: 600; }
-.consent-note { color: #4a5d61; font-size: 14px; }
 .consent-button {
   width: 100%;
   min-height: 52px;
@@ -349,7 +306,6 @@ html.guardian-consent-pending #guardian-consent { display: block; }
 .consent-button:disabled { opacity: .45; cursor: not-allowed; }
 .consent-hint { margin: 8px 0 0 !important; color: #4a5d61; font-size: 14px; text-align: center; }
 .consent-hint[hidden] { display: none; }
-/* 生徒の同意 */
 .consent-people { color: #4a5d61; font-size: 14px; line-height: 1.7; margin-bottom: 18px !important; }
 #student-consent-form { margin-top: 20px; }
 #student-consent-form .consent-option { align-items: flex-start; padding: 12px 14px; line-height: 1.6; }

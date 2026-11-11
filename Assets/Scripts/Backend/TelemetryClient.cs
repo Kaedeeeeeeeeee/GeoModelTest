@@ -649,9 +649,6 @@ namespace Backend
                     // Use the generic message below.
                 }
 
-                // A rejected guardian answer cannot succeed on retry; let the page ask again after reload.
-                if (request.responseCode == 422 || request.responseCode == 428)
-                    ResearchConsentRecord.DiscardGuardianAnswer();
                 failure(ParticipationErrorMessage(request.responseCode, errorResponse?.error));
                 yield break;
             }
@@ -668,7 +665,8 @@ namespace Backend
         }
 
         /// <summary>
-        /// Open play carries the guardian form and student assent; the server records them with the first activation.
+        /// Open play carries the student's assent from the web page (the guardian page was removed on 2026-11-11);
+        /// the server records it with the first activation.
         /// </summary>
         public static string BuildParticipationBody(string participantCode)
         {
@@ -679,7 +677,7 @@ namespace Backend
                 gameVersion = Application.version,
                 contentVersion = ResearchContentVersion.ContentVersion,
                 storyRoute = ResearchContentVersion.StoryRoute,
-                consent = participantCode == null ? ResearchConsentRecord.BuildOpenPlayConsent() : null
+                consent = participantCode == null ? StudentConsentPage.BuildConsent() : null
             }, BackendJson.Settings);
         }
 

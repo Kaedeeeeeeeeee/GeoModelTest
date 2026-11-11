@@ -42,7 +42,17 @@ python3 tools/research-admin.py status-link --study-key geoquest-open-play-2026-
 python3 tools/research-admin.py revoke-status-link --link-id LINK_ID
 ```
 
+A link with `closes_entry` also closes recruitment once its completed count reaches the target (migration `20261102120000`, decided 2026-11-02 after Testee asked). The guardian consent page calls `research_entry_status()` with the publishable key before showing the form; it returns only `{"open": …}` and is `false` also when the open-play study takes no entry. On `false` the page shows 募集終了 instead of the form. Activation is deliberately not blocked, so players who opened the page earlier still finish and answer; a network error shows the form. Set the flag with SQL on the service connection (`update public.research_status_links set closes_entry = true where id = …`); the migration sets it for Testee's link.
+
 Source/backend changes require coordinated deployment before the published player uses this flow.
+
+## Student assent only (玉川中, 2026-11-11)
+
+稲垣先生 asked to drop the 保護者同意 page before 玉川中 checks the game in advance; the 生徒の同意 page stays (`Assets/WebGLTemplates/FixedAspect/index.html`, logic in `TemplateData/student-consent.js`, approved wording unchanged). Migration `20261111120000_open_play_student_assent.sql` adds `studies.requires_student_assent`, stops the Testee study `geoquest-open-play-2026-09` from taking new players (`research_entry_enabled = false`; its data, status page and exports are untouched, and its unfinished players can no longer upload) and creates `geoquest-tamagawa-2026-12`, the one open-play study that takes new players, with `requires_student_assent` and without the guardian rule. At New Game, Unity sends `{consentVersion, studentAssented, studentAssentedAt}` from the page; the first activation stores `consent_version` and `student_assent_at` on the participant, and later activations reuse them. Without it the server answers 428 or 422 and creates no play record. No guardian form, name or respondent ID exists for this study, so the questionnaire asks for no ID.
+
+```sh
+python3 tools/research-admin.py export --study-key geoquest-tamagawa-2026-12 --output /private/research/tamagawa-respondents.csv
+```
 
 ## Legacy invitation eligibility and identity
 

@@ -694,7 +694,7 @@
     },
     {
       "key": "quest.lab.intro.desc",
-      "value": "カエデ研究員の案内を聞き、調査道具を受け取ろう"
+      "value": "Dr.Kaedeの案内を聞き、調査道具を受け取ろう"
     },
     {
       "key": "quest.lab.intro.obj1",
@@ -702,7 +702,7 @@
     },
     {
       "key": "quest.lab.drkaede.title",
-      "value": "調査ミッション2：カエデ研究員に話を聞こう"
+      "value": "調査ミッション2：Dr.Kaedeに話を聞こう"
     },
     {
       "key": "quest.lab.drkaede.desc",
@@ -714,7 +714,7 @@
     },
     {
       "key": "quest.lab.drkaede.prompt",
-      "value": "［E］カエデ研究員に話を聞く"
+      "value": "［E］Dr.Kaedeに話を聞く"
     },
     {
       "key": "quest.lab.anomaly.title",
@@ -774,7 +774,7 @@
     },
     {
       "key": "quest.chapter4.kaede.prompt",
-      "value": "［E］カエデ研究員に話を聞く"
+      "value": "［E］Dr.Kaedeに話を聞く"
     },
     {
       "key": "quest.chapter4.field.title",
@@ -826,7 +826,7 @@
     },
     {
       "key": "quest.chapter5.kaede.prompt",
-      "value": "［E］カエデ研究員に話を聞く"
+      "value": "［E］Dr.Kaedeに話を聞く"
     },
     {
       "key": "quest.chapter5.field.title",
@@ -854,7 +854,7 @@
     },
     {
       "key": "quest.chapter6.kaede.title",
-      "value": "最終報告をカエデ研究員に伝えよう"
+      "value": "最終報告をDr.Kaedeに伝えよう"
     },
     {
       "key": "quest.chapter6.kaede.desc",
@@ -866,7 +866,7 @@
     },
     {
       "key": "quest.chapter6.kaede.prompt",
-      "value": "［E］カエデ研究員に話を聞く"
+      "value": "［E］Dr.Kaedeに話を聞く"
     },
     {
       "key": "quest.ui.completed",
@@ -3178,7 +3178,7 @@
     },
     {
       "key": "quest.npc.prompt.mobile",
-      "value": "カエデ研究員に話を聞く"
+      "value": "Dr.Kaedeに話を聞く"
     },
     {
       "key": "workbench.interaction.prompt",
@@ -3334,7 +3334,7 @@
     },
     {
       "key": "quest.step.2",
-      "value": "博士の説明を聞く"
+      "value": "Dr.Kaedeの説明を聞く"
     },
     {
       "key": "quest.step.3",
@@ -3346,7 +3346,7 @@
     },
     {
       "key": "quest.step.5",
-      "value": "博士から掘削の説明を聞く"
+      "value": "Dr.Kaedeから掘削の説明を聞く"
     },
     {
       "key": "quest.step.6",
@@ -3402,7 +3402,7 @@
     },
     {
       "key": "backend.consent_required",
-      "value": "保護者の同意を確認できませんでした。ページを再読み込みして、はじめからやり直してください。"
+      "value": "同意を確認できませんでした。ページを再読み込みして、はじめからやり直してください。"
     },
     {
       "key": "backend.consent_invalid",
@@ -3769,46 +3769,6 @@
       "value": "何も持たない"
     },
     {
-      "key": "ui.consent.eyebrow",
-      "value": "G-LAB  /  RESEARCH PARTICIPATION"
-    },
-    {
-      "key": "ui.consent.title",
-      "value": "理科 3D ゲーム型教材に関する研究に参加する生徒の皆さんへ"
-    },
-    {
-      "key": "ui.consent.body",
-      "value": "研究開発責任者\n稲垣忠（東北学院大学人間情報学研究科教授）\n研究開発担当者\n張詩楓（東北学院大学人間情報学研究科博士前期課程）\n\nこのゲームは、理科（地学分野）の学習用 3D ゲーム教材です。ゲームの改善および学習効果の検証を行うため、あなたのゲーム中の操作を記録します。また、ゲーム終了後にアンケートへの回答にご協力いただきます。所要時間は教材体験が 15 分程度、アンケートは 5 分程度を想定しています。操作記録やアンケートの回答は、個人が特定されない形で研究に使用します。\n\n参加するかどうかは、あなた自身で決めることができます。また、参加した後でも、気分が悪くなったり、やめたいと思ったりしたときは、いつでも途中でやめることができます。\n\n内容を確認したうえで、次の項目にチェックしてください。"
-    },
-    {
-      "key": "ui.consent.agreement.1",
-      "value": "保護者から、この研究に参加することについて同意を得ています。"
-    },
-    {
-      "key": "ui.consent.agreement.2",
-      "value": "上の説明を読み、研究の内容について理解しました。"
-    },
-    {
-      "key": "ui.consent.agreement.3",
-      "value": "自分の意思で、この研究に参加することに同意します。"
-    },
-    {
-      "key": "ui.consent.continue",
-      "value": "同意してゲームを開始する"
-    },
-    {
-      "key": "ui.consent.hint",
-      "value": "3つすべてにチェックして確認すると、ニューゲームを選べます。"
-    },
-    {
-      "key": "ui.consent.cancel",
-      "value": "戻る"
-    },
-    {
-      "key": "ui.consent.review",
-      "value": "研究参加の説明を確認"
-    },
-    {
       "key": "ui.collection.travel.desktop",
       "value": "青い案内線に沿って採集地点へ進もう。"
     },
@@ -3831,6 +3791,38 @@
     {
       "key": "ui.collection.shift_use.touch",
       "value": "「調べる」をタップして、移動先の「{1}」を選ぼう。"
+    },
+    {
+      "key": "ui.collection.shift_recall",
+      "value": "さっきと同じ手順で「{1}」へ移動しよう。"
+    },
+    {
+      "key": "ui.shifter_coach.title",
+      "value": "フェーズシフター {0}/3"
+    },
+    {
+      "key": "ui.shifter_coach.why",
+      "value": "研究室と野外を行き来する道具だよ。これから何度も使うので、いま覚えよう。"
+    },
+    {
+      "key": "ui.shifter_coach.open.desktop",
+      "value": "Tabキーを押して、道具を開こう。"
+    },
+    {
+      "key": "ui.shifter_coach.open.touch",
+      "value": "光っている「道具」ボタンをタップしよう。"
+    },
+    {
+      "key": "ui.shifter_coach.pick",
+      "value": "光っている「{0}」を選ぼう。"
+    },
+    {
+      "key": "ui.shifter_coach.choose",
+      "value": "光っている「{1}」を選ぼう。これで移動できるよ。"
+    },
+    {
+      "key": "ui.shifter_coach.done",
+      "value": "移動できたね！次からも同じ手順で移動できるよ。"
     },
     {
       "key": "ui.collection.hit.desktop",
@@ -4058,7 +4050,7 @@
     },
     {
       "key": "quest.npc.action.talk",
-      "value": "カエデ研究員に話を聞く"
+      "value": "Dr.Kaedeに話を聞く"
     },
     {
       "key": "quest.npc.action.continue",

@@ -17,9 +17,7 @@ namespace SceneSystem
         private Canvas _canvas;
 
         private Button _newGame;
-        private Button _reviewConsent;
-        private bool _researchConsentAccepted;
-        // The WebGL page asks the guardian and the student before the game; wait for it to finish.
+        // The WebGL page asks the student before the game; New Game waits for it to finish.
         private bool _waitingForConsentPage;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -52,8 +50,6 @@ namespace SceneSystem
 
         private void SceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            ResearchConsentDialog.CloseCurrent();
-            _researchConsentAccepted = false;
             if (_canvas != null) Destroy(_canvas.gameObject);
             _canvas = null;
             if (scene.name == _startSceneName) BuildUI();
@@ -62,16 +58,13 @@ namespace SceneSystem
         private void RefreshLanguage()
         {
             if (SceneManager.GetActiveScene().name != _startSceneName) return;
-            ResearchConsentDialog.CloseCurrent();
             if (_canvas != null) Destroy(_canvas.gameObject);
             BuildUI();
         }
 
         private void BuildUI()
         {
-            var consentPage = Backend.ResearchConsentRecord.ConsentPageState;
-            if (consentPage == Backend.ResearchConsentRecord.PageState.Complete) _researchConsentAccepted = true;
-            _waitingForConsentPage = consentPage == Backend.ResearchConsentRecord.PageState.Pending;
+            _waitingForConsentPage = Backend.StudentConsentPage.State == Backend.StudentConsentPage.PageState.Pending;
             _canvas = GameUI.Canvas("StartMenuCanvas", 100);
             _canvas.transform.SetParent(transform, false);
             var background = GameUI.Box(_canvas.transform, "Background", Color.white, Vector2.zero, Vector2.one);
@@ -87,23 +80,22 @@ namespace SceneSystem
             GameUI.Label(menu.transform, "Title", "ジオクエスト", 70, new Vector2(0.13f, 0.73f), new Vector2(0.95f, 0.87f));
             GameUI.Label(menu.transform, "Subtitle", GameUI.L("ui.start.subtitle"), 24, new Vector2(0.14f, 0.63f), new Vector2(0.88f, 0.74f)).color = GameUI.Muted;
             _newGame = GameUI.Button(menu.transform, "NewGame", GameUI.L("ui.start.new_game.title"), new Vector2(0.14f, 0.51f), new Vector2(0.87f, 0.59f), OnNewGameClicked, true);
-            _newGame.interactable = _researchConsentAccepted;
+            _newGame.interactable = !_waitingForConsentPage;
             GameUI.Button(menu.transform, "Settings", GameUI.L("ui.start.settings"), new Vector2(0.14f, 0.41f), new Vector2(0.49f, 0.49f), OnOpenSettings);
             GameUI.Button(menu.transform, "Quit", GameUI.L("ui.start.quit"), new Vector2(0.52f, 0.41f), new Vector2(0.87f, 0.49f), OnQuitGame);
-            _reviewConsent = GameUI.Button(menu.transform, "ReviewConsent", GameUI.L("ui.consent.review"),
-                new Vector2(0.14f, 0.29f), new Vector2(0.87f, 0.37f), ShowResearchConsent);
-            // The page has its own way back to the explanation; the title only offers it where it asks itself.
-            _reviewConsent.gameObject.SetActive(!_researchConsentAccepted && consentPage == Backend.ResearchConsentRecord.PageState.None);
             GameUI.Label(menu.transform, "Footer", GameUI.L("ui.start.footer"), 18, new Vector2(0.14f, 0.06f), new Vector2(0.90f, 0.15f)).color = GameUI.Muted;
             GameUI.Label(_canvas.transform, "FieldCaption", GameUI.L("ui.start.field_caption"), 26, new Vector2(0.53f, 0.07f), new Vector2(0.95f, 0.17f));
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             _ = SettingsManager.Instance;
-            if (consentPage == Backend.ResearchConsentRecord.PageState.None)
-            {
-                if (!_researchConsentAccepted) ShowResearchConsent();
-            }
-            else if (_researchConsentAccepted) SafariToolbarGuide.TryShowOnce();
+            if (!_waitingForConsentPage) OnTitleReady();
+        }
+
+        /// <summary>New Game is ready: the student answered on the page, or there is no page.</summary>
+        private void OnTitleReady()
+        {
+            _newGame.interactable = true;
+            if (!SafariToolbarGuide.TryShowOnce()) _newGame.Select();
         }
 
         /// <summary>
@@ -117,10 +109,10 @@ namespace SceneSystem
             // 在 StartScene 保持鼠标可见与解锁，避免 SettingsManager 关闭时把鼠标锁回去
             var active = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             if (_waitingForConsentPage && active.name == _startSceneName && _newGame != null &&
-                Backend.ResearchConsentRecord.ConsentPageState == Backend.ResearchConsentRecord.PageState.Complete)
+                Backend.StudentConsentPage.State != Backend.StudentConsentPage.PageState.Pending)
             {
                 _waitingForConsentPage = false;
-                OnConsentPageCompleted();
+                OnTitleReady();
             }
             if (active.name == _startSceneName)
             {
@@ -136,37 +128,9 @@ namespace SceneSystem
 
         public void OnQuitGame() => GameSession.Instance.QuitToWebsite();
 
-        /// <summary>
-        /// 没有同意网页（编辑器等）时，每次进入主菜单在游戏内确认研究参与；同意后仅解锁 New Game，不自动开始游戏。
-        /// </summary>
-        private void ShowResearchConsent()
-        {
-            if (Core.GameInputState.IsModalOpen) return;
-            ResearchConsentDialog.Show(OnResearchConsentAccepted);
-        }
-
-        private void OnResearchConsentAccepted()
-        {
-            _researchConsentAccepted = true;
-            // Sent with the guardian form when New Game registers this play for research.
-            Backend.ResearchConsentRecord.RecordStudentAssent();
-            _newGame.interactable = true;
-            _reviewConsent.gameObject.SetActive(false);
-            _newGame.Select();
-        }
-
-        /// <summary>The guardian and the student answered on the page while the title was loading behind it.</summary>
-        private void OnConsentPageCompleted()
-        {
-            _researchConsentAccepted = true;
-            _newGame.interactable = true;
-            _reviewConsent.gameObject.SetActive(false);
-            if (!SafariToolbarGuide.TryShowOnce()) _newGame.Select();
-        }
-
         private void OnNewGameClicked()
         {
-            if (!_researchConsentAccepted || Core.GameInputState.IsModalOpen) return;
+            if (_waitingForConsentPage || Core.GameInputState.IsModalOpen) return;
             if (!HasSavedProgress())
             {
                 GameSession.Instance.StartNewGame();

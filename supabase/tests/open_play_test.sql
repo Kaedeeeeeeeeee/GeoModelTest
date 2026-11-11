@@ -1,6 +1,9 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
+-- These rules belong to the Testee study, which stopped taking new players on 2026-11-11; reopen it here.
+update studies set research_entry_enabled=false where study_key='geoquest-tamagawa-2026-12';
+update studies set research_entry_enabled=true where study_key='geoquest-open-play-2026-09';
 select plan(14);
 -- Code-free rules for studies that do not use the web guardian form (see guardian_consent_test.sql).
 update studies set requires_guardian_consent=false where study_key='geoquest-open-play-2026-09';
