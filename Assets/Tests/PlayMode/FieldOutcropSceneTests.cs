@@ -669,7 +669,6 @@ public class FieldOutcropSceneTests
         // Unload the real field through an asset scene, then leave the next synthetic fixture an empty surface.
         // Keeping MainScene alive lets its Lily and mobile singleton win FindFirstObjectByType and singleton Awake.
         yield return SceneManager.LoadSceneAsync("StartScene");
-        Call(T("UISystem.ResearchConsentDialog"), "CloseCurrent");
         StopDialogue();
         var title = SceneManager.GetActiveScene();
         var empty = SceneManager.CreateScene("FieldOutcropSceneTests_Empty_" + Time.frameCount);

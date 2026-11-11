@@ -32,11 +32,13 @@ public class BackendGateTests
     }
 
     [Test]
-    public void PublishedResearchEntry_ShouldUseParticipantBoundIngest()
+    public void PublishedSettings_ShouldKeepTheEndedOnlineStudyClosed()
     {
+        // The online study and its consent pages ended in 2026-11: nothing is sent from the published game.
         Object settings = Resources.Load("BackendSettings");
         Assert.IsNotNull(settings);
-        Assert.IsTrue((bool)BackendTestReflection.GetProperty(settings, "CanShowResearchEntry"));
+        Assert.IsFalse((bool)BackendTestReflection.GetProperty(settings, "EnableBackend"));
+        Assert.IsFalse((bool)BackendTestReflection.GetProperty(settings, "EnableProductionResearchEntry"));
         Assert.AreEqual("game-ingest-v2", BackendTestReflection.GetProperty(settings, "IngestFunctionName"));
     }
 }

@@ -64,8 +64,6 @@ public class LocalizationDataTests
         foreach (string key in new[] { "ui.start.continue", "ui.start.new_game.title", "ui.start.new_game.message",
             "ui.start.new_game.warning", "ui.start.new_game.confirm", "ui.start.new_game.cancel", "ui.session.save_return",
             "ui.history.title", "ui.tool.current", "report.wrong_attempts", "report.practice", "backend.bound", "backend.pending_upload", "survey.open_first",
-            "ui.consent.eyebrow", "ui.consent.title", "ui.consent.body", "ui.consent.agreement.1", "ui.consent.agreement.2", "ui.consent.agreement.3",
-            "ui.consent.hint", "ui.consent.cancel", "ui.consent.continue", "ui.consent.review",
             "ui.tool.switch_hint", "sample.toast.rock_collected", "sample.toast.core_collected", "sample.toast.collected",
             "ui.safari.device.iphone", "ui.safari.device.ipad", "ui.safari.title", "ui.safari.lead", "ui.safari.step.1",
             "ui.safari.classic.step.2", "ui.safari.new.step.2", "ui.safari.step.3", "ui.safari.restore", "ui.safari.ok" })

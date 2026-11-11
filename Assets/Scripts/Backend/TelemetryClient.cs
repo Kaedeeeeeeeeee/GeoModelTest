@@ -649,9 +649,6 @@ namespace Backend
                     // Use the generic message below.
                 }
 
-                // A rejected guardian answer cannot succeed on retry; let the page ask again after reload.
-                if (request.responseCode == 422 || request.responseCode == 428)
-                    ResearchConsentRecord.DiscardGuardianAnswer();
                 failure(ParticipationErrorMessage(request.responseCode, errorResponse?.error));
                 yield break;
             }
@@ -668,7 +665,7 @@ namespace Backend
         }
 
         /// <summary>
-        /// Open play carries the guardian form and student assent; the server records them with the first activation.
+        /// Invitation codes only: open play sent the web consent pages' answers, which were removed with the online study.
         /// </summary>
         public static string BuildParticipationBody(string participantCode)
         {
@@ -679,7 +676,8 @@ namespace Backend
                 gameVersion = Application.version,
                 contentVersion = ResearchContentVersion.ContentVersion,
                 storyRoute = ResearchContentVersion.StoryRoute,
-                consent = participantCode == null ? ResearchConsentRecord.BuildOpenPlayConsent() : null
+                // The online study (guardian and student consent pages) ended in 2026-11; open play has no consent to send.
+                consent = (object)null
             }, BackendJson.Settings);
         }
 
