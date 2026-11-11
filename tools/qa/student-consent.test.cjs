@@ -83,3 +83,8 @@ test('the 保護者同意 page stays removed', () => {
   assert.match(html, /<script src="TemplateData\/student-consent\.js"><\/script>\s*<\/head>/,
     'Loaded in <head> so the sheet shows before first paint.');
 });
+
+test('nothing is handed to the game before the student confirms', () => {
+  const { api } = fixture();
+  assert.equal(api.payloadJson(), '');
+});

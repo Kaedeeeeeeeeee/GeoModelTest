@@ -3222,7 +3222,7 @@
     },
     {
       "key": "backend.consent_required",
-      "value": "无法确认监护人同意。请重新加载页面，从头开始。"
+      "value": "无法确认同意。请重新加载页面，从头开始。"
     },
     {
       "key": "backend.consent_invalid",

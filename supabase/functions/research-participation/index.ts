@@ -28,11 +28,20 @@ function isPlainObject(value: unknown): value is JsonRecord {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-// Web guardian form plus the title-screen student assent. The database validates again.
+// Web guardian form plus student assent, or (since 2026-11-11, studies without the guardian page) the
+// student assent alone. The database decides which one the study needs and validates again.
 function parseConsent(value: unknown): JsonRecord | null | "invalid" {
   if (value == null) return null;
   if (!isPlainObject(value)) return "invalid";
   const version = typeof value.consentVersion === "string" ? value.consentVersion.trim() : "";
+  if (value.guardianAgreed === undefined) {
+    const assentAt = typeof value.studentAssentedAt === "string" ? value.studentAssentedAt : "";
+    if (value.studentAssented !== true || version.length < 1 || version.length > 64 ||
+      Number.isNaN(Date.parse(assentAt))) {
+      return "invalid";
+    }
+    return { consentVersion: version, studentAssented: true, studentAssentedAt: assentAt };
+  }
   // trim() also removes full-width spaces typed with a Japanese keyboard.
   const guardianName = typeof value.guardianName === "string" ? value.guardianName.trim() : "";
   // Testee IDs are 1 to 10 digits. Same normalization as the web form: full-width digits to
@@ -161,7 +170,7 @@ serve(async (req) => {
     if (error.code === "23505") return fail(409, "この参加コードは別の端末で有効化されています。");
     if (error.code === "42501") return fail(403, "研究参加の受付は現在停止しています。");
     if (error.code === "22023") return fail(409, "研究手順のバージョンが一致しません。");
-    if (error.code === "GC001") return fail(428, "保護者の同意が必要です。");
+    if (error.code === "GC001") return fail(428, "同意が必要です。");
     if (error.code === "GC002") return fail(422, "同意の内容を確認できませんでした。");
     return fail(500, "参加コードを有効化できませんでした。");
   }

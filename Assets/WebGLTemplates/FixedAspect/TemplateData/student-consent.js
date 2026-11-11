@@ -1,13 +1,17 @@
 /* 生徒の同意: the student confirms three statements on this page before the game starts.
  * The 保護者同意 page that came first was removed on 2026-11-11 (玉川中 checks the game in
  * advance). Loaded in <head> so the sheet shows before first paint while Unity downloads behind
- * it. Unity waits through StudentConsent.jslib; nothing about the student is stored or sent. */
+ * it. Unity waits and reads the answer through StudentConsent.jslib; the server stores the
+ * assent time at New Game. */
 (function () {
   'use strict';
 
+  // Bump when the approved wording changes.
+  var VERSION = 'student-ja-2026-11-11';
   var root = document.documentElement;
-  // Asked again on every page load, as on the title screen before.
+  // Asked again on every page load, as on the title screen before; kept in memory only.
   var pending = true;
+  var assentedAt = '';
   root.classList.add('student-consent-pending');
 
   // The student confirms all three statements; nothing else is asked.
@@ -59,6 +63,7 @@
       event.preventDefault();
       // Guard the action too: a direct submit must never bypass the checkboxes.
       if (!ready()) return;
+      assentedAt = new Date().toISOString();
       pending = false;
       root.classList.remove('student-consent-pending');
       document.dispatchEvent(new CustomEvent('geomodel:student-consent-complete'));
@@ -86,6 +91,11 @@
 
   window.GeoModelStudentConsent = {
     isPending: function () { return pending; },
+    // Consumed by StudentConsent.jslib. Empty until the student has confirmed.
+    payloadJson: function () {
+      if (!assentedAt) return '';
+      return JSON.stringify({ consentVersion: VERSION, studentAssented: true, studentAssentedAt: assentedAt });
+    },
     studentReady: studentReady
   };
 

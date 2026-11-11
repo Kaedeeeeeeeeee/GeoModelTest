@@ -3222,7 +3222,7 @@
     },
     {
       "key": "backend.consent_required",
-      "value": "Guardian consent could not be confirmed. Reload the page and start again."
+      "value": "Consent could not be confirmed. Reload the page and start again."
     },
     {
       "key": "backend.consent_invalid",

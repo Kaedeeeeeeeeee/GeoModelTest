@@ -10,5 +10,18 @@ mergeInto(LibraryManager.library, {
       console.warn("[StudentConsent] could not read the consent state:", e);
       return 0;
     }
+  },
+
+  GeoModelStudentConsent_GetPayload: function () {
+    var json = "";
+    try {
+      if (window.GeoModelStudentConsent) json = window.GeoModelStudentConsent.payloadJson() || "";
+    } catch (e) {
+      console.warn("[StudentConsent] could not read the student answer:", e);
+    }
+    var size = lengthBytesUTF8(json) + 1;
+    var buffer = _malloc(size);
+    stringToUTF8(json, buffer, size);
+    return buffer;
   }
 });

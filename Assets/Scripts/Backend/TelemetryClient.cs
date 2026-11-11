@@ -665,7 +665,8 @@ namespace Backend
         }
 
         /// <summary>
-        /// Invitation codes only: open play sent the web consent pages' answers, which were removed with the online study.
+        /// Open play carries the student's assent from the web page (the guardian page was removed on 2026-11-11);
+        /// the server records it with the first activation.
         /// </summary>
         public static string BuildParticipationBody(string participantCode)
         {
@@ -676,8 +677,7 @@ namespace Backend
                 gameVersion = Application.version,
                 contentVersion = ResearchContentVersion.ContentVersion,
                 storyRoute = ResearchContentVersion.StoryRoute,
-                // The online study (guardian and student consent pages) ended in 2026-11; open play has no consent to send.
-                consent = (object)null
+                consent = participantCode == null ? StudentConsentPage.BuildConsent() : null
             }, BackendJson.Settings);
         }
 
