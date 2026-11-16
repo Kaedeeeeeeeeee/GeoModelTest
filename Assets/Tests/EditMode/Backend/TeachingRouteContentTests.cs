@@ -50,6 +50,39 @@ public class TeachingRouteContentTests
         StringAssert.DoesNotContain("Well done", praise);
     }
 
+    [Serializable] private class FullLine { public string textKey; public string questionId; public string illustrationKey; public List<Choice> choices; }
+    [Serializable] private class Choice { public string id; }
+    [Serializable] private class FullSequence { public List<FullLine> dialogues; }
+
+    [TestCase("quest3.4", "03_limestone", "q.rock_limestone")]
+    [TestCase("quest3.4", "04_chert", "q.rock_chert")]
+    [TestCase("beat3", "06_facies_fossil", "q.fossil_facies_term")]
+    [TestCase("beat3", "09_tuff_volcano", "q.tuff_volcano")]
+    public void TeachingIllustration_ShouldAppearOnAnExplanationLineBeforeItsQuestion(string sequence, string illustration, string questionId)
+    {
+        // Question lines hide the banner, so a key placed on a question line is never shown.
+        var lines = JsonUtility.FromJson<FullSequence>(Resources.Load<TextAsset>("Story/" + sequence).text).dialogues;
+        int shown = lines.FindIndex(line => line.illustrationKey == illustration);
+        int question = lines.FindIndex(line => line.questionId == questionId);
+        Assert.That(shown, Is.GreaterThanOrEqualTo(0).And.LessThan(question));
+        Assert.IsTrue(lines[shown].choices == null || lines[shown].choices.Count == 0,
+            illustration + " is set on an explanation line, not on a question line.");
+        foreach (string language in new[] { "ja-JP", "zh-CN", "en-US" })
+            Assert.IsTrue(Texts(language).ContainsKey(lines[shown].textKey), lines[shown].textKey + " exists in " + language);
+    }
+
+    [Test]
+    public void TeachingIllustrations_ShouldNeverSitOnQuestionLines()
+    {
+        foreach (string name in Route)
+        {
+            var lines = JsonUtility.FromJson<FullSequence>(Resources.Load<TextAsset>("Story/" + name).text).dialogues;
+            foreach (var line in lines.Where(line => line.choices != null && line.choices.Count > 0))
+                Assert.IsTrue(string.IsNullOrEmpty(line.illustrationKey),
+                    name + "/" + line.questionId + " would hide its illustration immediately.");
+        }
+    }
+
     [Test]
     public void LabAnalysis_ShouldRevealCoralFossilInsideTheCoreBeforeTheCoralQuestion()
     {

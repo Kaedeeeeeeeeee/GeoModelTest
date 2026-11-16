@@ -50,7 +50,8 @@
             "speaker": "Dr.Kaede",
             "text": "生（い）きものは住（す）める場所（ばしょ）が決（き）まってる。だから化石（かせき）からは、当時（とうじ）の「環境（かんきょう）」がわかるんだよ。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.q1.teach2"
+            "textKey": "story.beat3.q1.teach2",
+            "illustrationKey": "06_facies_fossil"
         },
         {
             "speaker": "Dr.Kaede",
@@ -111,7 +112,6 @@
             "text": "サンゴみたいに、地層（ちそう）ができた当時（とうじ）の「環境（かんきょう）」を教（おし）えてくれる化石（かせき）——これを何（なん）て呼（よ）ぶ？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q2.prompt",
-            "illustrationKey": "06_facies_fossil",
             "questionId": "q.fossil_facies_term",
             "questionVersion": "story-formative-v2-fixed-order",
             "hint": "「環境（かんきょう）」を示（しめ）す化石（かせき）。漢字（かんじ）4文字（もじ）で考（かんが）えよう。",
@@ -227,10 +227,16 @@
         },
         {
             "speaker": "Dr.Kaede",
+            "text": "火山（かざん）が噴火（ふんか）すると、火山灰（かざんばい）が遠（とお）くまで飛（と）んで、降（ふ）り積（つ）もるんだ。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat3.q5.teach1",
+            "illustrationKey": "09_tuff_volcano"
+        },
+        {
+            "speaker": "Dr.Kaede",
             "text": "柱状図（ちゅうじょうず）の中（なか）に、火山灰（かざんばい）がおし固（かた）まった「凝灰岩（ぎょうかいがん）」の層（そう）があるね。当時（とうじ）、何（なに）があった？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q5.prompt",
-            "illustrationKey": "09_tuff_volcano",
             "questionId": "q.tuff_volcano",
             "questionVersion": "story-formative-v2-fixed-order",
             "hint": "凝灰岩（ぎょうかいがん）は火山灰（かざんばい）からできるよ。火山灰（かざんばい）はどこから飛（と）んでくる？",
