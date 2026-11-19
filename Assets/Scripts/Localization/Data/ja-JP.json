@@ -4499,6 +4499,30 @@
     {
       "key": "story.s9.l09",
       "value": "調（しら）べたことは、町（まち）の防災（ぼうさい）に役立（やくだ）てよう。報告書（ほうこくしょ）にまとめたら、おかしパーティーね！"
+    },
+    {
+      "key": "ui.idle.talk",
+      "value": "Dr.Kaede「こっちだよ！　青い線の先で話しかけてね」"
+    },
+    {
+      "key": "ui.idle.shift",
+      "value": "Dr.Kaede「フェーズシフターで「{0}」へ行こう！」"
+    },
+    {
+      "key": "ui.idle.hammer",
+      "value": "Dr.Kaede「青い線の先のマークを、ハンマーでたたいてみて！」"
+    },
+    {
+      "key": "ui.idle.tower",
+      "value": "Dr.Kaede「青い線の先に、ドリルタワーを置いてみて！」"
+    },
+    {
+      "key": "ui.idle.follow",
+      "value": "Dr.Kaede「青い線をたどってみよう！」"
+    },
+    {
+      "key": "ui.idle.task",
+      "value": "Dr.Kaede「左上の「調査の進み具合」を見てみよう！」"
     }
   ]
 }

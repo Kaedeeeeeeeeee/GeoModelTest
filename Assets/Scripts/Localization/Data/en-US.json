@@ -4331,6 +4331,30 @@
     {
       "key": "story.s9.l09",
       "value": "Let's use what we found to keep the town safe. Write the report, then it's snack party time!"
+    },
+    {
+      "key": "ui.idle.talk",
+      "value": "Dr.Kaede: \"Over here! Follow the blue line and talk to me.\""
+    },
+    {
+      "key": "ui.idle.shift",
+      "value": "Dr.Kaede: \"Use the Phase Shifter to go to {0}!\""
+    },
+    {
+      "key": "ui.idle.hammer",
+      "value": "Dr.Kaede: \"Hit the mark at the end of the blue line with the hammer!\""
+    },
+    {
+      "key": "ui.idle.tower",
+      "value": "Dr.Kaede: \"Place the Drill Tower at the end of the blue line!\""
+    },
+    {
+      "key": "ui.idle.follow",
+      "value": "Dr.Kaede: \"Try following the blue line!\""
+    },
+    {
+      "key": "ui.idle.task",
+      "value": "Dr.Kaede: \"Check Investigation at the top left!\""
     }
   ]
 }

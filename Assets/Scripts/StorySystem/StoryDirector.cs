@@ -949,6 +949,12 @@ namespace StorySystem
                     continue;
                 }
                 onLineDisplayed?.Invoke(line, i);
+                // 研究1では長い台詞の途中で離脱が多かった。行ごとの表示時刻で、どこで止まったかを見る。
+                Backend.TelemetryClient.Instance?.Track("story_line_shown", new Dictionary<string, object>
+                {
+                    ["contentId"] = line.ContentId,
+                    ["kind"] = line.HasChoices ? "question" : line.HasCard ? "card" : "line"
+                });
                 StoryHistory.Append(line.Speaker, line.Text, "dialogue", line.ContentId ?? line.QuestionId);
 
                 // 立绘 alpha 渐变：当前说话者全显示，已露过脸但不在说话则半透明

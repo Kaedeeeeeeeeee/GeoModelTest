@@ -4331,6 +4331,30 @@
     {
       "key": "story.s9.l09",
       "value": "把调查结果用在镇上的防灾上吧。写完报告，就来开零食派对！"
+    },
+    {
+      "key": "ui.idle.talk",
+      "value": "Dr.Kaede：“在这边！顺着蓝线过来跟我说话吧”"
+    },
+    {
+      "key": "ui.idle.shift",
+      "value": "Dr.Kaede：“用相位转移器去「{0}」吧！”"
+    },
+    {
+      "key": "ui.idle.hammer",
+      "value": "Dr.Kaede：“用锤子敲一敲蓝线尽头的标记！”"
+    },
+    {
+      "key": "ui.idle.tower",
+      "value": "Dr.Kaede：“把钻塔放在蓝线的尽头试试！”"
+    },
+    {
+      "key": "ui.idle.follow",
+      "value": "Dr.Kaede：“顺着蓝线走走看！”"
+    },
+    {
+      "key": "ui.idle.task",
+      "value": "Dr.Kaede：“看看左上角的「调查进度」吧！”"
     }
   ]
 }
