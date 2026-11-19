@@ -734,6 +734,10 @@ namespace StorySystem
             // 知识讲解插画 banner 资源键（可选）。Resources/Story/Illustrations/<key>，"-" 收起，空/缺省保持不变。
             public string IllustrationKey;
 
+            // 环境音与音效（可选），见 StoryDialogueLine.ambience / sfx。
+            public string Ambience;
+            public string Sfx;
+
             public bool HasChoices => Choices != null && Choices.Count > 0;
             public bool HasHint => !string.IsNullOrEmpty(Hint);
 
@@ -749,6 +753,8 @@ namespace StorySystem
                 Choices = null;
                 Hint = null;
                 IllustrationKey = null;
+                Ambience = null;
+                Sfx = null;
             }
 
             public SubtitleLine(string text, bool triggerCameraShake = false, float shakeAmplitudeOverride = 0f)
@@ -975,6 +981,8 @@ namespace StorySystem
                     }
                 }
 
+                ApplyLineAudio(line);
+
                 finalLine = IsLastUnreadLine(lines, i);
                 canFinish = !line.HasChoices;
                 ShowSpeaker(line.Speaker);
@@ -1130,6 +1138,7 @@ namespace StorySystem
 
             button.onClick.RemoveListener(RequestAdvance);
             MarkDialogClosed();
+            AudioManager.Instance?.StopAmbience();
 
             // 停掉挂着的立绘/插画渐变协程，避免 Canvas/Image 销毁后悬挂
             if (_fadeLeft != null) { StoryDirectorRunner.Instance.StopCoroutine(_fadeLeft); _fadeLeft = null; }
@@ -1140,6 +1149,21 @@ namespace StorySystem
             StoryDirectorRunner.Instance.Run(DestroyCanvasNextFrame(canvasGO));
 
             onComplete?.Invoke();
+        }
+
+        /// <summary>Plays the line's one-shot sound and switches its looping ambience, so sound can carry
+        /// the place and mood instead of extra words.</summary>
+        private static void ApplyLineAudio(SubtitleLine line)
+        {
+            var audio = AudioManager.Instance;
+            if (audio == null) return;
+            if (!string.IsNullOrWhiteSpace(line.Ambience))
+            {
+                string key = line.Ambience.Trim();
+                if (key == "-" || key.Equals("none", System.StringComparison.OrdinalIgnoreCase)) audio.StopAmbience();
+                else audio.PlayAmbience(key);
+            }
+            if (!string.IsNullOrWhiteSpace(line.Sfx)) audio.PlaySFX(line.Sfx.Trim());
         }
 
         private static bool IsLastUnreadLine(IReadOnlyList<SubtitleLine> lines, int index)

@@ -15,12 +15,15 @@ namespace GeoModel.AudioSystem
     ///   PlayUI(key)                走 UI 通道
     ///   StartLoopSFX3D(key, t)     返回 AudioSource，挂在 transform 上循环
     ///   StopLoop(source, fade)     淡出并销毁循环源
+    ///   PlayAmbience(key, fade)    剧情环境音（2D 循环，走 SFX 音量），切换时先淡出再淡入
+    ///   StopAmbience(fade)         淡出环境音
     ///   SetVolume(channel, 0..1)   设置音量，写入 PlayerPrefs
     ///   GetVolume(channel)
     ///
     /// 资源约定：
     ///   BGM 文件放 Resources/Audio/BGM/<key>.{mp3,ogg,wav}
     ///   SFX 文件放 Resources/Audio/SFX/<key>.{ogg,wav}（启动时整目录预加载）
+    ///   环境音放 Resources/Audio/Ambience/<key>.{ogg,wav}（用到时才加载；缺文件只警告一次）
     /// </summary>
     public class AudioManager : MonoBehaviour
     {
@@ -75,6 +78,14 @@ namespace GeoModel.AudioSystem
 
         // UI 通道源（2D，忽略暂停）
         private AudioSource uiSource;
+
+        // 剧情环境音（2D 循环）
+        private AudioSource ambienceSource;
+        private Coroutine ambienceFadeCoroutine;
+        private string currentAmbienceKey = "";
+        private readonly Dictionary<string, AudioClip> ambienceCache = new();
+        private readonly HashSet<string> missingAmbience = new();
+        private const float DefaultAmbienceFade = 0.6f;
 
         // SFX 2D 池
         private readonly List<AudioSource> sfxPool = new();
@@ -157,6 +168,7 @@ namespace GeoModel.AudioSystem
             activeBgmSource = bgmSourceA;
 
             uiSource = CreateSource("UI", loop: false, ignorePause: true);
+            ambienceSource = CreateSource("Ambience", loop: true, ignorePause: true);
 
             for (int i = 0; i < SfxPoolSize; i++)
             {
@@ -397,6 +409,68 @@ namespace GeoModel.AudioSystem
         }
         #endregion
 
+        #region 环境音
+        public void PlayAmbience(string key, float fadeDuration = DefaultAmbienceFade)
+        {
+            if (string.IsNullOrEmpty(key)) { StopAmbience(fadeDuration); return; }
+            if (key == currentAmbienceKey && ambienceSource != null && ambienceSource.isPlaying) return;
+            var clip = LoadAmbience(key);
+            if (clip == null) return;
+            currentAmbienceKey = key;
+            if (ambienceFadeCoroutine != null) StopCoroutine(ambienceFadeCoroutine);
+            ambienceFadeCoroutine = StartCoroutine(SwitchAmbience(clip, Mathf.Max(0f, fadeDuration)));
+        }
+
+        public void StopAmbience(float fadeDuration = DefaultAmbienceFade)
+        {
+            currentAmbienceKey = "";
+            if (ambienceSource == null || !ambienceSource.isPlaying) return;
+            if (ambienceFadeCoroutine != null) StopCoroutine(ambienceFadeCoroutine);
+            ambienceFadeCoroutine = StartCoroutine(SwitchAmbience(null, Mathf.Max(0f, fadeDuration)));
+        }
+
+        private AudioClip LoadAmbience(string key)
+        {
+            if (ambienceCache.TryGetValue(key, out var cached)) return cached;
+            var clip = Resources.Load<AudioClip>("Audio/Ambience/" + key);
+            if (clip == null)
+            {
+                if (missingAmbience.Add(key)) Warn($"环境音未找到: {key}");
+                return null;
+            }
+            ambienceCache[key] = clip;
+            return clip;
+        }
+
+        private IEnumerator SwitchAmbience(AudioClip next, float duration)
+        {
+            float half = duration * 0.5f;
+            if (ambienceSource.isPlaying && half > 0f)
+            {
+                float from = ambienceSource.volume;
+                for (float t = 0f; t < half; t += Time.unscaledDeltaTime)
+                {
+                    ambienceSource.volume = Mathf.Lerp(from, 0f, t / half);
+                    yield return null;
+                }
+            }
+            ambienceSource.Stop();
+            if (next != null)
+            {
+                ambienceSource.clip = next;
+                ambienceSource.volume = 0f;
+                ambienceSource.Play();
+                for (float t = 0f; t < half; t += Time.unscaledDeltaTime)
+                {
+                    ambienceSource.volume = Mathf.Lerp(0f, EffectiveSfxVolume(), t / half);
+                    yield return null;
+                }
+                ambienceSource.volume = EffectiveSfxVolume();
+            }
+            ambienceFadeCoroutine = null;
+        }
+        #endregion
+
         #region 音量
         public void SetVolume(AudioChannel channel, float value01)
         {
@@ -430,6 +504,7 @@ namespace GeoModel.AudioSystem
             float bgmVol = EffectiveBgmVolume();
             if (bgmSourceA != null && bgmSourceA.isPlaying && bgmFadeCoroutine == null) bgmSourceA.volume = bgmVol;
             if (bgmSourceB != null && bgmSourceB.isPlaying && bgmFadeCoroutine == null) bgmSourceB.volume = bgmVol;
+            if (ambienceSource != null && ambienceSource.isPlaying && ambienceFadeCoroutine == null) ambienceSource.volume = EffectiveSfxVolume();
             // SFX/UI 是 one-shot，新触发的会用新音量，无需更新已在播的
         }
 

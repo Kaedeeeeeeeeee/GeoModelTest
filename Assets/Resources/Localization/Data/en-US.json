@@ -3903,6 +3903,58 @@
     {
       "key": "drill_tower.drill_prompt_mobile",
       "value": "Collect a core from {1:F0}–{2:F0}m"
+    },
+    {
+      "key": "story.s1.l01",
+      "value": "Lunch break in the classroom."
+    },
+    {
+      "key": "story.s1.l02",
+      "value": "Suddenly, a huge shake hits!"
+    },
+    {
+      "key": "story.s1.l03",
+      "value": "Earthquake! Everyone, get under your desks!"
+    },
+    {
+      "key": "story.s1.l04",
+      "value": "The shaking grows stronger. A white light fills everything—."
+    },
+    {
+      "key": "story.s2.l01",
+      "value": "...Where am I?"
+    },
+    {
+      "key": "story.s2.l02",
+      "value": "You're awake? This is G-Lab, a lab that studies the ground."
+    },
+    {
+      "key": "story.s2.l03",
+      "value": "I'm Kaede. My favorite things are strata and snacks!"
+    },
+    {
+      "key": "story.s2.l04",
+      "value": "That earthquake opened a big crack in your school's field."
+    },
+    {
+      "key": "story.s2.l05",
+      "value": "Help me find out what is happening under the ground!"
+    },
+    {
+      "key": "story.s2.l06",
+      "value": "...Okay, I'll give it a try!"
+    },
+    {
+      "key": "story.s2.l07",
+      "value": "Thanks! First, come over here!"
+    },
+    {
+      "key": "story.s2.l08",
+      "value": "Strata are the ground's diary. Let's see how they form in this picture."
+    },
+    {
+      "key": "story.s2.l10",
+      "value": "Let's head outside! Open your tools and pick the Phase Shifter."
     }
   ]
 }

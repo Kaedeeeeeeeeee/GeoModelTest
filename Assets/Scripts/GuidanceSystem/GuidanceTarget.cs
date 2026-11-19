@@ -16,6 +16,14 @@ namespace GuidanceSystem
         public float DetectionRadius => detectionRadius;
         public Vector3 WorldPosition => transform.position;
 
+        /// <summary>Sets up a target created from code before it is registered.</summary>
+        public void Configure(string id, float offset, float radius)
+        {
+            targetId = id;
+            verticalOffset = offset;
+            detectionRadius = radius;
+        }
+
         private void OnEnable()
         {
             GuidanceManager.Instance?.RegisterTarget(this);

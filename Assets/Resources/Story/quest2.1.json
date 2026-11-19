@@ -1,37 +1,63 @@
 {
-    "scene": "Bridge - Lab 1 (post beat1)",
+    "scene": "Lab - First talk at Dr.Kaede (strata diary, first quiz, to the field)",
     "background": "laboratory",
     "bgm": "lab_theme",
     "dialogues": [
         {
-            "speaker": "ナレーション",
-            "text": "翌朝（よくあさ）、G-Lab の研究室（けんきゅうしつ）。",
-            "speakerKey": "story.speaker.narration",
-            "textKey": "story.bridge.q21.l01"
+            "speaker": "Dr.Kaede",
+            "text": "地層（ちそう）は、大地（だいち）の「日記（にっき）」なの。どうやってできるか、この図（ず）で見（み）てみよう。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.s2.l08",
+            "illustrationKey": "01_weathering_order"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "おはよう！　さっそく最初（さいしょ）の任務（にんむ）。街（まち）の北（きた）にある露頭（ろとう）で、サンプルを取（と）ってきて。",
+            "text": "風化（ふうか）はもろくなる、侵食（しんしょく）はけずられる、運搬（うんぱん）は運（はこ）ばれる、堆積（たいせき）は積（つ）もる。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.bridge.q21.l02"
+            "textKey": "story.beat1.q1.teach2"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "移動（いどう）にはフェーズシフターを使（つか）うの。道具（どうぐ）の一覧（いちらん）から選（えら）んでね。",
+            "text": "山（やま）の岩石（がんせき）が地層（ちそう）になるまで——正（ただ）しい順番（じゅんばん）は？",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.bridge.q21.l03"
+            "textKey": "story.beat1.q1.prompt",
+            "questionId": "q.weathering_order",
+            "questionVersion": "story-formative-v2-fixed-order",
+            "hint": "もろくなる→けずられる→運（はこ）ばれる→積（つ）もる、の自然（しぜん）な流（なが）れを思（おも）い出（だ）してみよう。",
+            "hintKey": "story.beat1.q1.hint",
+            "choices": [
+                {
+                    "id": "q.weathering_order.correct_sequence",
+                    "text": "風化（ふうか）→ 侵食（しんしょく）→ 運搬（うんぱん）→ 堆積（たいせき）",
+                    "textKey": "story.beat1.q1.a",
+                    "isCorrect": true,
+                    "feedback": "せいかい！　もろくなって、けずられて、運（はこ）ばれて、積（つ）もる。この順番（じゅんばん）が基本（きほん）だよ。",
+                    "feedbackKey": "story.beat1.q1.fb_ok"
+                },
+                {
+                    "id": "q.weathering_order.reverse_sequence",
+                    "text": "堆積（たいせき）→ 運搬（うんぱん）→ 侵食（しんしょく）→ 風化（ふうか）",
+                    "textKey": "story.beat1.q1.b",
+                    "isCorrect": false,
+                    "feedback": "順番（じゅんばん）が逆（ぎゃく）！　岩石（がんせき）が先（さき）にもろくならないと、削（けず）られないよ。",
+                    "feedbackKey": "story.beat1.q1.fb_ng_b"
+                },
+                {
+                    "id": "q.weathering_order.mixed_sequence",
+                    "text": "侵食（しんしょく）→ 風化（ふうか）→ 堆積（たいせき）→ 運搬（うんぱん）",
+                    "textKey": "story.beat1.q1.c",
+                    "isCorrect": false,
+                    "feedback": "おしい。「もろくなる→削（けず）られる→運（はこ）ばれる→積（つ）もる」が基本（きほん）。運搬（うんぱん）は最後（さいご）にはこないんだ。",
+                    "feedbackKey": "story.beat1.q1.fb_ng_c"
+                }
+            ]
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "着（つ）いたら、青（あお）い線（せん）が示（しめ）す3か所（しょ）で、地質（ちしつ）ハンマーを使（つか）って岩石（がんせき）を採（と）ってね。粒（つぶ）の大（おお）きさや塩酸（えんさん）への反応（はんのう）は、戻（もど）ってから研究室（けんきゅうしつ）でいっしょに調（しら）べよう。",
+            "text": "よし、外（そと）へ行（い）こう！　道具（どうぐ）をひらいて、フェーズシフターをえらんでね。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.bridge.q21.l04"
-        },
-        {
-            "speaker": "主人公",
-            "text": "わかった、採（と）ってくる！",
-            "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.bridge.q21.l05"
+            "textKey": "story.s2.l10",
+            "illustrationKey": "-"
         }
     ]
 }

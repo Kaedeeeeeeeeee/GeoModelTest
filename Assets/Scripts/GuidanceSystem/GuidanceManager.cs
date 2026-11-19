@@ -24,6 +24,7 @@ namespace GuidanceSystem
         }
 
         public static GuidanceManager Current => _instance;
+        public string ActiveTargetId => activeTarget != null ? activeTarget.TargetId : pendingTargetId;
         public bool IsPlayerNearActiveTarget => activeTarget != null && playerTransform != null &&
             Vector3.Distance(playerTransform.position, activeTarget.WorldPosition) <= Mathf.Max(5f, activeTarget.DetectionRadius);
 

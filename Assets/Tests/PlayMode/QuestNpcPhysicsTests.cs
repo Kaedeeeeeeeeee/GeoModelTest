@@ -94,12 +94,7 @@ public class QuestNpcPhysicsTests
             if (next != null && next.GetComponent<Button>().interactable) next.GetComponent<Button>().onClick.Invoke();
             yield return new WaitForSecondsRealtime(0.12f);
         }
-        Assert.AreEqual(1, quizAnswers, "The real laboratory introduction must answer its first quiz correctly.");
-        var attempts = (IList)Prop(Prop(T("StorySystem.QuizScoreManager"), "Instance"), "Attempts");
-        Assert.AreEqual(1, attempts.Count);
-        Assert.AreEqual("q.weathering_order", Get(attempts[0], "questionId"));
-        Assert.AreEqual("q.weathering_order.correct_sequence", Get(attempts[0], "choiceId"));
-        Assert.IsTrue((bool)Get(attempts[0], "isCorrect"));
+        Assert.AreEqual(0, quizAnswers, "The short laboratory introduction hands control to the player before any quiz.");
         yield return null;
         // Complete the actual four-page control guide after the introduction.
         deadline = Time.realtimeSinceStartup + 5f;
@@ -233,15 +228,29 @@ public class QuestNpcPhysicsTests
         Assert.IsTrue((bool)Get(npc, "isInteracting"));
 
         // Finish the actual dialogue so exit assertions exercise the normal interaction state.
+        // The first quiz now sits in this conversation with Kaede, not in the introduction.
         deadline = Time.realtimeSinceStartup + 40f;
+        quizAnswers = 0;
         while ((bool)Prop(T("StorySystem.StoryDirector"), "IsStoryPlaybackActive") && Time.realtimeSinceStartup < deadline)
         {
+            var choice = GameObject.Find("SubtitleCanvas/ChoicePanel/Choice0");
+            if (choice != null && choice.GetComponent<Button>().interactable)
+            {
+                choice.GetComponent<Button>().onClick.Invoke();
+                quizAnswers++;
+            }
             var next = GameObject.Find("SubtitleCanvas/BG");
             if (next != null && next.GetComponent<Button>().interactable) next.GetComponent<Button>().onClick.Invoke();
             yield return new WaitForSecondsRealtime(0.08f);
         }
         Assert.IsFalse((bool)Prop(T("StorySystem.StoryDirector"), "IsStoryPlaybackActive"));
         Assert.IsFalse((bool)Get(npc, "isInteracting"));
+        Assert.AreEqual(1, quizAnswers, "Kaede's first talk must answer its first quiz correctly.");
+        var attempts = (IList)Prop(Prop(T("StorySystem.QuizScoreManager"), "Instance"), "Attempts");
+        Assert.AreEqual(1, attempts.Count);
+        Assert.AreEqual("q.weathering_order", Get(attempts[0], "questionId"));
+        Assert.AreEqual("q.weathering_order.correct_sequence", Get(attempts[0], "choiceId"));
+        Assert.IsTrue((bool)Get(attempts[0], "isCorrect"));
         for (int step = 0; step < 70 && HorizontalDistance(player, npc) < 2.2f; step++)
         {
             controller.Move(front * 0.04f);

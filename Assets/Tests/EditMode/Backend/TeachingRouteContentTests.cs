@@ -13,7 +13,7 @@ public class TeachingRouteContentTests
     [Serializable] private class Localizations { public List<Entry> texts; }
     [Serializable] private class Entry { public string key; public string value; }
 
-    private static readonly string[] Route = { "quest1.2", "beat2", "quest3.4", "beat3", "beat4" };
+    private static readonly string[] Route = { "quest1.2", "quest2.1", "beat2", "quest3.4", "beat3", "beat4" };
 
     private static List<Line> Load(string name) =>
         JsonUtility.FromJson<Sequence>(Resources.Load<TextAsset>("Story/" + name).text).dialogues;
@@ -94,5 +94,34 @@ public class TeachingRouteContentTests
         string ja = Texts("ja-JP")["story.beat3.l11"];
         StringAssert.Contains("サンゴ", ja);
         StringAssert.Contains("岩芯", ja);
+    }
+
+    [Test]
+    public void LabOpening_ShouldHandOverToThePlayerBeforeAnyTeaching()
+    {
+        // Study 1 lost 19 of 30 players between the long lab introduction and their first own move.
+        // The introduction now ends by sending the player to Kaede; teaching starts in that talk.
+        var intro = Load("quest1.2");
+        Assert.LessOrEqual(intro.Count, 8);
+        Assert.IsFalse(intro.Any(line => !string.IsNullOrEmpty(line.questionId)), "The introduction asks no question.");
+        Assert.IsFalse(intro.Any(line => !string.IsNullOrEmpty(line.illustrationKey)), "The introduction shows no teaching picture.");
+        StringAssert.Contains("こっちに来", Texts("ja-JP")[intro.Last().textKey]);
+        var firstTalk = Load("quest2.1");
+        Assert.AreEqual("q.weathering_order", firstTalk.Single(line => !string.IsNullOrEmpty(line.questionId)).questionId);
+        Assert.AreEqual("01_weathering_order", firstTalk.First().illustrationKey);
+        foreach (string language in new[] { "ja-JP", "zh-CN", "en-US" })
+            foreach (var line in intro.Concat(firstTalk).Concat(Load("quest1.1")))
+                Assert.IsTrue(Texts(language).ContainsKey(line.textKey), line.textKey + " exists in " + language);
+    }
+
+    [Test]
+    public void StoryLines_ShouldStayShortForGradeOneReaders()
+    {
+        foreach (string name in new[] { "quest1.1", "quest1.2" })
+            foreach (var line in Load(name))
+            {
+                string ja = System.Text.RegularExpressions.Regex.Replace(Texts("ja-JP")[line.textKey], "（[ぁ-ゖー]+）", "");
+                Assert.LessOrEqual(ja.Length, 40, name + "/" + line.textKey + " stays within 40 characters without furigana.");
+            }
     }
 }

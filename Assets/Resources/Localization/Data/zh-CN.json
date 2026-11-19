@@ -3903,6 +3903,58 @@
     {
       "key": "drill_tower.drill_prompt_mobile",
       "value": "采集 {1:F0}m–{2:F0}m 的岩芯"
+    },
+    {
+      "key": "story.s1.l01",
+      "value": "午休时的教室。"
+    },
+    {
+      "key": "story.s1.l02",
+      "value": "突然，一阵剧烈的摇晃袭来！"
+    },
+    {
+      "key": "story.s1.l03",
+      "value": "地震了！大家快躲到桌子下面！"
+    },
+    {
+      "key": "story.s1.l04",
+      "value": "摇晃越来越强。眼前被一片白光包围——。"
+    },
+    {
+      "key": "story.s2.l01",
+      "value": "……这是哪里？"
+    },
+    {
+      "key": "story.s2.l02",
+      "value": "醒了吗？这里是调查大地的研究所「G-Lab」。"
+    },
+    {
+      "key": "story.s2.l03",
+      "value": "我是枫。喜欢的东西是地层和零食！"
+    },
+    {
+      "key": "story.s2.l04",
+      "value": "刚才的地震让学校操场裂开了一道大缝。"
+    },
+    {
+      "key": "story.s2.l05",
+      "value": "地下到底发生了什么，希望你和我一起调查！"
+    },
+    {
+      "key": "story.s2.l06",
+      "value": "……好，我试试！"
+    },
+    {
+      "key": "story.s2.l07",
+      "value": "谢谢！那先到我这边来！"
+    },
+    {
+      "key": "story.s2.l08",
+      "value": "地层是大地的「日记」。用这张图看看它是怎么形成的吧。"
+    },
+    {
+      "key": "story.s2.l10",
+      "value": "好，出发去野外！打开道具，选择相位转移器吧。"
     }
   ]
 }

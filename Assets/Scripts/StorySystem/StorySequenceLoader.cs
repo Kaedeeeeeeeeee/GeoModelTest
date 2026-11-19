@@ -26,6 +26,12 @@ namespace StorySystem
         // 知识讲解插画 banner 资源键（可选）。Resources/Story/Illustrations/<key>，"-" 收起。
         public string illustrationKey;
 
+        // 环境音（可选）。Resources/Audio/Ambience/<key> 循环播放并交叉淡入；"-" 淡出停止；空/缺省保持不变。
+        public string ambience;
+
+        // 音效（可选）。这句显示时播放一次 Resources/Audio/SFX/<key>。
+        public string sfx;
+
         // 选择题（可选）。choices 为空时该行是普通台词。
         public string questionId;
         public string questionVersion;
@@ -127,6 +133,8 @@ namespace StorySystem
                 float overrideAmplitude = entry.shakeAmplitude;
                 var subtitleLine = new StoryDirector.SubtitleUI.SubtitleLine(speaker, text, triggerShake, overrideAmplitude);
                 subtitleLine.IllustrationKey = entry.illustrationKey;
+                subtitleLine.Ambience = entry.ambience;
+                subtitleLine.Sfx = entry.sfx;
 
                 if (entry.choices != null && entry.choices.Count > 0)
                 {
