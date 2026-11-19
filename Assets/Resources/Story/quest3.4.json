@@ -24,9 +24,17 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "それと、変（か）わり種（だね）が2つ——塩酸（えんさん）で泡（あわ）が出（で）るのが「石灰岩（せっかいがん）」、くぎでも傷（きず）がつかないかたさが「チャート」。",
+            "text": "それと、変（か）わり種（だね）が2つ。まず、うすい塩酸（えんさん）をかけると泡（あわ）が出（で）るのが「石灰岩（せっかいがん）」。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat2.q1.teach2"
+            "textKey": "story.beat2.q1.teach2",
+            "illustrationKey": "03_limestone"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "もうひとつは「チャート」。とてもかたくて、くぎでこすっても傷（きず）がつかないんだ。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.beat2.q1.teach3",
+            "illustrationKey": "04_chert"
         },
         {
             "speaker": "Dr.Kaede",
@@ -69,7 +77,6 @@
             "text": "次（つぎ）のサンプルは、うすい塩酸（えんさん）をかけたら泡（あわ）（二酸化炭素（にさんかたんそ））が出（で）たわ。これは？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat2.q2.prompt",
-            "illustrationKey": "03_limestone",
             "questionId": "q.rock_limestone",
             "questionVersion": "story-formative-v2-fixed-order",
             "hint": "塩酸（えんさん）に反応（はんのう）する岩石（がんせき）は限（かぎ）られているよ。貝（かい）やサンゴからできた岩（いわ）は？",
@@ -106,7 +113,6 @@
             "text": "もうひとつ。くぎでひっかいても傷（きず）がつかないほどかたい。これは？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat2.q3.prompt",
-            "illustrationKey": "04_chert",
             "questionId": "q.rock_chert",
             "questionVersion": "story-formative-v2-fixed-order",
             "hint": "海（うみ）の小（ちい）さな生物（せいぶつ）の殻（から）が積（つ）もってできた、とてもかたい岩（いわ）は？",

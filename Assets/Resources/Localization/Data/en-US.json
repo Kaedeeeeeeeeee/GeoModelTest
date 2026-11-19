@@ -2565,6 +2565,10 @@
       "value": "Yes. Organisms that lived widely but thrived only briefly make good index fossils."
     },
     {
+      "key": "story.beat3.q5.teach1",
+      "value": "When a volcano erupts, its ash can drift far away and settle in layers."
+    },
+    {
       "key": "story.beat3.q5.prompt",
       "value": "The column has a layer of tuff, formed from compacted volcanic ash. What happened back then?"
     },
@@ -2814,7 +2818,11 @@
     },
     {
       "key": "story.beat2.q1.teach2",
-      "value": "Plus two special ones — limestone fizzes with acid, and chert is so hard not even a nail can scratch it."
+      "value": "Plus two special ones. First, limestone fizzes when you drop dilute acid on it."
+    },
+    {
+      "key": "story.beat2.q1.teach3",
+      "value": "The other is chert — so hard not even a nail can scratch it."
     },
     {
       "key": "story.beat1.q1.fb_ng_b",
