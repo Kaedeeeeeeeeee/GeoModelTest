@@ -142,6 +142,7 @@ namespace StorySystem
                 subtitleLine.IllustrationKey = entry.illustrationKey;
                 subtitleLine.Ambience = entry.ambience;
                 subtitleLine.Sfx = entry.sfx;
+                subtitleLine.VoiceKey = entry.textKey;
                 subtitleLine.Evidence = string.IsNullOrEmpty(entry.evidence) && string.IsNullOrEmpty(entry.evidenceKey)
                     ? null : ResolveText(entry.evidence, entry.evidenceKey, localizationManager, canLocalize);
                 subtitleLine.EvidenceId = entry.evidenceKey;
@@ -155,6 +156,7 @@ namespace StorySystem
                         ? QuizScoreManager.DefaultQuestionVersion
                         : entry.questionVersion.Trim();
                     subtitleLine.Hint = ResolveText(entry.hint, entry.hintKey, localizationManager, canLocalize);
+                    subtitleLine.HintKey = entry.hintKey;
                     subtitleLine.Choices = new List<StoryDirector.SubtitleUI.SubtitleChoice>();
                     foreach (var choice in entry.choices)
                     {
@@ -164,7 +166,8 @@ namespace StorySystem
                             ChoiceId = choice.id,
                             Text = ResolveText(choice.text, choice.textKey, localizationManager, canLocalize),
                             IsCorrect = choice.isCorrect,
-                            Feedback = ResolveText(choice.feedback, choice.feedbackKey, localizationManager, canLocalize)
+                            Feedback = ResolveText(choice.feedback, choice.feedbackKey, localizationManager, canLocalize),
+                            FeedbackKey = choice.feedbackKey
                         });
                     }
                 }

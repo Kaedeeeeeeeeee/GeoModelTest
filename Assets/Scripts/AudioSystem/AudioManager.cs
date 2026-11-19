@@ -54,6 +54,7 @@ namespace GeoModel.AudioSystem
         [Range(0f, 1f)] public float defaultBGM    = 0.55f;
         [Range(0f, 1f)] public float defaultSFX    = 0.85f;
         [Range(0f, 1f)] public float defaultUI     = 0.8f;
+        [Range(0f, 1f)] public float defaultVoice  = 0.9f;
 
         [Header("淡入淡出")]
         public float defaultBgmFade = 1.5f;
@@ -81,6 +82,7 @@ namespace GeoModel.AudioSystem
 
         // 剧情环境音（2D 循环）
         private AudioSource ambienceSource;
+        private AudioSource voiceSource;
         private Coroutine ambienceFadeCoroutine;
         private string currentAmbienceKey = "";
         private readonly Dictionary<string, AudioClip> ambienceCache = new();
@@ -147,6 +149,7 @@ namespace GeoModel.AudioSystem
             volumes[AudioChannel.BGM]    = defaultBGM;
             volumes[AudioChannel.SFX]    = defaultSFX;
             volumes[AudioChannel.UI]     = defaultUI;
+            volumes[AudioChannel.Voice]  = defaultVoice;
 
             LoadVolumesFromPrefs();
             BuildSources();
@@ -169,6 +172,7 @@ namespace GeoModel.AudioSystem
 
             uiSource = CreateSource("UI", loop: false, ignorePause: true);
             ambienceSource = CreateSource("Ambience", loop: true, ignorePause: true);
+            voiceSource = CreateSource("Voice", loop: false, ignorePause: true);
 
             for (int i = 0; i < SfxPoolSize; i++)
             {
@@ -471,6 +475,25 @@ namespace GeoModel.AudioSystem
         }
         #endregion
 
+        #region 配音
+        /// <summary>台词配音。新的一句会打断上一句；推进对话时调用 StopVoice。</summary>
+        public void PlayVoice(AudioClip clip)
+        {
+            if (voiceSource == null || clip == null) return;
+            voiceSource.Stop();
+            voiceSource.clip = clip;
+            voiceSource.volume = EffectiveVoiceVolume();
+            voiceSource.Play();
+        }
+
+        public void StopVoice()
+        {
+            if (voiceSource != null && voiceSource.isPlaying) voiceSource.Stop();
+        }
+
+        public bool IsVoicePlaying => voiceSource != null && voiceSource.isPlaying;
+        #endregion
+
         #region 音量
         public void SetVolume(AudioChannel channel, float value01)
         {
@@ -505,12 +528,14 @@ namespace GeoModel.AudioSystem
             if (bgmSourceA != null && bgmSourceA.isPlaying && bgmFadeCoroutine == null) bgmSourceA.volume = bgmVol;
             if (bgmSourceB != null && bgmSourceB.isPlaying && bgmFadeCoroutine == null) bgmSourceB.volume = bgmVol;
             if (ambienceSource != null && ambienceSource.isPlaying && ambienceFadeCoroutine == null) ambienceSource.volume = EffectiveSfxVolume();
+            if (voiceSource != null && voiceSource.isPlaying) voiceSource.volume = EffectiveVoiceVolume();
             // SFX/UI 是 one-shot，新触发的会用新音量，无需更新已在播的
         }
 
         private float EffectiveBgmVolume() => GetVolume(AudioChannel.Master) * GetVolume(AudioChannel.BGM);
         private float EffectiveSfxVolume() => GetVolume(AudioChannel.Master) * GetVolume(AudioChannel.SFX);
         private float EffectiveUiVolume()  => GetVolume(AudioChannel.Master) * GetVolume(AudioChannel.UI);
+        private float EffectiveVoiceVolume() => GetVolume(AudioChannel.Master) * GetVolume(AudioChannel.Voice);
 
         private static string PrefKey(AudioChannel ch) => $"audio.{ch.ToString().ToLower()}";
         #endregion

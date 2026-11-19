@@ -715,6 +715,7 @@ namespace StorySystem
             public string Text;
             public bool IsCorrect;
             public string Feedback;
+            public string FeedbackKey; // 配音ファイル名
         }
 
         public struct SubtitleLine
@@ -737,6 +738,10 @@ namespace StorySystem
             // 环境音与音效（可选），见 StoryDialogueLine.ambience / sfx。
             public string Ambience;
             public string Sfx;
+
+            // 配音のキー（= textKey）。StreamingAssets/Voice/<lang>/<key>.mp3
+            public string VoiceKey;
+            public string HintKey;
 
             // 知識インタラクションカード（可選）。null なら普通の台詞。
             public KnowledgeCard Card;
@@ -763,6 +768,8 @@ namespace StorySystem
                 IllustrationKey = null;
                 Ambience = null;
                 Sfx = null;
+                VoiceKey = null;
+                HintKey = null;
                 Card = null;
                 Evidence = null;
                 EvidenceId = null;
@@ -1011,6 +1018,8 @@ namespace StorySystem
                 canFinish = !line.HasChoices;
                 ShowSpeaker(line.Speaker);
                 pager.SetText(line.Text);
+                StoryVoice.Play(line.VoiceKey);
+                for (int ahead = i + 1; ahead < lines.Count && ahead <= i + 2; ahead++) StoryVoice.Prefetch(lines[ahead].VoiceKey);
                 RefreshAdvanceHint();
                 advanceRequested = false;
                 yield return null; // 避免前一次点击连带跳过
@@ -1053,6 +1062,7 @@ namespace StorySystem
                         {
                             ShowSpeaker(line.Speaker);
                             pager.SetText(line.Card.Done);
+                            StoryVoice.Play(line.Card.DoneKey);
                             StoryHistory.Append(line.Speaker, line.Card.Done, "dialogue", line.ContentId);
                         }
                         canFinish = true;
@@ -1099,6 +1109,7 @@ namespace StorySystem
                         canFinish = false;
                         ShowSpeaker(line.Speaker);
                         pager.SetText(line.Text);
+                        if (disabledIdx.Count > 0 || usedHint) StoryVoice.Play(line.VoiceKey); // 答え直し・ヒントの後は問いをもう一度読む
                         RefreshAdvanceHint();
 
                         // Read every prompt page before exposing the answer choices.
@@ -1143,6 +1154,7 @@ namespace StorySystem
                             SetDialogAdvanceEnabled(true);
                             ShowSpeaker(line.Speaker, "hint");
                             pager.SetText(line.Hint);
+                            StoryVoice.Play(line.HintKey);
                             StoryHistory.Append(line.Speaker, line.Hint, "hint", line.QuestionId);
                             hintTxt.text = hintContinue;
                             advanceRequested = false;
@@ -1192,6 +1204,7 @@ namespace StorySystem
 
                         ShowSpeaker(line.Speaker, "feedback");
                         pager.SetText(feedback);
+                        StoryVoice.Play(chosen.FeedbackKey);
                         StoryHistory.Append(line.Speaker, chosen.Text, "choice", chosen.ChoiceId);
                         StoryHistory.Append(line.Speaker, feedback, "feedback", line.QuestionId);
                         canFinish = chosen.IsCorrect;
@@ -1233,6 +1246,7 @@ namespace StorySystem
             button.onClick.RemoveListener(RequestAdvance);
             MarkDialogClosed();
             AudioManager.Instance?.StopAmbience();
+            StoryVoice.Stop();
 
             // 停掉挂着的立绘/插画渐变协程，避免 Canvas/Image 销毁后悬挂
             if (_fadeLeft != null) { StoryDirectorRunner.Instance.StopCoroutine(_fadeLeft); _fadeLeft = null; }

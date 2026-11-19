@@ -29,6 +29,10 @@
       "value": "界面音量"
     },
     {
+      "key": "ui.settings.voice_volume",
+      "value": "角色配音音量"
+    },
+    {
       "key": "ui.settings.gameplay",
       "value": "游戏"
     },

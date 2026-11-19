@@ -29,6 +29,10 @@
       "value": "ボタン・メニューの音量"
     },
     {
+      "key": "ui.settings.voice_volume",
+      "value": "キャラクターの声の音量"
+    },
+    {
       "key": "ui.settings.gameplay",
       "value": "ゲーム"
     },

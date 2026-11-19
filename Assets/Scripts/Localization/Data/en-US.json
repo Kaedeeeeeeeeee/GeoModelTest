@@ -29,6 +29,10 @@
       "value": "UI Volume"
     },
     {
+      "key": "ui.settings.voice_volume",
+      "value": "Character voice volume"
+    },
+    {
       "key": "ui.settings.gameplay",
       "value": "Gameplay"
     },

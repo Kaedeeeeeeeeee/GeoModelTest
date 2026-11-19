@@ -97,6 +97,7 @@ namespace StorySystem
         public string Title;
         public string Wrong;
         public string Done;
+        public string DoneKey; // 配音ファイル名
         public readonly List<Item> Items = new List<Item>();
         public readonly List<Bin> Bins = new List<Bin>();
         public readonly List<Column> Columns = new List<Column>();
@@ -144,7 +145,8 @@ namespace StorySystem
                 Type = source.type.Trim().ToLowerInvariant(),
                 Title = resolve(source.title, source.titleKey),
                 Wrong = resolve(source.wrong, source.wrongKey),
-                Done = resolve(source.done, source.doneKey)
+                Done = resolve(source.done, source.doneKey),
+                DoneKey = source.doneKey
             };
             if (source.items != null)
                 foreach (var i in source.items)
