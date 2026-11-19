@@ -1,75 +1,26 @@
 {
-    "scene": "Beat3 - Laboratory core and fossil analysis",
+    "scene": "Beat3 - Laboratory core and fossil analysis (study 2 script)",
     "background": "laboratory",
     "bgm": "lab_theme",
     "dialogues": [
         {
             "speaker": "Dr.Kaede",
-            "text": "研究室（けんきゅうしつ）に戻（もど）ったね。採取（さいしゅ）した岩芯（がんしん）を「柱状図（ちゅうじょうず）」と比（くら）べて調（しら）べよう。",
+            "text": "さっきの白（しろ）いもよう、ルーペで見（み）てみて！",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.l01"
+            "textKey": "story.s8.l01"
         },
         {
             "speaker": "主人公",
-            "text": "こんな大（おお）きな機械（きかい）で取（と）ったデータ、迫力（はくりょく）あるな……！",
+            "text": "小（ちい）さなあながいっぱい……これ、なに？",
             "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.beat3.l05"
-        },
-        {
-            "speaker": "ナレーション",
-            "text": "岩芯（がんしん）を半分（はんぶん）に割（わ）って、ルーペでのぞいてみると——白（しろ）っぽくて、小（ちい）さな穴（あな）がたくさんあいた、ふしぎな模様（もよう）が見（み）えた。",
-            "speakerKey": "story.speaker.narration",
-            "textKey": "story.beat3.l02"
-        },
-        {
-            "speaker": "主人公",
-            "text": "これ、なに？　ただの石（いし）の模様（もよう）……じゃないよね？",
-            "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.beat3.l10"
+            "textKey": "story.s8.l02"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "よく見（み）つけたね！　これは「サンゴ」の化石（かせき）。君（きみ）が採（と）ってきた岩芯（がんしん）の中（なか）に、入（はい）っていたんだよ。",
+            "text": "岩芯（がんしん）の中（なか）に「サンゴ」の化石（かせき）！　サンゴは今（いま）も、あたたかく浅（あさ）い海（うみ）にしかすめないの。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.l11",
             "illustrationKey": "05_coral_env"
-        },
-        {
-            "speaker": "主人公",
-            "text": "うわ、本物（ほんもの）の化石（かせき）だ……！　何千万年（なんせんまんねん）も前（まえ）の生（い）きものが、今（いま）、目（め）の前（まえ）に。",
-            "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.beat3.l03"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "ねえ、化石（かせき）って「タイムカプセル」みたいなものなの。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.q1.teach1"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "生（い）きものは住（す）める場所（ばしょ）が決（き）まってる。だから化石（かせき）からは、当時（とうじ）の「環境（かんきょう）」がわかるんだよ。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.q1.teach2",
-            "illustrationKey": "06_facies_fossil"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "このサンゴの仲間（なかま）は、今（いま）も、あたたかくて浅（あさ）い海（うみ）にしか育（そだ）たないんだ。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.q1.teach3"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "さっきの石灰岩（せっかいがん）も、サンゴや貝（かい）がらが積（つ）もってできた岩石（がんせき）だったね。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.l12"
-        },
-        {
-            "speaker": "ナレーション",
-            "text": "柱状図（ちゅうじょうず）と岩芯（がんしん）の記録（きろく）を机（つくえ）に並（なら）べ、地下（ちか）の歴史（れきし）を読（よ）み解（と）いていく。",
-            "speakerKey": "story.speaker.narration",
-            "textKey": "story.beat3.l04"
         },
         {
             "speaker": "Dr.Kaede",
@@ -253,12 +204,6 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "アンモナイトは、中生代（ちゅうせいだい）の地層（ちそう）の年代（ねんだい）を知（し）る手掛（てが）かりとして、よく使（つか）われる示準化石（しじゅんかせき）だよ。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.q3.teach3"
-        },
-        {
-            "speaker": "Dr.Kaede",
             "text": "……ということは、この地層（ちそう）ができたのは？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q3.prompt",
@@ -295,13 +240,6 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "広（ひろ）い範囲（はんい）にすんで、短（みじか）い期間（きかん）だけ栄（さか）えた生（い）きものの化石（かせき）は、年代（ねんだい）を決（き）めるのに役立（やくだ）つの。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.q4.teach1",
-            "illustrationKey": "08_index_fossil_eras"
-        },
-        {
-            "speaker": "Dr.Kaede",
             "text": "アンモナイトみたいなのを——何（なん）て呼（よ）ぶ？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q4.prompt",
@@ -330,7 +268,7 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "火山（かざん）が噴火（ふんか）すると、火山灰（かざんばい）が遠（とお）くまで飛（と）んで、降（ふ）り積（つ）もるんだ。",
+            "text": "火山（かざん）がふん火（か）すると、火山灰（かざんばい）が遠（とお）くまでとんで、つもるんだ。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q5.teach1",
             "illustrationKey": "09_tuff_volcano"
@@ -372,30 +310,21 @@
             ]
         },
         {
-            "speaker": "Dr.Kaede",
-            "text": "つまりこの場所（ばしょ）は、昔（むかし）ほんとうに大（おお）きく姿（すがた）を変（か）えてきた——浅（あさ）い海（うみ）、深（ふか）い海（うみ）、そして火山（かざん）……地層（ちそう）はそれを全部（ぜんぶ）、記録（きろく）してたんだ。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.l06"
-        },
-        {
             "speaker": "ナレーション",
-            "text": "——ズン。足元（あしもと）が、また小（ちい）さくゆれた。",
-            "shake": true,
-            "shakeAmplitude": 0.25,
+            "text": "——ズン。足（あし）もとが、また小（ちい）さくゆれた。",
             "speakerKey": "story.speaker.narration",
-            "textKey": "story.beat3.l07"
-        },
-        {
-            "speaker": "主人公",
-            "text": "今（いま）の、地震（じしん）……？　さっきより小（ちい）さいけど……",
-            "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.beat3.l08"
+            "textKey": "story.beat3.l07",
+            "illustrationKey": "-",
+            "shake": true,
+            "shakeAmplitude": 0.35
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "余震（よしん）。でもこれは「記録（きろく）」じゃない——「今（いま）」も動（うご）いてる証拠（しょうこ）。……急（いそ）ごう。",
+            "text": "余震（よしん）だ……急（いそ）ごう。最後（さいご）は、3か所（しょ）の柱状図（ちゅうじょうず）をくらべるよ！",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.l09"
+            "textKey": "story.s8.l13",
+            "evidenceKey": "evidence.e3",
+            "evidence": "③化石（かせき）と火山灰（かざんばい）"
         }
     ]
 }

@@ -35,6 +35,10 @@ namespace StorySystem
         // 知識インタラクションカード（可選）。行の text が指示、カードを終えると done の一言が出る。
         public StoryInteraction interaction;
 
+        // 証拠カード（可選）。この行で手に入れた証拠の名前。上に小さく「証拠カード ゲット」を出す。
+        public string evidence;
+        public string evidenceKey;
+
         // 选择题（可选）。choices 为空时该行是普通台词。
         public string questionId;
         public string questionVersion;
@@ -138,6 +142,9 @@ namespace StorySystem
                 subtitleLine.IllustrationKey = entry.illustrationKey;
                 subtitleLine.Ambience = entry.ambience;
                 subtitleLine.Sfx = entry.sfx;
+                subtitleLine.Evidence = string.IsNullOrEmpty(entry.evidence) && string.IsNullOrEmpty(entry.evidenceKey)
+                    ? null : ResolveText(entry.evidence, entry.evidenceKey, localizationManager, canLocalize);
+                subtitleLine.EvidenceId = entry.evidenceKey;
                 subtitleLine.Card = KnowledgeCard.From(entry.interaction,
                     (direct, key) => ResolveText(direct, key, localizationManager, canLocalize));
 

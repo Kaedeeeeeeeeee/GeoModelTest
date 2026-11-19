@@ -741,6 +741,10 @@ namespace StorySystem
             // 知識インタラクションカード（可選）。null なら普通の台詞。
             public KnowledgeCard Card;
 
+            // 証拠カード（可選）：この行で手に入れる証拠の名前（ローカライズ済み）と分析用 id。
+            public string Evidence;
+            public string EvidenceId;
+
             public bool HasCard => Card != null;
             public bool HasChoices => Choices != null && Choices.Count > 0;
             public bool HasHint => !string.IsNullOrEmpty(Hint);
@@ -760,6 +764,8 @@ namespace StorySystem
                 Ambience = null;
                 Sfx = null;
                 Card = null;
+                Evidence = null;
+                EvidenceId = null;
             }
 
             public SubtitleLine(string text, bool triggerCameraShake = false, float shakeAmplitudeOverride = 0f)
@@ -993,6 +999,7 @@ namespace StorySystem
                 }
 
                 ApplyLineAudio(line);
+                if (!string.IsNullOrEmpty(line.Evidence)) ShowEvidenceToast(canvasGO.transform, line);
 
                 finalLine = IsLastUnreadLine(lines, i);
                 canFinish = !line.HasChoices;
@@ -1015,6 +1022,8 @@ namespace StorySystem
                     }
                     SetDialogAdvanceEnabled(false);
 
+                    var toast = canvasGO.transform.Find("EvidenceToast"); // カードのタイトルと重ならないように
+                    if (toast != null) UnityEngine.Object.Destroy(toast.gameObject);
                     var cardSession = KnowledgeCardSession.Build(canvasGO.transform, line.Card, ApplyTmpFont);
                     if (cardSession != null)
                     {
@@ -1228,6 +1237,37 @@ namespace StorySystem
             StoryDirectorRunner.Instance.Run(DestroyCanvasNextFrame(canvasGO));
 
             onComplete?.Invoke();
+        }
+
+        /// <summary>「証拠カード ゲット」を上に 3 秒出す。謎ときの最後に、集めた証拠をならべて結論をえらぶ。</summary>
+        private static void ShowEvidenceToast(Transform canvas, SubtitleLine line)
+        {
+            var old = canvas.Find("EvidenceToast");
+            if (old != null) UnityEngine.Object.Destroy(old.gameObject);
+            var box = GameUI.Box(canvas, "EvidenceToast", new Color(0.85f, 0.72f, 0.30f, 0.96f),
+                new Vector2(0.30f, 0.885f), new Vector2(0.70f, 0.975f));
+            box.raycastTarget = false;
+            var label = GameUI.Rect(box.transform, "Label", new Vector2(0.03f, 0.05f), new Vector2(0.97f, 0.95f))
+                .gameObject.AddComponent<TextMeshProUGUI>();
+            ApplyTmpFont(label);
+            label.raycastTarget = false;
+            label.enableAutoSizing = true;
+            label.fontSizeMax = 30;
+            label.fontSizeMin = 18;
+            label.lineSpacing = 18f;
+            label.alignment = TextAlignmentOptions.Center;
+            label.color = GameUI.Surface;
+            string format = LocalizedOr("story.evidence.got", "証拠（しょうこ）カード ゲット：{0}");
+            string text;
+            try { text = string.Format(format, line.Evidence); }
+            catch (FormatException) { text = format + " " + line.Evidence; }
+            label.text = FuriganaProcessor.Process(text);
+            AudioManager.Instance?.PlaySFX(AudioKeys.SFX.SamplePickup);
+            Backend.TelemetryClient.Instance?.Track("evidence_got", new Dictionary<string, object>
+            {
+                ["evidenceId"] = line.EvidenceId
+            });
+            UnityEngine.Object.Destroy(box.gameObject, 3.5f);
         }
 
         /// <summary>Plays the line's one-shot sound and switches its looping ambience, so sound can carry

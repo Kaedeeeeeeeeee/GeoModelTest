@@ -2566,7 +2566,7 @@
     },
     {
       "key": "story.beat3.q5.teach1",
-      "value": "When a volcano erupts, its ash can drift far away and settle in layers."
+      "value": "When a volcano erupts, its ash flies far and settles in layers."
     },
     {
       "key": "story.beat3.q5.prompt",
@@ -2794,7 +2794,7 @@
     },
     {
       "key": "story.beat4.q1.teach1",
-      "value": "If you find 'the same layer' in several places, it becomes a marker — we call it a 'key bed.' An ash layer is very distinct, a great key bed."
+      "value": "The same layer works as a marker. We call it a \"key bed.\""
     },
     {
       "key": "story.beat4.q1.teach2",
@@ -2802,7 +2802,7 @@
     },
     {
       "key": "story.beat4.q2.teach1",
-      "value": "Strata should stack straight by default. But squeeze them from both sides and they bend like in this picture."
+      "value": "When strata are pushed from both sides, they bend like waves."
     },
     {
       "key": "story.beat1.q1.teach1",
@@ -2974,7 +2974,7 @@
     },
     {
       "key": "story.beat3.l07",
-      "value": "—A low rumble. Underfoot, the ground swayed again, just slightly."
+      "value": "—Thud. The floor shakes a little again."
     },
     {
       "key": "story.beat3.l08",
@@ -3194,7 +3194,7 @@
     },
     {
       "key": "story.core_return.line",
-      "value": "Nice, you got it! Let’s take this sample back to the lab for a closer look."
+      "value": "Nicely done! Let's take it to the lab for a closer look!"
     },
     {
       "key": "backend.checking",
@@ -3790,7 +3790,7 @@
     },
     {
       "key": "story.beat3.l11",
-      "value": "Good eye! This is a coral fossil. It was inside the core you brought back."
+      "value": "A coral fossil inside the core! Even today, coral lives only in warm, shallow seas."
     },
     {
       "key": "story.beat3.l12",
@@ -4203,6 +4203,134 @@
     {
       "key": "card.key_bed.done",
       "value": "Connected, they make a slanted line! The same layer is a marker for comparing sites."
+    },
+    {
+      "key": "story.evidence.got",
+      "value": "Evidence card: {0}"
+    },
+    {
+      "key": "card.common.choose",
+      "value": "Choose the one that fits best"
+    },
+    {
+      "key": "evidence.e1",
+      "value": "① Bent strata"
+    },
+    {
+      "key": "evidence.e2",
+      "value": "② Three different rocks"
+    },
+    {
+      "key": "evidence.e3",
+      "value": "③ Fossils and volcanic ash"
+    },
+    {
+      "key": "evidence.e4",
+      "value": "④ Tilted, folded strata"
+    },
+    {
+      "key": "story.s3.l01",
+      "value": "We step outside. The cliff the quake broke open shows stripes."
+    },
+    {
+      "key": "story.s3.l02",
+      "value": "(Radio) Follow the blue line. There are three spots to check."
+    },
+    {
+      "key": "story.s3.l03",
+      "value": "(Radio) Switch to the hammer and hit the mark three times!"
+    },
+    {
+      "key": "story.s4.l01",
+      "value": "Got all three! ...Huh? Are the cliff stripes a little bent?"
+    },
+    {
+      "key": "story.s4.l02",
+      "value": "Good eye! That might be a clue to the mystery."
+    },
+    {
+      "key": "story.s4.l03",
+      "value": "Let's check the rocks in the lab first. Come back with the Phase Shifter!"
+    },
+    {
+      "key": "story.s5.l01",
+      "value": "Welcome back! Let's test the rocks you brought in three ways."
+    },
+    {
+      "key": "story.s5.l05",
+      "value": "Amazing! Here, have half of my snack as a reward."
+    },
+    {
+      "key": "story.s5.l06",
+      "value": "Rocks can be so different. But what about the bent cliff?"
+    },
+    {
+      "key": "story.s5.l07",
+      "value": "The surface can't tell us. Let's drill deep with the Drill Tower!"
+    },
+    {
+      "key": "story.s6.l01",
+      "value": "The Drill Tower brings up the ground layer by layer, depth by depth."
+    },
+    {
+      "key": "story.s6.l02",
+      "value": "Back outside. The end of the blue line is where we'll drill."
+    },
+    {
+      "key": "story.s7.l01",
+      "value": "Got it! ...Huh? There's a whitish pattern inside!"
+    },
+    {
+      "key": "story.s8.l01",
+      "value": "Look at that white pattern with the magnifier!"
+    },
+    {
+      "key": "story.s8.l02",
+      "value": "Lots of tiny holes... What is it?"
+    },
+    {
+      "key": "story.s8.l13",
+      "value": "An aftershock... Let's hurry. Last, we compare the columns from three sites!"
+    },
+    {
+      "key": "card.conclusion.title",
+      "value": "Mystery: what happened underground?"
+    },
+    {
+      "key": "card.conclusion.weather",
+      "value": "The quake was caused by the weather"
+    },
+    {
+      "key": "card.conclusion.weather.hint",
+      "value": "All the evidence is about what is underground."
+    },
+    {
+      "key": "card.conclusion.moved",
+      "value": "Deep under the west side of the school, the strata moved a lot"
+    },
+    {
+      "key": "card.conclusion.still",
+      "value": "The strata have never moved"
+    },
+    {
+      "key": "card.conclusion.still.hint",
+      "value": "Tilted, folded strata are a sign that they moved."
+    },
+    {
+      "key": "card.conclusion.wrong",
+      "value": "Look at the evidence cards again."
+    },
+    {
+      "key": "card.conclusion.done",
+      "value": "Exactly! Anyone who reads the strata can hear the voice of the earth."
+    },
+    {
+      "key": "story.s9.l06",
+      "value": "Now, time to solve the mystery! What does the evidence tell us?"
+    },
+    {
+      "key": "story.s9.l09",
+      "value": "Let's use what we found to keep the town safe. Write the report, then it's snack party time!"
     }
   ]
 }

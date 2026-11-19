@@ -1,14 +1,8 @@
 {
-    "scene": "Beat4 - 比較と報告",
+    "scene": "Beat4 - Column comparison and mystery (study 2 script)",
     "background": "laboratory",
     "bgm": "lab_theme",
     "dialogues": [
-        {
-            "speaker": "Dr.Kaede",
-            "text": "最後（さいご）は、A・B・C 三（みっ）つの地点（ちてん）の柱状図（ちゅうじょうず）をくらべるよ。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat4.l01"
-        },
         {
             "speaker": "Dr.Kaede",
             "text": "A・B・Cの柱状図（ちゅうじょうず）だよ。火山灰（かざんばい）の層（そう）を、それぞれタップしてみて。",
@@ -111,16 +105,10 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "「同（おな）じ層（そう）」が見（み）つかれば、それを目印（めじるし）にできる——「鍵層（かぎそう）」っていうの。火山灰（かざんばい）はとても目立（めだ）つ、いい鍵層（かぎそう）よ。",
+            "text": "同（おな）じ層（そう）は目（め）じるしになる。これを「鍵層（かぎそう）」っていうの。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat4.q1.teach1",
             "illustrationKey": "10_keybed_tilt"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "その鍵層（かぎそう）が「ある方向（ほうこう）に行（い）くほど深（ふか）い位置（いち）」にあったら？　地層全体（ちそうぜんたい）がそっちに傾（かたむ）いて低（ひく）くなってる、ってこと。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat4.q1.teach2"
         },
         {
             "speaker": "Dr.Kaede",
@@ -160,7 +148,7 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "多（おお）くの地層（ちそう）は、できたときにはほぼ水平（すいへい）に重（かさ）なるよ。その後（ご）、両側（りょうがわ）から押（お）し縮（ちぢ）められると、この図（ず）のように曲（ま）がることがある。",
+            "text": "地層（ちそう）は、両（りょう）がわからおされると、波（なみ）のように曲（ま）がるんだ。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat4.q2.teach1",
             "illustrationKey": "11_fold_fault"
@@ -203,40 +191,56 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "断層（だんそう）や地層（ちそう）の変形（へんけい）は、過去（かこ）の大地（だいち）の動（うご）きを知（し）り、防災（ぼうさい）を考（かんが）える手掛（てが）かりになる。",
+            "text": "さあ、なぞときの時間（じかん）！　集（あつ）めた証拠（しょうこ）から、何（なに）がわかる？",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat4.l04",
-            "illustrationKey": "-"
-        },
-        {
-            "speaker": "主人公",
-            "text": "学校（がっこう）の西側（にしがわ）では、地層（ちそう）や断層（だんそう）について、さらに調（しら）べる必要（ひつよう）がありそう。",
-            "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.beat4.l06"
+            "textKey": "story.s9.l06",
+            "illustrationKey": "-",
+            "evidenceKey": "evidence.e4",
+            "evidence": "④かたむいて曲（ま）がった地層（ちそう）",
+            "interaction": {
+                "id": "card.conclusion",
+                "type": "choose",
+                "titleKey": "card.conclusion.title",
+                "wrongKey": "card.conclusion.wrong",
+                "doneKey": "card.conclusion.done",
+                "evidence": [
+                    {
+                        "textKey": "evidence.e1"
+                    },
+                    {
+                        "textKey": "evidence.e2"
+                    },
+                    {
+                        "textKey": "evidence.e3"
+                    },
+                    {
+                        "textKey": "evidence.e4"
+                    }
+                ],
+                "items": [
+                    {
+                        "id": "weather",
+                        "textKey": "card.conclusion.weather",
+                        "hintKey": "card.conclusion.weather.hint"
+                    },
+                    {
+                        "id": "moved",
+                        "textKey": "card.conclusion.moved",
+                        "correct": true
+                    },
+                    {
+                        "id": "still",
+                        "textKey": "card.conclusion.still",
+                        "hintKey": "card.conclusion.still.hint"
+                    }
+                ]
+            }
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "調査（ちょうさ）で分（わ）かったことをまとめて、地域（ちいき）の防災（ぼうさい）を考（かんが）える資料（しりょう）にしよう。",
+            "text": "調（しら）べたことは、町（まち）の防災（ぼうさい）に役立（やくだ）てよう。報告書（ほうこくしょ）にまとめたら、おかしパーティーね！",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat4.l07"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "「地球（ちきゅう）の声（こえ）」なんて、ふしぎな力（ちから）じゃなかったでしょ？　地層（ちそう）を一枚（いちまい）ずつ読（よ）めば、だれにだって聞（き）こえる。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat4.l02"
-        },
-        {
-            "speaker": "主人公",
-            "text": "地球（ちきゅう）の声（こえ）……ほんの少（すこ）しだけ、聞（き）こえた気（き）がするよ。",
-            "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.beat4.l05"
-        },
-        {
-            "speaker": "ナレーション",
-            "text": "今日（きょう）の調査（ちょうさ）をまとめて、報告書（ほうこくしょ）をつくろう。",
-            "speakerKey": "story.speaker.narration",
-            "textKey": "story.beat4.l03"
+            "textKey": "story.s9.l09"
         }
     ]
 }

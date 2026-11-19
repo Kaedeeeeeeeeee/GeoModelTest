@@ -126,9 +126,10 @@ public class TeachingRouteContentTests
     }
 
     [Serializable] private class CardSequence { public List<CardLine> dialogues; }
-    [Serializable] private class CardLine { public string textKey; public string questionId; public Card interaction; }
-    [Serializable] private class Card { public string id; public string type; public string titleKey; public string wrongKey; public string doneKey; public List<CardItem> items; public List<CardBin> bins; public List<CardColumn> columns; }
-    [Serializable] private class CardItem { public string textKey; public string noteKey; public string hintKey; public string bin; public int order; }
+    [Serializable] private class CardLine { public string textKey; public string questionId; public string evidenceKey; public Card interaction; }
+    [Serializable] private class Card { public string id; public string type; public string titleKey; public string wrongKey; public string doneKey; public List<CardItem> items; public List<CardBin> bins; public List<CardColumn> columns; public List<CardText> evidence; }
+    [Serializable] private class CardItem { public string textKey; public string noteKey; public string hintKey; public string bin; public int order; public bool correct; }
+    [Serializable] private class CardText { public string textKey; }
     [Serializable] private class CardBin { public string id; public string textKey; }
     [Serializable] private class CardColumn { public string labelKey; public List<CardLayer> layers; }
     [Serializable] private class CardLayer { public string textKey; public bool target; }
@@ -176,5 +177,44 @@ public class TeachingRouteContentTests
             var texts = Texts(language);
             foreach (string key in keys) Assert.IsTrue(texts.ContainsKey(key), key + " exists in " + language);
         }
+    }
+
+    [Test]
+    public void MysteryEvidence_ShouldBeCollectedAlongTheRouteAndUsedInTheConclusion()
+    {
+        var collected = Route.SelectMany(name => JsonUtility.FromJson<CardSequence>(Resources.Load<TextAsset>("Story/" + name).text).dialogues)
+            .Where(line => !string.IsNullOrEmpty(line.evidenceKey)).Select(line => line.evidenceKey).ToList();
+        CollectionAssert.AreEqual(new[] { "evidence.e1", "evidence.e2", "evidence.e3", "evidence.e4" }, collected,
+            "Four evidence cards are found in story order.");
+        var ending = JsonUtility.FromJson<CardSequence>(Resources.Load<TextAsset>("Story/beat4").text).dialogues;
+        var conclusion = ending.Single(line => line.interaction != null && line.interaction.id == "card.conclusion");
+        Assert.IsTrue(string.IsNullOrEmpty(conclusion.questionId), "The conclusion is not scored.");
+        Assert.AreEqual("choose", conclusion.interaction.type);
+        CollectionAssert.AreEqual(collected, conclusion.interaction.evidence.Select(e => e.textKey));
+        Assert.AreEqual(1, conclusion.interaction.items.Count(i => i.correct));
+        Assert.That(ending.IndexOf(conclusion), Is.GreaterThan(ending.FindIndex(line => line.questionId == "q.fold_term")));
+        foreach (string language in new[] { "ja-JP", "zh-CN", "en-US" })
+        {
+            var texts = Texts(language);
+            foreach (string key in collected.Concat(conclusion.interaction.items.SelectMany(i => new[] { i.textKey, i.hintKey }))
+                         .Concat(new[] { "story.evidence.got", conclusion.interaction.titleKey, conclusion.interaction.doneKey })
+                         .Where(k => !string.IsNullOrEmpty(k)))
+                Assert.IsTrue(texts.ContainsKey(key), key + " exists in " + language);
+            StringAssert.Contains("{0}", texts["story.evidence.got"]);
+        }
+    }
+
+    [Test]
+    public void StudyTwoScript_ShouldKeepEveryStoryLineShort()
+    {
+        // Explanation lines right before a question may run longer; story lines stay within 40 characters.
+        var regex = new System.Text.RegularExpressions.Regex("（[ぁ-ゖー]+）");
+        var ja = Texts("ja-JP");
+        foreach (string name in new[] { "quest3.2", "beat2", "quest4.1", "quest4.2", "core-return", "beat4" })
+            foreach (var line in JsonUtility.FromJson<CardSequence>(Resources.Load<TextAsset>("Story/" + name).text).dialogues)
+            {
+                if (!string.IsNullOrEmpty(line.questionId)) continue;
+                Assert.LessOrEqual(regex.Replace(ja[line.textKey], "").Length, 40, name + "/" + line.textKey);
+            }
     }
 }

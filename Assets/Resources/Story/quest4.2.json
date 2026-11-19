@@ -5,27 +5,9 @@
     "dialogues": [
         {
             "speaker": "ナレーション",
-            "text": "ふたたび野外（やがい）へ。地面（じめん）には、ゆれでできた割（わ）れ目（め）がまだ残（のこ）っている。",
+            "text": "ふたたび外（そと）へ。青（あお）い線（せん）の先（さき）が、ほる場所（ばしょ）だ。",
             "speakerKey": "story.speaker.narration",
-            "textKey": "story.bridge.q42.l01"
-        },
-        {
-            "speaker": "主人公",
-            "text": "表面（ひょうめん）の地層（ちそう）はゆがんでいた。この下（した）は、どうなっているんだろう……。",
-            "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.bridge.q42.l02"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "青（あお）い線（せん）の先（さき）でドリルタワーを使（つか）って、地下（ちか）の岩芯（がんしん）を取（と）り出（だ）してね。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.bridge.q42.l03"
-        },
-        {
-            "speaker": "主人公",
-            "text": "わかった。岩芯（がんしん）を取（と）って、研究室（けんきゅうしつ）に持（も）ち帰（かえ）る！",
-            "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.bridge.q42.l04"
+            "textKey": "story.s6.l02"
         }
     ]
 }

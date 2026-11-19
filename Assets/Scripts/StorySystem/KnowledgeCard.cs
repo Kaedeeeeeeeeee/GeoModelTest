@@ -13,7 +13,8 @@ namespace StorySystem
 
     /// <summary>
     /// 知識インタラクションカード。確認問題の前に、図を見るだけでなく自分で並べる・分ける・タップする。
-    /// type: "order"（正しい順にタップ）/ "sort"（カードを選んで箱をタップ）/ "columns"（柱状図の目的の層をタップ）。
+    /// type: "order"（正しい順にタップ）/ "sort"（カードを選んで箱をタップ）/ "columns"（柱状図の目的の層をタップ）/
+    /// "choose"（集めた証拠を見て結論をえらぶ。採点しない）。
     /// </summary>
     [Serializable]
     public class StoryInteraction
@@ -29,6 +30,14 @@ namespace StorySystem
         public List<StoryInteractionItem> items;
         public List<StoryInteractionBin> bins;
         public List<StoryInteractionColumn> columns;
+        public List<StoryInteractionText> evidence; // choose: 上にならべる証拠カード
+    }
+
+    [Serializable]
+    public class StoryInteractionText
+    {
+        public string text;
+        public string textKey;
     }
 
     [Serializable]
@@ -43,6 +52,7 @@ namespace StorySystem
         public int order;       // order: 正解の順番（1 から）。表示は items の並び順
         public string hint;
         public string hintKey;  // まちがえたときの一言（なければ card の wrong）
+        public bool correct;    // choose: 正しい結論
     }
 
     [Serializable]
@@ -80,6 +90,7 @@ namespace StorySystem
         public const string TypeOrder = "order";
         public const string TypeSort = "sort";
         public const string TypeColumns = "columns";
+        public const string TypeChoose = "choose";
 
         public string Id;
         public string Type;
@@ -89,8 +100,9 @@ namespace StorySystem
         public readonly List<Item> Items = new List<Item>();
         public readonly List<Bin> Bins = new List<Bin>();
         public readonly List<Column> Columns = new List<Column>();
+        public readonly List<string> Evidence = new List<string>();
 
-        public sealed class Item { public string Id; public string Text; public string Note; public string Bin; public int Order; public string Hint; }
+        public sealed class Item { public string Id; public string Text; public string Note; public string Bin; public int Order; public string Hint; public bool Correct; }
         public sealed class Bin { public string Id; public string Text; }
         public sealed class Column { public string Label; public readonly List<Layer> Layers = new List<Layer>(); }
         public sealed class Layer { public string Text; public Color Color; public float Size; public bool Target; public string Hint; }
@@ -117,6 +129,7 @@ namespace StorySystem
                         foreach (var c in Columns)
                             if (!c.Layers.Exists(l => l.Target)) return false;
                         return true;
+                    case TypeChoose: return Items.Count >= 2 && Items.Exists(i => i.Correct);
                     default: return false;
                 }
             }
@@ -144,12 +157,16 @@ namespace StorySystem
                         Note = resolve(i.note, i.noteKey),
                         Bin = i.bin,
                         Order = i.order,
-                        Hint = resolve(i.hint, i.hintKey)
+                        Hint = resolve(i.hint, i.hintKey),
+                        Correct = i.correct
                     });
                 }
             if (source.bins != null)
                 foreach (var b in source.bins)
                     if (b != null) card.Bins.Add(new Bin { Id = b.id, Text = resolve(b.text, b.textKey) });
+            if (source.evidence != null)
+                foreach (var e in source.evidence)
+                    if (e != null) card.Evidence.Add(resolve(e.text, e.textKey));
             if (source.columns != null)
                 foreach (var c in source.columns)
                 {
@@ -234,6 +251,7 @@ namespace StorySystem
                 case KnowledgeCard.TypeOrder: session.BuildOrder(); break;
                 case KnowledgeCard.TypeSort: session.BuildSort(); break;
                 case KnowledgeCard.TypeColumns: session.BuildColumns(); break;
+                case KnowledgeCard.TypeChoose: session.BuildChoose(); break;
             }
             return session;
         }
@@ -261,6 +279,9 @@ namespace StorySystem
                         OnItemSelect(i);
                         OnBinTap(Card.Bins.FindIndex(b => b.Id == Card.Items[i].Bin));
                     }
+                    break;
+                case KnowledgeCard.TypeChoose:
+                    OnChoose(Card.Items.FindIndex(i => i.Correct));
                     break;
                 case KnowledgeCard.TypeColumns:
                     foreach (var btn in Root.GetComponentsInChildren<Button>())
@@ -509,6 +530,50 @@ namespace StorySystem
             placedCount++;
             if (placedCount >= Card.Items.Count) Finish();
             else SetStatus(PickPrompt);
+        }
+
+        // ----- choose：証拠を見て結論をえらぶ -----
+
+        private void BuildChoose()
+        {
+            int ne = Card.Evidence.Count;
+            bool hasEvidence = ne > 0;
+            for (int e = 0; e < ne; e++)
+            {
+                var (min, max) = Cell(e, ne, 0.74f, 1f, 0.008f);
+                var chip = GameUI.Box(content, $"Evidence{e}", SlotColor, min, max);
+                var outline = chip.gameObject.AddComponent<Outline>();
+                outline.effectColor = GameUI.Accent;
+                outline.effectDistance = new Vector2(2f, -2f);
+                MakeText(chip.transform, "Label", Card.Evidence[e], 22, new Vector2(0.05f, 0.05f), new Vector2(0.95f, 0.95f));
+            }
+            int n = Card.Items.Count;
+            float top = hasEvidence ? 0.70f : 1f;
+            float h = top / n;
+            for (int i = 0; i < n; i++)
+            {
+                int idx = i;
+                var item = Card.Items[i];
+                var btn = CardButton(content, $"Item{i}", item.Text, item.Note,
+                    new Vector2(0.04f, top - (i + 1) * h + 0.012f), new Vector2(0.96f, top - i * h - 0.012f), () => OnChoose(idx));
+                itemButtons.Add(btn);
+            }
+            SetStatus(LocalizedOr("card.common.choose", "いちばん合（あ）うものを、ひとつえらぼう"));
+        }
+
+        private void OnChoose(int idx)
+        {
+            if (Done || idx < 0) return;
+            var btn = itemButtons[idx];
+            if (!Card.Items[idx].Correct)
+            {
+                MarkWrong((Image)btn.targetGraphic, Card.Items[idx].Hint);
+                btn.interactable = false;
+                return;
+            }
+            ((Image)btn.targetGraphic).color = PlacedColor;
+            foreach (var other in itemButtons) other.interactable = false;
+            Finish();
         }
 
         // ----- columns：柱状図の目的の層をタップ → つなぐ -----

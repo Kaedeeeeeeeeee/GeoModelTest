@@ -4,16 +4,10 @@
     "bgm": "lab_theme",
     "dialogues": [
         {
-            "speaker": "ナレーション",
-            "text": "G-Lab に戻（もど）る。机（つくえ）の上（うえ）に、採（と）ってきたサンプルが並（なら）ぶ。",
-            "speakerKey": "story.speaker.narration",
-            "textKey": "story.bridge.q34.l01"
-        },
-        {
             "speaker": "Dr.Kaede",
-            "text": "おかえり！　さっき採（と）ったサンプルを、顕微鏡（けんびきょう）と薬品（やくひん）で調（しら）べてみよう。",
+            "text": "おかえり！　とってきた石（いし）を、3つの方法（ほうほう）で調（しら）べてみよう。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.bridge.q34.l02"
+            "textKey": "story.s5.l01"
         },
         {
             "speaker": "Dr.Kaede",
@@ -146,46 +140,24 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "ふふ、いい目（め）をしてる。地質調査員（ちしつちょうさいん）の素質（そしつ）あり、ね。",
+            "text": "すごい！　ごほうびに、おかしを半分（はんぶん）あげる。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat2.l05",
-            "illustrationKey": "-"
+            "textKey": "story.s5.l05",
+            "illustrationKey": "-",
+            "evidenceKey": "evidence.e2",
+            "evidence": "②3つのちがう岩石（がんせき）"
         },
         {
             "speaker": "主人公",
-            "text": "同（おな）じ“石（いし）”でも、こんなに違（ちが）うんだ……！",
+            "text": "同（おな）じ石（いし）でも、こんなにちがうんだ。でも、がけのゆがみは？",
             "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.beat2.l06"
+            "textKey": "story.s5.l06"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "それと、崖（がけ）で見（み）た地層（ちそう）の「ゆがみ」。表面（ひょうめん）のゆれだけでできたものじゃないかもしれない。",
+            "text": "表面（ひょうめん）だけじゃわからない。ドリルタワーで、深（ふか）いところをほり出（だ）そう！",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.bridge.q34.l03"
-        },
-        {
-            "speaker": "主人公",
-            "text": "じゃあ、もっと深（ふか）いところで何（なに）か起（お）きてる？",
-            "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.bridge.q34.l04"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "その可能性（かのうせい）がある。表面（ひょうめん）のサンプルだけでは、浅（あさ）い部分（ぶぶん）の変化（へんか）しか読（よ）めない。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.bridge.q34.l05"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "深（ふか）さごとのボーリングコアがあれば、地層（ちそう）の重（かさ）なり方（かた）を比（くら）べられる。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.bridge.q34.l06"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "だから次（つぎ）はドリルタワー。表面（ひょうめん）ではなく、もっと深（ふか）い記録（きろく）を取（と）りに行（い）こう。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.bridge.q34.l07"
+            "textKey": "story.s5.l07"
         }
     ]
 }

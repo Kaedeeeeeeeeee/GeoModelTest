@@ -4,13 +4,13 @@
     "dialogues": [
         {
             "speaker": "主人公",
-            "text": "とれた！……あれ？　岩芯（がんしん）の中（なか）に、白（しろ）っぽい模様（もよう）がある？",
+            "text": "とれた！……あれ？　中（なか）に白（しろ）っぽいもようがある！",
             "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.core_return.l00"
+            "textKey": "story.s7.l01"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "うまくできたね！　研究室（けんきゅうしつ）に戻（もど）って、このサンプルをくわしく調（しら）べてみよう。",
+            "text": "うまくできたね！　ラボに持（も）ち帰（かえ）って、くわしく見（み）よう！",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.core_return.line"
         }
