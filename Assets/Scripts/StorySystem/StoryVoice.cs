@@ -144,6 +144,8 @@ namespace StorySystem
                     }
                 }
                 _available = keys;
+                // 通信エラー（404 以外）なら、次の台詞でもう一度 manifest を取りに行く
+                if (request.result != UnityWebRequest.Result.Success && request.responseCode != 404) _manifestRequested = false;
                 Backend.TelemetryClient.Instance?.Track("voice_status", new Dictionary<string, object>
                 {
                     ["language"] = language,
@@ -175,7 +177,7 @@ namespace StorySystem
                     clip = DownloadHandlerAudioClip.GetContent(request);
                     if (clip != null) clip.name = key;
                 }
-                Cache[key] = clip;
+                if (clip != null) Cache[key] = clip; // 失敗した行は覚えず、次に話すときにもう一度取りに行く
                 if (clip != null && _wanted == key) // 先読み中に話し始めた行も、届いたら流す
                     AudioManager.Instance?.PlayVoice(clip);
             }
