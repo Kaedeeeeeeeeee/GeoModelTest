@@ -20,6 +20,24 @@ namespace StorySystem
 
         [Serializable] private class Manifest { public List<string> keys; }
 
+        /// <summary>Downloads run here, not on StoryDirectorRunner: cancelling story playback (back to title)
+        /// stops that runner's coroutines and would leave a manifest or clip stuck as "loading".</summary>
+        private sealed class Host : MonoBehaviour
+        {
+            private static Host _instance;
+
+            public static void Run(IEnumerator routine)
+            {
+                if (_instance == null)
+                {
+                    var go = new GameObject("StoryVoiceHost");
+                    DontDestroyOnLoad(go);
+                    _instance = go.AddComponent<Host>();
+                }
+                _instance.StartCoroutine(routine);
+            }
+        }
+
         private static readonly Dictionary<string, AudioClip> Cache = new Dictionary<string, AudioClip>();
         private static readonly HashSet<string> Loading = new HashSet<string>();
         private static HashSet<string> _available;
@@ -103,7 +121,7 @@ namespace StorySystem
             _manifestLanguage = language;
             _available = null;
             Cache.Clear();
-            StoryDirectorRunner.Instance.Run(LoadManifest(language));
+            Host.Run(LoadManifest(language));
         }
 
         private static IEnumerator LoadManifest(string language)
@@ -141,7 +159,7 @@ namespace StorySystem
         private static void Load(string key)
         {
             if (!Loading.Add(key)) return;
-            StoryDirectorRunner.Instance.Run(LoadClip(_manifestLanguage, key));
+            Host.Run(LoadClip(_manifestLanguage, key));
         }
 
         private static IEnumerator LoadClip(string language, string key)

@@ -372,6 +372,7 @@ namespace StorySystem
             StoryDirectorRunner.Instance.StopAllCoroutines();
             _isRunningCinematic = false;
             SubtitleUI.CancelAll();
+            StoryVoice.Stop();
         }
 
         public void PlayReport(Action onComplete = null)
