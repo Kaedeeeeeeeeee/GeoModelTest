@@ -3950,11 +3950,259 @@
     },
     {
       "key": "story.s2.l08",
-      "value": "地层是大地的「日记」。用这张图看看它是怎么形成的吧。"
+      "value": "地层是大地的“日记”。它是怎么形成的？来排排看。"
     },
     {
       "key": "story.s2.l10",
       "value": "好，出发去野外！打开道具，选择相位转移器吧。"
+    },
+    {
+      "key": "ui.dialog.card",
+      "value": "试着操作上面的卡片"
+    },
+    {
+      "key": "card.common.order",
+      "value": "从第 1 个开始，按顺序点击"
+    },
+    {
+      "key": "card.common.sort",
+      "value": "先选一张卡片，再点它要放进的箱子"
+    },
+    {
+      "key": "card.common.pick",
+      "value": "先选一张卡片"
+    },
+    {
+      "key": "card.common.choose_bin",
+      "value": "放进哪个箱子？"
+    },
+    {
+      "key": "card.common.columns",
+      "value": "在每根柱状图里点出要找的那一层"
+    },
+    {
+      "key": "card.weathering.title",
+      "value": "岩石变成地层的过程"
+    },
+    {
+      "key": "card.weathering.weathering",
+      "value": "风化"
+    },
+    {
+      "key": "card.weathering.weathering.note",
+      "value": "岩石变脆、碎裂"
+    },
+    {
+      "key": "card.weathering.erosion",
+      "value": "侵蚀"
+    },
+    {
+      "key": "card.weathering.erosion.note",
+      "value": "被水和风削去"
+    },
+    {
+      "key": "card.weathering.erosion.hint",
+      "value": "被削之前，岩石要先变脆。"
+    },
+    {
+      "key": "card.weathering.transport",
+      "value": "搬运"
+    },
+    {
+      "key": "card.weathering.transport.note",
+      "value": "被河水带走"
+    },
+    {
+      "key": "card.weathering.transport.hint",
+      "value": "被搬运之前，岩石得先碎裂、被削下来。"
+    },
+    {
+      "key": "card.weathering.deposition",
+      "value": "沉积"
+    },
+    {
+      "key": "card.weathering.deposition.note",
+      "value": "堆积在海底或湖底"
+    },
+    {
+      "key": "card.weathering.deposition.hint",
+      "value": "堆积是最后一步。"
+    },
+    {
+      "key": "card.weathering.wrong",
+      "value": "顺序好像不对。"
+    },
+    {
+      "key": "card.weathering.done",
+      "value": "完成！变脆→被削→被搬运→堆积，地层就是这样形成的。"
+    },
+    {
+      "key": "story.card.fossil_tells.line",
+      "value": "化石能告诉我们的事有两种。来分到箱子里吧！"
+    },
+    {
+      "key": "card.fossil_tells.title",
+      "value": "化石能告诉我们什么"
+    },
+    {
+      "key": "card.fossil_tells.bin.place",
+      "value": "能知道“生活的环境”"
+    },
+    {
+      "key": "card.fossil_tells.bin.era",
+      "value": "能知道“是哪个时代”"
+    },
+    {
+      "key": "card.fossil_tells.coral",
+      "value": "珊瑚"
+    },
+    {
+      "key": "card.fossil_tells.coral.note",
+      "value": "只生活在温暖的浅海"
+    },
+    {
+      "key": "card.fossil_tells.clam",
+      "value": "蚬（河蚬）"
+    },
+    {
+      "key": "card.fossil_tells.clam.note",
+      "value": "生活在河水与海水交汇的地方"
+    },
+    {
+      "key": "card.fossil_tells.ammonite",
+      "value": "菊石"
+    },
+    {
+      "key": "card.fossil_tells.ammonite.note",
+      "value": "只在某个时代遍布全世界的海洋"
+    },
+    {
+      "key": "card.fossil_tells.trilobite",
+      "value": "三叶虫"
+    },
+    {
+      "key": "card.fossil_tells.trilobite.note",
+      "value": "只在某个时代遍布全世界的海洋"
+    },
+    {
+      "key": "card.fossil_tells.hint.place",
+      "value": "这种生物能生活的环境是固定的。"
+    },
+    {
+      "key": "card.fossil_tells.hint.era",
+      "value": "这种生物只存在于某个时代。"
+    },
+    {
+      "key": "card.fossil_tells.wrong",
+      "value": "好像不是这个箱子。"
+    },
+    {
+      "key": "card.fossil_tells.done",
+      "value": "能知道环境的叫“示相化石”，能知道时代的叫“示准化石”。"
+    },
+    {
+      "key": "story.card.era_line.line",
+      "value": "下一层里是……菊石！把它们放到地球历史的时间线上吧。"
+    },
+    {
+      "key": "card.era_line.title",
+      "value": "地球历史的时间线"
+    },
+    {
+      "key": "card.era_line.bin.paleo",
+      "value": "古生代（较古老）"
+    },
+    {
+      "key": "card.era_line.bin.meso",
+      "value": "中生代"
+    },
+    {
+      "key": "card.era_line.bin.ceno",
+      "value": "新生代（较新）"
+    },
+    {
+      "key": "card.era_line.dinosaur",
+      "value": "恐龙"
+    },
+    {
+      "key": "card.era_line.dinosaur.hint",
+      "value": "恐龙繁盛于中间的那个时代。"
+    },
+    {
+      "key": "card.era_line.naumann",
+      "value": "诺氏古菱齿象"
+    },
+    {
+      "key": "card.era_line.naumann.hint",
+      "value": "诺氏古菱齿象是不久前还生活在日本的象。"
+    },
+    {
+      "key": "card.era_line.ammonite",
+      "value": "菊石"
+    },
+    {
+      "key": "card.era_line.ammonite.hint",
+      "value": "菊石和恐龙繁盛于同一个时代。"
+    },
+    {
+      "key": "card.era_line.trilobite",
+      "value": "三叶虫"
+    },
+    {
+      "key": "card.era_line.trilobite.hint",
+      "value": "三叶虫生活在比恐龙早得多的时代。"
+    },
+    {
+      "key": "card.era_line.wrong",
+      "value": "好像不是这个时代。"
+    },
+    {
+      "key": "card.era_line.done",
+      "value": "从古到新依次是古生代→中生代→新生代。化石能告诉我们地层的时代。"
+    },
+    {
+      "key": "story.card.key_bed.line",
+      "value": "这是 A、B、C 三处的柱状图。分别点一下火山灰层。"
+    },
+    {
+      "key": "card.key_bed.title",
+      "value": "三个地点的柱状图"
+    },
+    {
+      "key": "card.key_bed.col.a",
+      "value": "A（西）"
+    },
+    {
+      "key": "card.key_bed.col.b",
+      "value": "B"
+    },
+    {
+      "key": "card.key_bed.col.c",
+      "value": "C（东）"
+    },
+    {
+      "key": "card.key_bed.sand",
+      "value": "砂岩"
+    },
+    {
+      "key": "card.key_bed.mud",
+      "value": "泥岩"
+    },
+    {
+      "key": "card.key_bed.tuff",
+      "value": "火山灰"
+    },
+    {
+      "key": "card.key_bed.gravel",
+      "value": "砾岩"
+    },
+    {
+      "key": "card.key_bed.wrong",
+      "value": "那不是火山灰层。找找发白的那一层。"
+    },
+    {
+      "key": "card.key_bed.done",
+      "value": "连起来是一条斜线！同一层可以作为比较的标志。"
     }
   ]
 }

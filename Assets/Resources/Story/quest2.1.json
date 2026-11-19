@@ -1,20 +1,54 @@
 {
-    "scene": "Lab - First talk at Dr.Kaede (strata diary, first quiz, to the field)",
+    "scene": "Lab - First talk at Dr.Kaede (strata diary card, first quiz, to the field)",
     "background": "laboratory",
     "bgm": "lab_theme",
     "dialogues": [
         {
             "speaker": "Dr.Kaede",
-            "text": "地層（ちそう）は、大地（だいち）の「日記（にっき）」なの。どうやってできるか、この図（ず）で見（み）てみよう。",
+            "text": "地層（ちそう）は、大地（だいち）の「日記（にっき）」なの。どうやってできるか、ならべてみて。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.s2.l08",
-            "illustrationKey": "01_weathering_order"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "風化（ふうか）はもろくなる、侵食（しんしょく）はけずられる、運搬（うんぱん）は運（はこ）ばれる、堆積（たいせき）は積（つ）もる。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat1.q1.teach2"
+            "illustrationKey": "01_weathering_order",
+            "interaction": {
+                "id": "card.weathering_order",
+                "type": "order",
+                "titleKey": "card.weathering.title",
+                "wrongKey": "card.weathering.wrong",
+                "doneKey": "card.weathering.done",
+                "items": [
+                    {
+                        "id": "transport",
+                        "text": "運搬（うんぱん）",
+                        "textKey": "card.weathering.transport",
+                        "noteKey": "card.weathering.transport.note",
+                        "order": 3,
+                        "hintKey": "card.weathering.transport.hint"
+                    },
+                    {
+                        "id": "weathering",
+                        "text": "風化（ふうか）",
+                        "textKey": "card.weathering.weathering",
+                        "noteKey": "card.weathering.weathering.note",
+                        "order": 1
+                    },
+                    {
+                        "id": "deposition",
+                        "text": "堆積（たいせき）",
+                        "textKey": "card.weathering.deposition",
+                        "noteKey": "card.weathering.deposition.note",
+                        "order": 4,
+                        "hintKey": "card.weathering.deposition.hint"
+                    },
+                    {
+                        "id": "erosion",
+                        "text": "侵食（しんしょく）",
+                        "textKey": "card.weathering.erosion",
+                        "noteKey": "card.weathering.erosion.note",
+                        "order": 2,
+                        "hintKey": "card.weathering.erosion.hint"
+                    }
+                ]
+            }
         },
         {
             "speaker": "Dr.Kaede",

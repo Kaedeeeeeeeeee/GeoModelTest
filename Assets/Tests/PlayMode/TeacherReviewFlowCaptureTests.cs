@@ -24,6 +24,13 @@ public class TeacherReviewFlowCaptureTests
 {
     private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance;
     private static Type T(string name) => Type.GetType(name + ", Assembly-CSharp", true);
+
+    private static void SolveKnowledgeCard()
+    {
+        var card = T("StorySystem.KnowledgeCardSession").GetProperty("Active", BindingFlags.Public | BindingFlags.Static).GetValue(null);
+        if (card != null && !(bool)card.GetType().GetProperty("Done").GetValue(card))
+            card.GetType().GetMethod("SolveForTesting").Invoke(card, null);
+    }
     private static object Get(object target, string field) => (target as Type ?? target.GetType()).GetField(field, Flags).GetValue(target is Type ? null : target);
     private static void Set(object target, string field, object value) => target.GetType().GetField(field, Flags).SetValue(target, value);
     private static object Prop(object target, string name) => (target is Type type ? type : target.GetType()).GetProperty(name, Flags).GetValue(target is Type ? null : target);
@@ -523,6 +530,7 @@ public class TeacherReviewFlowCaptureTests
                 yield return Capture(name);
                 last = key;
             }
+            SolveKnowledgeCard();
             var bg = GameObject.Find("SubtitleCanvas/BG");
             var button = bg != null ? bg.GetComponent<Button>() : null;
             if (button != null && button.interactable && !(bool)Prop(T("Core.GameInputState"), "IsModalOpen")) button.onClick.Invoke();

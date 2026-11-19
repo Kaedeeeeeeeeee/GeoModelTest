@@ -32,6 +32,9 @@ namespace StorySystem
         // 音效（可选）。这句显示时播放一次 Resources/Audio/SFX/<key>。
         public string sfx;
 
+        // 知識インタラクションカード（可選）。行の text が指示、カードを終えると done の一言が出る。
+        public StoryInteraction interaction;
+
         // 选择题（可选）。choices 为空时该行是普通台词。
         public string questionId;
         public string questionVersion;
@@ -135,6 +138,8 @@ namespace StorySystem
                 subtitleLine.IllustrationKey = entry.illustrationKey;
                 subtitleLine.Ambience = entry.ambience;
                 subtitleLine.Sfx = entry.sfx;
+                subtitleLine.Card = KnowledgeCard.From(entry.interaction,
+                    (direct, key) => ResolveText(direct, key, localizationManager, canLocalize));
 
                 if (entry.choices != null && entry.choices.Count > 0)
                 {

@@ -3950,11 +3950,259 @@
     },
     {
       "key": "story.s2.l08",
-      "value": "Strata are the ground's diary. Let's see how they form in this picture."
+      "value": "Strata are the earth's diary. How do they form? Put the steps in order."
     },
     {
       "key": "story.s2.l10",
       "value": "Let's head outside! Open your tools and pick the Phase Shifter."
+    },
+    {
+      "key": "ui.dialog.card",
+      "value": "Try the card above"
+    },
+    {
+      "key": "card.common.order",
+      "value": "Tap them in order, starting with the first"
+    },
+    {
+      "key": "card.common.sort",
+      "value": "Pick a card, then tap the box it goes in"
+    },
+    {
+      "key": "card.common.pick",
+      "value": "Pick a card first"
+    },
+    {
+      "key": "card.common.choose_bin",
+      "value": "Which box does it go in?"
+    },
+    {
+      "key": "card.common.columns",
+      "value": "In each column, tap the layer you are looking for"
+    },
+    {
+      "key": "card.weathering.title",
+      "value": "From rock to strata"
+    },
+    {
+      "key": "card.weathering.weathering",
+      "value": "Weathering"
+    },
+    {
+      "key": "card.weathering.weathering.note",
+      "value": "Rock gets weak and crumbles"
+    },
+    {
+      "key": "card.weathering.erosion",
+      "value": "Erosion"
+    },
+    {
+      "key": "card.weathering.erosion.note",
+      "value": "Worn away by water and wind"
+    },
+    {
+      "key": "card.weathering.erosion.hint",
+      "value": "Rock gets weak before it wears away."
+    },
+    {
+      "key": "card.weathering.transport",
+      "value": "Transport"
+    },
+    {
+      "key": "card.weathering.transport.note",
+      "value": "Carried away by river water"
+    },
+    {
+      "key": "card.weathering.transport.hint",
+      "value": "Before it can be carried, the rock has to crumble and wear away."
+    },
+    {
+      "key": "card.weathering.deposition",
+      "value": "Deposition"
+    },
+    {
+      "key": "card.weathering.deposition.note",
+      "value": "Settles on the sea or lake floor"
+    },
+    {
+      "key": "card.weathering.deposition.hint",
+      "value": "Settling comes last."
+    },
+    {
+      "key": "card.weathering.wrong",
+      "value": "Not quite that order."
+    },
+    {
+      "key": "card.weathering.done",
+      "value": "Done! Crumble, wear away, get carried, settle. That's how strata form."
+    },
+    {
+      "key": "story.card.fossil_tells.line",
+      "value": "Fossils can tell us two kinds of things. Sort them into the boxes!"
+    },
+    {
+      "key": "card.fossil_tells.title",
+      "value": "What fossils tell us"
+    },
+    {
+      "key": "card.fossil_tells.bin.place",
+      "value": "Tells us WHERE it lived"
+    },
+    {
+      "key": "card.fossil_tells.bin.era",
+      "value": "Tells us WHEN it lived"
+    },
+    {
+      "key": "card.fossil_tells.coral",
+      "value": "Coral"
+    },
+    {
+      "key": "card.fossil_tells.coral.note",
+      "value": "Lives only in warm, shallow seas"
+    },
+    {
+      "key": "card.fossil_tells.clam",
+      "value": "Corbicula clam"
+    },
+    {
+      "key": "card.fossil_tells.clam.note",
+      "value": "Lives where river and sea water mix"
+    },
+    {
+      "key": "card.fossil_tells.ammonite",
+      "value": "Ammonite"
+    },
+    {
+      "key": "card.fossil_tells.ammonite.note",
+      "value": "Thrived in seas worldwide, but only in one era"
+    },
+    {
+      "key": "card.fossil_tells.trilobite",
+      "value": "Trilobite"
+    },
+    {
+      "key": "card.fossil_tells.trilobite.note",
+      "value": "Lived in seas worldwide, but only in one era"
+    },
+    {
+      "key": "card.fossil_tells.hint.place",
+      "value": "This creature can only live in certain places."
+    },
+    {
+      "key": "card.fossil_tells.hint.era",
+      "value": "This creature lived only in one era."
+    },
+    {
+      "key": "card.fossil_tells.wrong",
+      "value": "Not that box."
+    },
+    {
+      "key": "card.fossil_tells.done",
+      "value": "Fossils that show the environment are \"facies fossils\"; fossils that show the era are \"index fossils\"."
+    },
+    {
+      "key": "story.card.era_line.line",
+      "value": "The next layer has... an ammonite! Let's place fossils on Earth's timeline."
+    },
+    {
+      "key": "card.era_line.title",
+      "value": "Earth's timeline"
+    },
+    {
+      "key": "card.era_line.bin.paleo",
+      "value": "Paleozoic (older)"
+    },
+    {
+      "key": "card.era_line.bin.meso",
+      "value": "Mesozoic"
+    },
+    {
+      "key": "card.era_line.bin.ceno",
+      "value": "Cenozoic (newer)"
+    },
+    {
+      "key": "card.era_line.dinosaur",
+      "value": "Dinosaur"
+    },
+    {
+      "key": "card.era_line.dinosaur.hint",
+      "value": "Dinosaurs thrived in the middle era."
+    },
+    {
+      "key": "card.era_line.naumann",
+      "value": "Naumann elephant"
+    },
+    {
+      "key": "card.era_line.naumann.hint",
+      "value": "This elephant lived in Japan until fairly recently."
+    },
+    {
+      "key": "card.era_line.ammonite",
+      "value": "Ammonite"
+    },
+    {
+      "key": "card.era_line.ammonite.hint",
+      "value": "Ammonites thrived in the same era as dinosaurs."
+    },
+    {
+      "key": "card.era_line.trilobite",
+      "value": "Trilobite"
+    },
+    {
+      "key": "card.era_line.trilobite.hint",
+      "value": "Trilobites lived long before the dinosaurs."
+    },
+    {
+      "key": "card.era_line.wrong",
+      "value": "Not that era."
+    },
+    {
+      "key": "card.era_line.done",
+      "value": "From oldest: Paleozoic, Mesozoic, Cenozoic. Fossils tell us how old a layer is."
+    },
+    {
+      "key": "story.card.key_bed.line",
+      "value": "Here are columns A, B and C. Tap the volcanic ash layer in each."
+    },
+    {
+      "key": "card.key_bed.title",
+      "value": "Columns at three sites"
+    },
+    {
+      "key": "card.key_bed.col.a",
+      "value": "A (west)"
+    },
+    {
+      "key": "card.key_bed.col.b",
+      "value": "B"
+    },
+    {
+      "key": "card.key_bed.col.c",
+      "value": "C (east)"
+    },
+    {
+      "key": "card.key_bed.sand",
+      "value": "Sandstone"
+    },
+    {
+      "key": "card.key_bed.mud",
+      "value": "Mudstone"
+    },
+    {
+      "key": "card.key_bed.tuff",
+      "value": "Volcanic ash"
+    },
+    {
+      "key": "card.key_bed.gravel",
+      "value": "Conglomerate"
+    },
+    {
+      "key": "card.key_bed.wrong",
+      "value": "That's not the ash layer. Look for the whitish one."
+    },
+    {
+      "key": "card.key_bed.done",
+      "value": "Connected, they make a slanted line! The same layer is a marker for comparing sites."
     }
   ]
 }

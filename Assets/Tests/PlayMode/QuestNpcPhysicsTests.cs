@@ -30,6 +30,13 @@ public class QuestNpcPhysicsTests
     private bool _cursorVisible;
 
     private static Type T(string name) => Type.GetType(name + ", Assembly-CSharp", true);
+
+    private static void SolveKnowledgeCard()
+    {
+        var card = T("StorySystem.KnowledgeCardSession").GetProperty("Active", BindingFlags.Public | BindingFlags.Static).GetValue(null);
+        if (card != null && !(bool)card.GetType().GetProperty("Done").GetValue(card))
+            card.GetType().GetMethod("SolveForTesting").Invoke(card, null);
+    }
     private static object Get(object target, string name) => target.GetType().GetField(name, Flags).GetValue(target);
     private static object Prop(object target, string name) => (target as Type ?? target.GetType()).GetProperty(name, Flags).GetValue(target is Type ? null : target);
     private static object Call(object target, string name, params object[] args) =>
@@ -90,6 +97,7 @@ public class QuestNpcPhysicsTests
                 choice.GetComponent<Button>().onClick.Invoke();
                 quizAnswers++;
             }
+            SolveKnowledgeCard();
             var next = GameObject.Find("SubtitleCanvas/BG");
             if (next != null && next.GetComponent<Button>().interactable) next.GetComponent<Button>().onClick.Invoke();
             yield return new WaitForSecondsRealtime(0.12f);
@@ -239,6 +247,7 @@ public class QuestNpcPhysicsTests
                 choice.GetComponent<Button>().onClick.Invoke();
                 quizAnswers++;
             }
+            SolveKnowledgeCard();
             var next = GameObject.Find("SubtitleCanvas/BG");
             if (next != null && next.GetComponent<Button>().interactable) next.GetComponent<Button>().onClick.Invoke();
             yield return new WaitForSecondsRealtime(0.08f);

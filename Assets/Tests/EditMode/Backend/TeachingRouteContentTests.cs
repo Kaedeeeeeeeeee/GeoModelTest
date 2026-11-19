@@ -124,4 +124,57 @@ public class TeachingRouteContentTests
                 Assert.LessOrEqual(ja.Length, 40, name + "/" + line.textKey + " stays within 40 characters without furigana.");
             }
     }
+
+    [Serializable] private class CardSequence { public List<CardLine> dialogues; }
+    [Serializable] private class CardLine { public string textKey; public string questionId; public Card interaction; }
+    [Serializable] private class Card { public string id; public string type; public string titleKey; public string wrongKey; public string doneKey; public List<CardItem> items; public List<CardBin> bins; public List<CardColumn> columns; }
+    [Serializable] private class CardItem { public string textKey; public string noteKey; public string hintKey; public string bin; public int order; }
+    [Serializable] private class CardBin { public string id; public string textKey; }
+    [Serializable] private class CardColumn { public string labelKey; public List<CardLayer> layers; }
+    [Serializable] private class CardLayer { public string textKey; public bool target; }
+
+    [TestCase("quest2.1", "card.weathering_order", "order", "q.weathering_order")]
+    [TestCase("beat3", "card.fossil_tells", "sort", "q.fossil_facies_term")]
+    [TestCase("beat3", "card.era_line", "sort", "q.fossil_ammonite_era")]
+    [TestCase("beat4", "card.key_bed", "columns", "q.strata_tilt")]
+    public void KnowledgeCard_ShouldBePlayableBeforeItsQuestion(string sequence, string cardId, string type, string questionId)
+    {
+        var lines = JsonUtility.FromJson<CardSequence>(Resources.Load<TextAsset>("Story/" + sequence).text).dialogues;
+        int card = lines.FindIndex(line => line.interaction != null && line.interaction.id == cardId);
+        int question = lines.FindIndex(line => line.questionId == questionId);
+        Assert.That(card, Is.GreaterThanOrEqualTo(0).And.LessThan(question), cardId + " comes before " + questionId);
+        var c = lines[card].interaction;
+        Assert.AreEqual(type, c.type);
+        var keys = new List<string> { lines[card].textKey, c.titleKey, c.wrongKey, c.doneKey };
+        if (type == "order")
+        {
+            CollectionAssert.AreEquivalent(Enumerable.Range(1, c.items.Count), c.items.Select(i => i.order), "Each step has one place in the order.");
+            CollectionAssert.AreNotEqual(Enumerable.Range(1, c.items.Count), c.items.Select(i => i.order), "Cards do not start already in order.");
+        }
+        if (type == "sort")
+        {
+            Assert.GreaterOrEqual(c.bins.Count, 2);
+            foreach (var item in c.items) Assert.IsTrue(c.bins.Any(b => b.id == item.bin), item.textKey + " has a box.");
+            foreach (var bin in c.bins) Assert.IsTrue(c.items.Any(i => i.bin == bin.id), bin.id + " receives a card.");
+            keys.AddRange(c.bins.Select(b => b.textKey));
+        }
+        if (type == "columns")
+        {
+            Assert.GreaterOrEqual(c.columns.Count, 2);
+            foreach (var column in c.columns)
+            {
+                Assert.AreEqual(1, column.layers.Count(l => l.target), column.labelKey + " has one layer to tap.");
+                keys.Add(column.labelKey);
+                keys.AddRange(column.layers.Select(l => l.textKey));
+            }
+        }
+        if (c.items != null)
+            foreach (var item in c.items)
+                keys.AddRange(new[] { item.textKey, item.noteKey, item.hintKey }.Where(k => !string.IsNullOrEmpty(k)));
+        foreach (string language in new[] { "ja-JP", "zh-CN", "en-US" })
+        {
+            var texts = Texts(language);
+            foreach (string key in keys) Assert.IsTrue(texts.ContainsKey(key), key + " exists in " + language);
+        }
+    }
 }

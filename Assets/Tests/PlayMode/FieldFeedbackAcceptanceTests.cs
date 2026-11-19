@@ -18,6 +18,13 @@ public class FieldFeedbackAcceptanceTests
 {
     private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance;
     private static Type T(string name) => Type.GetType(name + ", Assembly-CSharp", true);
+
+    private static void SolveKnowledgeCard()
+    {
+        var card = T("StorySystem.KnowledgeCardSession").GetProperty("Active", BindingFlags.Public | BindingFlags.Static).GetValue(null);
+        if (card != null && !(bool)card.GetType().GetProperty("Done").GetValue(card))
+            card.GetType().GetMethod("SolveForTesting").Invoke(card, null);
+    }
     private static object Get(object target, string field) => target.GetType().GetField(field, Flags).GetValue(target);
     private static void Set(object target, string field, object value) => target.GetType().GetField(field, Flags).SetValue(target, value);
     private static object Prop(object target, string name) => (target is Type type ? type : target.GetType()).GetProperty(name, Flags).GetValue(target is Type ? null : target);
@@ -626,6 +633,7 @@ public class FieldFeedbackAcceptanceTests
                 Check(banner.transform.Find("ZoomHint").gameObject.activeSelf, "The real teaching picture shows its enlarge hint.");
                 yield break;
             }
+            SolveKnowledgeCard();
             var bg = GameObject.Find("SubtitleCanvas/BG");
             if (bg != null) bg.GetComponent<Button>().onClick.Invoke();
             yield return new WaitForSecondsRealtime(0.1f);
@@ -660,6 +668,7 @@ public class FieldFeedbackAcceptanceTests
         for (int i = 0; i < 90; i++)
         {
             if (GameObject.Find("SubtitleCanvas/ChoicePanel") != null) yield break;
+            SolveKnowledgeCard();
             var bg = GameObject.Find("SubtitleCanvas/BG");
             if (bg != null) bg.GetComponent<Button>().onClick.Invoke();
             yield return new WaitForSecondsRealtime(0.08f);

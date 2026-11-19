@@ -11,6 +11,106 @@
         },
         {
             "speaker": "Dr.Kaede",
+            "text": "A・B・Cの柱状図（ちゅうじょうず）だよ。火山灰（かざんばい）の層（そう）を、それぞれタップしてみて。",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.card.key_bed.line",
+            "illustrationKey": "10_keybed_tilt",
+            "interaction": {
+                "id": "card.key_bed",
+                "type": "columns",
+                "titleKey": "card.key_bed.title",
+                "wrongKey": "card.key_bed.wrong",
+                "doneKey": "card.key_bed.done",
+                "columns": [
+                    {
+                        "labelKey": "card.key_bed.col.a",
+                        "layers": [
+                            {
+                                "textKey": "card.key_bed.sand",
+                                "text": "砂岩（さがん）",
+                                "color": "#d9c38f",
+                                "size": 1
+                            },
+                            {
+                                "textKey": "card.key_bed.tuff",
+                                "text": "火山灰（かざんばい）",
+                                "color": "#f2efe6",
+                                "size": 1,
+                                "target": true
+                            },
+                            {
+                                "textKey": "card.key_bed.mud",
+                                "text": "泥岩（でいがん）",
+                                "color": "#7d838a",
+                                "size": 1
+                            },
+                            {
+                                "textKey": "card.key_bed.gravel",
+                                "text": "れき岩（がん）",
+                                "color": "#a08466",
+                                "size": 2
+                            }
+                        ]
+                    },
+                    {
+                        "labelKey": "card.key_bed.col.b",
+                        "layers": [
+                            {
+                                "textKey": "card.key_bed.sand",
+                                "text": "砂岩（さがん）",
+                                "color": "#d9c38f",
+                                "size": 2
+                            },
+                            {
+                                "textKey": "card.key_bed.tuff",
+                                "text": "火山灰（かざんばい）",
+                                "color": "#f2efe6",
+                                "size": 1,
+                                "target": true
+                            },
+                            {
+                                "textKey": "card.key_bed.mud",
+                                "text": "泥岩（でいがん）",
+                                "color": "#7d838a",
+                                "size": 1
+                            },
+                            {
+                                "textKey": "card.key_bed.gravel",
+                                "text": "れき岩（がん）",
+                                "color": "#a08466",
+                                "size": 1
+                            }
+                        ]
+                    },
+                    {
+                        "labelKey": "card.key_bed.col.c",
+                        "layers": [
+                            {
+                                "textKey": "card.key_bed.sand",
+                                "text": "砂岩（さがん）",
+                                "color": "#d9c38f",
+                                "size": 3
+                            },
+                            {
+                                "textKey": "card.key_bed.tuff",
+                                "text": "火山灰（かざんばい）",
+                                "color": "#f2efe6",
+                                "size": 1,
+                                "target": true
+                            },
+                            {
+                                "textKey": "card.key_bed.mud",
+                                "text": "泥岩（でいがん）",
+                                "color": "#7d838a",
+                                "size": 1
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "speaker": "Dr.Kaede",
             "text": "「同（おな）じ層（そう）」が見（み）つかれば、それを目印（めじるし）にできる——「鍵層（かぎそう）」っていうの。火山灰（かざんばい）はとても目立（めだ）つ、いい鍵層（かぎそう）よ。",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat4.q1.teach1",

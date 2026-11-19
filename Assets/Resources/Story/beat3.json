@@ -109,6 +109,64 @@
         },
         {
             "speaker": "Dr.Kaede",
+            "text": "化石（かせき）には、教（おし）えてくれることが2しゅるいあるの。箱（はこ）に分（わ）けてみて！",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.card.fossil_tells.line",
+            "illustrationKey": "06_facies_fossil",
+            "interaction": {
+                "id": "card.fossil_tells",
+                "type": "sort",
+                "titleKey": "card.fossil_tells.title",
+                "wrongKey": "card.fossil_tells.wrong",
+                "doneKey": "card.fossil_tells.done",
+                "bins": [
+                    {
+                        "id": "place",
+                        "textKey": "card.fossil_tells.bin.place"
+                    },
+                    {
+                        "id": "era",
+                        "textKey": "card.fossil_tells.bin.era"
+                    }
+                ],
+                "items": [
+                    {
+                        "id": "ammonite",
+                        "text": "アンモナイト",
+                        "textKey": "card.fossil_tells.ammonite",
+                        "noteKey": "card.fossil_tells.ammonite.note",
+                        "bin": "era",
+                        "hintKey": "card.fossil_tells.hint.era"
+                    },
+                    {
+                        "id": "coral",
+                        "text": "サンゴ",
+                        "textKey": "card.fossil_tells.coral",
+                        "noteKey": "card.fossil_tells.coral.note",
+                        "bin": "place",
+                        "hintKey": "card.fossil_tells.hint.place"
+                    },
+                    {
+                        "id": "trilobite",
+                        "text": "三葉虫（さんようちゅう）",
+                        "textKey": "card.fossil_tells.trilobite",
+                        "noteKey": "card.fossil_tells.trilobite.note",
+                        "bin": "era",
+                        "hintKey": "card.fossil_tells.hint.era"
+                    },
+                    {
+                        "id": "clam",
+                        "text": "シジミ",
+                        "textKey": "card.fossil_tells.clam",
+                        "noteKey": "card.fossil_tells.clam.note",
+                        "bin": "place",
+                        "hintKey": "card.fossil_tells.hint.place"
+                    }
+                ]
+            }
+        },
+        {
+            "speaker": "Dr.Kaede",
             "text": "サンゴみたいに、地層（ちそう）ができた当時（とうじ）の「環境（かんきょう）」を教（おし）えてくれる化石（かせき）——これを何（なん）て呼（よ）ぶ？",
             "speakerKey": "story.speaker.drkaede",
             "textKey": "story.beat3.q2.prompt",
@@ -137,16 +195,61 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "今度（こんど）は別（べつ）の層（そう）から——アンモナイトの化石（かせき）！",
+            "text": "次（つぎ）の層（そう）からは……アンモナイト！　地球（ちきゅう）の歴史（れきし）の線（せん）に、のせてみよう。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.q3.teach1",
-            "illustrationKey": "07_ammonite_mesozoic"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "地球（ちきゅう）の歴史（れきし）は、大（おお）きく「古生代（こせいだい）→ 中生代（ちゅうせいだい）→ 新生代（しんせいだい）」って分（わ）かれてるの。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.q3.teach2"
+            "textKey": "story.card.era_line.line",
+            "illustrationKey": "07_ammonite_mesozoic",
+            "interaction": {
+                "id": "card.era_line",
+                "type": "sort",
+                "titleKey": "card.era_line.title",
+                "wrongKey": "card.era_line.wrong",
+                "doneKey": "card.era_line.done",
+                "bins": [
+                    {
+                        "id": "paleo",
+                        "textKey": "card.era_line.bin.paleo"
+                    },
+                    {
+                        "id": "meso",
+                        "textKey": "card.era_line.bin.meso"
+                    },
+                    {
+                        "id": "ceno",
+                        "textKey": "card.era_line.bin.ceno"
+                    }
+                ],
+                "items": [
+                    {
+                        "id": "dinosaur",
+                        "text": "恐竜（きょうりゅう）",
+                        "textKey": "card.era_line.dinosaur",
+                        "bin": "meso",
+                        "hintKey": "card.era_line.dinosaur.hint"
+                    },
+                    {
+                        "id": "naumann",
+                        "text": "ナウマンゾウ",
+                        "textKey": "card.era_line.naumann",
+                        "bin": "ceno",
+                        "hintKey": "card.era_line.naumann.hint"
+                    },
+                    {
+                        "id": "ammonite",
+                        "text": "アンモナイト",
+                        "textKey": "card.era_line.ammonite",
+                        "bin": "meso",
+                        "hintKey": "card.era_line.ammonite.hint"
+                    },
+                    {
+                        "id": "trilobite",
+                        "text": "三葉虫（さんようちゅう）",
+                        "textKey": "card.era_line.trilobite",
+                        "bin": "paleo",
+                        "hintKey": "card.era_line.trilobite.hint"
+                    }
+                ]
+            }
         },
         {
             "speaker": "Dr.Kaede",

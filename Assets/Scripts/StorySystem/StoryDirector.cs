@@ -738,6 +738,10 @@ namespace StorySystem
             public string Ambience;
             public string Sfx;
 
+            // 知識インタラクションカード（可選）。null なら普通の台詞。
+            public KnowledgeCard Card;
+
+            public bool HasCard => Card != null;
             public bool HasChoices => Choices != null && Choices.Count > 0;
             public bool HasHint => !string.IsNullOrEmpty(Hint);
 
@@ -755,6 +759,7 @@ namespace StorySystem
                 IllustrationKey = null;
                 Ambience = null;
                 Sfx = null;
+                Card = null;
             }
 
             public SubtitleLine(string text, bool triggerCameraShake = false, float shakeAmplitudeOverride = 0f)
@@ -816,6 +821,7 @@ namespace StorySystem
             // 点击 banner → 全屏看大图（预览较小也能看清注音）
             Image illustration = CreateIllustrationBanner(canvasGO.transform);
             string currentIllustrationKey = null;
+            string lastTeachingIllustrationKey = null; // 直前に見せた教える図（まちがえたら見せ直す）
             {
                 var illBtn = illustration.gameObject.AddComponent<Button>();
                 illBtn.transition = Selectable.Transition.None;
@@ -958,8 +964,11 @@ namespace StorySystem
 
                 // 知识讲解插画 banner：带 key 即切换并持续显示；"-" 收起；空/缺省保持不变。
                 // 选择题阶段不显示教学插图，避免图片直接留在真正作答画面里。
-                if (line.HasChoices)
+                if (line.HasChoices || line.HasCard)
                 {
+                    // カード行の図は出さずに覚えておき、確認問題でまちがえたときに見せ直す。
+                    if (line.HasCard && !string.IsNullOrWhiteSpace(line.IllustrationKey) && line.IllustrationKey.Trim() != "-")
+                        lastTeachingIllustrationKey = line.IllustrationKey.Trim();
                     currentIllustrationKey = null;
                     HideIllustrationNow(illustration);
                 }
@@ -967,6 +976,8 @@ namespace StorySystem
                 {
                     string want = line.IllustrationKey.Trim();
                     bool hide = want == "-" || want.Equals("none", System.StringComparison.OrdinalIgnoreCase);
+                    if (hide) lastTeachingIllustrationKey = null;
+                    else lastTeachingIllustrationKey = want;
                     if (hide && currentIllustrationKey != null)
                     {
                         currentIllustrationKey = null;
@@ -991,6 +1002,63 @@ namespace StorySystem
                 advanceRequested = false;
                 yield return null; // 避免前一次点击连带跳过
 
+                // 知識カード：指示を読んだら自分で並べる・分ける・タップする。終わったら done の一言。
+                if (line.HasCard)
+                {
+                    canFinish = false;
+                    SetDialogAdvanceEnabled(true);
+                    advanceRequested = false;
+                    while (pager.Page < pager.PageCount)
+                    {
+                        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)) RequestAdvance();
+                        yield return null;
+                    }
+                    SetDialogAdvanceEnabled(false);
+
+                    var cardSession = KnowledgeCardSession.Build(canvasGO.transform, line.Card, ApplyTmpFont);
+                    if (cardSession != null)
+                    {
+                        double cardShownAt = GameInputState.ActiveTime;
+                        Backend.TelemetryClient.Instance?.Track("knowledge_card_shown", new Dictionary<string, object>
+                        {
+                            ["cardId"] = line.Card.Id,
+                            ["cardType"] = line.Card.Type
+                        });
+                        hintTxt.text = FuriganaProcessor.Process(LocalizedOr("ui.dialog.card", "上（うえ）のカードをさわってみよう"));
+                        while (!cardSession.Done) yield return null;
+                        Backend.TelemetryClient.Instance?.Track("knowledge_card_done", new Dictionary<string, object>
+                        {
+                            ["cardId"] = line.Card.Id,
+                            ["cardType"] = line.Card.Type,
+                            ["wrongCount"] = cardSession.WrongCount,
+                            ["durationMs"] = Math.Max(0L, (long)Math.Round((GameInputState.ActiveTime - cardShownAt) * 1000d))
+                        });
+
+                        if (!string.IsNullOrEmpty(line.Card.Done))
+                        {
+                            ShowSpeaker(line.Speaker);
+                            pager.SetText(line.Card.Done);
+                            StoryHistory.Append(line.Speaker, line.Card.Done, "dialogue", line.ContentId);
+                        }
+                        canFinish = true;
+                        RefreshAdvanceHint();
+                        SetDialogAdvanceEnabled(true);
+                        advanceRequested = false;
+                        yield return null;
+                        while (!advanceRequested)
+                        {
+                            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)) RequestAdvance();
+                            yield return null;
+                        }
+                        cardSession.Destroy();
+                        StoryCheckpoint.Acknowledge(line.ContentId);
+                        continue;
+                    }
+                    SetDialogAdvanceEnabled(true);
+                    canFinish = true;
+                    RefreshAdvanceHint();
+                }
+
                 // 选择题分支：显示答案按钮，记录得分，再播放反馈
                 if (line.HasChoices)
                 {
@@ -1010,6 +1078,7 @@ namespace StorySystem
                     while (!correctlyAnswered)
                     {
                         SetDialogAdvanceEnabled(false);
+                        HideIllustrationNow(illustration); // まちがい後に見せ直した図は、選ぶ画面では消す
 
                         // 每次循环（含重答）恢复 speaker + prompt
                         canFinish = false;
@@ -1095,6 +1164,16 @@ namespace StorySystem
                             ? chosen.Feedback
                             : LocalizedOr(chosen.IsCorrect ? "quiz.correct" : "quiz.incorrect",
                                           chosen.IsCorrect ? "正解（せいかい）！" : "ざんねん、もう一度（いちど）かんがえてみよう。");
+
+                        if (!chosen.IsCorrect && illustration != null && !string.IsNullOrEmpty(lastTeachingIllustrationKey))
+                        {
+                            var teachSprite = LoadIllustration(lastTeachingIllustrationKey);
+                            if (teachSprite != null)
+                            {
+                                if (_fadeIllustration != null) StoryDirectorRunner.Instance.StopCoroutine(_fadeIllustration);
+                                _fadeIllustration = StoryDirectorRunner.Instance.StartCoroutine(SwapIllustration(illustration, teachSprite, IllustrationFadeSec));
+                            }
+                        }
 
                         ShowSpeaker(line.Speaker, "feedback");
                         pager.SetText(feedback);
@@ -1235,7 +1314,7 @@ namespace StorySystem
             return _tmpFont;
         }
 
-        private static void ApplyTmpFont(TMP_Text t)
+        internal static void ApplyTmpFont(TMP_Text t)
         {
             var f = GetTmpFont();
             if (f != null) t.font = f;

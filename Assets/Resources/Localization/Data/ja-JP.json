@@ -4118,11 +4118,259 @@
     },
     {
       "key": "story.s2.l08",
-      "value": "地層（ちそう）は、大地（だいち）の「日記（にっき）」なの。どうやってできるか、この図（ず）で見（み）てみよう。"
+      "value": "地層（ちそう）は、大地（だいち）の「日記（にっき）」なの。どうやってできるか、ならべてみて。"
     },
     {
       "key": "story.s2.l10",
       "value": "よし、外（そと）へ行（い）こう！　道具（どうぐ）をひらいて、フェーズシフターをえらんでね。"
+    },
+    {
+      "key": "ui.dialog.card",
+      "value": "上（うえ）のカードをさわってみよう"
+    },
+    {
+      "key": "card.common.order",
+      "value": "1ばんめから、じゅんにタップしよう"
+    },
+    {
+      "key": "card.common.sort",
+      "value": "カードをえらんで、入（い）れる箱（はこ）をタップしよう"
+    },
+    {
+      "key": "card.common.pick",
+      "value": "カードをえらんでね"
+    },
+    {
+      "key": "card.common.choose_bin",
+      "value": "どの箱（はこ）に入（はい）る？"
+    },
+    {
+      "key": "card.common.columns",
+      "value": "それぞれの柱状図（ちゅうじょうず）で、さがす層（そう）をタップしよう"
+    },
+    {
+      "key": "card.weathering.title",
+      "value": "岩（いわ）が地層（ちそう）になるまで"
+    },
+    {
+      "key": "card.weathering.weathering",
+      "value": "風化（ふうか）"
+    },
+    {
+      "key": "card.weathering.weathering.note",
+      "value": "岩（いわ）がもろく、ぼろぼろになる"
+    },
+    {
+      "key": "card.weathering.erosion",
+      "value": "侵食（しんしょく）"
+    },
+    {
+      "key": "card.weathering.erosion.note",
+      "value": "水（みず）や風（かぜ）でけずられる"
+    },
+    {
+      "key": "card.weathering.erosion.hint",
+      "value": "けずられる前（まえ）に、岩（いわ）がもろくなるよ。"
+    },
+    {
+      "key": "card.weathering.transport",
+      "value": "運搬（うんぱん）"
+    },
+    {
+      "key": "card.weathering.transport.note",
+      "value": "川（かわ）の水（みず）に運（はこ）ばれる"
+    },
+    {
+      "key": "card.weathering.transport.hint",
+      "value": "運（はこ）ばれる前（まえ）に、岩（いわ）がくだけて、けずられないとね。"
+    },
+    {
+      "key": "card.weathering.deposition",
+      "value": "堆積（たいせき）"
+    },
+    {
+      "key": "card.weathering.deposition.note",
+      "value": "海（うみ）や湖（みずうみ）の底（そこ）につもる"
+    },
+    {
+      "key": "card.weathering.deposition.hint",
+      "value": "つもるのは、いちばん最後（さいご）だよ。"
+    },
+    {
+      "key": "card.weathering.wrong",
+      "value": "その順番（じゅんばん）じゃないみたい。"
+    },
+    {
+      "key": "card.weathering.done",
+      "value": "できた！　もろくなる→けずられる→運（はこ）ばれる→つもる。こうして地層（ちそう）ができるんだ。"
+    },
+    {
+      "key": "story.card.fossil_tells.line",
+      "value": "化石（かせき）には、教（おし）えてくれることが2しゅるいあるの。箱（はこ）に分（わ）けてみて！"
+    },
+    {
+      "key": "card.fossil_tells.title",
+      "value": "化石（かせき）が教（おし）えてくれること"
+    },
+    {
+      "key": "card.fossil_tells.bin.place",
+      "value": "「すんでいた場所（ばしょ）」がわかる"
+    },
+    {
+      "key": "card.fossil_tells.bin.era",
+      "value": "「いつの時代（じだい）」かがわかる"
+    },
+    {
+      "key": "card.fossil_tells.coral",
+      "value": "サンゴ"
+    },
+    {
+      "key": "card.fossil_tells.coral.note",
+      "value": "あたたかく浅（あさ）い海（うみ）にだけすむ"
+    },
+    {
+      "key": "card.fossil_tells.clam",
+      "value": "シジミ"
+    },
+    {
+      "key": "card.fossil_tells.clam.note",
+      "value": "川（かわ）と海（うみ）の水（みず）がまじる所（ところ）にすむ"
+    },
+    {
+      "key": "card.fossil_tells.ammonite",
+      "value": "アンモナイト"
+    },
+    {
+      "key": "card.fossil_tells.ammonite.note",
+      "value": "ある時代（じだい）にだけ、世界中（せかいじゅう）の海（うみ）でさかえた"
+    },
+    {
+      "key": "card.fossil_tells.trilobite",
+      "value": "三葉虫（さんようちゅう）"
+    },
+    {
+      "key": "card.fossil_tells.trilobite.note",
+      "value": "ある時代（じだい）にだけ、世界中（せかいじゅう）の海（うみ）にいた"
+    },
+    {
+      "key": "card.fossil_tells.hint.place",
+      "value": "この生（い）きものは、すめる場所（ばしょ）が決（き）まっているよ。"
+    },
+    {
+      "key": "card.fossil_tells.hint.era",
+      "value": "この生（い）きものは、ある時代（じだい）にだけいたよ。"
+    },
+    {
+      "key": "card.fossil_tells.wrong",
+      "value": "その箱（はこ）じゃないみたい。"
+    },
+    {
+      "key": "card.fossil_tells.done",
+      "value": "すむ場所（ばしょ）がわかるのが「示相化石（しそうかせき）」、時代（じだい）がわかるのが「示準化石（しじゅんかせき）」だよ。"
+    },
+    {
+      "key": "story.card.era_line.line",
+      "value": "次（つぎ）の層（そう）からは……アンモナイト！　地球（ちきゅう）の歴史（れきし）の線（せん）に、のせてみよう。"
+    },
+    {
+      "key": "card.era_line.title",
+      "value": "地球（ちきゅう）の歴史（れきし）の線（せん）"
+    },
+    {
+      "key": "card.era_line.bin.paleo",
+      "value": "古生代（こせいだい）（古（ふる）い）"
+    },
+    {
+      "key": "card.era_line.bin.meso",
+      "value": "中生代（ちゅうせいだい）"
+    },
+    {
+      "key": "card.era_line.bin.ceno",
+      "value": "新生代（しんせいだい）（新（あたら）しい）"
+    },
+    {
+      "key": "card.era_line.dinosaur",
+      "value": "恐竜（きょうりゅう）"
+    },
+    {
+      "key": "card.era_line.dinosaur.hint",
+      "value": "恐竜（きょうりゅう）がさかえたのは、まん中（なか）の時代（じだい）だよ。"
+    },
+    {
+      "key": "card.era_line.naumann",
+      "value": "ナウマンゾウ"
+    },
+    {
+      "key": "card.era_line.naumann.hint",
+      "value": "ナウマンゾウは、わりと最近（さいきん）まで日本（にほん）にいたゾウだよ。"
+    },
+    {
+      "key": "card.era_line.ammonite",
+      "value": "アンモナイト"
+    },
+    {
+      "key": "card.era_line.ammonite.hint",
+      "value": "アンモナイトは、恐竜（きょうりゅう）と同（おな）じ時代（じだい）にさかえたよ。"
+    },
+    {
+      "key": "card.era_line.trilobite",
+      "value": "三葉虫（さんようちゅう）"
+    },
+    {
+      "key": "card.era_line.trilobite.hint",
+      "value": "三葉虫（さんようちゅう）は、恐竜（きょうりゅう）よりずっと前（まえ）にいたよ。"
+    },
+    {
+      "key": "card.era_line.wrong",
+      "value": "その時代（じだい）じゃないみたい。"
+    },
+    {
+      "key": "card.era_line.done",
+      "value": "古（ふる）い順（じゅん）に、古生代（こせいだい）→中生代（ちゅうせいだい）→新生代（しんせいだい）。化石（かせき）は、地層（ちそう）の時代（じだい）を教（おし）えてくれるんだ。"
+    },
+    {
+      "key": "story.card.key_bed.line",
+      "value": "A・B・Cの柱状図（ちゅうじょうず）だよ。火山灰（かざんばい）の層（そう）を、それぞれタップしてみて。"
+    },
+    {
+      "key": "card.key_bed.title",
+      "value": "3つの地点（ちてん）の柱状図（ちゅうじょうず）"
+    },
+    {
+      "key": "card.key_bed.col.a",
+      "value": "A（西（にし））"
+    },
+    {
+      "key": "card.key_bed.col.b",
+      "value": "B"
+    },
+    {
+      "key": "card.key_bed.col.c",
+      "value": "C（東（ひがし））"
+    },
+    {
+      "key": "card.key_bed.sand",
+      "value": "砂岩（さがん）"
+    },
+    {
+      "key": "card.key_bed.mud",
+      "value": "泥岩（でいがん）"
+    },
+    {
+      "key": "card.key_bed.tuff",
+      "value": "火山灰（かざんばい）"
+    },
+    {
+      "key": "card.key_bed.gravel",
+      "value": "れき岩（がん）"
+    },
+    {
+      "key": "card.key_bed.wrong",
+      "value": "それは火山灰（かざんばい）の層（そう）じゃないよ。白（しろ）っぽい層（そう）をさがしてみて。"
+    },
+    {
+      "key": "card.key_bed.done",
+      "value": "つないだら、ななめの線（せん）になった！　同（おな）じ層（そう）は、くらべる目（め）じるしになるんだ。"
     }
   ]
 }
