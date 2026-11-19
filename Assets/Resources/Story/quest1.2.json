@@ -7,8 +7,7 @@
             "speaker": "主人公",
             "text": "……ここ、どこ？",
             "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.s2.l01",
-            "ambience": "amb_lab_hum"
+            "textKey": "story.s2.l01"
         },
         {
             "speaker": "Dr.Kaede",
