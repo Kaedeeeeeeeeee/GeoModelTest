@@ -29,6 +29,10 @@
       "value": "ボタン・メニューの音量"
     },
     {
+      "key": "ui.settings.voice_volume",
+      "value": "キャラクターの声の音量"
+    },
+    {
       "key": "ui.settings.gameplay",
       "value": "ゲーム"
     },
@@ -2550,7 +2554,7 @@
     },
     {
       "key": "story.beat3.q5.teach1",
-      "value": "火山（かざん）が噴火（ふんか）すると、火山灰（かざんばい）が遠（とお）くまで飛（と）んで、降（ふ）り積（つ）もるんだ。"
+      "value": "火山（かざん）がふん火（か）すると、火山灰（かざんばい）が遠（とお）くまでとんで、つもるんだ。"
     },
     {
       "key": "story.beat3.q5.prompt",
@@ -2778,7 +2782,7 @@
     },
     {
       "key": "story.beat4.q1.teach1",
-      "value": "「同（おな）じ層（そう）」が見（み）つかれば、それを目印（めじるし）にできる——「鍵層（かぎそう）」っていうの。火山灰（かざんばい）はとても目立（めだ）つ、いい鍵層（かぎそう）よ。"
+      "value": "同（おな）じ層（そう）は目（め）じるしになる。これを「鍵層（かぎそう）」っていうの。"
     },
     {
       "key": "story.beat4.q1.teach2",
@@ -2786,7 +2790,7 @@
     },
     {
       "key": "story.beat4.q2.teach1",
-      "value": "多（おお）くの地層（ちそう）は、できたときにはほぼ水平（すいへい）に重（かさ）なるよ。その後（ご）、両側（りょうがわ）から押（お）し縮（ちぢ）められると、この図（ず）のように曲（ま）がることがある。"
+      "value": "地層（ちそう）は、両（りょう）がわからおされると、波（なみ）のように曲（ま）がるんだ。"
     },
     {
       "key": "story.beat1.q1.teach1",
@@ -2958,7 +2962,7 @@
     },
     {
       "key": "story.beat3.l07",
-      "value": "——ズン。足元（あしもと）が、また小（ちい）さくゆれた。"
+      "value": "——ズン。足（あし）もとが、また小（ちい）さくゆれた。"
     },
     {
       "key": "story.beat3.l08",
@@ -3374,7 +3378,7 @@
     },
     {
       "key": "story.core_return.line",
-      "value": "うまくできたね！　研究室（けんきゅうしつ）に戻（もど）って、このサンプルをくわしく調（しら）べてみよう。"
+      "value": "うまくできたね！　ラボに持（も）ち帰（かえ）って、くわしく見（み）よう！"
     },
     {
       "key": "backend.checking",
@@ -3970,7 +3974,7 @@
     },
     {
       "key": "story.beat3.l11",
-      "value": "よく見（み）つけたね！　これは「サンゴ」の化石（かせき）。君（きみ）が採（と）ってきた岩芯（がんしん）の中（なか）に、入（はい）っていたんだよ。"
+      "value": "岩芯（がんしん）の中（なか）に「サンゴ」の化石（かせき）！　サンゴは今（いま）も、あたたかく浅（あさ）い海（うみ）にしかすめないの。"
     },
     {
       "key": "story.beat3.l12",
@@ -4071,6 +4075,458 @@
     {
       "key": "drill_tower.drill_action",
       "value": "{1:F0}～{2:F0}mのコアを採取する"
+    },
+    {
+      "key": "story.s1.l01",
+      "value": "昼休（ひるやす）みの教室（きょうしつ）。"
+    },
+    {
+      "key": "story.s1.l02",
+      "value": "とつぜん、大（おお）きなゆれがきた！"
+    },
+    {
+      "key": "story.s1.l03",
+      "value": "地震（じしん）だ！　みんな、つくえの下（した）に！"
+    },
+    {
+      "key": "story.s1.l04",
+      "value": "ゆれはどんどん強（つよ）くなる。目（め）の前（まえ）が、まっ白（しろ）な光（ひかり）につつまれた——。"
+    },
+    {
+      "key": "story.s2.l01",
+      "value": "……ここ、どこ？"
+    },
+    {
+      "key": "story.s2.l02",
+      "value": "気（き）がついた？　ここは大地（だいち）を調（しら）べる研究所（けんきゅうじょ）「G-Lab」。"
+    },
+    {
+      "key": "story.s2.l03",
+      "value": "わたしはカエデ。好（す）きなものは、地層（ちそう）とおかし！"
+    },
+    {
+      "key": "story.s2.l04",
+      "value": "さっきの地震（じしん）で、学校（がっこう）のグラウンドに大（おお）きな割（わ）れ目（め）ができたの。"
+    },
+    {
+      "key": "story.s2.l05",
+      "value": "地面（じめん）の下（した）で何（なに）が起（お）きているのか、いっしょに調（しら）べてほしい！"
+    },
+    {
+      "key": "story.s2.l06",
+      "value": "……わかった、やってみる！"
+    },
+    {
+      "key": "story.s2.l07",
+      "value": "ありがとう！　じゃあまず、こっちに来（き）て！"
+    },
+    {
+      "key": "story.s2.l08",
+      "value": "地層（ちそう）は、大地（だいち）の「日記（にっき）」なの。どうやってできるか、ならべてみて。"
+    },
+    {
+      "key": "story.s2.l10",
+      "value": "よし、外（そと）へ行（い）こう！　道具（どうぐ）をひらいて、フェーズシフターをえらんでね。"
+    },
+    {
+      "key": "ui.dialog.card",
+      "value": "上（うえ）のカードをさわってみよう"
+    },
+    {
+      "key": "card.common.order",
+      "value": "1ばんめから、じゅんにタップしよう"
+    },
+    {
+      "key": "card.common.sort",
+      "value": "カードをえらんで、入（い）れる箱（はこ）をタップしよう"
+    },
+    {
+      "key": "card.common.pick",
+      "value": "カードをえらんでね"
+    },
+    {
+      "key": "card.common.choose_bin",
+      "value": "どの箱（はこ）に入（はい）る？"
+    },
+    {
+      "key": "card.common.columns",
+      "value": "それぞれの柱状図（ちゅうじょうず）で、さがす層（そう）をタップしよう"
+    },
+    {
+      "key": "card.weathering.title",
+      "value": "岩（いわ）が地層（ちそう）になるまで"
+    },
+    {
+      "key": "card.weathering.weathering",
+      "value": "風化（ふうか）"
+    },
+    {
+      "key": "card.weathering.weathering.note",
+      "value": "岩（いわ）がもろく、ぼろぼろになる"
+    },
+    {
+      "key": "card.weathering.erosion",
+      "value": "侵食（しんしょく）"
+    },
+    {
+      "key": "card.weathering.erosion.note",
+      "value": "水（みず）や風（かぜ）でけずられる"
+    },
+    {
+      "key": "card.weathering.erosion.hint",
+      "value": "けずられる前（まえ）に、岩（いわ）がもろくなるよ。"
+    },
+    {
+      "key": "card.weathering.transport",
+      "value": "運搬（うんぱん）"
+    },
+    {
+      "key": "card.weathering.transport.note",
+      "value": "川（かわ）の水（みず）に運（はこ）ばれる"
+    },
+    {
+      "key": "card.weathering.transport.hint",
+      "value": "運（はこ）ばれる前（まえ）に、岩（いわ）がくだけて、けずられないとね。"
+    },
+    {
+      "key": "card.weathering.deposition",
+      "value": "堆積（たいせき）"
+    },
+    {
+      "key": "card.weathering.deposition.note",
+      "value": "海（うみ）や湖（みずうみ）の底（そこ）につもる"
+    },
+    {
+      "key": "card.weathering.deposition.hint",
+      "value": "つもるのは、いちばん最後（さいご）だよ。"
+    },
+    {
+      "key": "card.weathering.wrong",
+      "value": "その順番（じゅんばん）じゃないみたい。"
+    },
+    {
+      "key": "card.weathering.done",
+      "value": "できた！　もろくなる→けずられる→運（はこ）ばれる→つもる。こうして地層（ちそう）ができるんだ。"
+    },
+    {
+      "key": "story.card.fossil_tells.line",
+      "value": "化石（かせき）には、教（おし）えてくれることが2しゅるいあるの。箱（はこ）に分（わ）けてみて！"
+    },
+    {
+      "key": "card.fossil_tells.title",
+      "value": "化石（かせき）が教（おし）えてくれること"
+    },
+    {
+      "key": "card.fossil_tells.bin.place",
+      "value": "「すんでいた場所（ばしょ）」がわかる"
+    },
+    {
+      "key": "card.fossil_tells.bin.era",
+      "value": "「いつの時代（じだい）」かがわかる"
+    },
+    {
+      "key": "card.fossil_tells.coral",
+      "value": "サンゴ"
+    },
+    {
+      "key": "card.fossil_tells.coral.note",
+      "value": "あたたかく浅（あさ）い海（うみ）にだけすむ"
+    },
+    {
+      "key": "card.fossil_tells.clam",
+      "value": "シジミ"
+    },
+    {
+      "key": "card.fossil_tells.clam.note",
+      "value": "川（かわ）と海（うみ）の水（みず）がまじる所（ところ）にすむ"
+    },
+    {
+      "key": "card.fossil_tells.ammonite",
+      "value": "アンモナイト"
+    },
+    {
+      "key": "card.fossil_tells.ammonite.note",
+      "value": "ある時代（じだい）にだけ、世界中（せかいじゅう）の海（うみ）でさかえた"
+    },
+    {
+      "key": "card.fossil_tells.trilobite",
+      "value": "三葉虫（さんようちゅう）"
+    },
+    {
+      "key": "card.fossil_tells.trilobite.note",
+      "value": "ある時代（じだい）にだけ、世界中（せかいじゅう）の海（うみ）にいた"
+    },
+    {
+      "key": "card.fossil_tells.hint.place",
+      "value": "この生（い）きものは、すめる場所（ばしょ）が決（き）まっているよ。"
+    },
+    {
+      "key": "card.fossil_tells.hint.era",
+      "value": "この生（い）きものは、ある時代（じだい）にだけいたよ。"
+    },
+    {
+      "key": "card.fossil_tells.wrong",
+      "value": "その箱（はこ）じゃないみたい。"
+    },
+    {
+      "key": "card.fossil_tells.done",
+      "value": "すむ場所（ばしょ）がわかるのが「示相化石（しそうかせき）」、時代（じだい）がわかるのが「示準化石（しじゅんかせき）」だよ。"
+    },
+    {
+      "key": "story.card.era_line.line",
+      "value": "次（つぎ）の層（そう）からは……アンモナイト！　地球（ちきゅう）の歴史（れきし）の線（せん）に、のせてみよう。"
+    },
+    {
+      "key": "card.era_line.title",
+      "value": "地球（ちきゅう）の歴史（れきし）の線（せん）"
+    },
+    {
+      "key": "card.era_line.bin.paleo",
+      "value": "古生代（こせいだい）（古（ふる）い）"
+    },
+    {
+      "key": "card.era_line.bin.meso",
+      "value": "中生代（ちゅうせいだい）"
+    },
+    {
+      "key": "card.era_line.bin.ceno",
+      "value": "新生代（しんせいだい）（新（あたら）しい）"
+    },
+    {
+      "key": "card.era_line.dinosaur",
+      "value": "恐竜（きょうりゅう）"
+    },
+    {
+      "key": "card.era_line.dinosaur.hint",
+      "value": "恐竜（きょうりゅう）がさかえたのは、まん中（なか）の時代（じだい）だよ。"
+    },
+    {
+      "key": "card.era_line.naumann",
+      "value": "ナウマンゾウ"
+    },
+    {
+      "key": "card.era_line.naumann.hint",
+      "value": "ナウマンゾウは、わりと最近（さいきん）まで日本（にほん）にいたゾウだよ。"
+    },
+    {
+      "key": "card.era_line.ammonite",
+      "value": "アンモナイト"
+    },
+    {
+      "key": "card.era_line.ammonite.hint",
+      "value": "アンモナイトは、恐竜（きょうりゅう）と同（おな）じ時代（じだい）にさかえたよ。"
+    },
+    {
+      "key": "card.era_line.trilobite",
+      "value": "三葉虫（さんようちゅう）"
+    },
+    {
+      "key": "card.era_line.trilobite.hint",
+      "value": "三葉虫（さんようちゅう）は、恐竜（きょうりゅう）よりずっと前（まえ）にいたよ。"
+    },
+    {
+      "key": "card.era_line.wrong",
+      "value": "その時代（じだい）じゃないみたい。"
+    },
+    {
+      "key": "card.era_line.done",
+      "value": "古（ふる）い順（じゅん）に、古生代（こせいだい）→中生代（ちゅうせいだい）→新生代（しんせいだい）。化石（かせき）は、地層（ちそう）の時代（じだい）を教（おし）えてくれるんだ。"
+    },
+    {
+      "key": "story.card.key_bed.line",
+      "value": "A・B・Cの柱状図（ちゅうじょうず）だよ。火山灰（かざんばい）の層（そう）を、それぞれタップしてみて。"
+    },
+    {
+      "key": "card.key_bed.title",
+      "value": "3つの地点（ちてん）の柱状図（ちゅうじょうず）"
+    },
+    {
+      "key": "card.key_bed.col.a",
+      "value": "A（西（にし））"
+    },
+    {
+      "key": "card.key_bed.col.b",
+      "value": "B"
+    },
+    {
+      "key": "card.key_bed.col.c",
+      "value": "C（東（ひがし））"
+    },
+    {
+      "key": "card.key_bed.sand",
+      "value": "砂岩（さがん）"
+    },
+    {
+      "key": "card.key_bed.mud",
+      "value": "泥岩（でいがん）"
+    },
+    {
+      "key": "card.key_bed.tuff",
+      "value": "火山灰（かざんばい）"
+    },
+    {
+      "key": "card.key_bed.gravel",
+      "value": "れき岩（がん）"
+    },
+    {
+      "key": "card.key_bed.wrong",
+      "value": "それは火山灰（かざんばい）の層（そう）じゃないよ。白（しろ）っぽい層（そう）をさがしてみて。"
+    },
+    {
+      "key": "card.key_bed.done",
+      "value": "つないだら、ななめの線（せん）になった！　同（おな）じ層（そう）は、くらべる目（め）じるしになるんだ。"
+    },
+    {
+      "key": "story.evidence.got",
+      "value": "証拠（しょうこ）カード ゲット：{0}"
+    },
+    {
+      "key": "card.common.choose",
+      "value": "いちばん合（あ）うものを、ひとつえらぼう"
+    },
+    {
+      "key": "evidence.e1",
+      "value": "①ゆがんだ地層（ちそう）"
+    },
+    {
+      "key": "evidence.e2",
+      "value": "②3つのちがう岩石（がんせき）"
+    },
+    {
+      "key": "evidence.e3",
+      "value": "③化石（かせき）と火山灰（かざんばい）"
+    },
+    {
+      "key": "evidence.e4",
+      "value": "④かたむいて曲（ま）がった地層（ちそう）"
+    },
+    {
+      "key": "story.s3.l01",
+      "value": "外（そと）に出（で）た。地震（じしん）でくずれたがけに、しま模様（もよう）が見（み）える。"
+    },
+    {
+      "key": "story.s3.l02",
+      "value": "（無線（むせん））青（あお）い線（せん）の先（さき）に、調（しら）べる場所（ばしょ）が3つあるよ。"
+    },
+    {
+      "key": "story.s3.l03",
+      "value": "（無線（むせん））ハンマーに持（も）ちかえて、マークを3回（かい）たたこう！"
+    },
+    {
+      "key": "story.s4.l01",
+      "value": "3つとれた！……あれ？　このがけのしま、少（すこ）しゆがんでる？"
+    },
+    {
+      "key": "story.s4.l02",
+      "value": "いいところに気（き）づいたね！　それ、なぞの手（て）がかりかも。"
+    },
+    {
+      "key": "story.s4.l03",
+      "value": "まずは石（いし）をラボで調（しら）べよう。フェーズシフターで帰（かえ）ってきて！"
+    },
+    {
+      "key": "story.s5.l01",
+      "value": "おかえり！　とってきた石（いし）を、3つの方法（ほうほう）で調（しら）べてみよう。"
+    },
+    {
+      "key": "story.s5.l05",
+      "value": "すごい！　ごほうびに、おかしを半分（はんぶん）あげる。"
+    },
+    {
+      "key": "story.s5.l06",
+      "value": "同（おな）じ石（いし）でも、こんなにちがうんだ。でも、がけのゆがみは？"
+    },
+    {
+      "key": "story.s5.l07",
+      "value": "表面（ひょうめん）だけじゃわからない。ドリルタワーで、深（ふか）いところをほり出（だ）そう！"
+    },
+    {
+      "key": "story.s6.l01",
+      "value": "ドリルタワーは、深（ふか）さごとに地面（じめん）の中（なか）をとり出（だ）せるんだ。"
+    },
+    {
+      "key": "story.s6.l02",
+      "value": "ふたたび外（そと）へ。青（あお）い線（せん）の先（さき）が、ほる場所（ばしょ）だ。"
+    },
+    {
+      "key": "story.s7.l01",
+      "value": "とれた！……あれ？　中（なか）に白（しろ）っぽいもようがある！"
+    },
+    {
+      "key": "story.s8.l01",
+      "value": "さっきの白（しろ）いもよう、ルーペで見（み）てみて！"
+    },
+    {
+      "key": "story.s8.l02",
+      "value": "小（ちい）さなあながいっぱい……これ、なに？"
+    },
+    {
+      "key": "story.s8.l13",
+      "value": "余震（よしん）だ……急（いそ）ごう。最後（さいご）は、3か所（しょ）の柱状図（ちゅうじょうず）をくらべるよ！"
+    },
+    {
+      "key": "card.conclusion.title",
+      "value": "なぞとき：地面（じめん）の下（した）で何（なに）があった？"
+    },
+    {
+      "key": "card.conclusion.weather",
+      "value": "地震（じしん）は、空（そら）の天気（てんき）のせいだった"
+    },
+    {
+      "key": "card.conclusion.weather.hint",
+      "value": "証拠（しょうこ）は、どれも地面（じめん）の中（なか）のことだよ。"
+    },
+    {
+      "key": "card.conclusion.moved",
+      "value": "学校（がっこう）の西（にし）がわの地下（ちか）で、地層（ちそう）が大（おお）きく動（うご）いた"
+    },
+    {
+      "key": "card.conclusion.still",
+      "value": "地層（ちそう）は、昔（むかし）から一度（いちど）も動（うご）いていない"
+    },
+    {
+      "key": "card.conclusion.still.hint",
+      "value": "かたむいて曲（ま）がった地層（ちそう）は、動（うご）いたしるしだよ。"
+    },
+    {
+      "key": "card.conclusion.wrong",
+      "value": "証拠（しょうこ）カードを、もう一度（いちど）見（み）てみよう。"
+    },
+    {
+      "key": "card.conclusion.done",
+      "value": "そのとおり！　地層（ちそう）を読（よ）めば、だれでも大地（だいち）の声（こえ）が聞（き）けるんだ。"
+    },
+    {
+      "key": "story.s9.l06",
+      "value": "さあ、なぞときの時間（じかん）！　集（あつ）めた証拠（しょうこ）から、何（なに）がわかる？"
+    },
+    {
+      "key": "story.s9.l09",
+      "value": "調（しら）べたことは、町（まち）の防災（ぼうさい）に役立（やくだ）てよう。報告書（ほうこくしょ）にまとめたら、おかしパーティーね！"
+    },
+    {
+      "key": "ui.idle.talk",
+      "value": "Dr.Kaede「こっちだよ！　青い線の先で話しかけてね」"
+    },
+    {
+      "key": "ui.idle.shift",
+      "value": "Dr.Kaede「フェーズシフターで「{0}」へ行こう！」"
+    },
+    {
+      "key": "ui.idle.hammer",
+      "value": "Dr.Kaede「青い線の先のマークを、ハンマーでたたいてみて！」"
+    },
+    {
+      "key": "ui.idle.tower",
+      "value": "Dr.Kaede「青い線の先に、ドリルタワーを置いてみて！」"
+    },
+    {
+      "key": "ui.idle.follow",
+      "value": "Dr.Kaede「青い線をたどってみよう！」"
+    },
+    {
+      "key": "ui.idle.task",
+      "value": "Dr.Kaede「左上の「調査の進み具合」を見てみよう！」"
     }
   ]
 }

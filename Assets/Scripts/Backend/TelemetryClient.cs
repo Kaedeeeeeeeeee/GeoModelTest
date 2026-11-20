@@ -357,6 +357,8 @@ namespace Backend
                 ["gameVersion"] = Application.version,
                 ["platform"] = Application.platform.ToString(),
                 ["language"] = Application.systemLanguage.ToString(),
+                ["touchDevice"] = MobileInputManager.IsRuntimeMobileDevice(),
+                ["screen"] = Screen.width + "x" + Screen.height,
                 ["protocolVersion"] = _researchContext.protocolVersion
             });
             Track("research_mode_started");

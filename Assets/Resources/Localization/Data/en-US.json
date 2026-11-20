@@ -29,6 +29,10 @@
       "value": "UI Volume"
     },
     {
+      "key": "ui.settings.voice_volume",
+      "value": "Character voice volume"
+    },
+    {
       "key": "ui.settings.gameplay",
       "value": "Gameplay"
     },
@@ -2566,7 +2570,7 @@
     },
     {
       "key": "story.beat3.q5.teach1",
-      "value": "When a volcano erupts, its ash can drift far away and settle in layers."
+      "value": "When a volcano erupts, its ash flies far and settles in layers."
     },
     {
       "key": "story.beat3.q5.prompt",
@@ -2794,7 +2798,7 @@
     },
     {
       "key": "story.beat4.q1.teach1",
-      "value": "If you find 'the same layer' in several places, it becomes a marker — we call it a 'key bed.' An ash layer is very distinct, a great key bed."
+      "value": "The same layer works as a marker. We call it a \"key bed.\""
     },
     {
       "key": "story.beat4.q1.teach2",
@@ -2802,7 +2806,7 @@
     },
     {
       "key": "story.beat4.q2.teach1",
-      "value": "Strata should stack straight by default. But squeeze them from both sides and they bend like in this picture."
+      "value": "When strata are pushed from both sides, they bend like waves."
     },
     {
       "key": "story.beat1.q1.teach1",
@@ -2974,7 +2978,7 @@
     },
     {
       "key": "story.beat3.l07",
-      "value": "—A low rumble. Underfoot, the ground swayed again, just slightly."
+      "value": "—Thud. The floor shakes a little again."
     },
     {
       "key": "story.beat3.l08",
@@ -3194,7 +3198,7 @@
     },
     {
       "key": "story.core_return.line",
-      "value": "Nice, you got it! Let’s take this sample back to the lab for a closer look."
+      "value": "Nicely done! Let's take it to the lab for a closer look!"
     },
     {
       "key": "backend.checking",
@@ -3790,7 +3794,7 @@
     },
     {
       "key": "story.beat3.l11",
-      "value": "Good eye! This is a coral fossil. It was inside the core you brought back."
+      "value": "A coral fossil inside the core! Even today, coral lives only in warm, shallow seas."
     },
     {
       "key": "story.beat3.l12",
@@ -3903,6 +3907,458 @@
     {
       "key": "drill_tower.drill_prompt_mobile",
       "value": "Collect a core from {1:F0}–{2:F0}m"
+    },
+    {
+      "key": "story.s1.l01",
+      "value": "Lunch break in the classroom."
+    },
+    {
+      "key": "story.s1.l02",
+      "value": "Suddenly, a huge shake hits!"
+    },
+    {
+      "key": "story.s1.l03",
+      "value": "Earthquake! Everyone, get under your desks!"
+    },
+    {
+      "key": "story.s1.l04",
+      "value": "The shaking grows stronger. A white light fills everything—."
+    },
+    {
+      "key": "story.s2.l01",
+      "value": "...Where am I?"
+    },
+    {
+      "key": "story.s2.l02",
+      "value": "You're awake? This is G-Lab, a lab that studies the ground."
+    },
+    {
+      "key": "story.s2.l03",
+      "value": "I'm Kaede. My favorite things are strata and snacks!"
+    },
+    {
+      "key": "story.s2.l04",
+      "value": "That earthquake opened a big crack in your school's field."
+    },
+    {
+      "key": "story.s2.l05",
+      "value": "Help me find out what is happening under the ground!"
+    },
+    {
+      "key": "story.s2.l06",
+      "value": "...Okay, I'll give it a try!"
+    },
+    {
+      "key": "story.s2.l07",
+      "value": "Thanks! First, come over here!"
+    },
+    {
+      "key": "story.s2.l08",
+      "value": "Strata are the earth's diary. How do they form? Put the steps in order."
+    },
+    {
+      "key": "story.s2.l10",
+      "value": "Let's head outside! Open your tools and pick the Phase Shifter."
+    },
+    {
+      "key": "ui.dialog.card",
+      "value": "Try the card above"
+    },
+    {
+      "key": "card.common.order",
+      "value": "Tap them in order, starting with the first"
+    },
+    {
+      "key": "card.common.sort",
+      "value": "Pick a card, then tap the box it goes in"
+    },
+    {
+      "key": "card.common.pick",
+      "value": "Pick a card first"
+    },
+    {
+      "key": "card.common.choose_bin",
+      "value": "Which box does it go in?"
+    },
+    {
+      "key": "card.common.columns",
+      "value": "In each column, tap the layer you are looking for"
+    },
+    {
+      "key": "card.weathering.title",
+      "value": "From rock to strata"
+    },
+    {
+      "key": "card.weathering.weathering",
+      "value": "Weathering"
+    },
+    {
+      "key": "card.weathering.weathering.note",
+      "value": "Rock gets weak and crumbles"
+    },
+    {
+      "key": "card.weathering.erosion",
+      "value": "Erosion"
+    },
+    {
+      "key": "card.weathering.erosion.note",
+      "value": "Worn away by water and wind"
+    },
+    {
+      "key": "card.weathering.erosion.hint",
+      "value": "Rock gets weak before it wears away."
+    },
+    {
+      "key": "card.weathering.transport",
+      "value": "Transport"
+    },
+    {
+      "key": "card.weathering.transport.note",
+      "value": "Carried away by river water"
+    },
+    {
+      "key": "card.weathering.transport.hint",
+      "value": "Before it can be carried, the rock has to crumble and wear away."
+    },
+    {
+      "key": "card.weathering.deposition",
+      "value": "Deposition"
+    },
+    {
+      "key": "card.weathering.deposition.note",
+      "value": "Settles on the sea or lake floor"
+    },
+    {
+      "key": "card.weathering.deposition.hint",
+      "value": "Settling comes last."
+    },
+    {
+      "key": "card.weathering.wrong",
+      "value": "Not quite that order."
+    },
+    {
+      "key": "card.weathering.done",
+      "value": "Done! Crumble, wear away, get carried, settle. That's how strata form."
+    },
+    {
+      "key": "story.card.fossil_tells.line",
+      "value": "Fossils can tell us two kinds of things. Sort them into the boxes!"
+    },
+    {
+      "key": "card.fossil_tells.title",
+      "value": "What fossils tell us"
+    },
+    {
+      "key": "card.fossil_tells.bin.place",
+      "value": "Tells us WHERE it lived"
+    },
+    {
+      "key": "card.fossil_tells.bin.era",
+      "value": "Tells us WHEN it lived"
+    },
+    {
+      "key": "card.fossil_tells.coral",
+      "value": "Coral"
+    },
+    {
+      "key": "card.fossil_tells.coral.note",
+      "value": "Lives only in warm, shallow seas"
+    },
+    {
+      "key": "card.fossil_tells.clam",
+      "value": "Corbicula clam"
+    },
+    {
+      "key": "card.fossil_tells.clam.note",
+      "value": "Lives where river and sea water mix"
+    },
+    {
+      "key": "card.fossil_tells.ammonite",
+      "value": "Ammonite"
+    },
+    {
+      "key": "card.fossil_tells.ammonite.note",
+      "value": "Thrived in seas worldwide, but only in one era"
+    },
+    {
+      "key": "card.fossil_tells.trilobite",
+      "value": "Trilobite"
+    },
+    {
+      "key": "card.fossil_tells.trilobite.note",
+      "value": "Lived in seas worldwide, but only in one era"
+    },
+    {
+      "key": "card.fossil_tells.hint.place",
+      "value": "This creature can only live in certain places."
+    },
+    {
+      "key": "card.fossil_tells.hint.era",
+      "value": "This creature lived only in one era."
+    },
+    {
+      "key": "card.fossil_tells.wrong",
+      "value": "Not that box."
+    },
+    {
+      "key": "card.fossil_tells.done",
+      "value": "Fossils that show the environment are \"facies fossils\"; fossils that show the era are \"index fossils\"."
+    },
+    {
+      "key": "story.card.era_line.line",
+      "value": "The next layer has... an ammonite! Let's place fossils on Earth's timeline."
+    },
+    {
+      "key": "card.era_line.title",
+      "value": "Earth's timeline"
+    },
+    {
+      "key": "card.era_line.bin.paleo",
+      "value": "Paleozoic (older)"
+    },
+    {
+      "key": "card.era_line.bin.meso",
+      "value": "Mesozoic"
+    },
+    {
+      "key": "card.era_line.bin.ceno",
+      "value": "Cenozoic (newer)"
+    },
+    {
+      "key": "card.era_line.dinosaur",
+      "value": "Dinosaur"
+    },
+    {
+      "key": "card.era_line.dinosaur.hint",
+      "value": "Dinosaurs thrived in the middle era."
+    },
+    {
+      "key": "card.era_line.naumann",
+      "value": "Naumann elephant"
+    },
+    {
+      "key": "card.era_line.naumann.hint",
+      "value": "This elephant lived in Japan until fairly recently."
+    },
+    {
+      "key": "card.era_line.ammonite",
+      "value": "Ammonite"
+    },
+    {
+      "key": "card.era_line.ammonite.hint",
+      "value": "Ammonites thrived in the same era as dinosaurs."
+    },
+    {
+      "key": "card.era_line.trilobite",
+      "value": "Trilobite"
+    },
+    {
+      "key": "card.era_line.trilobite.hint",
+      "value": "Trilobites lived long before the dinosaurs."
+    },
+    {
+      "key": "card.era_line.wrong",
+      "value": "Not that era."
+    },
+    {
+      "key": "card.era_line.done",
+      "value": "From oldest: Paleozoic, Mesozoic, Cenozoic. Fossils tell us how old a layer is."
+    },
+    {
+      "key": "story.card.key_bed.line",
+      "value": "Here are columns A, B and C. Tap the volcanic ash layer in each."
+    },
+    {
+      "key": "card.key_bed.title",
+      "value": "Columns at three sites"
+    },
+    {
+      "key": "card.key_bed.col.a",
+      "value": "A (west)"
+    },
+    {
+      "key": "card.key_bed.col.b",
+      "value": "B"
+    },
+    {
+      "key": "card.key_bed.col.c",
+      "value": "C (east)"
+    },
+    {
+      "key": "card.key_bed.sand",
+      "value": "Sandstone"
+    },
+    {
+      "key": "card.key_bed.mud",
+      "value": "Mudstone"
+    },
+    {
+      "key": "card.key_bed.tuff",
+      "value": "Volcanic ash"
+    },
+    {
+      "key": "card.key_bed.gravel",
+      "value": "Conglomerate"
+    },
+    {
+      "key": "card.key_bed.wrong",
+      "value": "That's not the ash layer. Look for the whitish one."
+    },
+    {
+      "key": "card.key_bed.done",
+      "value": "Connected, they make a slanted line! The same layer is a marker for comparing sites."
+    },
+    {
+      "key": "story.evidence.got",
+      "value": "Evidence card: {0}"
+    },
+    {
+      "key": "card.common.choose",
+      "value": "Choose the one that fits best"
+    },
+    {
+      "key": "evidence.e1",
+      "value": "① Bent strata"
+    },
+    {
+      "key": "evidence.e2",
+      "value": "② Three different rocks"
+    },
+    {
+      "key": "evidence.e3",
+      "value": "③ Fossils and volcanic ash"
+    },
+    {
+      "key": "evidence.e4",
+      "value": "④ Tilted, folded strata"
+    },
+    {
+      "key": "story.s3.l01",
+      "value": "We step outside. The cliff the quake broke open shows stripes."
+    },
+    {
+      "key": "story.s3.l02",
+      "value": "(Radio) Follow the blue line. There are three spots to check."
+    },
+    {
+      "key": "story.s3.l03",
+      "value": "(Radio) Switch to the hammer and hit the mark three times!"
+    },
+    {
+      "key": "story.s4.l01",
+      "value": "Got all three! ...Huh? Are the cliff stripes a little bent?"
+    },
+    {
+      "key": "story.s4.l02",
+      "value": "Good eye! That might be a clue to the mystery."
+    },
+    {
+      "key": "story.s4.l03",
+      "value": "Let's check the rocks in the lab first. Come back with the Phase Shifter!"
+    },
+    {
+      "key": "story.s5.l01",
+      "value": "Welcome back! Let's test the rocks you brought in three ways."
+    },
+    {
+      "key": "story.s5.l05",
+      "value": "Amazing! Here, have half of my snack as a reward."
+    },
+    {
+      "key": "story.s5.l06",
+      "value": "Rocks can be so different. But what about the bent cliff?"
+    },
+    {
+      "key": "story.s5.l07",
+      "value": "The surface can't tell us. Let's drill deep with the Drill Tower!"
+    },
+    {
+      "key": "story.s6.l01",
+      "value": "The Drill Tower brings up the ground layer by layer, depth by depth."
+    },
+    {
+      "key": "story.s6.l02",
+      "value": "Back outside. The end of the blue line is where we'll drill."
+    },
+    {
+      "key": "story.s7.l01",
+      "value": "Got it! ...Huh? There's a whitish pattern inside!"
+    },
+    {
+      "key": "story.s8.l01",
+      "value": "Look at that white pattern with the magnifier!"
+    },
+    {
+      "key": "story.s8.l02",
+      "value": "Lots of tiny holes... What is it?"
+    },
+    {
+      "key": "story.s8.l13",
+      "value": "An aftershock... Let's hurry. Last, we compare the columns from three sites!"
+    },
+    {
+      "key": "card.conclusion.title",
+      "value": "Mystery: what happened underground?"
+    },
+    {
+      "key": "card.conclusion.weather",
+      "value": "The quake was caused by the weather"
+    },
+    {
+      "key": "card.conclusion.weather.hint",
+      "value": "All the evidence is about what is underground."
+    },
+    {
+      "key": "card.conclusion.moved",
+      "value": "Deep under the west side of the school, the strata moved a lot"
+    },
+    {
+      "key": "card.conclusion.still",
+      "value": "The strata have never moved"
+    },
+    {
+      "key": "card.conclusion.still.hint",
+      "value": "Tilted, folded strata are a sign that they moved."
+    },
+    {
+      "key": "card.conclusion.wrong",
+      "value": "Look at the evidence cards again."
+    },
+    {
+      "key": "card.conclusion.done",
+      "value": "Exactly! Anyone who reads the strata can hear the voice of the earth."
+    },
+    {
+      "key": "story.s9.l06",
+      "value": "Now, time to solve the mystery! What does the evidence tell us?"
+    },
+    {
+      "key": "story.s9.l09",
+      "value": "Let's use what we found to keep the town safe. Write the report, then it's snack party time!"
+    },
+    {
+      "key": "ui.idle.talk",
+      "value": "Dr.Kaede: \"Over here! Follow the blue line and talk to me.\""
+    },
+    {
+      "key": "ui.idle.shift",
+      "value": "Dr.Kaede: \"Use the Phase Shifter to go to {0}!\""
+    },
+    {
+      "key": "ui.idle.hammer",
+      "value": "Dr.Kaede: \"Hit the mark at the end of the blue line with the hammer!\""
+    },
+    {
+      "key": "ui.idle.tower",
+      "value": "Dr.Kaede: \"Place the Drill Tower at the end of the blue line!\""
+    },
+    {
+      "key": "ui.idle.follow",
+      "value": "Dr.Kaede: \"Try following the blue line!\""
+    },
+    {
+      "key": "ui.idle.task",
+      "value": "Dr.Kaede: \"Check Investigation at the top left!\""
     }
   ]
 }

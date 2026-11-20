@@ -29,6 +29,10 @@
       "value": "界面音量"
     },
     {
+      "key": "ui.settings.voice_volume",
+      "value": "角色配音音量"
+    },
+    {
       "key": "ui.settings.gameplay",
       "value": "游戏"
     },
@@ -2566,7 +2570,7 @@
     },
     {
       "key": "story.beat3.q5.teach1",
-      "value": "火山喷发时，火山灰会飘到很远的地方，一层层落下堆积起来。"
+      "value": "火山喷发时，火山灰会飞到很远的地方堆积下来。"
     },
     {
       "key": "story.beat3.q5.prompt",
@@ -2794,7 +2798,7 @@
     },
     {
       "key": "story.beat4.q1.teach1",
-      "value": "如果能找到「相同的一层」，就能拿它当标志——这叫「键层（鍵層）」。火山灰特别醒目，是好用的键层。"
+      "value": "同一层可以作为标志，这叫“键层”。"
     },
     {
       "key": "story.beat4.q1.teach2",
@@ -2802,7 +2806,7 @@
     },
     {
       "key": "story.beat4.q2.teach1",
-      "value": "地层本来是横平竖直叠着的。但被两边挤压，就会像这张图一样弯下去。"
+      "value": "地层从两侧受到挤压，就会像波浪一样弯曲。"
     },
     {
       "key": "story.beat1.q1.teach1",
@@ -2974,7 +2978,7 @@
     },
     {
       "key": "story.beat3.l07",
-      "value": "——咚。脚下，又轻轻晃了一下。"
+      "value": "——咚。脚下又轻轻晃了一下。"
     },
     {
       "key": "story.beat3.l08",
@@ -3194,7 +3198,7 @@
     },
     {
       "key": "story.core_return.line",
-      "value": "成功了呢！回研究室仔细看看这份样本吧。"
+      "value": "干得漂亮！带回实验室仔细看看吧！"
     },
     {
       "key": "backend.checking",
@@ -3790,7 +3794,7 @@
     },
     {
       "key": "story.beat3.l11",
-      "value": "发现得好！这是“珊瑚”的化石。它就藏在你采回来的岩芯里。"
+      "value": "岩芯里有“珊瑚”化石！珊瑚至今也只能生活在温暖的浅海。"
     },
     {
       "key": "story.beat3.l12",
@@ -3903,6 +3907,458 @@
     {
       "key": "drill_tower.drill_prompt_mobile",
       "value": "采集 {1:F0}m–{2:F0}m 的岩芯"
+    },
+    {
+      "key": "story.s1.l01",
+      "value": "午休时的教室。"
+    },
+    {
+      "key": "story.s1.l02",
+      "value": "突然，一阵剧烈的摇晃袭来！"
+    },
+    {
+      "key": "story.s1.l03",
+      "value": "地震了！大家快躲到桌子下面！"
+    },
+    {
+      "key": "story.s1.l04",
+      "value": "摇晃越来越强。眼前被一片白光包围——。"
+    },
+    {
+      "key": "story.s2.l01",
+      "value": "……这是哪里？"
+    },
+    {
+      "key": "story.s2.l02",
+      "value": "醒了吗？这里是调查大地的研究所「G-Lab」。"
+    },
+    {
+      "key": "story.s2.l03",
+      "value": "我是枫。喜欢的东西是地层和零食！"
+    },
+    {
+      "key": "story.s2.l04",
+      "value": "刚才的地震让学校操场裂开了一道大缝。"
+    },
+    {
+      "key": "story.s2.l05",
+      "value": "地下到底发生了什么，希望你和我一起调查！"
+    },
+    {
+      "key": "story.s2.l06",
+      "value": "……好，我试试！"
+    },
+    {
+      "key": "story.s2.l07",
+      "value": "谢谢！那先到我这边来！"
+    },
+    {
+      "key": "story.s2.l08",
+      "value": "地层是大地的“日记”。它是怎么形成的？来排排看。"
+    },
+    {
+      "key": "story.s2.l10",
+      "value": "好，出发去野外！打开道具，选择相位转移器吧。"
+    },
+    {
+      "key": "ui.dialog.card",
+      "value": "试着操作上面的卡片"
+    },
+    {
+      "key": "card.common.order",
+      "value": "从第 1 个开始，按顺序点击"
+    },
+    {
+      "key": "card.common.sort",
+      "value": "先选一张卡片，再点它要放进的箱子"
+    },
+    {
+      "key": "card.common.pick",
+      "value": "先选一张卡片"
+    },
+    {
+      "key": "card.common.choose_bin",
+      "value": "放进哪个箱子？"
+    },
+    {
+      "key": "card.common.columns",
+      "value": "在每根柱状图里点出要找的那一层"
+    },
+    {
+      "key": "card.weathering.title",
+      "value": "岩石变成地层的过程"
+    },
+    {
+      "key": "card.weathering.weathering",
+      "value": "风化"
+    },
+    {
+      "key": "card.weathering.weathering.note",
+      "value": "岩石变脆、碎裂"
+    },
+    {
+      "key": "card.weathering.erosion",
+      "value": "侵蚀"
+    },
+    {
+      "key": "card.weathering.erosion.note",
+      "value": "被水和风削去"
+    },
+    {
+      "key": "card.weathering.erosion.hint",
+      "value": "被削之前，岩石要先变脆。"
+    },
+    {
+      "key": "card.weathering.transport",
+      "value": "搬运"
+    },
+    {
+      "key": "card.weathering.transport.note",
+      "value": "被河水带走"
+    },
+    {
+      "key": "card.weathering.transport.hint",
+      "value": "被搬运之前，岩石得先碎裂、被削下来。"
+    },
+    {
+      "key": "card.weathering.deposition",
+      "value": "沉积"
+    },
+    {
+      "key": "card.weathering.deposition.note",
+      "value": "堆积在海底或湖底"
+    },
+    {
+      "key": "card.weathering.deposition.hint",
+      "value": "堆积是最后一步。"
+    },
+    {
+      "key": "card.weathering.wrong",
+      "value": "顺序好像不对。"
+    },
+    {
+      "key": "card.weathering.done",
+      "value": "完成！变脆→被削→被搬运→堆积，地层就是这样形成的。"
+    },
+    {
+      "key": "story.card.fossil_tells.line",
+      "value": "化石能告诉我们的事有两种。来分到箱子里吧！"
+    },
+    {
+      "key": "card.fossil_tells.title",
+      "value": "化石能告诉我们什么"
+    },
+    {
+      "key": "card.fossil_tells.bin.place",
+      "value": "能知道“生活的环境”"
+    },
+    {
+      "key": "card.fossil_tells.bin.era",
+      "value": "能知道“是哪个时代”"
+    },
+    {
+      "key": "card.fossil_tells.coral",
+      "value": "珊瑚"
+    },
+    {
+      "key": "card.fossil_tells.coral.note",
+      "value": "只生活在温暖的浅海"
+    },
+    {
+      "key": "card.fossil_tells.clam",
+      "value": "蚬（河蚬）"
+    },
+    {
+      "key": "card.fossil_tells.clam.note",
+      "value": "生活在河水与海水交汇的地方"
+    },
+    {
+      "key": "card.fossil_tells.ammonite",
+      "value": "菊石"
+    },
+    {
+      "key": "card.fossil_tells.ammonite.note",
+      "value": "只在某个时代遍布全世界的海洋"
+    },
+    {
+      "key": "card.fossil_tells.trilobite",
+      "value": "三叶虫"
+    },
+    {
+      "key": "card.fossil_tells.trilobite.note",
+      "value": "只在某个时代遍布全世界的海洋"
+    },
+    {
+      "key": "card.fossil_tells.hint.place",
+      "value": "这种生物能生活的环境是固定的。"
+    },
+    {
+      "key": "card.fossil_tells.hint.era",
+      "value": "这种生物只存在于某个时代。"
+    },
+    {
+      "key": "card.fossil_tells.wrong",
+      "value": "好像不是这个箱子。"
+    },
+    {
+      "key": "card.fossil_tells.done",
+      "value": "能知道环境的叫“示相化石”，能知道时代的叫“示准化石”。"
+    },
+    {
+      "key": "story.card.era_line.line",
+      "value": "下一层里是……菊石！把它们放到地球历史的时间线上吧。"
+    },
+    {
+      "key": "card.era_line.title",
+      "value": "地球历史的时间线"
+    },
+    {
+      "key": "card.era_line.bin.paleo",
+      "value": "古生代（较古老）"
+    },
+    {
+      "key": "card.era_line.bin.meso",
+      "value": "中生代"
+    },
+    {
+      "key": "card.era_line.bin.ceno",
+      "value": "新生代（较新）"
+    },
+    {
+      "key": "card.era_line.dinosaur",
+      "value": "恐龙"
+    },
+    {
+      "key": "card.era_line.dinosaur.hint",
+      "value": "恐龙繁盛于中间的那个时代。"
+    },
+    {
+      "key": "card.era_line.naumann",
+      "value": "诺氏古菱齿象"
+    },
+    {
+      "key": "card.era_line.naumann.hint",
+      "value": "诺氏古菱齿象是不久前还生活在日本的象。"
+    },
+    {
+      "key": "card.era_line.ammonite",
+      "value": "菊石"
+    },
+    {
+      "key": "card.era_line.ammonite.hint",
+      "value": "菊石和恐龙繁盛于同一个时代。"
+    },
+    {
+      "key": "card.era_line.trilobite",
+      "value": "三叶虫"
+    },
+    {
+      "key": "card.era_line.trilobite.hint",
+      "value": "三叶虫生活在比恐龙早得多的时代。"
+    },
+    {
+      "key": "card.era_line.wrong",
+      "value": "好像不是这个时代。"
+    },
+    {
+      "key": "card.era_line.done",
+      "value": "从古到新依次是古生代→中生代→新生代。化石能告诉我们地层的时代。"
+    },
+    {
+      "key": "story.card.key_bed.line",
+      "value": "这是 A、B、C 三处的柱状图。分别点一下火山灰层。"
+    },
+    {
+      "key": "card.key_bed.title",
+      "value": "三个地点的柱状图"
+    },
+    {
+      "key": "card.key_bed.col.a",
+      "value": "A（西）"
+    },
+    {
+      "key": "card.key_bed.col.b",
+      "value": "B"
+    },
+    {
+      "key": "card.key_bed.col.c",
+      "value": "C（东）"
+    },
+    {
+      "key": "card.key_bed.sand",
+      "value": "砂岩"
+    },
+    {
+      "key": "card.key_bed.mud",
+      "value": "泥岩"
+    },
+    {
+      "key": "card.key_bed.tuff",
+      "value": "火山灰"
+    },
+    {
+      "key": "card.key_bed.gravel",
+      "value": "砾岩"
+    },
+    {
+      "key": "card.key_bed.wrong",
+      "value": "那不是火山灰层。找找发白的那一层。"
+    },
+    {
+      "key": "card.key_bed.done",
+      "value": "连起来是一条斜线！同一层可以作为比较的标志。"
+    },
+    {
+      "key": "story.evidence.got",
+      "value": "获得证据卡：{0}"
+    },
+    {
+      "key": "card.common.choose",
+      "value": "选出最合适的一个"
+    },
+    {
+      "key": "evidence.e1",
+      "value": "①弯曲的地层"
+    },
+    {
+      "key": "evidence.e2",
+      "value": "②三种不同的岩石"
+    },
+    {
+      "key": "evidence.e3",
+      "value": "③化石和火山灰"
+    },
+    {
+      "key": "evidence.e4",
+      "value": "④倾斜并弯曲的地层"
+    },
+    {
+      "key": "story.s3.l01",
+      "value": "来到外面。地震震塌的山崖上，露出一道道条纹。"
+    },
+    {
+      "key": "story.s3.l02",
+      "value": "（无线电）顺着蓝线走，有 3 个要调查的地方。"
+    },
+    {
+      "key": "story.s3.l03",
+      "value": "（无线电）换成锤子，把标记敲 3 下！"
+    },
+    {
+      "key": "story.s4.l01",
+      "value": "拿到 3 个了！……咦？这山崖的条纹，是不是有点歪？"
+    },
+    {
+      "key": "story.s4.l02",
+      "value": "发现得好！这说不定是解谜的线索。"
+    },
+    {
+      "key": "story.s4.l03",
+      "value": "先在实验室调查石头吧。用相位转移器回来！"
+    },
+    {
+      "key": "story.s5.l01",
+      "value": "欢迎回来！用 3 种方法调查带回来的石头吧。"
+    },
+    {
+      "key": "story.s5.l05",
+      "value": "太厉害了！奖励你一半零食。"
+    },
+    {
+      "key": "story.s5.l06",
+      "value": "同样是石头，差别这么大。可是山崖的歪斜呢？"
+    },
+    {
+      "key": "story.s5.l07",
+      "value": "光看表面看不出来。用钻塔把深处挖出来吧！"
+    },
+    {
+      "key": "story.s6.l01",
+      "value": "钻塔可以按深度把地下取出来。"
+    },
+    {
+      "key": "story.s6.l02",
+      "value": "再次来到外面。蓝线的尽头就是钻探的地方。"
+    },
+    {
+      "key": "story.s7.l01",
+      "value": "取出来了！……咦？里面有发白的花纹！"
+    },
+    {
+      "key": "story.s8.l01",
+      "value": "刚才那个白色花纹，用放大镜看看！"
+    },
+    {
+      "key": "story.s8.l02",
+      "value": "好多小孔……这是什么？"
+    },
+    {
+      "key": "story.s8.l13",
+      "value": "是余震……快点。最后来比较 3 个地点的柱状图！"
+    },
+    {
+      "key": "card.conclusion.title",
+      "value": "解谜：地下发生了什么？"
+    },
+    {
+      "key": "card.conclusion.weather",
+      "value": "地震是天上的天气造成的"
+    },
+    {
+      "key": "card.conclusion.weather.hint",
+      "value": "证据说的都是地下的事。"
+    },
+    {
+      "key": "card.conclusion.moved",
+      "value": "学校西边的地下，地层发生了很大的移动"
+    },
+    {
+      "key": "card.conclusion.still",
+      "value": "地层从古至今一次也没动过"
+    },
+    {
+      "key": "card.conclusion.still.hint",
+      "value": "倾斜、弯曲的地层就是动过的证据。"
+    },
+    {
+      "key": "card.conclusion.wrong",
+      "value": "再看一遍证据卡吧。"
+    },
+    {
+      "key": "card.conclusion.done",
+      "value": "没错！只要读懂地层，谁都能听见大地的声音。"
+    },
+    {
+      "key": "story.s9.l06",
+      "value": "好，解谜时间！从收集到的证据能看出什么？"
+    },
+    {
+      "key": "story.s9.l09",
+      "value": "把调查结果用在镇上的防灾上吧。写完报告，就来开零食派对！"
+    },
+    {
+      "key": "ui.idle.talk",
+      "value": "Dr.Kaede：“在这边！顺着蓝线过来跟我说话吧”"
+    },
+    {
+      "key": "ui.idle.shift",
+      "value": "Dr.Kaede：“用相位转移器去「{0}」吧！”"
+    },
+    {
+      "key": "ui.idle.hammer",
+      "value": "Dr.Kaede：“用锤子敲一敲蓝线尽头的标记！”"
+    },
+    {
+      "key": "ui.idle.tower",
+      "value": "Dr.Kaede：“把钻塔放在蓝线的尽头试试！”"
+    },
+    {
+      "key": "ui.idle.follow",
+      "value": "Dr.Kaede：“顺着蓝线走走看！”"
+    },
+    {
+      "key": "ui.idle.task",
+      "value": "Dr.Kaede：“看看左上角的「调查进度」吧！”"
     }
   ]
 }

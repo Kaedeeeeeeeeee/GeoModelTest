@@ -18,6 +18,7 @@ namespace UISystem
         private Text _icon;
         private Outline _outline;
         private float _shownAt;
+        private float _duration = Duration;
 
         public static void Show(string message)
         {
@@ -29,12 +30,19 @@ namespace UISystem
             ShowMessage(message, true);
         }
 
-        private static void ShowMessage(string message, bool warning)
+        /// <summary>A hint from Dr.Kaede when the player seems stuck; stays a little longer than a confirmation.</summary>
+        public static void ShowHint(string message)
+        {
+            ShowMessage(message, false, "?", 5f);
+        }
+
+        private static void ShowMessage(string message, bool warning, string icon = null, float duration = Duration)
         {
             if (string.IsNullOrEmpty(message)) return;
             if (_instance == null) _instance = Create();
             // 每次显示都重设样式，警告之后的成功提示不会残留图标或颜色。
-            _instance._icon.text = warning ? "!" : "✓";
+            _instance._icon.text = icon ?? (warning ? "!" : "✓");
+            _instance._duration = duration;
             _instance._icon.color = warning ? InteractionPrompt.Warning : GameUI.Accent;
             _instance._outline.effectColor = _instance._icon.color;
             _instance._message.text = message;
@@ -80,8 +88,8 @@ namespace UISystem
         {
             if (_toast == null || !_toast.activeSelf) return;
             float age = Time.unscaledTime - _shownAt;
-            _group.alpha = Mathf.Clamp01((Duration - age) / FadeOut);
-            if (age >= Duration) _toast.SetActive(false);
+            _group.alpha = Mathf.Clamp01((_duration - age) / FadeOut);
+            if (age >= _duration) _toast.SetActive(false);
         }
 
         private void OnDestroy()

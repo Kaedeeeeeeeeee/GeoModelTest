@@ -5,15 +5,21 @@
     "dialogues": [
         {
             "speaker": "ナレーション",
-            "text": "一瞬（いっしゅん）で風（かぜ）と土（つち）のにおいに包（つつ）まれた。野外（やがい）だ。",
+            "text": "外（そと）に出（で）た。地震（じしん）でくずれたがけに、しま模様（もよう）が見（み）える。",
             "speakerKey": "story.speaker.narration",
-            "textKey": "story.bridge.q32.l01"
+            "textKey": "story.s3.l01"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "着（つ）いたわね。青（あお）い線（せん）の先（さき）の3か所（しょ）で、ハンマーで岩（いわ）を割（わ）ってサンプルを取（と）ろう。",
+            "text": "（無線（むせん））青（あお）い線（せん）の先（さき）に、調（しら）べる場所（ばしょ）が3つあるよ。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.bridge.q32.l02"
+            "textKey": "story.s3.l02"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "（無線（むせん））ハンマーに持（も）ちかえて、マークを3回（かい）たたこう！",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.s3.l03"
         }
     ]
 }

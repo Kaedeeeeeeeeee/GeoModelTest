@@ -57,6 +57,8 @@ namespace QuestSystem
         private RectTransform marker;
         private Camera viewCamera;
         private float markerHeight = 2.4f;
+        private GuidanceSystem.GuidanceTarget talkGuidanceTarget;
+        private string TalkGuidanceTargetId => "quest.npc." + gameObject.name;
         public bool HasNewConversation => currentStage != null && currentStageStatus == QuestStatus.InProgress;
         public bool IsRepeatingReminder { get; private set; }
 
@@ -90,11 +92,13 @@ namespace QuestSystem
         {
             if (promptCanvasGO != null) Destroy(promptCanvasGO);
             if (markerCanvasGO != null) Destroy(markerCanvasGO);
+            ReleaseTalkGuidance();
         }
 
         private void Update()
         {
             UpdateKaedeRange();
+            UpdateTalkGuidance();
             if (isInteracting || StoryDirector.IsStoryPlaybackActive || GameInputState.GameplayBlocked || InventoryUISystem.IsAnyWheelOpen)
             {
                 HidePrompt();
@@ -187,6 +191,43 @@ namespace QuestSystem
                 markerHeight = Mathf.Max(1f, bounds.max.y - transform.position.y) + 0.35f;
             }
             markerCanvasGO.SetActive(false);
+        }
+
+        /// <summary>
+        /// Draws the blue guidance line to this NPC while a new conversation waits, so a player who
+        /// skipped the dialogue still sees where to walk. Study 1 lost most players at this walk.
+        /// </summary>
+        private void UpdateTalkGuidance()
+        {
+            bool wanted = HasNewConversation && !isInteracting && !StoryDirector.IsStoryPlaybackActive &&
+                          !GameInputState.GameplayBlocked && !playerInRange;
+            var guidance = GuidanceSystem.GuidanceManager.Current;
+            if (!wanted)
+            {
+                if (guidance != null && guidance.ActiveTargetId == TalkGuidanceTargetId) guidance.ClearTarget();
+                return;
+            }
+            guidance = GuidanceSystem.GuidanceManager.Instance;
+            if (talkGuidanceTarget == null)
+            {
+                var anchor = new GameObject("TalkGuidanceTarget");
+                anchor.transform.SetParent(transform, false);
+                anchor.SetActive(false);
+                talkGuidanceTarget = anchor.AddComponent<GuidanceSystem.GuidanceTarget>();
+                talkGuidanceTarget.Configure(TalkGuidanceTargetId, 0.1f, KaedeTalkingDistance);
+                anchor.SetActive(true);
+            }
+            string active = guidance.ActiveTargetId;
+            // Never take the line away from another objective's destination.
+            if (string.IsNullOrEmpty(active)) guidance.ActivateTarget(TalkGuidanceTargetId);
+        }
+
+        private void ReleaseTalkGuidance()
+        {
+            var guidance = GuidanceSystem.GuidanceManager.Current;
+            if (guidance != null && guidance.ActiveTargetId == TalkGuidanceTargetId) guidance.ClearTarget();
+            if (talkGuidanceTarget != null) Destroy(talkGuidanceTarget.gameObject);
+            talkGuidanceTarget = null;
         }
 
         private void UpdateQuestMarker()

@@ -4,34 +4,24 @@
     "bgm": "field_theme",
     "dialogues": [
         {
-            "speaker": "ナレーション",
-            "text": "野外（やがい）の露頭（ろとう）。地震（じしん）でわれた地面（じめん）に、しま模様（もよう）の地層（ちそう）が見（み）えている。",
-            "speakerKey": "story.speaker.narration",
-            "textKey": "story.beat2.l01"
-        },
-        {
-            "speaker": "ナレーション",
-            "text": "崖（がけ）の地層（ちそう）は、何万年（なんまんねん）もの時間（じかん）を、しましま模様（もよう）に閉（と）じこめていた。",
-            "speakerKey": "story.speaker.narration",
-            "textKey": "story.beat2.l04"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "いいサンプルが採（と）れたね！　粒（つぶ）の大（おお）きさや塩酸（えんさん）への反応（はんのう）は、研究室（けんきゅうしつ）に持（も）ち帰（かえ）って調（しら）べよう。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat2.l02"
-        },
-        {
             "speaker": "主人公",
-            "text": "待（ま）って……この崖（がけ）、地層（ちそう）の線（せん）が少（すこ）し「ゆがんで」ない？　まっすぐじゃない。",
+            "text": "3つとれた！……あれ？　このがけのしま、少（すこ）しゆがんでる？",
             "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.beat2.l07"
+            "textKey": "story.s4.l01"
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "気（き）づいた？　そこが引（ひ）っかかるところなの。まずは研究室（けんきゅうしつ）に戻（もど）って、サンプルから調（しら）べよう。",
+            "text": "いいところに気（き）づいたね！　それ、なぞの手（て）がかりかも。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat2.l03"
+            "textKey": "story.s4.l02",
+            "evidenceKey": "evidence.e1",
+            "evidence": "①ゆがんだ地層（ちそう）"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "text": "まずは石（いし）をラボで調（しら）べよう。フェーズシフターで帰（かえ）ってきて！",
+            "speakerKey": "story.speaker.drkaede",
+            "textKey": "story.s4.l03"
         }
     ]
 }

@@ -5,6 +5,7 @@ namespace GeoModel.AudioSystem
         Master,
         BGM,
         SFX,
-        UI
+        UI,
+        Voice
     }
 }

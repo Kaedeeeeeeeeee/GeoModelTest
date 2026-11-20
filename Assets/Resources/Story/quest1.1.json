@@ -5,27 +5,38 @@
     "dialogues": [
         {
             "speaker": "ナレーション",
-            "text": "昼休（ひるやす）みの教室（きょうしつ）。とつぜん、大（おお）きなゆれが教室（きょうしつ）をおそった。",
-            "shake": true,
-            "shakeAmplitude": 0.4,
+            "text": "昼休（ひるやす）みの教室（きょうしつ）。",
             "speakerKey": "story.speaker.narration",
-            "textKey": "story.beat1.l01"
-        },
-        {
-            "speaker": "主人公",
-            "text": "うわっ…！？　地震（じしん）だ…！　みんな、机（つくえ）の下（した）に！",
-            "shake": true,
-            "shakeAmplitude": 0.6,
-            "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.beat1.l02"
+            "textKey": "story.s1.l01",
+            "ambience": "amb_classroom_chatter"
         },
         {
             "speaker": "ナレーション",
-            "text": "ゆれが強（つよ）くなり、机（つくえ）の下（した）で身（み）を守（まも）った。やがて視界（しかい）が白（しろ）い光（ひかり）に包（つつ）まれた——。",
+            "text": "とつぜん、大（おお）きなゆれがきた！",
+            "speakerKey": "story.speaker.narration",
+            "textKey": "story.s1.l02",
+            "shake": true,
+            "shakeAmplitude": 0.4,
+            "ambience": "amb_classroom_panic"
+        },
+        {
+            "speaker": "主人公",
+            "text": "地震（じしん）だ！　みんな、つくえの下（した）に！",
+            "speakerKey": "story.speaker.protagonist",
+            "textKey": "story.s1.l03",
+            "shake": true,
+            "shakeAmplitude": 0.6,
+            "sfx": "sfx_objects_fall"
+        },
+        {
+            "speaker": "ナレーション",
+            "text": "ゆれはどんどん強（つよ）くなる。目（め）の前（まえ）が、まっ白（しろ）な光（ひかり）につつまれた——。",
+            "speakerKey": "story.speaker.narration",
+            "textKey": "story.s1.l04",
             "shake": true,
             "shakeAmplitude": 0.95,
-            "speakerKey": "story.speaker.narration",
-            "textKey": "story.beat1.l03"
+            "sfx": "sfx_scene_teleport",
+            "ambience": "-"
         }
     ]
 }

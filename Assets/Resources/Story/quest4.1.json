@@ -5,21 +5,9 @@
     "dialogues": [
         {
             "speaker": "Dr.Kaede",
-            "text": "ドリルタワーは深（ふか）さごとにサンプルが取（と）れるの。地層（ちそう）の重（かさ）なりがわかるよ。",
+            "text": "ドリルタワーは、深（ふか）さごとに地面（じめん）の中（なか）をとり出（だ）せるんだ。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.bridge.q41.l01"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "化石（かせき）が出（で）たら教（おし）えて。地層（ちそう）ができた当時（とうじ）の手（て）がかりになるから。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.bridge.q41.l02"
-        },
-        {
-            "speaker": "主人公",
-            "text": "化石（かせき）……！　なんかワクワクするな。",
-            "speakerKey": "story.speaker.protagonist",
-            "textKey": "story.bridge.q41.l03"
+            "textKey": "story.s6.l01"
         }
     ]
 }

@@ -57,6 +57,7 @@ public class SettingsManager : MonoBehaviour
     public Slider bgmVolumeSlider;
     public Slider sfxVolumeSlider;
     public Slider uiVolumeSlider;
+    public Slider voiceVolumeSlider;
     public Text masterVolumeLabel;
     public Text bgmVolumeLabel;
     public Text sfxVolumeLabel;
@@ -473,16 +474,19 @@ public class SettingsManager : MonoBehaviour
         // 4 个滑条（顶部到底部）
         masterVolumeSlider = CreateVolumeSliderRow(parent, "MasterVolume",
             "ui.settings.master_volume", "全体の音量",
-            0.60f, 0.66f, out masterVolumeLabel);
+            0.62f, 0.67f, out masterVolumeLabel);
         bgmVolumeSlider = CreateVolumeSliderRow(parent, "BGMVolume",
             "ui.settings.bgm_volume", "音楽の音量",
-            0.52f, 0.58f, out bgmVolumeLabel);
+            0.555f, 0.605f, out bgmVolumeLabel);
         sfxVolumeSlider = CreateVolumeSliderRow(parent, "SFXVolume",
             "ui.settings.sfx_volume", "効果音の音量",
-            0.44f, 0.50f, out sfxVolumeLabel);
+            0.49f, 0.54f, out sfxVolumeLabel);
         uiVolumeSlider = CreateVolumeSliderRow(parent, "UIVolume",
             "ui.settings.ui_volume", "ボタン・メニューの音量",
-            0.36f, 0.42f, out uiVolumeLabel);
+            0.425f, 0.475f, out uiVolumeLabel);
+        voiceVolumeSlider = CreateVolumeSliderRow(parent, "VoiceVolume",
+            "ui.settings.voice_volume", "キャラクターの声の音量",
+            0.36f, 0.41f, out _);
     }
 
     /// <summary>
@@ -845,6 +849,11 @@ public class SettingsManager : MonoBehaviour
                 am.SetVolume(AudioChannel.SFX, v);
                 am.PlayUI(AudioKeys.UI.Click); // 拖动时小反馈
             });
+        }
+        if (voiceVolumeSlider != null)
+        {
+            voiceVolumeSlider.SetValueWithoutNotify(am.GetVolume(AudioChannel.Voice));
+            voiceVolumeSlider.onValueChanged.AddListener(v => am.SetVolume(AudioChannel.Voice, v));
         }
         if (uiVolumeSlider != null)
         {

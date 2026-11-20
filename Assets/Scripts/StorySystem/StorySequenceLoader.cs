@@ -26,6 +26,19 @@ namespace StorySystem
         // 知识讲解插画 banner 资源键（可选）。Resources/Story/Illustrations/<key>，"-" 收起。
         public string illustrationKey;
 
+        // 环境音（可选）。Resources/Audio/Ambience/<key> 循环播放并交叉淡入；"-" 淡出停止；空/缺省保持不变。
+        public string ambience;
+
+        // 音效（可选）。这句显示时播放一次 Resources/Audio/SFX/<key>。
+        public string sfx;
+
+        // 知識インタラクションカード（可選）。行の text が指示、カードを終えると done の一言が出る。
+        public StoryInteraction interaction;
+
+        // 証拠カード（可選）。この行で手に入れた証拠の名前。上に小さく「証拠カード ゲット」を出す。
+        public string evidence;
+        public string evidenceKey;
+
         // 选择题（可选）。choices 为空时该行是普通台词。
         public string questionId;
         public string questionVersion;
@@ -127,6 +140,14 @@ namespace StorySystem
                 float overrideAmplitude = entry.shakeAmplitude;
                 var subtitleLine = new StoryDirector.SubtitleUI.SubtitleLine(speaker, text, triggerShake, overrideAmplitude);
                 subtitleLine.IllustrationKey = entry.illustrationKey;
+                subtitleLine.Ambience = entry.ambience;
+                subtitleLine.Sfx = entry.sfx;
+                subtitleLine.VoiceKey = entry.textKey;
+                subtitleLine.Evidence = string.IsNullOrEmpty(entry.evidence) && string.IsNullOrEmpty(entry.evidenceKey)
+                    ? null : ResolveText(entry.evidence, entry.evidenceKey, localizationManager, canLocalize);
+                subtitleLine.EvidenceId = entry.evidenceKey;
+                subtitleLine.Card = KnowledgeCard.From(entry.interaction,
+                    (direct, key) => ResolveText(direct, key, localizationManager, canLocalize));
 
                 if (entry.choices != null && entry.choices.Count > 0)
                 {
@@ -135,6 +156,7 @@ namespace StorySystem
                         ? QuizScoreManager.DefaultQuestionVersion
                         : entry.questionVersion.Trim();
                     subtitleLine.Hint = ResolveText(entry.hint, entry.hintKey, localizationManager, canLocalize);
+                    subtitleLine.HintKey = entry.hintKey;
                     subtitleLine.Choices = new List<StoryDirector.SubtitleUI.SubtitleChoice>();
                     foreach (var choice in entry.choices)
                     {
@@ -144,7 +166,8 @@ namespace StorySystem
                             ChoiceId = choice.id,
                             Text = ResolveText(choice.text, choice.textKey, localizationManager, canLocalize),
                             IsCorrect = choice.isCorrect,
-                            Feedback = ResolveText(choice.feedback, choice.feedbackKey, localizationManager, canLocalize)
+                            Feedback = ResolveText(choice.feedback, choice.feedbackKey, localizationManager, canLocalize),
+                            FeedbackKey = choice.feedbackKey
                         });
                     }
                 }
