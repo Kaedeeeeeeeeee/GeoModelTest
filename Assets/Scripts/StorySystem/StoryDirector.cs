@@ -373,6 +373,8 @@ namespace StorySystem
             _isRunningCinematic = false;
             SubtitleUI.CancelAll();
             StoryVoice.Stop();
+            // 序列中途被取消（回标题）时不会走到 ShowSequence 末尾的清理，环境音要在这里停
+            AudioManager.Instance?.StopAmbience(0f);
         }
 
         public void PlayReport(Action onComplete = null)
