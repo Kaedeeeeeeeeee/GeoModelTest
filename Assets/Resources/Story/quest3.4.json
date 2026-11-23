@@ -100,7 +100,8 @@
                             "gravel",
                             "sand",
                             "mud"
-                        ]
+                        ],
+                        "sfx": "slide_pop"
                     },
                     {
                         "textKey": "slide.grain.s2",
@@ -113,7 +114,9 @@
                                 "x": 0.25,
                                 "y": 0.457
                             }
-                        ]
+                        ],
+                        "sfx": "slide_sink",
+                        "sfxDelay": 0.6
                     },
                     {
                         "textKey": "slide.grain.s3",
@@ -126,7 +129,9 @@
                                 "x": 0.52,
                                 "y": 0.34
                             }
-                        ]
+                        ],
+                        "sfx": "slide_sink",
+                        "sfxDelay": 0.6
                     },
                     {
                         "textKey": "slide.grain.s4",
@@ -139,7 +144,9 @@
                                 "x": 0.82,
                                 "y": 0.205
                             }
-                        ]
+                        ],
+                        "sfx": "slide_sink",
+                        "sfxDelay": 0.6
                     },
                     {
                         "textKey": "slide.grain.s5",
@@ -152,7 +159,8 @@
                             "rk_gravel",
                             "rk_sand",
                             "rk_mud"
-                        ]
+                        ],
+                        "sfx": "slide_chime"
                     }
                 ]
             }
@@ -273,14 +281,17 @@
                                 "x": 0.3,
                                 "y": 0.6
                             }
-                        ]
+                        ],
+                        "sfx": "slide_drip",
+                        "sfxDelay": 1.5
                     },
                     {
                         "textKey": "slide.lime.s2",
                         "show": [
                             "bubbles",
                             "lbl_lime"
-                        ]
+                        ],
+                        "sfx": "slide_fizz"
                     },
                     {
                         "textKey": "slide.lime.s3",
@@ -289,7 +300,8 @@
                         ],
                         "show": [
                             "shells"
-                        ]
+                        ],
+                        "sfx": "slide_shells"
                     },
                     {
                         "textKey": "slide.lime.s4",
@@ -305,14 +317,16 @@
                                 "x": 0.7,
                                 "y": 0.56
                             }
-                        ]
+                        ],
+                        "sfx": "slide_swish"
                     },
                     {
                         "textKey": "slide.lime.s5",
                         "show": [
                             "spark",
                             "lbl_chert"
-                        ]
+                        ],
+                        "sfx": "slide_scrape"
                     }
                 ]
             }

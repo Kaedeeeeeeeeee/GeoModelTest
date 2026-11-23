@@ -16,9 +16,15 @@ namespace StorySystem
     public sealed class KnowledgeSlideSession
     {
         public const string Folder = "Story/Slides/";
-        private const float FadeSec = 0.35f;
-        private const float MoveSec = 0.8f;
-        private const float PulseSec = 0.45f;
+        // 変化の過程が見えるよう、ゆっくりめに動かす（2026-11-23 に 2 倍へ）
+        private const float Slow = 2f;
+        private const float FadeSec = 0.35f * Slow;
+        private const float MoveSec = 0.8f * Slow;
+        private const float PulseSec = 0.45f * Slow;
+        private const float SfxVolume = 0.6f; // Kaede の声より控えめに
+        /// <summary>図の枠の位置（画面の割合）。下は会話欄のすぐ上、上は画面のふち。</summary>
+        public static readonly Vector2 FrameMin = new Vector2(0.17f, StoryLayout.DialogTop);
+        public static readonly Vector2 FrameMax = new Vector2(0.83f, 1f);
         private const float DefaultAspect = 1.5f; // 1536×1024
 
         /// <summary>表示中のスライド（PlayMode テスト用）。</summary>
@@ -33,7 +39,6 @@ namespace StorySystem
         private readonly Action<TMP_Text> style;
         private readonly Dictionary<string, Graphic> parts = new Dictionary<string, Graphic>();
         private readonly Dictionary<string, Vector2> home = new Dictionary<string, Vector2>();
-        private readonly List<Image> dots = new List<Image>();
         private RectTransform stage;
         private Button back;
         private Runner runner;
@@ -83,9 +88,11 @@ namespace StorySystem
                 pair.Value.rectTransform.localScale = Vector3.one;
             }
             for (int s = 0; s < index; s++) Apply(Card.Steps[s], false);
-            if (index >= 0) Apply(Card.Steps[index], true);
-            for (int d = 0; d < dots.Count; d++)
-                dots[d].color = d <= index ? GameUI.Accent : new Color(1f, 1f, 1f, 0.25f);
+            if (index >= 0)
+            {
+                Apply(Card.Steps[index], true);
+                PlaySfx(Card.Steps[index]);
+            }
             if (back != null) back.gameObject.SetActive(index > 0);
         }
 
@@ -129,45 +136,58 @@ namespace StorySystem
         private float Delay(string id)
         {
             var part = Card.Parts.Find(p => p.Id == id);
-            return part != null ? part.Delay : 0f;
+            return part != null ? part.Delay * Slow : 0f;
+        }
+
+        private void PlaySfx(KnowledgeCard.Step step)
+        {
+            if (step == null || string.IsNullOrEmpty(step.Sfx)) return;
+            runner.StartCoroutine(PlaySfxAfter(step.Sfx, step.SfxDelay));
+        }
+
+        private static IEnumerator PlaySfxAfter(string key, float delay)
+        {
+            if (delay > 0f) yield return new WaitForSecondsRealtime(delay);
+            GeoModel.AudioSystem.AudioManager.Instance?.PlaySFX(key, SfxVolume);
         }
 
         // ----- UI -----
 
         private void BuildFrame(Transform parent, Action onTap, Action onBack)
         {
-            var panel = GameUI.Box(parent, "KnowledgeSlides", new Color(0.05f, 0.09f, 0.12f, 0.97f),
-                new Vector2(0.17f, 0.36f), new Vector2(0.83f, 0.97f));
-            Root = panel.gameObject;
+            // 枠は図と同じ縦横比にして、上は画面のふち・下は会話欄にぴったりつける（点や余白は置かない）
+            var holder = GameUI.Rect(parent, "KnowledgeSlides", FrameMin, FrameMax);
+            Root = holder.gameObject;
             runner = Root.AddComponent<Runner>();
             targetAlpha.Clear();
 
-            var area = GameUI.Rect(panel.transform, "Area", new Vector2(0.02f, 0.10f), new Vector2(0.98f, 0.98f));
             var baseSprite = Load(Card.Image);
+            float aspect = baseSprite != null && baseSprite.rect.height > 0f ? baseSprite.rect.width / baseSprite.rect.height : DefaultAspect;
+            var panel = GameUI.Box(holder, "Frame", new Color(0.05f, 0.09f, 0.12f, 0.97f), Vector2.zero, Vector2.one);
+            var panelFit = panel.gameObject.AddComponent<AspectRatioFitter>();
+            panelFit.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
+            panelFit.aspectRatio = aspect;
+            var panelRt = panel.rectTransform;
+            panelRt.pivot = new Vector2(0.5f, 0f); // 下（会話欄）にそろえる
+
+            var area = GameUI.Rect(panel.transform, "Area", Vector2.zero, Vector2.one);
+            area.offsetMin = new Vector2(4f, 4f);
+            area.offsetMax = new Vector2(-4f, -4f);
             var baseImage = GameUI.Box(area, "Stage", baseSprite != null ? Color.white : new Color(0.80f, 0.76f, 0.66f), Vector2.zero, Vector2.one);
             if (baseSprite != null) baseImage.sprite = baseSprite;
             stage = baseImage.rectTransform;
             var fitter = stage.gameObject.AddComponent<AspectRatioFitter>();
             fitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
-            fitter.aspectRatio = baseSprite != null && baseSprite.rect.height > 0f ? baseSprite.rect.width / baseSprite.rect.height : DefaultAspect;
+            fitter.aspectRatio = aspect;
             var tap = stage.gameObject.AddComponent<Button>();
             tap.transition = Selectable.Transition.None;
             tap.onClick.AddListener(() => onTap?.Invoke());
 
             foreach (var part in Card.Parts) BuildPart(part);
 
-            // 進み具合の点
-            var bar = GameUI.Rect(panel.transform, "Dots", new Vector2(0.30f, 0.015f), new Vector2(0.70f, 0.085f));
-            int n = Card.Steps.Count;
-            for (int i = 0; i < n; i++)
-            {
-                float c = (i + 0.5f) / n;
-                var dot = GameUI.Box(bar, "Dot" + i, Color.white, new Vector2(c - 0.012f, 0.30f), new Vector2(c + 0.012f, 0.70f));
-                dot.raycastTarget = false;
-                dots.Add(dot);
-            }
-
-            back = GameUI.Button(panel.transform, "Back", "◀", new Vector2(0.02f, 0.01f), new Vector2(0.11f, 0.09f), () => onBack?.Invoke());
+            // ひとつ戻る：図の左下にのせる
+            back = GameUI.Button(stage, "Back", "◀", new Vector2(0.015f, 0.02f), new Vector2(0.095f, 0.13f), () => onBack?.Invoke());
+            back.transform.SetAsLastSibling();
         }
 
         private void BuildPart(KnowledgeCard.Part part)

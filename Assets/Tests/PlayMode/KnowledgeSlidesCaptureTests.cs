@@ -71,7 +71,7 @@ public class KnowledgeSlidesCaptureTests
             for (int step = -1; step < count; step++)
             {
                 sessionType.GetMethod("ShowStep").Invoke(session, new object[] { step });
-                yield return new WaitForSecondsRealtime(1.6f); // 出現・移動・点滅が終わるまで
+                yield return new WaitForSecondsRealtime(3.4f); // 出現・移動・点滅が終わるまで（2 倍の速さで約 3 秒）
                 Capture(camera, Path.Combine(directory, $"{id}_{step}.png"));
             }
             sessionType.GetMethod("Destroy").Invoke(session, null);

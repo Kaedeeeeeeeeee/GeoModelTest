@@ -104,7 +104,8 @@
                             "weather",
                             "crack",
                             "lbl1"
-                        ]
+                        ],
+                        "sfx": "slide_rain"
                     },
                     {
                         "textKey": "slide.rock.s2",
@@ -118,7 +119,9 @@
                                 "x": 0.42,
                                 "y": 0.54
                             }
-                        ]
+                        ],
+                        "sfx": "slide_roll",
+                        "sfxDelay": 0.2
                     },
                     {
                         "textKey": "slide.rock.s3",
@@ -131,7 +134,9 @@
                                 "x": 0.75,
                                 "y": 0.33
                             }
-                        ]
+                        ],
+                        "sfx": "slide_splash",
+                        "sfxDelay": 1.2
                     },
                     {
                         "textKey": "slide.rock.s4",
@@ -143,7 +148,8 @@
                             "layer2",
                             "layer3",
                             "lbl4"
-                        ]
+                        ],
+                        "sfx": "slide_sand"
                     },
                     {
                         "textKey": "slide.rock.s5",
@@ -152,7 +158,8 @@
                             "lbl2",
                             "lbl3",
                             "lbl4"
-                        ]
+                        ],
+                        "sfx": "slide_chime"
                     }
                 ],
                 "doneKey": "slide.rock.done"

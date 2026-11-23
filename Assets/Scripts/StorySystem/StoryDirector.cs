@@ -853,8 +853,8 @@ namespace StorySystem
             var bg = new GameObject("BG");
             bg.transform.SetParent(canvasGO.transform, false);
             var bgRt = bg.AddComponent<RectTransform>();
-            bgRt.anchorMin = new Vector2(0.08f, 0.035f);
-            bgRt.anchorMax = new Vector2(0.92f, 0.34f);
+            bgRt.anchorMin = new Vector2(0.08f, StoryLayout.DialogBottom);
+            bgRt.anchorMax = new Vector2(0.92f, StoryLayout.DialogTop);
             bgRt.offsetMin = Vector2.zero;
             bgRt.offsetMax = Vector2.zero;
             var bgImg = bg.AddComponent<Image>();

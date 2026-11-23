@@ -75,20 +75,23 @@
                         ],
                         "pulse": [
                             "fossil"
-                        ]
+                        ],
+                        "sfx": "slide_sparkle"
                     },
                     {
                         "textKey": "slide.coral.s2",
                         "show": [
                             "live"
-                        ]
+                        ],
+                        "sfx": "slide_bubbles"
                     },
                     {
                         "textKey": "slide.coral.s3",
                         "show": [
                             "lbl_warm",
                             "lbl_shallow"
-                        ]
+                        ],
+                        "sfx": "slide_pop"
                     },
                     {
                         "textKey": "slide.coral.s4",
@@ -98,7 +101,8 @@
                         "pulse": [
                             "fossil",
                             "live"
-                        ]
+                        ],
+                        "sfx": "slide_chime"
                     }
                 ]
             }
@@ -197,14 +201,16 @@
                         "show": [
                             "coral",
                             "lbl_coral"
-                        ]
+                        ],
+                        "sfx": "slide_bubbles"
                     },
                     {
                         "textKey": "slide.facies.s2",
                         "show": [
                             "shijimi",
                             "lbl_shijimi"
-                        ]
+                        ],
+                        "sfx": "slide_pop"
                     },
                     {
                         "textKey": "slide.facies.s3",
@@ -214,7 +220,8 @@
                         "pulse": [
                             "coral",
                             "shijimi"
-                        ]
+                        ],
+                        "sfx": "slide_chime"
                     }
                 ]
             }
@@ -378,26 +385,30 @@
                             "lbl_ceno",
                             "old",
                             "new"
-                        ]
+                        ],
+                        "sfx": "slide_swish"
                     },
                     {
                         "textKey": "slide.era.s2",
                         "show": [
                             "trilobite"
-                        ]
+                        ],
+                        "sfx": "slide_pop"
                     },
                     {
                         "textKey": "slide.era.s3",
                         "show": [
                             "ammonite",
                             "dino"
-                        ]
+                        ],
+                        "sfx": "slide_pop"
                     },
                     {
                         "textKey": "slide.era.s4",
                         "show": [
                             "naumann"
-                        ]
+                        ],
+                        "sfx": "slide_pop"
                     },
                     {
                         "textKey": "slide.era.s5",
@@ -406,13 +417,15 @@
                             "ammonite",
                             "dino",
                             "naumann"
-                        ]
+                        ],
+                        "sfx": "slide_chime"
                     },
                     {
                         "textKey": "slide.era.s6",
                         "show": [
                             "term"
-                        ]
+                        ],
+                        "sfx": "slide_chime"
                     }
                 ]
             }
@@ -547,7 +560,8 @@
                         "textKey": "slide.tuff.s1",
                         "show": [
                             "plume"
-                        ]
+                        ],
+                        "sfx": "slide_eruption"
                     },
                     {
                         "textKey": "slide.tuff.s2",
@@ -560,7 +574,8 @@
                                 "x": 0.7,
                                 "y": 0.76
                             }
-                        ]
+                        ],
+                        "sfx": "slide_wind"
                     },
                     {
                         "textKey": "slide.tuff.s3",
@@ -569,7 +584,8 @@
                         ],
                         "show": [
                             "ashbed"
-                        ]
+                        ],
+                        "sfx": "slide_sand"
                     },
                     {
                         "textKey": "slide.tuff.s4",
@@ -580,7 +596,8 @@
                         ],
                         "pulse": [
                             "ashbed"
-                        ]
+                        ],
+                        "sfx": "slide_chime"
                     }
                 ]
             }
