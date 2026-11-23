@@ -41,16 +41,24 @@ public class KnowledgeSlidesCaptureTests
         var sessionType = T("StorySystem.KnowledgeSlideSession");
         var subtitle = T("StorySystem.StoryDirector+SubtitleUI");
         var tmpText = Type.GetType("TMPro.TMP_Text, Unity.TextMeshPro", true);
-        var style = Delegate.CreateDelegate(typeof(Action<>).MakeGenericType(tmpText), subtitle.GetMethod("ApplyTmpFont", Any));
+        var applyFont = subtitle.GetMethod("ApplyTmpFont", Any) ?? T("StorySystem.StoryDirector").GetMethod("ApplyTmpFont", Any);
+        Assert.IsNotNull(applyFont, "ApplyTmpFont");
+        var style = Delegate.CreateDelegate(typeof(Action<>).MakeGenericType(tmpText), applyFont);
+        var load = loader.GetMethod("LoadFromResources", Any);
+        var toLines = T("StorySystem.StorySequenceExtensions").GetMethod("ToSubtitleLines", Any);
+        Assert.IsNotNull(load, "LoadFromResources");
+        Assert.IsNotNull(toLines, "ToSubtitleLines");
 
         foreach (var (sequence, id) in Slides)
         {
-            object story = loader.GetMethod("LoadFromResources", Any).Invoke(null, new object[] { sequence, true });
+            object story = load.Invoke(null, new object[] { sequence, true });
             Assert.IsNotNull(story, sequence);
-            var lines = (IList)loader.GetMethod("ToSubtitleLines", Any).Invoke(null, new[] { story });
+            var lines = (IList)toLines.Invoke(null, new[] { story });
+            Assert.IsNotNull(lines, "lines " + sequence);
             object card = null;
             foreach (var line in lines)
             {
+                if (line == null) continue;
                 var c = line.GetType().GetField("Card", Any)?.GetValue(line);
                 if (c != null && (string)(c.GetType().GetProperty("Id", Any)?.GetValue(c) ?? c.GetType().GetField("Id", Any)?.GetValue(c)) == id) { card = c; break; }
             }
