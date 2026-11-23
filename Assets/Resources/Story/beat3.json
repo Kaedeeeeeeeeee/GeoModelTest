@@ -17,10 +17,91 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "岩芯（がんしん）の中（なか）に「サンゴ」の化石（かせき）！　サンゴは今（いま）も、あたたかく浅（あさ）い海（うみ）にしかすめないの。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.l11",
-            "illustrationKey": "05_coral_env"
+            "text": "岩芯（がんしん）の中（なか）を、よく見（み）てみよう。",
+            "textKey": "slide.coral.intro",
+            "illustrationKey": "05_coral_env",
+            "interaction": {
+                "id": "slide.coral",
+                "type": "slides",
+                "image": "05_coral_env/base",
+                "parts": [
+                    {
+                        "id": "fossil",
+                        "x": 0.2,
+                        "y": 0.5,
+                        "w": 0.14,
+                        "h": 0.14,
+                        "image": "05_coral_env/coral_fossil"
+                    },
+                    {
+                        "id": "live",
+                        "x": 0.68,
+                        "y": 0.32,
+                        "w": 0.3,
+                        "h": 0.26,
+                        "image": "05_coral_env/coral_live"
+                    },
+                    {
+                        "id": "lbl_warm",
+                        "x": 0.58,
+                        "y": 0.8,
+                        "w": 0.18,
+                        "h": 0.1,
+                        "textKey": "slide.coral.lbl_warm"
+                    },
+                    {
+                        "id": "lbl_shallow",
+                        "x": 0.8,
+                        "y": 0.8,
+                        "w": 0.18,
+                        "h": 0.1,
+                        "textKey": "slide.coral.lbl_shallow"
+                    },
+                    {
+                        "id": "arrow",
+                        "x": 0.42,
+                        "y": 0.5,
+                        "w": 0.1,
+                        "h": 0.12,
+                        "textKey": "slide.coral.arrow"
+                    }
+                ],
+                "steps": [
+                    {
+                        "textKey": "slide.coral.s1",
+                        "show": [
+                            "fossil"
+                        ],
+                        "pulse": [
+                            "fossil"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.coral.s2",
+                        "show": [
+                            "live"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.coral.s3",
+                        "show": [
+                            "lbl_warm",
+                            "lbl_shallow"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.coral.s4",
+                        "show": [
+                            "arrow"
+                        ],
+                        "pulse": [
+                            "fossil",
+                            "live"
+                        ]
+                    }
+                ]
+            }
         },
         {
             "speaker": "Dr.Kaede",
@@ -60,58 +141,80 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "化石（かせき）には、教（おし）えてくれることが2しゅるいあるの。箱（はこ）に分（わ）けてみて！",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.card.fossil_tells.line",
+            "text": "化石（かせき）は、昔（むかし）のことを教（おし）えてくれるの。",
+            "textKey": "slide.facies.intro",
             "illustrationKey": "06_facies_fossil",
             "interaction": {
-                "id": "card.fossil_tells",
-                "type": "sort",
-                "titleKey": "card.fossil_tells.title",
-                "wrongKey": "card.fossil_tells.wrong",
-                "doneKey": "card.fossil_tells.done",
-                "bins": [
+                "id": "slide.facies",
+                "type": "slides",
+                "image": "06_facies/base",
+                "parts": [
                     {
-                        "id": "place",
-                        "textKey": "card.fossil_tells.bin.place"
-                    },
-                    {
-                        "id": "era",
-                        "textKey": "card.fossil_tells.bin.era"
-                    }
-                ],
-                "items": [
-                    {
-                        "id": "ammonite",
-                        "text": "アンモナイト",
-                        "textKey": "card.fossil_tells.ammonite",
-                        "noteKey": "card.fossil_tells.ammonite.note",
-                        "bin": "era",
-                        "hintKey": "card.fossil_tells.hint.era"
+                        "id": "shijimi",
+                        "x": 0.3,
+                        "y": 0.36,
+                        "w": 0.12,
+                        "h": 0.12,
+                        "image": "06_facies/shijimi"
                     },
                     {
                         "id": "coral",
-                        "text": "サンゴ",
-                        "textKey": "card.fossil_tells.coral",
-                        "noteKey": "card.fossil_tells.coral.note",
-                        "bin": "place",
-                        "hintKey": "card.fossil_tells.hint.place"
+                        "x": 0.72,
+                        "y": 0.32,
+                        "w": 0.16,
+                        "h": 0.16,
+                        "image": "06_facies/coral"
                     },
                     {
-                        "id": "trilobite",
-                        "text": "三葉虫（さんようちゅう）",
-                        "textKey": "card.fossil_tells.trilobite",
-                        "noteKey": "card.fossil_tells.trilobite.note",
-                        "bin": "era",
-                        "hintKey": "card.fossil_tells.hint.era"
+                        "id": "lbl_shijimi",
+                        "x": 0.3,
+                        "y": 0.6,
+                        "w": 0.3,
+                        "h": 0.09,
+                        "textKey": "slide.facies.lbl_shijimi"
                     },
                     {
-                        "id": "clam",
-                        "text": "シジミ",
-                        "textKey": "card.fossil_tells.clam",
-                        "noteKey": "card.fossil_tells.clam.note",
-                        "bin": "place",
-                        "hintKey": "card.fossil_tells.hint.place"
+                        "id": "lbl_coral",
+                        "x": 0.72,
+                        "y": 0.6,
+                        "w": 0.3,
+                        "h": 0.09,
+                        "textKey": "slide.facies.lbl_coral"
+                    },
+                    {
+                        "id": "term",
+                        "x": 0.5,
+                        "y": 0.88,
+                        "w": 0.34,
+                        "h": 0.11,
+                        "textKey": "slide.facies.term"
+                    }
+                ],
+                "steps": [
+                    {
+                        "textKey": "slide.facies.s1",
+                        "show": [
+                            "coral",
+                            "lbl_coral"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.facies.s2",
+                        "show": [
+                            "shijimi",
+                            "lbl_shijimi"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.facies.s3",
+                        "show": [
+                            "term"
+                        ],
+                        "pulse": [
+                            "coral",
+                            "shijimi"
+                        ]
                     }
                 ]
             }
@@ -146,58 +249,170 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "次（つぎ）の層（そう）からは……アンモナイト！　地球（ちきゅう）の歴史（れきし）の線（せん）に、のせてみよう。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.card.era_line.line",
+            "text": "次（つぎ）の層（そう）からは……アンモナイト！　地球（ちきゅう）の歴史（れきし）を見（み）てみよう。",
+            "textKey": "slide.era.intro",
             "illustrationKey": "07_ammonite_mesozoic",
             "interaction": {
-                "id": "card.era_line",
-                "type": "sort",
-                "titleKey": "card.era_line.title",
-                "wrongKey": "card.era_line.wrong",
-                "doneKey": "card.era_line.done",
-                "bins": [
+                "id": "slide.era",
+                "type": "slides",
+                "parts": [
                     {
-                        "id": "paleo",
-                        "textKey": "card.era_line.bin.paleo"
+                        "id": "bar_paleo",
+                        "x": 0.2,
+                        "y": 0.5,
+                        "w": 0.3,
+                        "h": 0.08,
+                        "color": "#7A8F6A"
                     },
                     {
-                        "id": "meso",
-                        "textKey": "card.era_line.bin.meso"
+                        "id": "bar_meso",
+                        "x": 0.5,
+                        "y": 0.5,
+                        "w": 0.3,
+                        "h": 0.08,
+                        "color": "#C49A5A",
+                        "delay": 0.3
                     },
                     {
-                        "id": "ceno",
-                        "textKey": "card.era_line.bin.ceno"
-                    }
-                ],
-                "items": [
-                    {
-                        "id": "dinosaur",
-                        "text": "恐竜（きょうりゅう）",
-                        "textKey": "card.era_line.dinosaur",
-                        "bin": "meso",
-                        "hintKey": "card.era_line.dinosaur.hint"
+                        "id": "bar_ceno",
+                        "x": 0.8,
+                        "y": 0.5,
+                        "w": 0.3,
+                        "h": 0.08,
+                        "color": "#6A93B0",
+                        "delay": 0.6
                     },
                     {
-                        "id": "naumann",
-                        "text": "ナウマンゾウ",
-                        "textKey": "card.era_line.naumann",
-                        "bin": "ceno",
-                        "hintKey": "card.era_line.naumann.hint"
+                        "id": "lbl_paleo",
+                        "x": 0.2,
+                        "y": 0.38,
+                        "w": 0.26,
+                        "h": 0.09,
+                        "textKey": "slide.era.lbl_paleo"
                     },
                     {
-                        "id": "ammonite",
-                        "text": "アンモナイト",
-                        "textKey": "card.era_line.ammonite",
-                        "bin": "meso",
-                        "hintKey": "card.era_line.ammonite.hint"
+                        "id": "lbl_meso",
+                        "x": 0.5,
+                        "y": 0.38,
+                        "w": 0.26,
+                        "h": 0.09,
+                        "textKey": "slide.era.lbl_meso",
+                        "delay": 0.3
+                    },
+                    {
+                        "id": "lbl_ceno",
+                        "x": 0.8,
+                        "y": 0.38,
+                        "w": 0.26,
+                        "h": 0.09,
+                        "textKey": "slide.era.lbl_ceno",
+                        "delay": 0.6
+                    },
+                    {
+                        "id": "old",
+                        "x": 0.08,
+                        "y": 0.26,
+                        "w": 0.12,
+                        "h": 0.08,
+                        "textKey": "slide.era.old"
+                    },
+                    {
+                        "id": "new",
+                        "x": 0.92,
+                        "y": 0.26,
+                        "w": 0.12,
+                        "h": 0.08,
+                        "textKey": "slide.era.new"
                     },
                     {
                         "id": "trilobite",
-                        "text": "三葉虫（さんようちゅう）",
-                        "textKey": "card.era_line.trilobite",
-                        "bin": "paleo",
-                        "hintKey": "card.era_line.trilobite.hint"
+                        "x": 0.2,
+                        "y": 0.68,
+                        "w": 0.14,
+                        "h": 0.14,
+                        "image": "07_era/trilobite"
+                    },
+                    {
+                        "id": "ammonite",
+                        "x": 0.44,
+                        "y": 0.68,
+                        "w": 0.14,
+                        "h": 0.14,
+                        "image": "07_era/ammonite"
+                    },
+                    {
+                        "id": "dino",
+                        "x": 0.58,
+                        "y": 0.68,
+                        "w": 0.14,
+                        "h": 0.14,
+                        "image": "07_era/dinosaur"
+                    },
+                    {
+                        "id": "naumann",
+                        "x": 0.8,
+                        "y": 0.68,
+                        "w": 0.14,
+                        "h": 0.14,
+                        "image": "07_era/naumann"
+                    },
+                    {
+                        "id": "term",
+                        "x": 0.5,
+                        "y": 0.14,
+                        "w": 0.36,
+                        "h": 0.11,
+                        "textKey": "slide.era.term"
+                    }
+                ],
+                "steps": [
+                    {
+                        "textKey": "slide.era.s1",
+                        "show": [
+                            "bar_paleo",
+                            "bar_meso",
+                            "bar_ceno",
+                            "lbl_paleo",
+                            "lbl_meso",
+                            "lbl_ceno",
+                            "old",
+                            "new"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.era.s2",
+                        "show": [
+                            "trilobite"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.era.s3",
+                        "show": [
+                            "ammonite",
+                            "dino"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.era.s4",
+                        "show": [
+                            "naumann"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.era.s5",
+                        "pulse": [
+                            "trilobite",
+                            "ammonite",
+                            "dino",
+                            "naumann"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.era.s6",
+                        "show": [
+                            "term"
+                        ]
                     }
                 ]
             }
@@ -268,10 +483,107 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "火山（かざん）がふん火（か）すると、火山灰（かざんばい）が遠（とお）くまでとんで、つもるんだ。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat3.q5.teach1",
-            "illustrationKey": "09_tuff_volcano"
+            "text": "火山灰（かざんばい）が地層（ちそう）になるまでを見（み）てみよう。",
+            "textKey": "slide.tuff.intro",
+            "illustrationKey": "09_tuff_volcano",
+            "interaction": {
+                "id": "slide.tuff",
+                "type": "slides",
+                "image": "09_tuff/base",
+                "parts": [
+                    {
+                        "id": "plume",
+                        "x": 0.2,
+                        "y": 0.75,
+                        "w": 0.2,
+                        "h": 0.35,
+                        "image": "09_tuff/plume"
+                    },
+                    {
+                        "id": "ash",
+                        "x": 0.3,
+                        "y": 0.86,
+                        "w": 0.2,
+                        "h": 0.14,
+                        "image": "09_tuff/ashcloud"
+                    },
+                    {
+                        "id": "ashbed",
+                        "x": 0.7,
+                        "y": 0.405,
+                        "w": 0.5,
+                        "h": 0.025,
+                        "color": "#EEEBE0"
+                    },
+                    {
+                        "id": "cover1",
+                        "x": 0.7,
+                        "y": 0.432,
+                        "w": 0.5,
+                        "h": 0.03,
+                        "color": "#A88B62"
+                    },
+                    {
+                        "id": "cover2",
+                        "x": 0.7,
+                        "y": 0.462,
+                        "w": 0.5,
+                        "h": 0.03,
+                        "color": "#8C7354",
+                        "delay": 0.4
+                    },
+                    {
+                        "id": "term",
+                        "x": 0.7,
+                        "y": 0.16,
+                        "w": 0.3,
+                        "h": 0.1,
+                        "textKey": "slide.tuff.term"
+                    }
+                ],
+                "steps": [
+                    {
+                        "textKey": "slide.tuff.s1",
+                        "show": [
+                            "plume"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.tuff.s2",
+                        "show": [
+                            "ash"
+                        ],
+                        "move": [
+                            {
+                                "id": "ash",
+                                "x": 0.7,
+                                "y": 0.76
+                            }
+                        ]
+                    },
+                    {
+                        "textKey": "slide.tuff.s3",
+                        "hide": [
+                            "ash"
+                        ],
+                        "show": [
+                            "ashbed"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.tuff.s4",
+                        "show": [
+                            "cover1",
+                            "cover2",
+                            "term"
+                        ],
+                        "pulse": [
+                            "ashbed"
+                        ]
+                    }
+                ]
+            }
         },
         {
             "speaker": "Dr.Kaede",

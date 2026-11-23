@@ -5,110 +5,219 @@
     "dialogues": [
         {
             "speaker": "Dr.Kaede",
-            "text": "A・B・Cの柱状図（ちゅうじょうず）だよ。火山灰（かざんばい）の層（そう）を、それぞれタップしてみて。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.card.key_bed.line",
+            "text": "柱状図（ちゅうじょうず）で、地層（ちそう）のつながりを見（み）てみよう。",
+            "textKey": "slide.keybed.intro",
             "illustrationKey": "10_keybed_tilt",
             "interaction": {
-                "id": "card.key_bed",
-                "type": "columns",
-                "titleKey": "card.key_bed.title",
-                "wrongKey": "card.key_bed.wrong",
-                "doneKey": "card.key_bed.done",
-                "columns": [
+                "id": "slide.keybed",
+                "type": "slides",
+                "parts": [
                     {
-                        "labelKey": "card.key_bed.col.a",
-                        "layers": [
-                            {
-                                "textKey": "card.key_bed.sand",
-                                "text": "砂岩（さがん）",
-                                "color": "#d9c38f",
-                                "size": 1
-                            },
-                            {
-                                "textKey": "card.key_bed.tuff",
-                                "text": "火山灰（かざんばい）",
-                                "color": "#f2efe6",
-                                "size": 1,
-                                "target": true
-                            },
-                            {
-                                "textKey": "card.key_bed.mud",
-                                "text": "泥岩（でいがん）",
-                                "color": "#7d838a",
-                                "size": 1
-                            },
-                            {
-                                "textKey": "card.key_bed.gravel",
-                                "text": "れき岩（がん）",
-                                "color": "#a08466",
-                                "size": 2
-                            }
+                        "id": "A_sand",
+                        "x": 0.2,
+                        "y": 0.785,
+                        "w": 0.14,
+                        "h": 0.13,
+                        "color": "#D9B97A"
+                    },
+                    {
+                        "id": "A_ash",
+                        "x": 0.2,
+                        "y": 0.69,
+                        "w": 0.14,
+                        "h": 0.06,
+                        "color": "#F2F0E6"
+                    },
+                    {
+                        "id": "A_mud",
+                        "x": 0.2,
+                        "y": 0.58,
+                        "w": 0.14,
+                        "h": 0.16,
+                        "color": "#8D7B68"
+                    },
+                    {
+                        "id": "A_gravel",
+                        "x": 0.2,
+                        "y": 0.44,
+                        "w": 0.14,
+                        "h": 0.12,
+                        "color": "#A69C8C"
+                    },
+                    {
+                        "id": "lbl_A",
+                        "x": 0.2,
+                        "y": 0.93,
+                        "w": 0.08,
+                        "h": 0.08,
+                        "textKey": "slide.keybed.lbl_A"
+                    },
+                    {
+                        "id": "B_sand",
+                        "x": 0.5,
+                        "y": 0.755,
+                        "w": 0.14,
+                        "h": 0.19,
+                        "color": "#D9B97A",
+                        "delay": 0.3
+                    },
+                    {
+                        "id": "B_ash",
+                        "x": 0.5,
+                        "y": 0.63,
+                        "w": 0.14,
+                        "h": 0.06,
+                        "color": "#F2F0E6",
+                        "delay": 0.3
+                    },
+                    {
+                        "id": "B_mud",
+                        "x": 0.5,
+                        "y": 0.52,
+                        "w": 0.14,
+                        "h": 0.16,
+                        "color": "#8D7B68",
+                        "delay": 0.3
+                    },
+                    {
+                        "id": "B_gravel",
+                        "x": 0.5,
+                        "y": 0.38,
+                        "w": 0.14,
+                        "h": 0.12,
+                        "color": "#A69C8C",
+                        "delay": 0.3
+                    },
+                    {
+                        "id": "lbl_B",
+                        "x": 0.5,
+                        "y": 0.93,
+                        "w": 0.08,
+                        "h": 0.08,
+                        "textKey": "slide.keybed.lbl_B",
+                        "delay": 0.3
+                    },
+                    {
+                        "id": "C_sand",
+                        "x": 0.8,
+                        "y": 0.715,
+                        "w": 0.14,
+                        "h": 0.27,
+                        "color": "#D9B97A",
+                        "delay": 0.6
+                    },
+                    {
+                        "id": "C_ash",
+                        "x": 0.8,
+                        "y": 0.55,
+                        "w": 0.14,
+                        "h": 0.06,
+                        "color": "#F2F0E6",
+                        "delay": 0.6
+                    },
+                    {
+                        "id": "C_mud",
+                        "x": 0.8,
+                        "y": 0.44,
+                        "w": 0.14,
+                        "h": 0.16,
+                        "color": "#8D7B68",
+                        "delay": 0.6
+                    },
+                    {
+                        "id": "lbl_C",
+                        "x": 0.8,
+                        "y": 0.93,
+                        "w": 0.08,
+                        "h": 0.08,
+                        "textKey": "slide.keybed.lbl_C",
+                        "delay": 0.6
+                    },
+                    {
+                        "id": "west",
+                        "x": 0.05,
+                        "y": 0.93,
+                        "w": 0.1,
+                        "h": 0.08,
+                        "textKey": "slide.keybed.west"
+                    },
+                    {
+                        "id": "east",
+                        "x": 0.95,
+                        "y": 0.93,
+                        "w": 0.1,
+                        "h": 0.08,
+                        "textKey": "slide.keybed.east"
+                    },
+                    {
+                        "id": "line",
+                        "x": 0.5,
+                        "y": 0.62,
+                        "w": 0.7072,
+                        "h": 0.012,
+                        "color": "#FFD24A",
+                        "rot": -8.84
+                    },
+                    {
+                        "id": "term",
+                        "x": 0.5,
+                        "y": 0.16,
+                        "w": 0.26,
+                        "h": 0.1,
+                        "textKey": "slide.keybed.term"
+                    }
+                ],
+                "steps": [
+                    {
+                        "textKey": "slide.keybed.s1",
+                        "show": [
+                            "A_sand",
+                            "A_ash",
+                            "A_mud",
+                            "A_gravel",
+                            "lbl_A",
+                            "B_sand",
+                            "B_ash",
+                            "B_mud",
+                            "B_gravel",
+                            "lbl_B",
+                            "C_sand",
+                            "C_ash",
+                            "C_mud",
+                            "lbl_C",
+                            "west",
+                            "east"
                         ]
                     },
                     {
-                        "labelKey": "card.key_bed.col.b",
-                        "layers": [
-                            {
-                                "textKey": "card.key_bed.sand",
-                                "text": "砂岩（さがん）",
-                                "color": "#d9c38f",
-                                "size": 2
-                            },
-                            {
-                                "textKey": "card.key_bed.tuff",
-                                "text": "火山灰（かざんばい）",
-                                "color": "#f2efe6",
-                                "size": 1,
-                                "target": true
-                            },
-                            {
-                                "textKey": "card.key_bed.mud",
-                                "text": "泥岩（でいがん）",
-                                "color": "#7d838a",
-                                "size": 1
-                            },
-                            {
-                                "textKey": "card.key_bed.gravel",
-                                "text": "れき岩（がん）",
-                                "color": "#a08466",
-                                "size": 1
-                            }
+                        "textKey": "slide.keybed.s2",
+                        "pulse": [
+                            "A_ash"
                         ]
                     },
                     {
-                        "labelKey": "card.key_bed.col.c",
-                        "layers": [
-                            {
-                                "textKey": "card.key_bed.sand",
-                                "text": "砂岩（さがん）",
-                                "color": "#d9c38f",
-                                "size": 3
-                            },
-                            {
-                                "textKey": "card.key_bed.tuff",
-                                "text": "火山灰（かざんばい）",
-                                "color": "#f2efe6",
-                                "size": 1,
-                                "target": true
-                            },
-                            {
-                                "textKey": "card.key_bed.mud",
-                                "text": "泥岩（でいがん）",
-                                "color": "#7d838a",
-                                "size": 1
-                            }
+                        "textKey": "slide.keybed.s3",
+                        "pulse": [
+                            "B_ash",
+                            "C_ash"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.keybed.s4",
+                        "show": [
+                            "line",
+                            "term"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.keybed.s5",
+                        "pulse": [
+                            "line"
                         ]
                     }
                 ]
             }
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "同（おな）じ層（そう）は目（め）じるしになる。これを「鍵層（かぎそう）」っていうの。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat4.q1.teach1",
-            "illustrationKey": "10_keybed_tilt"
         },
         {
             "speaker": "Dr.Kaede",
@@ -148,10 +257,98 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "地層（ちそう）は、両（りょう）がわからおされると、波（なみ）のように曲（ま）がるんだ。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat4.q2.teach1",
-            "illustrationKey": "11_fold_fault"
+            "text": "地層（ちそう）が曲（ま）がるのは、どうしてだろう？",
+            "textKey": "slide.fold.intro",
+            "illustrationKey": "11_fold_fault",
+            "interaction": {
+                "id": "slide.fold",
+                "type": "slides",
+                "parts": [
+                    {
+                        "id": "flat",
+                        "x": 0.5,
+                        "y": 0.45,
+                        "w": 0.6,
+                        "h": 0.5,
+                        "image": "11_fold/flat"
+                    },
+                    {
+                        "id": "folded",
+                        "x": 0.5,
+                        "y": 0.45,
+                        "w": 0.6,
+                        "h": 0.5,
+                        "image": "11_fold/folded"
+                    },
+                    {
+                        "id": "push_l",
+                        "x": 0.1,
+                        "y": 0.45,
+                        "w": 0.1,
+                        "h": 0.12,
+                        "textKey": "slide.fold.push_l"
+                    },
+                    {
+                        "id": "push_r",
+                        "x": 0.9,
+                        "y": 0.45,
+                        "w": 0.1,
+                        "h": 0.12,
+                        "textKey": "slide.fold.push_r"
+                    },
+                    {
+                        "id": "term",
+                        "x": 0.5,
+                        "y": 0.88,
+                        "w": 0.28,
+                        "h": 0.1,
+                        "textKey": "slide.fold.term"
+                    }
+                ],
+                "steps": [
+                    {
+                        "textKey": "slide.fold.s1",
+                        "show": [
+                            "flat"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.fold.s2",
+                        "show": [
+                            "push_l",
+                            "push_r"
+                        ],
+                        "move": [
+                            {
+                                "id": "push_l",
+                                "x": 0.17,
+                                "y": 0.45
+                            },
+                            {
+                                "id": "push_r",
+                                "x": 0.83,
+                                "y": 0.45
+                            }
+                        ]
+                    },
+                    {
+                        "textKey": "slide.fold.s3",
+                        "hide": [
+                            "flat"
+                        ],
+                        "show": [
+                            "folded"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.fold.s4",
+                        "show": [
+                            "term"
+                        ]
+                    }
+                ]
+            }
         },
         {
             "speaker": "Dr.Kaede",
@@ -191,50 +388,30 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "さあ、なぞときの時間（じかん）！　集（あつ）めた証拠（しょうこ）から、何（なに）がわかる？",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.s9.l06",
+            "text": "4つの証拠（しょうこ）がそろった！　なぞときの時間（じかん）だよ。",
+            "textKey": "story.s9.c1",
             "illustrationKey": "-",
             "evidenceKey": "evidence.e4",
-            "evidence": "④かたむいて曲（ま）がった地層（ちそう）",
-            "interaction": {
-                "id": "card.conclusion",
-                "type": "choose",
-                "titleKey": "card.conclusion.title",
-                "wrongKey": "card.conclusion.wrong",
-                "doneKey": "card.conclusion.done",
-                "evidence": [
-                    {
-                        "textKey": "evidence.e1"
-                    },
-                    {
-                        "textKey": "evidence.e2"
-                    },
-                    {
-                        "textKey": "evidence.e3"
-                    },
-                    {
-                        "textKey": "evidence.e4"
-                    }
-                ],
-                "items": [
-                    {
-                        "id": "weather",
-                        "textKey": "card.conclusion.weather",
-                        "hintKey": "card.conclusion.weather.hint"
-                    },
-                    {
-                        "id": "moved",
-                        "textKey": "card.conclusion.moved",
-                        "correct": true
-                    },
-                    {
-                        "id": "still",
-                        "textKey": "card.conclusion.still",
-                        "hintKey": "card.conclusion.still.hint"
-                    }
-                ]
-            }
+            "evidence": "④かたむいて曲（ま）がった地層（ちそう）"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "speakerKey": "story.speaker.drkaede",
+            "text": "ゆがんだり、かたむいて曲（ま）がったりした地層（ちそう）は、大地（だいち）が動（うご）いたしるし。",
+            "textKey": "story.s9.c2"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "speakerKey": "story.speaker.drkaede",
+            "text": "つまり、学校（がっこう）の西（にし）がわの地下（ちか）で、地層（ちそう）が大（おお）きく動（うご）いたの。",
+            "textKey": "story.s9.c3"
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "speakerKey": "story.speaker.drkaede",
+            "text": "地層（ちそう）を読（よ）めば、だれでも大地（だいち）の声（こえ）が聞（き）けるんだ。",
+            "textKey": "story.s9.c4"
         },
         {
             "speaker": "Dr.Kaede",

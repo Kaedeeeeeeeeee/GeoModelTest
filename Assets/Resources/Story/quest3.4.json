@@ -11,24 +11,151 @@
         },
         {
             "speaker": "Dr.Kaede",
-            "text": "れき岩（がん）、砂岩（さがん）、泥岩（でいがん）は、主（おも）にふくまれる粒（つぶ）の大（おお）きさで分（わ）けるよ。れき岩は2mm以上（いじょう）、砂岩は約（やく）0.06～2mm、泥岩は約0.06mm未満（みまん）の粒を主にふくむ。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat2.q1.teach1",
-            "illustrationKey": "02_rock_grainsize"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "それと、変（か）わり種（だね）が2つ。まず、うすい塩酸（えんさん）をかけると泡（あわ）が出（で）るのが「石灰岩（せっかいがん）」。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat2.q1.teach2",
-            "illustrationKey": "03_limestone"
-        },
-        {
-            "speaker": "Dr.Kaede",
-            "text": "もうひとつは「チャート」。とてもかたくて、くぎでこすっても傷（きず）がつかないんだ。",
-            "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.beat2.q1.teach3",
-            "illustrationKey": "04_chert"
+            "text": "れき岩（がん）、砂岩（さがん）、泥岩（でいがん）は、つぶの大（おお）きさで分（わ）けるよ。",
+            "textKey": "slide.grain.intro",
+            "illustrationKey": "02_rock_grainsize",
+            "interaction": {
+                "id": "slide.grain",
+                "type": "slides",
+                "image": "02_grain_size/base",
+                "parts": [
+                    {
+                        "id": "gravel",
+                        "x": 0.12,
+                        "y": 0.62,
+                        "w": 0.1,
+                        "h": 0.08,
+                        "image": "02_grain_size/gravel"
+                    },
+                    {
+                        "id": "sand",
+                        "x": 0.15,
+                        "y": 0.6,
+                        "w": 0.1,
+                        "h": 0.08,
+                        "image": "02_grain_size/sand"
+                    },
+                    {
+                        "id": "mud",
+                        "x": 0.18,
+                        "y": 0.62,
+                        "w": 0.07,
+                        "h": 0.08,
+                        "image": "02_grain_size/mud"
+                    },
+                    {
+                        "id": "lbl_gravel",
+                        "x": 0.25,
+                        "y": 0.56,
+                        "w": 0.22,
+                        "h": 0.09,
+                        "textKey": "slide.grain.lbl_gravel"
+                    },
+                    {
+                        "id": "lbl_sand",
+                        "x": 0.52,
+                        "y": 0.46,
+                        "w": 0.22,
+                        "h": 0.09,
+                        "textKey": "slide.grain.lbl_sand"
+                    },
+                    {
+                        "id": "lbl_mud",
+                        "x": 0.8,
+                        "y": 0.32,
+                        "w": 0.22,
+                        "h": 0.09,
+                        "textKey": "slide.grain.lbl_mud"
+                    },
+                    {
+                        "id": "rk_gravel",
+                        "x": 0.25,
+                        "y": 0.56,
+                        "w": 0.18,
+                        "h": 0.09,
+                        "textKey": "slide.grain.rk_gravel"
+                    },
+                    {
+                        "id": "rk_sand",
+                        "x": 0.52,
+                        "y": 0.46,
+                        "w": 0.18,
+                        "h": 0.09,
+                        "textKey": "slide.grain.rk_sand"
+                    },
+                    {
+                        "id": "rk_mud",
+                        "x": 0.8,
+                        "y": 0.32,
+                        "w": 0.18,
+                        "h": 0.09,
+                        "textKey": "slide.grain.rk_mud"
+                    }
+                ],
+                "steps": [
+                    {
+                        "textKey": "slide.grain.s1",
+                        "show": [
+                            "gravel",
+                            "sand",
+                            "mud"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.grain.s2",
+                        "show": [
+                            "lbl_gravel"
+                        ],
+                        "move": [
+                            {
+                                "id": "gravel",
+                                "x": 0.25,
+                                "y": 0.457
+                            }
+                        ]
+                    },
+                    {
+                        "textKey": "slide.grain.s3",
+                        "show": [
+                            "lbl_sand"
+                        ],
+                        "move": [
+                            {
+                                "id": "sand",
+                                "x": 0.52,
+                                "y": 0.34
+                            }
+                        ]
+                    },
+                    {
+                        "textKey": "slide.grain.s4",
+                        "show": [
+                            "lbl_mud"
+                        ],
+                        "move": [
+                            {
+                                "id": "mud",
+                                "x": 0.82,
+                                "y": 0.205
+                            }
+                        ]
+                    },
+                    {
+                        "textKey": "slide.grain.s5",
+                        "hide": [
+                            "lbl_gravel",
+                            "lbl_sand",
+                            "lbl_mud"
+                        ],
+                        "show": [
+                            "rk_gravel",
+                            "rk_sand",
+                            "rk_mud"
+                        ]
+                    }
+                ]
+            }
         },
         {
             "speaker": "Dr.Kaede",
@@ -65,6 +192,130 @@
                     "feedbackKey": "story.beat2.q1.fb_ok"
                 }
             ]
+        },
+        {
+            "speaker": "Dr.Kaede",
+            "speakerKey": "story.speaker.drkaede",
+            "text": "それと、変（か）わり種（だね）の岩（いわ）を2つ見（み）てみよう。",
+            "textKey": "slide.lime.intro",
+            "illustrationKey": "03_limestone",
+            "interaction": {
+                "id": "slide.lime",
+                "type": "slides",
+                "image": "03_lime_chert/base",
+                "parts": [
+                    {
+                        "id": "dropper",
+                        "x": 0.3,
+                        "y": 0.8,
+                        "w": 0.1,
+                        "h": 0.25,
+                        "image": "03_lime_chert/dropper"
+                    },
+                    {
+                        "id": "bubbles",
+                        "x": 0.3,
+                        "y": 0.45,
+                        "w": 0.16,
+                        "h": 0.14,
+                        "image": "03_lime_chert/bubbles"
+                    },
+                    {
+                        "id": "shells",
+                        "x": 0.5,
+                        "y": 0.76,
+                        "w": 0.26,
+                        "h": 0.26,
+                        "image": "03_lime_chert/shells"
+                    },
+                    {
+                        "id": "nail",
+                        "x": 0.76,
+                        "y": 0.8,
+                        "w": 0.1,
+                        "h": 0.25,
+                        "image": "03_lime_chert/nail"
+                    },
+                    {
+                        "id": "spark",
+                        "x": 0.7,
+                        "y": 0.42,
+                        "w": 0.12,
+                        "h": 0.1,
+                        "image": "03_lime_chert/spark"
+                    },
+                    {
+                        "id": "lbl_lime",
+                        "x": 0.3,
+                        "y": 0.07,
+                        "w": 0.22,
+                        "h": 0.08,
+                        "textKey": "slide.lime.lbl_lime"
+                    },
+                    {
+                        "id": "lbl_chert",
+                        "x": 0.7,
+                        "y": 0.07,
+                        "w": 0.22,
+                        "h": 0.08,
+                        "textKey": "slide.lime.lbl_chert"
+                    }
+                ],
+                "steps": [
+                    {
+                        "textKey": "slide.lime.s1",
+                        "show": [
+                            "dropper"
+                        ],
+                        "move": [
+                            {
+                                "id": "dropper",
+                                "x": 0.3,
+                                "y": 0.6
+                            }
+                        ]
+                    },
+                    {
+                        "textKey": "slide.lime.s2",
+                        "show": [
+                            "bubbles",
+                            "lbl_lime"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.lime.s3",
+                        "hide": [
+                            "dropper"
+                        ],
+                        "show": [
+                            "shells"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.lime.s4",
+                        "hide": [
+                            "shells"
+                        ],
+                        "show": [
+                            "nail"
+                        ],
+                        "move": [
+                            {
+                                "id": "nail",
+                                "x": 0.7,
+                                "y": 0.56
+                            }
+                        ]
+                    },
+                    {
+                        "textKey": "slide.lime.s5",
+                        "show": [
+                            "spark",
+                            "lbl_chert"
+                        ]
+                    }
+                ]
+            }
         },
         {
             "speaker": "Dr.Kaede",
