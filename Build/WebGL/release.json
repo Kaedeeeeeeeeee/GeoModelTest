@@ -1,27 +1,27 @@
 {
-  "version": "2026.11.23-teaching-slides",
-  "gameVersion": "2026.11.23-teaching-slides",
+  "version": "2026.11.23-slides-layout-sfx",
+  "gameVersion": "2026.11.23-slides-layout-sfx",
   "unity": "6000.0.51f1",
   "buildType": "release",
-  "builtAt": "2026-11-23T09:57:20.360Z",
-  "sourceCommit": "32cbac4af048054217ee73222d829e52177b1a04",
+  "builtAt": "2026-11-23T10:57:53.522Z",
+  "sourceCommit": "61ae27a909ca22570aae1567b1c49e287acb0e60",
   "sourceDirty": false,
   "assets": {
     "Build/WebGL.data.unityweb": {
-      "bytes": 123459911,
-      "sha256": "d3d42932d42a920897c246a16fb08461e3e869fe518a7bd6ad6b9e98b7d0a1b7"
+      "bytes": 124080408,
+      "sha256": "12cd37eb11f4fae787198a1ab370581370d3e9ddc5c05d505df995f364d3f823"
     },
     "Build/WebGL.framework.js.unityweb": {
-      "bytes": 96680,
-      "sha256": "f089111229a06d6aa29037537afb9c2451b91f5a938eb608770ef1632f063503"
+      "bytes": 96679,
+      "sha256": "bed0158b5ceb3be1e3387079fd0c4a50ceaf85c62885096d0ffb251bc9ff2817"
     },
     "Build/WebGL.loader.js": {
       "bytes": 47338,
-      "sha256": "80e6de8c20afe86be41113bb4ed88bbc1a0ebe06665a57c001b985d7d99e824f"
+      "sha256": "0292caeb89638b6325d662371947b7df26d5693dacad50990b99e40e2099a182"
     },
     "Build/WebGL.wasm.unityweb": {
-      "bytes": 12142906,
-      "sha256": "5b1581e1dac4814844acbb0148f3096c554b79ca01a46c4b13a11e58c9de8cd3"
+      "bytes": 12143320,
+      "sha256": "9864e842f271d4e02573178ce4da0ac72c5a38671d6b350673b418df2131e3bb"
     }
   },
   "webAssets": {
@@ -42,8 +42,8 @@
       "sha256": "9833c5a1676a83f8e4f1038da354a0c3be0548b406fb4898adf48ea8eadc9c22"
     },
     "index.html": {
-      "bytes": 10202,
-      "sha256": "8f3058e3883e323365751eb53bf435fceefcb5db1f69579d8c5b2b95ca60025a"
+      "bytes": 10204,
+      "sha256": "d6416c7ed4fdebedcbbcaa29f742f7e972610ca98fa5f203d70f1e718c0e9e4f"
     }
   },
   "surveyAssets": {
