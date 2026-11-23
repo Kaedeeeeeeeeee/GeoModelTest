@@ -1771,13 +1771,17 @@ namespace StorySystem
         /// <summary>
         /// 动态生成选择题答案按钮（垂直排列，叠在对话框上方）。点击或数字键 1-4 选择。
         /// </summary>
+        /// <summary>選択肢の左右の余白（画面幅の割合）。立絵の幅 (40+390)/1920 ≈ 0.224 に少し足す。</summary>
+        internal const float ChoiceSideMargin = 0.235f;
+
         private static GameObject BuildChoicePanel(Transform parent, List<SubtitleChoice> choices, HashSet<int> disabledIndices, System.Action<int> onPick, System.Action onHintClicked)
         {
             var panel = new GameObject("ChoicePanel");
             panel.transform.SetParent(parent, false);
             var rt = panel.AddComponent<RectTransform>();
-            rt.anchorMin = new Vector2(0.15f, 0.37f);
-            rt.anchorMax = new Vector2(0.85f, 0.83f);
+            // 左右の立絵（端から 40+390 px、1920 基準）にかからない幅にする
+            rt.anchorMin = new Vector2(ChoiceSideMargin, 0.37f);
+            rt.anchorMax = new Vector2(1f - ChoiceSideMargin, 0.83f);
             rt.offsetMin = Vector2.zero;
             rt.offsetMax = Vector2.zero;
 

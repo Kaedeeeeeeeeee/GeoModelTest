@@ -42,7 +42,8 @@ namespace UISystem
             bool gameplay = GameSession.IsGameplayScene(SceneManager.GetActiveScene().name);
             if (_button != null)
             {
-                _button.gameObject.SetActive(gameplay && !FirstControlGuide.IsOpen);
+                // 知識スライドは画面の上まで使うので、その間はボタンを隠す（H キーはそのまま使える）
+                _button.gameObject.SetActive(gameplay && !FirstControlGuide.IsOpen && KnowledgeSlideSession.Active == null);
                 _label.text = GameUI.L(FirstControlGuide.UsesTouch() ? "ui.guide.open.touch" : "ui.guide.open.desktop");
             }
             if (!gameplay || GameSceneManager.IsLoadingScene) return;
