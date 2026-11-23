@@ -2569,10 +2569,6 @@
       "value": "对。分布范围广、繁盛时间短的生物，才能成为示准化石。"
     },
     {
-      "key": "story.beat3.q5.teach1",
-      "value": "火山喷发时，火山灰会飞到很远的地方堆积下来。"
-    },
-    {
       "key": "story.beat3.q5.prompt",
       "value": "柱状图中有一层由火山灰压实而成的「凝灰岩」。当时发生了什么？"
     },
@@ -2797,16 +2793,8 @@
       "value": "生活范围广、繁盛时间短的生物，化石用来判断年代特别好用。"
     },
     {
-      "key": "story.beat4.q1.teach1",
-      "value": "同一层可以作为标志，这叫“键层”。"
-    },
-    {
       "key": "story.beat4.q1.teach2",
       "value": "键层在「某个方向上越来越深」？　就说明整个地层正在朝那个方向倾斜变低。"
-    },
-    {
-      "key": "story.beat4.q2.teach1",
-      "value": "地层从两侧受到挤压，就会像波浪一样弯曲。"
     },
     {
       "key": "story.beat1.q1.teach1",
@@ -2815,18 +2803,6 @@
     {
       "key": "story.beat1.q1.teach2",
       "value": "风化＝变松脆，侵蚀＝被刮削，搬运＝被运送，沉积＝堆积下来。"
-    },
-    {
-      "key": "story.beat2.q1.teach1",
-      "value": "沉积岩呀，是按颗粒大小命名的。从大到小：「砾岩」(>2mm)、「砂岩」、「泥岩」(<0.06mm)。"
-    },
-    {
-      "key": "story.beat2.q1.teach2",
-      "value": "另外还有 2 个特殊的。先说第一个：滴上稀盐酸会冒泡的是「石灰岩」。"
-    },
-    {
-      "key": "story.beat2.q1.teach3",
-      "value": "另一个是「燧石（チャート）」，硬到连钉子都刮不出痕迹。"
     },
     {
       "key": "story.beat1.q1.fb_ng_b",
@@ -3793,10 +3769,6 @@
       "value": "这是什么？不像是普通石头的花纹……吧？"
     },
     {
-      "key": "story.beat3.l11",
-      "value": "岩芯里有“珊瑚”化石！珊瑚至今也只能生活在温暖的浅海。"
-    },
-    {
       "key": "story.beat3.l12",
       "value": "刚才的石灰岩，也是由珊瑚和贝壳堆积形成的岩石呢。"
     },
@@ -3953,10 +3925,6 @@
       "value": "谢谢！那先到我这边来！"
     },
     {
-      "key": "story.s2.l08",
-      "value": "地层是大地的“日记”。它是怎么形成的？来排排看。"
-    },
-    {
       "key": "story.s2.l10",
       "value": "好，出发去野外！打开道具，选择相位转移器吧。"
     },
@@ -3983,230 +3951,6 @@
     {
       "key": "card.common.columns",
       "value": "在每根柱状图里点出要找的那一层"
-    },
-    {
-      "key": "card.weathering.title",
-      "value": "岩石变成地层的过程"
-    },
-    {
-      "key": "card.weathering.weathering",
-      "value": "风化"
-    },
-    {
-      "key": "card.weathering.weathering.note",
-      "value": "岩石变脆、碎裂"
-    },
-    {
-      "key": "card.weathering.erosion",
-      "value": "侵蚀"
-    },
-    {
-      "key": "card.weathering.erosion.note",
-      "value": "被水和风削去"
-    },
-    {
-      "key": "card.weathering.erosion.hint",
-      "value": "被削之前，岩石要先变脆。"
-    },
-    {
-      "key": "card.weathering.transport",
-      "value": "搬运"
-    },
-    {
-      "key": "card.weathering.transport.note",
-      "value": "被河水带走"
-    },
-    {
-      "key": "card.weathering.transport.hint",
-      "value": "被搬运之前，岩石得先碎裂、被削下来。"
-    },
-    {
-      "key": "card.weathering.deposition",
-      "value": "沉积"
-    },
-    {
-      "key": "card.weathering.deposition.note",
-      "value": "堆积在海底或湖底"
-    },
-    {
-      "key": "card.weathering.deposition.hint",
-      "value": "堆积是最后一步。"
-    },
-    {
-      "key": "card.weathering.wrong",
-      "value": "顺序好像不对。"
-    },
-    {
-      "key": "card.weathering.done",
-      "value": "完成！变脆→被削→被搬运→堆积，地层就是这样形成的。"
-    },
-    {
-      "key": "story.card.fossil_tells.line",
-      "value": "化石能告诉我们的事有两种。来分到箱子里吧！"
-    },
-    {
-      "key": "card.fossil_tells.title",
-      "value": "化石能告诉我们什么"
-    },
-    {
-      "key": "card.fossil_tells.bin.place",
-      "value": "能知道“生活的环境”"
-    },
-    {
-      "key": "card.fossil_tells.bin.era",
-      "value": "能知道“是哪个时代”"
-    },
-    {
-      "key": "card.fossil_tells.coral",
-      "value": "珊瑚"
-    },
-    {
-      "key": "card.fossil_tells.coral.note",
-      "value": "只生活在温暖的浅海"
-    },
-    {
-      "key": "card.fossil_tells.clam",
-      "value": "蚬（河蚬）"
-    },
-    {
-      "key": "card.fossil_tells.clam.note",
-      "value": "生活在河水与海水交汇的地方"
-    },
-    {
-      "key": "card.fossil_tells.ammonite",
-      "value": "菊石"
-    },
-    {
-      "key": "card.fossil_tells.ammonite.note",
-      "value": "只在某个时代遍布全世界的海洋"
-    },
-    {
-      "key": "card.fossil_tells.trilobite",
-      "value": "三叶虫"
-    },
-    {
-      "key": "card.fossil_tells.trilobite.note",
-      "value": "只在某个时代遍布全世界的海洋"
-    },
-    {
-      "key": "card.fossil_tells.hint.place",
-      "value": "这种生物能生活的环境是固定的。"
-    },
-    {
-      "key": "card.fossil_tells.hint.era",
-      "value": "这种生物只存在于某个时代。"
-    },
-    {
-      "key": "card.fossil_tells.wrong",
-      "value": "好像不是这个箱子。"
-    },
-    {
-      "key": "card.fossil_tells.done",
-      "value": "能知道环境的叫“示相化石”，能知道时代的叫“示准化石”。"
-    },
-    {
-      "key": "story.card.era_line.line",
-      "value": "下一层里是……菊石！把它们放到地球历史的时间线上吧。"
-    },
-    {
-      "key": "card.era_line.title",
-      "value": "地球历史的时间线"
-    },
-    {
-      "key": "card.era_line.bin.paleo",
-      "value": "古生代（较古老）"
-    },
-    {
-      "key": "card.era_line.bin.meso",
-      "value": "中生代"
-    },
-    {
-      "key": "card.era_line.bin.ceno",
-      "value": "新生代（较新）"
-    },
-    {
-      "key": "card.era_line.dinosaur",
-      "value": "恐龙"
-    },
-    {
-      "key": "card.era_line.dinosaur.hint",
-      "value": "恐龙繁盛于中间的那个时代。"
-    },
-    {
-      "key": "card.era_line.naumann",
-      "value": "诺氏古菱齿象"
-    },
-    {
-      "key": "card.era_line.naumann.hint",
-      "value": "诺氏古菱齿象是不久前还生活在日本的象。"
-    },
-    {
-      "key": "card.era_line.ammonite",
-      "value": "菊石"
-    },
-    {
-      "key": "card.era_line.ammonite.hint",
-      "value": "菊石和恐龙繁盛于同一个时代。"
-    },
-    {
-      "key": "card.era_line.trilobite",
-      "value": "三叶虫"
-    },
-    {
-      "key": "card.era_line.trilobite.hint",
-      "value": "三叶虫生活在比恐龙早得多的时代。"
-    },
-    {
-      "key": "card.era_line.wrong",
-      "value": "好像不是这个时代。"
-    },
-    {
-      "key": "card.era_line.done",
-      "value": "从古到新依次是古生代→中生代→新生代。化石能告诉我们地层的时代。"
-    },
-    {
-      "key": "story.card.key_bed.line",
-      "value": "这是 A、B、C 三处的柱状图。分别点一下火山灰层。"
-    },
-    {
-      "key": "card.key_bed.title",
-      "value": "三个地点的柱状图"
-    },
-    {
-      "key": "card.key_bed.col.a",
-      "value": "A（西）"
-    },
-    {
-      "key": "card.key_bed.col.b",
-      "value": "B"
-    },
-    {
-      "key": "card.key_bed.col.c",
-      "value": "C（东）"
-    },
-    {
-      "key": "card.key_bed.sand",
-      "value": "砂岩"
-    },
-    {
-      "key": "card.key_bed.mud",
-      "value": "泥岩"
-    },
-    {
-      "key": "card.key_bed.tuff",
-      "value": "火山灰"
-    },
-    {
-      "key": "card.key_bed.gravel",
-      "value": "砾岩"
-    },
-    {
-      "key": "card.key_bed.wrong",
-      "value": "那不是火山灰层。找找发白的那一层。"
-    },
-    {
-      "key": "card.key_bed.done",
-      "value": "连起来是一条斜线！同一层可以作为比较的标志。"
     },
     {
       "key": "story.evidence.got",
@@ -4297,42 +4041,6 @@
       "value": "是余震……快点。最后来比较 3 个地点的柱状图！"
     },
     {
-      "key": "card.conclusion.title",
-      "value": "解谜：地下发生了什么？"
-    },
-    {
-      "key": "card.conclusion.weather",
-      "value": "地震是天上的天气造成的"
-    },
-    {
-      "key": "card.conclusion.weather.hint",
-      "value": "证据说的都是地下的事。"
-    },
-    {
-      "key": "card.conclusion.moved",
-      "value": "学校西边的地下，地层发生了很大的移动"
-    },
-    {
-      "key": "card.conclusion.still",
-      "value": "地层从古至今一次也没动过"
-    },
-    {
-      "key": "card.conclusion.still.hint",
-      "value": "倾斜、弯曲的地层就是动过的证据。"
-    },
-    {
-      "key": "card.conclusion.wrong",
-      "value": "再看一遍证据卡吧。"
-    },
-    {
-      "key": "card.conclusion.done",
-      "value": "没错！只要读懂地层，谁都能听见大地的声音。"
-    },
-    {
-      "key": "story.s9.l06",
-      "value": "好，解谜时间！从收集到的证据能看出什么？"
-    },
-    {
       "key": "story.s9.l09",
       "value": "把调查结果用在镇上的防灾上吧。写完报告，就来开零食派对！"
     },
@@ -4359,6 +4067,366 @@
     {
       "key": "ui.idle.task",
       "value": "Dr.Kaede：“看看左上角的「调查进度」吧！”"
+    },
+    {
+      "key": "slide.rock.lbl1",
+      "value": "风化"
+    },
+    {
+      "key": "slide.rock.lbl2",
+      "value": "侵蚀"
+    },
+    {
+      "key": "slide.rock.lbl3",
+      "value": "搬运"
+    },
+    {
+      "key": "slide.rock.lbl4",
+      "value": "沉积"
+    },
+    {
+      "key": "slide.rock.intro",
+      "value": "地层就像大地的“日记”。我们来看看它是怎么形成的。"
+    },
+    {
+      "key": "slide.rock.s1",
+      "value": "山上的岩石被雨、风和冷热变化弄得松脆。这就是“风化”。"
+    },
+    {
+      "key": "slide.rock.s2",
+      "value": "松脆的岩石被雨水和河水削下来。这就是“侵蚀”。"
+    },
+    {
+      "key": "slide.rock.s3",
+      "value": "削下来的石头和沙子被河水带走。这就是“搬运”。"
+    },
+    {
+      "key": "slide.rock.s4",
+      "value": "它们沉到海底，一层层堆起来。这就是“沉积”。"
+    },
+    {
+      "key": "slide.rock.s5",
+      "value": "堆积物经过很长时间一层层叠起来，就成了地层。"
+    },
+    {
+      "key": "slide.rock.done",
+      "value": "风化→侵蚀→搬运→沉积。记住这个顺序哦！"
+    },
+    {
+      "key": "slide.grain.lbl_gravel",
+      "value": "砾石　2mm以上"
+    },
+    {
+      "key": "slide.grain.lbl_sand",
+      "value": "沙　0.06〜2mm"
+    },
+    {
+      "key": "slide.grain.lbl_mud",
+      "value": "泥　不到0.06mm"
+    },
+    {
+      "key": "slide.grain.rk_gravel",
+      "value": "砾岩"
+    },
+    {
+      "key": "slide.grain.rk_sand",
+      "value": "砂岩"
+    },
+    {
+      "key": "slide.grain.rk_mud",
+      "value": "泥岩"
+    },
+    {
+      "key": "slide.grain.intro",
+      "value": "砾岩、砂岩和泥岩，是按颗粒大小来区分的。"
+    },
+    {
+      "key": "slide.grain.s1",
+      "value": "河水带来的颗粒，有大的也有小的。"
+    },
+    {
+      "key": "slide.grain.s2",
+      "value": "重的砾石在岸边很快就沉下去。"
+    },
+    {
+      "key": "slide.grain.s3",
+      "value": "沙子会被带到离岸稍远的地方。"
+    },
+    {
+      "key": "slide.grain.s4",
+      "value": "最细的泥会一直漂到远处的深海。"
+    },
+    {
+      "key": "slide.grain.s5",
+      "value": "它们变硬以后，就成了砾岩、砂岩和泥岩。"
+    },
+    {
+      "key": "slide.lime.lbl_lime",
+      "value": "石灰岩"
+    },
+    {
+      "key": "slide.lime.lbl_chert",
+      "value": "燧石（チャート）"
+    },
+    {
+      "key": "slide.lime.intro",
+      "value": "另外，再看两种特别的岩石。"
+    },
+    {
+      "key": "slide.lime.s1",
+      "value": "滴一点稀盐酸试试。"
+    },
+    {
+      "key": "slide.lime.s2",
+      "value": "冒泡了！这就是“石灰岩”。"
+    },
+    {
+      "key": "slide.lime.s3",
+      "value": "石灰岩是贝壳和珊瑚的壳堆积而成的岩石。"
+    },
+    {
+      "key": "slide.lime.s4",
+      "value": "这块用钉子划划看。"
+    },
+    {
+      "key": "slide.lime.s5",
+      "value": "划不出痕迹！这是非常坚硬的“燧石（チャート）”。"
+    },
+    {
+      "key": "slide.coral.lbl_warm",
+      "value": "温暖"
+    },
+    {
+      "key": "slide.coral.lbl_shallow",
+      "value": "浅"
+    },
+    {
+      "key": "slide.coral.arrow",
+      "value": "→"
+    },
+    {
+      "key": "slide.coral.intro",
+      "value": "仔细看看岩芯里面。"
+    },
+    {
+      "key": "slide.coral.s1",
+      "value": "里面有珊瑚化石！"
+    },
+    {
+      "key": "slide.coral.s2",
+      "value": "现在的珊瑚生活在……"
+    },
+    {
+      "key": "slide.coral.s3",
+      "value": "只有温暖又浅的海里。"
+    },
+    {
+      "key": "slide.coral.s4",
+      "value": "这块化石会告诉我们从前的样子。"
+    },
+    {
+      "key": "slide.facies.lbl_shijimi",
+      "value": "河水和海水交汇处"
+    },
+    {
+      "key": "slide.facies.lbl_coral",
+      "value": "温暖的浅海"
+    },
+    {
+      "key": "slide.facies.term",
+      "value": "指相化石"
+    },
+    {
+      "key": "slide.facies.intro",
+      "value": "化石会告诉我们很久以前的事。"
+    },
+    {
+      "key": "slide.facies.s1",
+      "value": "珊瑚生活在温暖的浅海。"
+    },
+    {
+      "key": "slide.facies.s2",
+      "value": "蚬生活在河水和海水交汇的地方。"
+    },
+    {
+      "key": "slide.facies.s3",
+      "value": "能告诉我们生物生活在什么地方的化石，叫“指相化石”。"
+    },
+    {
+      "key": "slide.era.lbl_paleo",
+      "value": "古生代"
+    },
+    {
+      "key": "slide.era.lbl_meso",
+      "value": "中生代"
+    },
+    {
+      "key": "slide.era.lbl_ceno",
+      "value": "新生代"
+    },
+    {
+      "key": "slide.era.old",
+      "value": "古老"
+    },
+    {
+      "key": "slide.era.new",
+      "value": "较新"
+    },
+    {
+      "key": "slide.era.term",
+      "value": "标准化石"
+    },
+    {
+      "key": "slide.era.intro",
+      "value": "下一层里有……菊石！我们来看看地球的历史。"
+    },
+    {
+      "key": "slide.era.s1",
+      "value": "地球的历史可以大致分成三段。"
+    },
+    {
+      "key": "slide.era.s2",
+      "value": "三叶虫只生活在古生代。"
+    },
+    {
+      "key": "slide.era.s3",
+      "value": "菊石和恐龙在中生代。"
+    },
+    {
+      "key": "slide.era.s4",
+      "value": "诺氏古菱齿象在新生代。"
+    },
+    {
+      "key": "slide.era.s5",
+      "value": "看化石，就能知道地层是哪个时代形成的。"
+    },
+    {
+      "key": "slide.era.s6",
+      "value": "能告诉我们时代的化石，叫“标准化石”。"
+    },
+    {
+      "key": "slide.tuff.term",
+      "value": "凝灰岩"
+    },
+    {
+      "key": "slide.tuff.intro",
+      "value": "来看看火山灰是怎样变成地层的。"
+    },
+    {
+      "key": "slide.tuff.s1",
+      "value": "火山喷发了！"
+    },
+    {
+      "key": "slide.tuff.s2",
+      "value": "火山灰乘着风飞到很远的地方。"
+    },
+    {
+      "key": "slide.tuff.s3",
+      "value": "然后薄薄地落在地面上。"
+    },
+    {
+      "key": "slide.tuff.s4",
+      "value": "被埋起来压实以后，就成了“凝灰岩”。"
+    },
+    {
+      "key": "slide.keybed.lbl_A",
+      "value": "A"
+    },
+    {
+      "key": "slide.keybed.lbl_B",
+      "value": "B"
+    },
+    {
+      "key": "slide.keybed.lbl_C",
+      "value": "C"
+    },
+    {
+      "key": "slide.keybed.west",
+      "value": "西"
+    },
+    {
+      "key": "slide.keybed.east",
+      "value": "东"
+    },
+    {
+      "key": "slide.keybed.term",
+      "value": "标准层（键层）"
+    },
+    {
+      "key": "slide.keybed.intro",
+      "value": "用柱状图来看看地层是怎么连起来的。"
+    },
+    {
+      "key": "slide.keybed.s1",
+      "value": "从西到东，这是A、B、C三个地点的柱状图。"
+    },
+    {
+      "key": "slide.keybed.s2",
+      "value": "先看A的火山灰层。"
+    },
+    {
+      "key": "slide.keybed.s3",
+      "value": "同样的一层，B和C里也有。"
+    },
+    {
+      "key": "slide.keybed.s4",
+      "value": "相同的地层可以当作标记，这就是“标准层（键层）”。"
+    },
+    {
+      "key": "slide.keybed.s5",
+      "value": "连起来之后，就能看出哪边比较低了。"
+    },
+    {
+      "key": "slide.fold.push_l",
+      "value": "→"
+    },
+    {
+      "key": "slide.fold.push_r",
+      "value": "←"
+    },
+    {
+      "key": "slide.fold.term",
+      "value": "褶皱"
+    },
+    {
+      "key": "slide.fold.intro",
+      "value": "地层为什么会弯曲呢？"
+    },
+    {
+      "key": "slide.fold.s1",
+      "value": "地层一开始是平平地堆积的。"
+    },
+    {
+      "key": "slide.fold.s2",
+      "value": "大地的力量从两边挤压……"
+    },
+    {
+      "key": "slide.fold.s3",
+      "value": "就会像波浪一样弯曲！"
+    },
+    {
+      "key": "slide.fold.s4",
+      "value": "这种弯曲叫做“褶皱”。"
+    },
+    {
+      "key": "story.s9.c1",
+      "value": "四个证据都齐了！该解谜了。"
+    },
+    {
+      "key": "story.s9.c2",
+      "value": "扭曲、倾斜、弯曲的地层，是大地动过的痕迹。"
+    },
+    {
+      "key": "story.s9.c3",
+      "value": "也就是说，学校西边的地下，地层发生了很大的移动。"
+    },
+    {
+      "key": "story.s9.c4",
+      "value": "只要会读地层，谁都能听到大地的声音。"
+    },
+    {
+      "key": "ui.dialog.slides",
+      "value": "点一下图，继续往下看"
     }
   ]
 }

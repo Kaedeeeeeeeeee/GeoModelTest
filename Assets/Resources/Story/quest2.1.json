@@ -5,49 +5,157 @@
     "dialogues": [
         {
             "speaker": "Dr.Kaede",
-            "text": "地層（ちそう）は、大地（だいち）の「日記（にっき）」なの。どうやってできるか、ならべてみて。",
             "speakerKey": "story.speaker.drkaede",
-            "textKey": "story.s2.l08",
+            "text": "地層（ちそう）は、大地（だいち）の「日記（にっき）」なの。どうやってできるか、見（み）てみよう。",
+            "textKey": "slide.rock.intro",
             "illustrationKey": "01_weathering_order",
             "interaction": {
-                "id": "card.weathering_order",
-                "type": "order",
-                "titleKey": "card.weathering.title",
-                "wrongKey": "card.weathering.wrong",
-                "doneKey": "card.weathering.done",
-                "items": [
+                "id": "slide.rock",
+                "type": "slides",
+                "image": "01_rock_to_strata/base",
+                "parts": [
                     {
-                        "id": "transport",
-                        "text": "運搬（うんぱん）",
-                        "textKey": "card.weathering.transport",
-                        "noteKey": "card.weathering.transport.note",
-                        "order": 3,
-                        "hintKey": "card.weathering.transport.hint"
+                        "id": "weather",
+                        "x": 0.18,
+                        "y": 0.86,
+                        "w": 0.16,
+                        "h": 0.2,
+                        "image": "01_rock_to_strata/weather"
                     },
                     {
-                        "id": "weathering",
-                        "text": "風化（ふうか）",
-                        "textKey": "card.weathering.weathering",
-                        "noteKey": "card.weathering.weathering.note",
-                        "order": 1
+                        "id": "crack",
+                        "x": 0.2,
+                        "y": 0.62,
+                        "w": 0.16,
+                        "h": 0.24,
+                        "image": "01_rock_to_strata/crack"
                     },
                     {
-                        "id": "deposition",
-                        "text": "堆積（たいせき）",
-                        "textKey": "card.weathering.deposition",
-                        "noteKey": "card.weathering.deposition.note",
-                        "order": 4,
-                        "hintKey": "card.weathering.deposition.hint"
+                        "id": "rocks",
+                        "x": 0.27,
+                        "y": 0.5,
+                        "w": 0.09,
+                        "h": 0.09,
+                        "image": "01_rock_to_strata/rocks"
                     },
                     {
-                        "id": "erosion",
-                        "text": "侵食（しんしょく）",
-                        "textKey": "card.weathering.erosion",
-                        "noteKey": "card.weathering.erosion.note",
-                        "order": 2,
-                        "hintKey": "card.weathering.erosion.hint"
+                        "id": "layer1",
+                        "x": 0.82,
+                        "y": 0.08,
+                        "w": 0.3,
+                        "h": 0.05,
+                        "color": "#8C7A5B"
+                    },
+                    {
+                        "id": "layer2",
+                        "x": 0.82,
+                        "y": 0.13,
+                        "w": 0.3,
+                        "h": 0.05,
+                        "color": "#C9B28A",
+                        "delay": 0.4
+                    },
+                    {
+                        "id": "layer3",
+                        "x": 0.82,
+                        "y": 0.18,
+                        "w": 0.3,
+                        "h": 0.05,
+                        "color": "#A7A08E",
+                        "delay": 0.8
+                    },
+                    {
+                        "id": "lbl1",
+                        "x": 0.14,
+                        "y": 0.94,
+                        "w": 0.18,
+                        "h": 0.1,
+                        "textKey": "slide.rock.lbl1"
+                    },
+                    {
+                        "id": "lbl2",
+                        "x": 0.38,
+                        "y": 0.94,
+                        "w": 0.18,
+                        "h": 0.1,
+                        "textKey": "slide.rock.lbl2"
+                    },
+                    {
+                        "id": "lbl3",
+                        "x": 0.62,
+                        "y": 0.94,
+                        "w": 0.18,
+                        "h": 0.1,
+                        "textKey": "slide.rock.lbl3"
+                    },
+                    {
+                        "id": "lbl4",
+                        "x": 0.86,
+                        "y": 0.94,
+                        "w": 0.18,
+                        "h": 0.1,
+                        "textKey": "slide.rock.lbl4"
                     }
-                ]
+                ],
+                "steps": [
+                    {
+                        "textKey": "slide.rock.s1",
+                        "show": [
+                            "weather",
+                            "crack",
+                            "lbl1"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.rock.s2",
+                        "show": [
+                            "rocks",
+                            "lbl2"
+                        ],
+                        "move": [
+                            {
+                                "id": "rocks",
+                                "x": 0.37,
+                                "y": 0.33
+                            }
+                        ]
+                    },
+                    {
+                        "textKey": "slide.rock.s3",
+                        "show": [
+                            "lbl3"
+                        ],
+                        "move": [
+                            {
+                                "id": "rocks",
+                                "x": 0.66,
+                                "y": 0.24
+                            }
+                        ]
+                    },
+                    {
+                        "textKey": "slide.rock.s4",
+                        "hide": [
+                            "rocks"
+                        ],
+                        "show": [
+                            "layer1",
+                            "layer2",
+                            "layer3",
+                            "lbl4"
+                        ]
+                    },
+                    {
+                        "textKey": "slide.rock.s5",
+                        "pulse": [
+                            "lbl1",
+                            "lbl2",
+                            "lbl3",
+                            "lbl4"
+                        ]
+                    }
+                ],
+                "doneKey": "slide.rock.done"
             }
         },
         {

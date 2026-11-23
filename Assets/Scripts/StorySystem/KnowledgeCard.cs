@@ -14,7 +14,8 @@ namespace StorySystem
     /// <summary>
     /// 知識インタラクションカード。確認問題の前に、図を見るだけでなく自分で並べる・分ける・タップする。
     /// type: "order"（正しい順にタップ）/ "sort"（カードを選んで箱をタップ）/ "columns"（柱状図の目的の層をタップ）/
-    /// "choose"（集めた証拠を見て結論をえらぶ。採点しない）。
+    /// "choose"（集めた証拠を見て結論をえらぶ。採点しない）/
+    /// "slides"（1 枚の図に部品が重なり、タップするたびに一歩ずつ変わる。正解・不正解はない）。
     /// </summary>
     [Serializable]
     public class StoryInteraction
@@ -31,6 +32,45 @@ namespace StorySystem
         public List<StoryInteractionBin> bins;
         public List<StoryInteractionColumn> columns;
         public List<StoryInteractionText> evidence; // choose: 上にならべる証拠カード
+        public string image;                        // slides: 土台の図 Resources/Story/Slides/<image>
+        public List<StoryInteractionPart> parts;    // slides: 図の上に重ねる部品
+        public List<StoryInteractionStep> steps;    // slides: タップごとの変化と Kaede の一言
+    }
+
+    /// <summary>slides の部品。位置と大きさは土台の図に対する割合（左下が 0,0）。</summary>
+    [Serializable]
+    public class StoryInteractionPart
+    {
+        public string id;
+        public string image;   // 透過 PNG（Resources/Story/Slides/<image>）。無ければ仮の枠
+        public string text;    // ラベル（ルビ可）
+        public string textKey;
+        public string color;   // "#RRGGBB" か "#RRGGBBAA"：画像も文字もない色の帯（地層など）
+        public float x;
+        public float y;
+        public float w;
+        public float h;
+        public float delay;    // 出てくるまでの秒数（同じ一歩の中で順に出す）
+        public float rot;      // 回転（度、反時計回り）：線や矢印をかたむける
+    }
+
+    [Serializable]
+    public class StoryInteractionStep
+    {
+        public string text;
+        public string textKey;           // Kaede の一言（配音ファイル名にもなる）
+        public List<string> show;        // 出す部品
+        public List<string> hide;        // 消す部品
+        public List<string> pulse;       // ぴょんと目立たせる部品
+        public List<StoryInteractionMove> move;
+    }
+
+    [Serializable]
+    public class StoryInteractionMove
+    {
+        public string id;
+        public float x;
+        public float y;
     }
 
     [Serializable]
@@ -91,6 +131,7 @@ namespace StorySystem
         public const string TypeSort = "sort";
         public const string TypeColumns = "columns";
         public const string TypeChoose = "choose";
+        public const string TypeSlides = "slides";
 
         public string Id;
         public string Type;
@@ -102,11 +143,31 @@ namespace StorySystem
         public readonly List<Bin> Bins = new List<Bin>();
         public readonly List<Column> Columns = new List<Column>();
         public readonly List<string> Evidence = new List<string>();
+        public string Image;
+        public readonly List<Part> Parts = new List<Part>();
+        public readonly List<Step> Steps = new List<Step>();
 
         public sealed class Item { public string Id; public string Text; public string Note; public string Bin; public int Order; public string Hint; public bool Correct; }
         public sealed class Bin { public string Id; public string Text; }
         public sealed class Column { public string Label; public readonly List<Layer> Layers = new List<Layer>(); }
         public sealed class Layer { public string Text; public Color Color; public float Size; public bool Target; public string Hint; }
+        public sealed class Part { public string Id; public string Image; public string Text; public Color? Color; public Rect Area; public float Delay; public float Rotation; }
+        public sealed class Step
+        {
+            public string Text;
+            public string Key; // 配音ファイル名
+            public readonly List<string> Show = new List<string>();
+            public readonly List<string> Hide = new List<string>();
+            public readonly List<string> Pulse = new List<string>();
+            public readonly List<KeyValuePair<string, Vector2>> Move = new List<KeyValuePair<string, Vector2>>();
+            public IEnumerable<string> Ids()
+            {
+                foreach (var id in Show) yield return id;
+                foreach (var id in Hide) yield return id;
+                foreach (var id in Pulse) yield return id;
+                foreach (var m in Move) yield return m.Key;
+            }
+        }
 
         /// <summary>カードとして遊べる内容があるか（JsonUtility は欠けたフィールドも空オブジェクトにするため）。</summary>
         public bool IsPlayable
@@ -131,6 +192,15 @@ namespace StorySystem
                             if (!c.Layers.Exists(l => l.Target)) return false;
                         return true;
                     case TypeChoose: return Items.Count >= 2 && Items.Exists(i => i.Correct);
+                    case TypeSlides:
+                        if (Steps.Count == 0) return false;
+                        foreach (var step in Steps)
+                        {
+                            if (string.IsNullOrEmpty(step.Text)) return false;
+                            foreach (var id in step.Ids())
+                                if (!Parts.Exists(p => p.Id == id)) return false;
+                        }
+                        return true;
                     default: return false;
                 }
             }
@@ -169,6 +239,39 @@ namespace StorySystem
             if (source.evidence != null)
                 foreach (var e in source.evidence)
                     if (e != null) card.Evidence.Add(resolve(e.text, e.textKey));
+            card.Image = string.IsNullOrWhiteSpace(source.image) ? null : source.image.Trim();
+            if (source.parts != null)
+                foreach (var p in source.parts)
+                {
+                    if (p == null || string.IsNullOrWhiteSpace(p.id)) continue;
+                    Color? partColor = null;
+                    if (!string.IsNullOrEmpty(p.color) && ColorUtility.TryParseHtmlString(p.color, out var parsed)) partColor = parsed;
+                    float w = p.w > 0f ? p.w : 0.15f, h = p.h > 0f ? p.h : 0.1f;
+                    card.Parts.Add(new Part
+                    {
+                        Id = p.id.Trim(),
+                        Image = string.IsNullOrWhiteSpace(p.image) ? null : p.image.Trim(),
+                        Text = resolve(p.text, p.textKey),
+                        Color = partColor,
+                        Area = new Rect(p.x - w / 2f, p.y - h / 2f, w, h),
+                        Delay = Mathf.Max(0f, p.delay),
+                        Rotation = p.rot
+                    });
+                }
+            if (source.steps != null)
+                foreach (var s in source.steps)
+                {
+                    if (s == null) continue;
+                    var step = new Step { Text = resolve(s.text, s.textKey), Key = s.textKey };
+                    if (s.show != null) step.Show.AddRange(s.show.FindAll(id => !string.IsNullOrWhiteSpace(id)));
+                    if (s.hide != null) step.Hide.AddRange(s.hide.FindAll(id => !string.IsNullOrWhiteSpace(id)));
+                    if (s.pulse != null) step.Pulse.AddRange(s.pulse.FindAll(id => !string.IsNullOrWhiteSpace(id)));
+                    if (s.move != null)
+                        foreach (var m in s.move)
+                            if (m != null && !string.IsNullOrWhiteSpace(m.id))
+                                step.Move.Add(new KeyValuePair<string, Vector2>(m.id.Trim(), new Vector2(m.x, m.y)));
+                    card.Steps.Add(step);
+                }
             if (source.columns != null)
                 foreach (var c in source.columns)
                 {
@@ -244,7 +347,7 @@ namespace StorySystem
 
         public static KnowledgeCardSession Build(Transform parent, KnowledgeCard card, Action<TMP_Text> style)
         {
-            if (parent == null || card == null || !card.IsPlayable) return null;
+            if (parent == null || card == null || !card.IsPlayable || card.Type == KnowledgeCard.TypeSlides) return null;
             var session = new KnowledgeCardSession(card, style);
             session.BuildFrame(parent);
             Active = session;

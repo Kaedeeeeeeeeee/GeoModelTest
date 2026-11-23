@@ -55,7 +55,6 @@ public class TeachingRouteContentTests
     [Serializable] private class FullSequence { public List<FullLine> dialogues; }
 
     [TestCase("quest3.4", "03_limestone", "q.rock_limestone")]
-    [TestCase("quest3.4", "04_chert", "q.rock_chert")]
     [TestCase("beat3", "06_facies_fossil", "q.fossil_facies_term")]
     [TestCase("beat3", "09_tuff_volcano", "q.tuff_volcano")]
     public void TeachingIllustration_ShouldAppearOnAnExplanationLineBeforeItsQuestion(string sequence, string illustration, string questionId)
@@ -87,13 +86,12 @@ public class TeachingRouteContentTests
     public void LabAnalysis_ShouldRevealCoralFossilInsideTheCoreBeforeTheCoralQuestion()
     {
         var lines = Load("beat3");
-        int found = lines.FindIndex(line => line.textKey == "story.beat3.l11");
+        int found = lines.FindIndex(line => line.textKey == "slide.coral.intro");
         int question = lines.FindIndex(line => line.questionId == "q.fossil_coral_env");
         Assert.That(found, Is.GreaterThanOrEqualTo(0).And.LessThan(question));
         Assert.AreEqual("05_coral_env", lines[found].illustrationKey);
-        string ja = Texts("ja-JP")["story.beat3.l11"];
-        StringAssert.Contains("サンゴ", ja);
-        StringAssert.Contains("岩芯", ja);
+        StringAssert.Contains("岩芯", Texts("ja-JP")["slide.coral.intro"]);
+        StringAssert.Contains("サンゴ", Texts("ja-JP")["slide.coral.s1"]);
     }
 
     [Test]
@@ -127,78 +125,92 @@ public class TeachingRouteContentTests
 
     [Serializable] private class CardSequence { public List<CardLine> dialogues; }
     [Serializable] private class CardLine { public string textKey; public string questionId; public string evidenceKey; public Card interaction; }
-    [Serializable] private class Card { public string id; public string type; public string titleKey; public string wrongKey; public string doneKey; public List<CardItem> items; public List<CardBin> bins; public List<CardColumn> columns; public List<CardText> evidence; }
-    [Serializable] private class CardItem { public string textKey; public string noteKey; public string hintKey; public string bin; public int order; public bool correct; }
-    [Serializable] private class CardText { public string textKey; }
-    [Serializable] private class CardBin { public string id; public string textKey; }
-    [Serializable] private class CardColumn { public string labelKey; public List<CardLayer> layers; }
-    [Serializable] private class CardLayer { public string textKey; public bool target; }
+    [Serializable] private class Card { public string id; public string type; public string doneKey; public List<CardPart> parts; public List<CardStep> steps; }
+    [Serializable] private class CardPart { public string id; public string textKey; public float x; public float y; public float w; public float h; }
+    [Serializable] private class CardStep { public string textKey; public List<string> show; public List<string> hide; public List<string> pulse; public List<CardMove> move; }
+    [Serializable] private class CardMove { public string id; public float x; public float y; }
 
-    [TestCase("quest2.1", "card.weathering_order", "order", "q.weathering_order")]
-    [TestCase("beat3", "card.fossil_tells", "sort", "q.fossil_facies_term")]
-    [TestCase("beat3", "card.era_line", "sort", "q.fossil_ammonite_era")]
-    [TestCase("beat4", "card.key_bed", "columns", "q.strata_tilt")]
-    public void KnowledgeCard_ShouldBePlayableBeforeItsQuestion(string sequence, string cardId, string type, string questionId)
+    // 2026-11-23: quiz-like cards (order, sort, columns) felt like extra tests. Teaching is now a tap-through
+    // slide show before each question: one picture, small changes per tap, no right or wrong.
+    [TestCase("quest2.1", "slide.rock", "q.weathering_order")]
+    [TestCase("quest3.4", "slide.grain", "q.rock_mudstone")]
+    [TestCase("quest3.4", "slide.lime", "q.rock_limestone")]
+    [TestCase("beat3", "slide.coral", "q.fossil_coral_env")]
+    [TestCase("beat3", "slide.facies", "q.fossil_facies_term")]
+    [TestCase("beat3", "slide.era", "q.fossil_ammonite_era")]
+    [TestCase("beat3", "slide.tuff", "q.tuff_volcano")]
+    [TestCase("beat4", "slide.keybed", "q.strata_tilt")]
+    [TestCase("beat4", "slide.fold", "q.fold_term")]
+    public void TeachingSlides_ShouldStepThroughBeforeTheirQuestion(string sequence, string slidesId, string questionId)
     {
         var lines = JsonUtility.FromJson<CardSequence>(Resources.Load<TextAsset>("Story/" + sequence).text).dialogues;
-        int card = lines.FindIndex(line => line.interaction != null && line.interaction.id == cardId);
+        int slides = lines.FindIndex(line => line.interaction != null && line.interaction.id == slidesId);
         int question = lines.FindIndex(line => line.questionId == questionId);
-        Assert.That(card, Is.GreaterThanOrEqualTo(0).And.LessThan(question), cardId + " comes before " + questionId);
-        var c = lines[card].interaction;
-        Assert.AreEqual(type, c.type);
-        var keys = new List<string> { lines[card].textKey, c.titleKey, c.wrongKey, c.doneKey };
-        if (type == "order")
+        Assert.That(slides, Is.GreaterThanOrEqualTo(0).And.LessThan(question), slidesId + " comes before " + questionId);
+        Assert.IsFalse(lines.Skip(slides + 1).Take(question - slides - 1).Any(line => line.interaction != null),
+            "No other card sits between the slides and the question.");
+        var c = lines[slides].interaction;
+        Assert.AreEqual("slides", c.type);
+        Assert.That(c.steps.Count, Is.InRange(3, 6), "A handful of taps, not a lecture.");
+        var ids = new HashSet<string>(c.parts.Select(p => p.id));
+        Assert.AreEqual(c.parts.Count, ids.Count, "Part ids are unique.");
+        foreach (var p in c.parts)
         {
-            CollectionAssert.AreEquivalent(Enumerable.Range(1, c.items.Count), c.items.Select(i => i.order), "Each step has one place in the order.");
-            CollectionAssert.AreNotEqual(Enumerable.Range(1, c.items.Count), c.items.Select(i => i.order), "Cards do not start already in order.");
+            Assert.That(p.w, Is.GreaterThan(0f), p.id);
+            Assert.That(p.h, Is.GreaterThan(0f), p.id);
+            Assert.That(p.x, Is.InRange(0f, 1f), p.id);
+            Assert.That(p.y, Is.InRange(0f, 1f), p.id);
         }
-        if (type == "sort")
+        var shown = new HashSet<string>();
+        foreach (var step in c.steps)
         {
-            Assert.GreaterOrEqual(c.bins.Count, 2);
-            foreach (var item in c.items) Assert.IsTrue(c.bins.Any(b => b.id == item.bin), item.textKey + " has a box.");
-            foreach (var bin in c.bins) Assert.IsTrue(c.items.Any(i => i.bin == bin.id), bin.id + " receives a card.");
-            keys.AddRange(c.bins.Select(b => b.textKey));
+            foreach (string id in (step.show ?? new List<string>()).Concat(step.hide ?? new List<string>())
+                         .Concat(step.pulse ?? new List<string>()).Concat((step.move ?? new List<CardMove>()).Select(m => m.id)))
+                Assert.IsTrue(ids.Contains(id), step.textKey + " uses part " + id);
+            shown.UnionWith(step.show ?? new List<string>());
         }
-        if (type == "columns")
-        {
-            Assert.GreaterOrEqual(c.columns.Count, 2);
-            foreach (var column in c.columns)
-            {
-                Assert.AreEqual(1, column.layers.Count(l => l.target), column.labelKey + " has one layer to tap.");
-                keys.Add(column.labelKey);
-                keys.AddRange(column.layers.Select(l => l.textKey));
-            }
-        }
-        if (c.items != null)
-            foreach (var item in c.items)
-                keys.AddRange(new[] { item.textKey, item.noteKey, item.hintKey }.Where(k => !string.IsNullOrEmpty(k)));
+        CollectionAssert.IsSubsetOf(ids, shown, "Every part appears at some step.");
+
+        var keys = new List<string> { lines[slides].textKey, c.doneKey };
+        keys.AddRange(c.steps.Select(s => s.textKey));
+        keys.AddRange(c.parts.Select(p => p.textKey));
+        var regex = new System.Text.RegularExpressions.Regex("（[ぁ-ゖー]+）");
         foreach (string language in new[] { "ja-JP", "zh-CN", "en-US" })
         {
             var texts = Texts(language);
-            foreach (string key in keys) Assert.IsTrue(texts.ContainsKey(key), key + " exists in " + language);
+            foreach (string key in keys.Where(k => !string.IsNullOrEmpty(k)))
+                Assert.IsTrue(texts.ContainsKey(key), key + " exists in " + language);
         }
+        foreach (var step in c.steps)
+            Assert.LessOrEqual(regex.Replace(Texts("ja-JP")[step.textKey], "").Length, 40, step.textKey + " fits one dialogue line.");
     }
 
     [Test]
-    public void MysteryEvidence_ShouldBeCollectedAlongTheRouteAndUsedInTheConclusion()
+    public void QuizLikeCards_ShouldBeGoneFromTheRoute()
+    {
+        foreach (string name in Route)
+            foreach (var line in JsonUtility.FromJson<CardSequence>(Resources.Load<TextAsset>("Story/" + name).text).dialogues)
+                if (line.interaction != null && !string.IsNullOrEmpty(line.interaction.type))
+                    Assert.AreEqual("slides", line.interaction.type, name + "/" + line.textKey);
+    }
+
+    [Test]
+    public void MysteryEvidence_ShouldBeCollectedAlongTheRouteAndExplainedAtTheEnd()
     {
         var collected = Route.SelectMany(name => JsonUtility.FromJson<CardSequence>(Resources.Load<TextAsset>("Story/" + name).text).dialogues)
             .Where(line => !string.IsNullOrEmpty(line.evidenceKey)).Select(line => line.evidenceKey).ToList();
         CollectionAssert.AreEqual(new[] { "evidence.e1", "evidence.e2", "evidence.e3", "evidence.e4" }, collected,
             "Four evidence cards are found in story order.");
+        // 2026-11-23: the unscored conclusion choice was removed; Dr.Kaede states the conclusion herself.
         var ending = JsonUtility.FromJson<CardSequence>(Resources.Load<TextAsset>("Story/beat4").text).dialogues;
-        var conclusion = ending.Single(line => line.interaction != null && line.interaction.id == "card.conclusion");
-        Assert.IsTrue(string.IsNullOrEmpty(conclusion.questionId), "The conclusion is not scored.");
-        Assert.AreEqual("choose", conclusion.interaction.type);
-        CollectionAssert.AreEqual(collected, conclusion.interaction.evidence.Select(e => e.textKey));
-        Assert.AreEqual(1, conclusion.interaction.items.Count(i => i.correct));
-        Assert.That(ending.IndexOf(conclusion), Is.GreaterThan(ending.FindIndex(line => line.questionId == "q.fold_term")));
+        int fold = ending.FindIndex(line => line.questionId == "q.fold_term");
+        var conclusion = new[] { "story.s9.c1", "story.s9.c2", "story.s9.c3", "story.s9.c4" };
+        CollectionAssert.AreEqual(conclusion, ending.Skip(fold + 1).Take(4).Select(line => line.textKey));
+        Assert.AreEqual("evidence.e4", ending[fold + 1].evidenceKey);
         foreach (string language in new[] { "ja-JP", "zh-CN", "en-US" })
         {
             var texts = Texts(language);
-            foreach (string key in collected.Concat(conclusion.interaction.items.SelectMany(i => new[] { i.textKey, i.hintKey }))
-                         .Concat(new[] { "story.evidence.got", conclusion.interaction.titleKey, conclusion.interaction.doneKey })
-                         .Where(k => !string.IsNullOrEmpty(k)))
+            foreach (string key in collected.Concat(conclusion).Concat(new[] { "story.evidence.got" }))
                 Assert.IsTrue(texts.ContainsKey(key), key + " exists in " + language);
             StringAssert.Contains("{0}", texts["story.evidence.got"]);
         }

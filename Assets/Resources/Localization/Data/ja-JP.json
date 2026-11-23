@@ -2553,10 +2553,6 @@
       "value": "そう。広（ひろ）い範囲（はんい）にすみ、短（みじか）い期間（きかん）だけ栄（さか）えた生物（せいぶつ）が示準化石（しじゅんかせき）になるよ。"
     },
     {
-      "key": "story.beat3.q5.teach1",
-      "value": "火山（かざん）がふん火（か）すると、火山灰（かざんばい）が遠（とお）くまでとんで、つもるんだ。"
-    },
-    {
       "key": "story.beat3.q5.prompt",
       "value": "柱状図（ちゅうじょうず）の中（なか）に、火山灰（かざんばい）がおし固（かた）まった「凝灰岩（ぎょうかいがん）」の層（そう）があるね。当時（とうじ）、何（なに）があった？"
     },
@@ -2781,16 +2777,8 @@
       "value": "広（ひろ）い範囲（はんい）にすんで、短（みじか）い期間（きかん）だけ栄（さか）えた生（い）きものの化石（かせき）は、年代（ねんだい）を決（き）めるのに役立（やくだ）つの。"
     },
     {
-      "key": "story.beat4.q1.teach1",
-      "value": "同（おな）じ層（そう）は目（め）じるしになる。これを「鍵層（かぎそう）」っていうの。"
-    },
-    {
       "key": "story.beat4.q1.teach2",
       "value": "その鍵層（かぎそう）が「ある方向（ほうこう）に行（い）くほど深（ふか）い位置（いち）」にあったら？　地層全体（ちそうぜんたい）がそっちに傾（かたむ）いて低（ひく）くなってる、ってこと。"
-    },
-    {
-      "key": "story.beat4.q2.teach1",
-      "value": "地層（ちそう）は、両（りょう）がわからおされると、波（なみ）のように曲（ま）がるんだ。"
     },
     {
       "key": "story.beat1.q1.teach1",
@@ -2799,18 +2787,6 @@
     {
       "key": "story.beat1.q1.teach2",
       "value": "風化（ふうか）はもろくなる、侵食（しんしょく）はけずられる、運搬（うんぱん）は運（はこ）ばれる、堆積（たいせき）は積（つ）もる。"
-    },
-    {
-      "key": "story.beat2.q1.teach1",
-      "value": "れき岩（がん）、砂岩（さがん）、泥岩（でいがん）は、主（おも）にふくまれる粒（つぶ）の大（おお）きさで分（わ）けるよ。れき岩は2mm以上（いじょう）、砂岩は約（やく）0.06～2mm、泥岩は約0.06mm未満（みまん）の粒を主にふくむ。"
-    },
-    {
-      "key": "story.beat2.q1.teach2",
-      "value": "それと、変（か）わり種（だね）が2つ。まず、うすい塩酸（えんさん）をかけると泡（あわ）が出（で）るのが「石灰岩（せっかいがん）」。"
-    },
-    {
-      "key": "story.beat2.q1.teach3",
-      "value": "もうひとつは「チャート」。とてもかたくて、くぎでこすっても傷（きず）がつかないんだ。"
     },
     {
       "key": "story.beat1.q1.fb_ng_b",
@@ -3973,10 +3949,6 @@
       "value": "これ、なに？　ただの石（いし）の模様（もよう）……じゃないよね？"
     },
     {
-      "key": "story.beat3.l11",
-      "value": "岩芯（がんしん）の中（なか）に「サンゴ」の化石（かせき）！　サンゴは今（いま）も、あたたかく浅（あさ）い海（うみ）にしかすめないの。"
-    },
-    {
       "key": "story.beat3.l12",
       "value": "さっきの石灰岩（せっかいがん）も、サンゴや貝（かい）がらが積（つ）もってできた岩石（がんせき）だったね。"
     },
@@ -4121,10 +4093,6 @@
       "value": "ありがとう！　じゃあまず、こっちに来（き）て！"
     },
     {
-      "key": "story.s2.l08",
-      "value": "地層（ちそう）は、大地（だいち）の「日記（にっき）」なの。どうやってできるか、ならべてみて。"
-    },
-    {
       "key": "story.s2.l10",
       "value": "よし、外（そと）へ行（い）こう！　道具（どうぐ）をひらいて、フェーズシフターをえらんでね。"
     },
@@ -4151,230 +4119,6 @@
     {
       "key": "card.common.columns",
       "value": "それぞれの柱状図（ちゅうじょうず）で、さがす層（そう）をタップしよう"
-    },
-    {
-      "key": "card.weathering.title",
-      "value": "岩（いわ）が地層（ちそう）になるまで"
-    },
-    {
-      "key": "card.weathering.weathering",
-      "value": "風化（ふうか）"
-    },
-    {
-      "key": "card.weathering.weathering.note",
-      "value": "岩（いわ）がもろく、ぼろぼろになる"
-    },
-    {
-      "key": "card.weathering.erosion",
-      "value": "侵食（しんしょく）"
-    },
-    {
-      "key": "card.weathering.erosion.note",
-      "value": "水（みず）や風（かぜ）でけずられる"
-    },
-    {
-      "key": "card.weathering.erosion.hint",
-      "value": "けずられる前（まえ）に、岩（いわ）がもろくなるよ。"
-    },
-    {
-      "key": "card.weathering.transport",
-      "value": "運搬（うんぱん）"
-    },
-    {
-      "key": "card.weathering.transport.note",
-      "value": "川（かわ）の水（みず）に運（はこ）ばれる"
-    },
-    {
-      "key": "card.weathering.transport.hint",
-      "value": "運（はこ）ばれる前（まえ）に、岩（いわ）がくだけて、けずられないとね。"
-    },
-    {
-      "key": "card.weathering.deposition",
-      "value": "堆積（たいせき）"
-    },
-    {
-      "key": "card.weathering.deposition.note",
-      "value": "海（うみ）や湖（みずうみ）の底（そこ）につもる"
-    },
-    {
-      "key": "card.weathering.deposition.hint",
-      "value": "つもるのは、いちばん最後（さいご）だよ。"
-    },
-    {
-      "key": "card.weathering.wrong",
-      "value": "その順番（じゅんばん）じゃないみたい。"
-    },
-    {
-      "key": "card.weathering.done",
-      "value": "できた！　もろくなる→けずられる→運（はこ）ばれる→つもる。こうして地層（ちそう）ができるんだ。"
-    },
-    {
-      "key": "story.card.fossil_tells.line",
-      "value": "化石（かせき）には、教（おし）えてくれることが2しゅるいあるの。箱（はこ）に分（わ）けてみて！"
-    },
-    {
-      "key": "card.fossil_tells.title",
-      "value": "化石（かせき）が教（おし）えてくれること"
-    },
-    {
-      "key": "card.fossil_tells.bin.place",
-      "value": "「すんでいた場所（ばしょ）」がわかる"
-    },
-    {
-      "key": "card.fossil_tells.bin.era",
-      "value": "「いつの時代（じだい）」かがわかる"
-    },
-    {
-      "key": "card.fossil_tells.coral",
-      "value": "サンゴ"
-    },
-    {
-      "key": "card.fossil_tells.coral.note",
-      "value": "あたたかく浅（あさ）い海（うみ）にだけすむ"
-    },
-    {
-      "key": "card.fossil_tells.clam",
-      "value": "シジミ"
-    },
-    {
-      "key": "card.fossil_tells.clam.note",
-      "value": "川（かわ）と海（うみ）の水（みず）がまじる所（ところ）にすむ"
-    },
-    {
-      "key": "card.fossil_tells.ammonite",
-      "value": "アンモナイト"
-    },
-    {
-      "key": "card.fossil_tells.ammonite.note",
-      "value": "ある時代（じだい）にだけ、世界中（せかいじゅう）の海（うみ）でさかえた"
-    },
-    {
-      "key": "card.fossil_tells.trilobite",
-      "value": "三葉虫（さんようちゅう）"
-    },
-    {
-      "key": "card.fossil_tells.trilobite.note",
-      "value": "ある時代（じだい）にだけ、世界中（せかいじゅう）の海（うみ）にいた"
-    },
-    {
-      "key": "card.fossil_tells.hint.place",
-      "value": "この生（い）きものは、すめる場所（ばしょ）が決（き）まっているよ。"
-    },
-    {
-      "key": "card.fossil_tells.hint.era",
-      "value": "この生（い）きものは、ある時代（じだい）にだけいたよ。"
-    },
-    {
-      "key": "card.fossil_tells.wrong",
-      "value": "その箱（はこ）じゃないみたい。"
-    },
-    {
-      "key": "card.fossil_tells.done",
-      "value": "すむ場所（ばしょ）がわかるのが「示相化石（しそうかせき）」、時代（じだい）がわかるのが「示準化石（しじゅんかせき）」だよ。"
-    },
-    {
-      "key": "story.card.era_line.line",
-      "value": "次（つぎ）の層（そう）からは……アンモナイト！　地球（ちきゅう）の歴史（れきし）の線（せん）に、のせてみよう。"
-    },
-    {
-      "key": "card.era_line.title",
-      "value": "地球（ちきゅう）の歴史（れきし）の線（せん）"
-    },
-    {
-      "key": "card.era_line.bin.paleo",
-      "value": "古生代（こせいだい）（古（ふる）い）"
-    },
-    {
-      "key": "card.era_line.bin.meso",
-      "value": "中生代（ちゅうせいだい）"
-    },
-    {
-      "key": "card.era_line.bin.ceno",
-      "value": "新生代（しんせいだい）（新（あたら）しい）"
-    },
-    {
-      "key": "card.era_line.dinosaur",
-      "value": "恐竜（きょうりゅう）"
-    },
-    {
-      "key": "card.era_line.dinosaur.hint",
-      "value": "恐竜（きょうりゅう）がさかえたのは、まん中（なか）の時代（じだい）だよ。"
-    },
-    {
-      "key": "card.era_line.naumann",
-      "value": "ナウマンゾウ"
-    },
-    {
-      "key": "card.era_line.naumann.hint",
-      "value": "ナウマンゾウは、わりと最近（さいきん）まで日本（にほん）にいたゾウだよ。"
-    },
-    {
-      "key": "card.era_line.ammonite",
-      "value": "アンモナイト"
-    },
-    {
-      "key": "card.era_line.ammonite.hint",
-      "value": "アンモナイトは、恐竜（きょうりゅう）と同（おな）じ時代（じだい）にさかえたよ。"
-    },
-    {
-      "key": "card.era_line.trilobite",
-      "value": "三葉虫（さんようちゅう）"
-    },
-    {
-      "key": "card.era_line.trilobite.hint",
-      "value": "三葉虫（さんようちゅう）は、恐竜（きょうりゅう）よりずっと前（まえ）にいたよ。"
-    },
-    {
-      "key": "card.era_line.wrong",
-      "value": "その時代（じだい）じゃないみたい。"
-    },
-    {
-      "key": "card.era_line.done",
-      "value": "古（ふる）い順（じゅん）に、古生代（こせいだい）→中生代（ちゅうせいだい）→新生代（しんせいだい）。化石（かせき）は、地層（ちそう）の時代（じだい）を教（おし）えてくれるんだ。"
-    },
-    {
-      "key": "story.card.key_bed.line",
-      "value": "A・B・Cの柱状図（ちゅうじょうず）だよ。火山灰（かざんばい）の層（そう）を、それぞれタップしてみて。"
-    },
-    {
-      "key": "card.key_bed.title",
-      "value": "3つの地点（ちてん）の柱状図（ちゅうじょうず）"
-    },
-    {
-      "key": "card.key_bed.col.a",
-      "value": "A（西（にし））"
-    },
-    {
-      "key": "card.key_bed.col.b",
-      "value": "B"
-    },
-    {
-      "key": "card.key_bed.col.c",
-      "value": "C（東（ひがし））"
-    },
-    {
-      "key": "card.key_bed.sand",
-      "value": "砂岩（さがん）"
-    },
-    {
-      "key": "card.key_bed.mud",
-      "value": "泥岩（でいがん）"
-    },
-    {
-      "key": "card.key_bed.tuff",
-      "value": "火山灰（かざんばい）"
-    },
-    {
-      "key": "card.key_bed.gravel",
-      "value": "れき岩（がん）"
-    },
-    {
-      "key": "card.key_bed.wrong",
-      "value": "それは火山灰（かざんばい）の層（そう）じゃないよ。白（しろ）っぽい層（そう）をさがしてみて。"
-    },
-    {
-      "key": "card.key_bed.done",
-      "value": "つないだら、ななめの線（せん）になった！　同（おな）じ層（そう）は、くらべる目（め）じるしになるんだ。"
     },
     {
       "key": "story.evidence.got",
@@ -4465,42 +4209,6 @@
       "value": "余震（よしん）だ……急（いそ）ごう。最後（さいご）は、3か所（しょ）の柱状図（ちゅうじょうず）をくらべるよ！"
     },
     {
-      "key": "card.conclusion.title",
-      "value": "なぞとき：地面（じめん）の下（した）で何（なに）があった？"
-    },
-    {
-      "key": "card.conclusion.weather",
-      "value": "地震（じしん）は、空（そら）の天気（てんき）のせいだった"
-    },
-    {
-      "key": "card.conclusion.weather.hint",
-      "value": "証拠（しょうこ）は、どれも地面（じめん）の中（なか）のことだよ。"
-    },
-    {
-      "key": "card.conclusion.moved",
-      "value": "学校（がっこう）の西（にし）がわの地下（ちか）で、地層（ちそう）が大（おお）きく動（うご）いた"
-    },
-    {
-      "key": "card.conclusion.still",
-      "value": "地層（ちそう）は、昔（むかし）から一度（いちど）も動（うご）いていない"
-    },
-    {
-      "key": "card.conclusion.still.hint",
-      "value": "かたむいて曲（ま）がった地層（ちそう）は、動（うご）いたしるしだよ。"
-    },
-    {
-      "key": "card.conclusion.wrong",
-      "value": "証拠（しょうこ）カードを、もう一度（いちど）見（み）てみよう。"
-    },
-    {
-      "key": "card.conclusion.done",
-      "value": "そのとおり！　地層（ちそう）を読（よ）めば、だれでも大地（だいち）の声（こえ）が聞（き）けるんだ。"
-    },
-    {
-      "key": "story.s9.l06",
-      "value": "さあ、なぞときの時間（じかん）！　集（あつ）めた証拠（しょうこ）から、何（なに）がわかる？"
-    },
-    {
       "key": "story.s9.l09",
       "value": "調（しら）べたことは、町（まち）の防災（ぼうさい）に役立（やくだ）てよう。報告書（ほうこくしょ）にまとめたら、おかしパーティーね！"
     },
@@ -4527,6 +4235,366 @@
     {
       "key": "ui.idle.task",
       "value": "Dr.Kaede「左上の「調査の進み具合」を見てみよう！」"
+    },
+    {
+      "key": "slide.rock.lbl1",
+      "value": "風化（ふうか）"
+    },
+    {
+      "key": "slide.rock.lbl2",
+      "value": "侵食（しんしょく）"
+    },
+    {
+      "key": "slide.rock.lbl3",
+      "value": "運搬（うんぱん）"
+    },
+    {
+      "key": "slide.rock.lbl4",
+      "value": "堆積（たいせき）"
+    },
+    {
+      "key": "slide.rock.intro",
+      "value": "地層（ちそう）は、大地（だいち）の「日記（にっき）」なの。どうやってできるか、見（み）てみよう。"
+    },
+    {
+      "key": "slide.rock.s1",
+      "value": "山（やま）の岩（いわ）は、雨（あめ）や風（かぜ）、暑（あつ）さ寒（さむ）さで、もろくなる。これが「風化（ふうか）」。"
+    },
+    {
+      "key": "slide.rock.s2",
+      "value": "もろくなった岩（いわ）は、雨（あめ）や川（かわ）の水（みず）にけずられる。これが「侵食（しんしょく）」。"
+    },
+    {
+      "key": "slide.rock.s3",
+      "value": "けずられた石（いし）や砂（すな）は、川（かわ）に運（はこ）ばれていく。これが「運搬（うんぱん）」。"
+    },
+    {
+      "key": "slide.rock.s4",
+      "value": "海（うみ）の底（そこ）にしずんで、つもっていく。これが「堆積（たいせき）」。"
+    },
+    {
+      "key": "slide.rock.s5",
+      "value": "つもったものが、長（なが）い時間（じかん）をかけて重（かさ）なって、地層（ちそう）になるの。"
+    },
+    {
+      "key": "slide.rock.done",
+      "value": "風化（ふうか）→侵食（しんしょく）→運搬（うんぱん）→堆積（たいせき）。この順番（じゅんばん）、覚（おぼ）えておいてね！"
+    },
+    {
+      "key": "slide.grain.lbl_gravel",
+      "value": "れき　2mm以上（いじょう）"
+    },
+    {
+      "key": "slide.grain.lbl_sand",
+      "value": "砂（すな）　0.06〜2mm"
+    },
+    {
+      "key": "slide.grain.lbl_mud",
+      "value": "泥（どろ）　0.06mm未満（みまん）"
+    },
+    {
+      "key": "slide.grain.rk_gravel",
+      "value": "れき岩（がん）"
+    },
+    {
+      "key": "slide.grain.rk_sand",
+      "value": "砂岩（さがん）"
+    },
+    {
+      "key": "slide.grain.rk_mud",
+      "value": "泥岩（でいがん）"
+    },
+    {
+      "key": "slide.grain.intro",
+      "value": "れき岩（がん）、砂岩（さがん）、泥岩（でいがん）は、つぶの大（おお）きさで分（わ）けるよ。"
+    },
+    {
+      "key": "slide.grain.s1",
+      "value": "川（かわ）が運（はこ）んできたつぶには、大（おお）きいのも小（ちい）さいのもある。"
+    },
+    {
+      "key": "slide.grain.s2",
+      "value": "重（おも）いれきは、岸（きし）の近（ちか）くですぐしずむ。"
+    },
+    {
+      "key": "slide.grain.s3",
+      "value": "砂（すな）は、少（すこ）し沖（おき）まで運（はこ）ばれる。"
+    },
+    {
+      "key": "slide.grain.s4",
+      "value": "いちばん細（こま）かい泥（どろ）は、遠（とお）くの深（ふか）い海（うみ）まで。"
+    },
+    {
+      "key": "slide.grain.s5",
+      "value": "かたまると、れき岩（がん）・砂岩（さがん）・泥岩（でいがん）になるの。"
+    },
+    {
+      "key": "slide.lime.lbl_lime",
+      "value": "石灰岩（せっかいがん）"
+    },
+    {
+      "key": "slide.lime.lbl_chert",
+      "value": "チャート"
+    },
+    {
+      "key": "slide.lime.intro",
+      "value": "それと、変（か）わり種（だね）の岩（いわ）を2つ見（み）てみよう。"
+    },
+    {
+      "key": "slide.lime.s1",
+      "value": "うすい塩酸（えんさん）をかけてみるよ。"
+    },
+    {
+      "key": "slide.lime.s2",
+      "value": "あわが出（で）た！　これが「石灰岩（せっかいがん）」。"
+    },
+    {
+      "key": "slide.lime.s3",
+      "value": "石灰岩（せっかいがん）は、貝（かい）やサンゴのからがつもってできた岩（いわ）なの。"
+    },
+    {
+      "key": "slide.lime.s4",
+      "value": "こっちは、くぎでこすってみる。"
+    },
+    {
+      "key": "slide.lime.s5",
+      "value": "傷（きず）がつかない！　とてもかたい「チャート」。"
+    },
+    {
+      "key": "slide.coral.lbl_warm",
+      "value": "あたたかい"
+    },
+    {
+      "key": "slide.coral.lbl_shallow",
+      "value": "浅（あさ）い"
+    },
+    {
+      "key": "slide.coral.arrow",
+      "value": "→"
+    },
+    {
+      "key": "slide.coral.intro",
+      "value": "岩芯（がんしん）の中（なか）を、よく見（み）てみよう。"
+    },
+    {
+      "key": "slide.coral.s1",
+      "value": "サンゴの化石（かせき）が入（はい）ってる！"
+    },
+    {
+      "key": "slide.coral.s2",
+      "value": "今（いま）のサンゴがすんでいるのは……"
+    },
+    {
+      "key": "slide.coral.s3",
+      "value": "あたたかくて、浅（あさ）い海（うみ）だけ。"
+    },
+    {
+      "key": "slide.coral.s4",
+      "value": "この化石（かせき）が、昔（むかし）のようすを教（おし）えてくれるの。"
+    },
+    {
+      "key": "slide.facies.lbl_shijimi",
+      "value": "川（かわ）と海（うみ）がまじる所（ところ）"
+    },
+    {
+      "key": "slide.facies.lbl_coral",
+      "value": "あたたかく浅（あさ）い海（うみ）"
+    },
+    {
+      "key": "slide.facies.term",
+      "value": "示相化石（しそうかせき）"
+    },
+    {
+      "key": "slide.facies.intro",
+      "value": "化石（かせき）は、昔（むかし）のことを教（おし）えてくれるの。"
+    },
+    {
+      "key": "slide.facies.s1",
+      "value": "サンゴは、あたたかく浅（あさ）い海（うみ）にすむ。"
+    },
+    {
+      "key": "slide.facies.s2",
+      "value": "シジミは、川（かわ）と海（うみ）がまじる所（ところ）にすむ。"
+    },
+    {
+      "key": "slide.facies.s3",
+      "value": "すんでいた場所（ばしょ）を教（おし）えてくれる化石（かせき）を「示相化石（しそうかせき）」というの。"
+    },
+    {
+      "key": "slide.era.lbl_paleo",
+      "value": "古生代（こせいだい）"
+    },
+    {
+      "key": "slide.era.lbl_meso",
+      "value": "中生代（ちゅうせいだい）"
+    },
+    {
+      "key": "slide.era.lbl_ceno",
+      "value": "新生代（しんせいだい）"
+    },
+    {
+      "key": "slide.era.old",
+      "value": "古（ふる）い"
+    },
+    {
+      "key": "slide.era.new",
+      "value": "新（あたら）しい"
+    },
+    {
+      "key": "slide.era.term",
+      "value": "示準化石（しじゅんかせき）"
+    },
+    {
+      "key": "slide.era.intro",
+      "value": "次（つぎ）の層（そう）からは……アンモナイト！　地球（ちきゅう）の歴史（れきし）を見（み）てみよう。"
+    },
+    {
+      "key": "slide.era.s1",
+      "value": "地球（ちきゅう）の歴史（れきし）は、大（おお）きく3つに分（わ）けられる。"
+    },
+    {
+      "key": "slide.era.s2",
+      "value": "三葉虫（さんようちゅう）は、古生代（こせいだい）にだけいた。"
+    },
+    {
+      "key": "slide.era.s3",
+      "value": "アンモナイトときょうりゅうは、中生代（ちゅうせいだい）。"
+    },
+    {
+      "key": "slide.era.s4",
+      "value": "ナウマンゾウは、新生代（しんせいだい）。"
+    },
+    {
+      "key": "slide.era.s5",
+      "value": "化石（かせき）を見（み）れば、層（そう）ができた時代（じだい）がわかるんだ。"
+    },
+    {
+      "key": "slide.era.s6",
+      "value": "時代（じだい）を教（おし）えてくれる化石（かせき）を「示準化石（しじゅんかせき）」というの。"
+    },
+    {
+      "key": "slide.tuff.term",
+      "value": "凝灰岩（ぎょうかいがん）"
+    },
+    {
+      "key": "slide.tuff.intro",
+      "value": "火山灰（かざんばい）が地層（ちそう）になるまでを見（み）てみよう。"
+    },
+    {
+      "key": "slide.tuff.s1",
+      "value": "火山（かざん）がふん火（か）した！"
+    },
+    {
+      "key": "slide.tuff.s2",
+      "value": "火山灰（かざんばい）は、風（かぜ）にのって遠（とお）くまでとぶ。"
+    },
+    {
+      "key": "slide.tuff.s3",
+      "value": "そして、地面（じめん）にうすくつもる。"
+    },
+    {
+      "key": "slide.tuff.s4",
+      "value": "うまっておし固（かた）まると、「凝灰岩（ぎょうかいがん）」になるの。"
+    },
+    {
+      "key": "slide.keybed.lbl_A",
+      "value": "A"
+    },
+    {
+      "key": "slide.keybed.lbl_B",
+      "value": "B"
+    },
+    {
+      "key": "slide.keybed.lbl_C",
+      "value": "C"
+    },
+    {
+      "key": "slide.keybed.west",
+      "value": "西（にし）"
+    },
+    {
+      "key": "slide.keybed.east",
+      "value": "東（ひがし）"
+    },
+    {
+      "key": "slide.keybed.term",
+      "value": "鍵層（かぎそう）"
+    },
+    {
+      "key": "slide.keybed.intro",
+      "value": "柱状図（ちゅうじょうず）で、地層（ちそう）のつながりを見（み）てみよう。"
+    },
+    {
+      "key": "slide.keybed.s1",
+      "value": "西（にし）から東（ひがし）へ、A・B・Cの地点（ちてん）の柱状図（ちゅうじょうず）だよ。"
+    },
+    {
+      "key": "slide.keybed.s2",
+      "value": "まず、Aの火山灰（かざんばい）の層（そう）。"
+    },
+    {
+      "key": "slide.keybed.s3",
+      "value": "同（おな）じ層（そう）が、BにもCにもある。"
+    },
+    {
+      "key": "slide.keybed.s4",
+      "value": "同（おな）じ層（そう）は目（め）じるしになる。これが「鍵層（かぎそう）」。"
+    },
+    {
+      "key": "slide.keybed.s5",
+      "value": "つなぐと、どっちが低（ひく）いか見（み）えてくるね。"
+    },
+    {
+      "key": "slide.fold.push_l",
+      "value": "→"
+    },
+    {
+      "key": "slide.fold.push_r",
+      "value": "←"
+    },
+    {
+      "key": "slide.fold.term",
+      "value": "しゅう曲（きょく）"
+    },
+    {
+      "key": "slide.fold.intro",
+      "value": "地層（ちそう）が曲（ま）がるのは、どうしてだろう？"
+    },
+    {
+      "key": "slide.fold.s1",
+      "value": "地層（ちそう）は、はじめは平（たい）らにつもる。"
+    },
+    {
+      "key": "slide.fold.s2",
+      "value": "大地（だいち）の力（ちから）で、両（りょう）がわからおされると……"
+    },
+    {
+      "key": "slide.fold.s3",
+      "value": "波（なみ）のように曲（ま）がる！"
+    },
+    {
+      "key": "slide.fold.s4",
+      "value": "この曲（ま）がりを「しゅう曲（きょく）」というの。"
+    },
+    {
+      "key": "story.s9.c1",
+      "value": "4つの証拠（しょうこ）がそろった！　なぞときの時間（じかん）だよ。"
+    },
+    {
+      "key": "story.s9.c2",
+      "value": "ゆがんだり、かたむいて曲（ま）がったりした地層（ちそう）は、大地（だいち）が動（うご）いたしるし。"
+    },
+    {
+      "key": "story.s9.c3",
+      "value": "つまり、学校（がっこう）の西（にし）がわの地下（ちか）で、地層（ちそう）が大（おお）きく動（うご）いたの。"
+    },
+    {
+      "key": "story.s9.c4",
+      "value": "地層（ちそう）を読（よ）めば、だれでも大地（だいち）の声（こえ）が聞（き）けるんだ。"
+    },
+    {
+      "key": "ui.dialog.slides",
+      "value": "図（ず）をタップして、すすもう"
     }
   ]
 }

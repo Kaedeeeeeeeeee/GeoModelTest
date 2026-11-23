@@ -2569,10 +2569,6 @@
       "value": "Yes. Organisms that lived widely but thrived only briefly make good index fossils."
     },
     {
-      "key": "story.beat3.q5.teach1",
-      "value": "When a volcano erupts, its ash flies far and settles in layers."
-    },
-    {
       "key": "story.beat3.q5.prompt",
       "value": "The column has a layer of tuff, formed from compacted volcanic ash. What happened back then?"
     },
@@ -2797,16 +2793,8 @@
       "value": "Organisms that lived widely but only for a short time make great year-markers."
     },
     {
-      "key": "story.beat4.q1.teach1",
-      "value": "The same layer works as a marker. We call it a \"key bed.\""
-    },
-    {
       "key": "story.beat4.q1.teach2",
       "value": "If the key bed gets deeper as you go in some direction? That means the whole strata is tilting downward in that direction."
-    },
-    {
-      "key": "story.beat4.q2.teach1",
-      "value": "When strata are pushed from both sides, they bend like waves."
     },
     {
       "key": "story.beat1.q1.teach1",
@@ -2815,18 +2803,6 @@
     {
       "key": "story.beat1.q1.teach2",
       "value": "Weathering = becoming brittle, erosion = being worn away, transport = being carried, deposition = piling up."
-    },
-    {
-      "key": "story.beat2.q1.teach1",
-      "value": "Sedimentary rocks are named by grain size. Largest to smallest: conglomerate (>2mm), sandstone, mudstone (<0.06mm)."
-    },
-    {
-      "key": "story.beat2.q1.teach2",
-      "value": "Plus two special ones. First, limestone fizzes when you drop dilute acid on it."
-    },
-    {
-      "key": "story.beat2.q1.teach3",
-      "value": "The other is chert — so hard not even a nail can scratch it."
     },
     {
       "key": "story.beat1.q1.fb_ng_b",
@@ -3793,10 +3769,6 @@
       "value": "What’s this? It’s not just a pattern in the rock... is it?"
     },
     {
-      "key": "story.beat3.l11",
-      "value": "A coral fossil inside the core! Even today, coral lives only in warm, shallow seas."
-    },
-    {
       "key": "story.beat3.l12",
       "value": "Remember the limestone? It also formed from piled-up coral and shells."
     },
@@ -3953,10 +3925,6 @@
       "value": "Thanks! First, come over here!"
     },
     {
-      "key": "story.s2.l08",
-      "value": "Strata are the earth's diary. How do they form? Put the steps in order."
-    },
-    {
       "key": "story.s2.l10",
       "value": "Let's head outside! Open your tools and pick the Phase Shifter."
     },
@@ -3983,230 +3951,6 @@
     {
       "key": "card.common.columns",
       "value": "In each column, tap the layer you are looking for"
-    },
-    {
-      "key": "card.weathering.title",
-      "value": "From rock to strata"
-    },
-    {
-      "key": "card.weathering.weathering",
-      "value": "Weathering"
-    },
-    {
-      "key": "card.weathering.weathering.note",
-      "value": "Rock gets weak and crumbles"
-    },
-    {
-      "key": "card.weathering.erosion",
-      "value": "Erosion"
-    },
-    {
-      "key": "card.weathering.erosion.note",
-      "value": "Worn away by water and wind"
-    },
-    {
-      "key": "card.weathering.erosion.hint",
-      "value": "Rock gets weak before it wears away."
-    },
-    {
-      "key": "card.weathering.transport",
-      "value": "Transport"
-    },
-    {
-      "key": "card.weathering.transport.note",
-      "value": "Carried away by river water"
-    },
-    {
-      "key": "card.weathering.transport.hint",
-      "value": "Before it can be carried, the rock has to crumble and wear away."
-    },
-    {
-      "key": "card.weathering.deposition",
-      "value": "Deposition"
-    },
-    {
-      "key": "card.weathering.deposition.note",
-      "value": "Settles on the sea or lake floor"
-    },
-    {
-      "key": "card.weathering.deposition.hint",
-      "value": "Settling comes last."
-    },
-    {
-      "key": "card.weathering.wrong",
-      "value": "Not quite that order."
-    },
-    {
-      "key": "card.weathering.done",
-      "value": "Done! Crumble, wear away, get carried, settle. That's how strata form."
-    },
-    {
-      "key": "story.card.fossil_tells.line",
-      "value": "Fossils can tell us two kinds of things. Sort them into the boxes!"
-    },
-    {
-      "key": "card.fossil_tells.title",
-      "value": "What fossils tell us"
-    },
-    {
-      "key": "card.fossil_tells.bin.place",
-      "value": "Tells us WHERE it lived"
-    },
-    {
-      "key": "card.fossil_tells.bin.era",
-      "value": "Tells us WHEN it lived"
-    },
-    {
-      "key": "card.fossil_tells.coral",
-      "value": "Coral"
-    },
-    {
-      "key": "card.fossil_tells.coral.note",
-      "value": "Lives only in warm, shallow seas"
-    },
-    {
-      "key": "card.fossil_tells.clam",
-      "value": "Corbicula clam"
-    },
-    {
-      "key": "card.fossil_tells.clam.note",
-      "value": "Lives where river and sea water mix"
-    },
-    {
-      "key": "card.fossil_tells.ammonite",
-      "value": "Ammonite"
-    },
-    {
-      "key": "card.fossil_tells.ammonite.note",
-      "value": "Thrived in seas worldwide, but only in one era"
-    },
-    {
-      "key": "card.fossil_tells.trilobite",
-      "value": "Trilobite"
-    },
-    {
-      "key": "card.fossil_tells.trilobite.note",
-      "value": "Lived in seas worldwide, but only in one era"
-    },
-    {
-      "key": "card.fossil_tells.hint.place",
-      "value": "This creature can only live in certain places."
-    },
-    {
-      "key": "card.fossil_tells.hint.era",
-      "value": "This creature lived only in one era."
-    },
-    {
-      "key": "card.fossil_tells.wrong",
-      "value": "Not that box."
-    },
-    {
-      "key": "card.fossil_tells.done",
-      "value": "Fossils that show the environment are \"facies fossils\"; fossils that show the era are \"index fossils\"."
-    },
-    {
-      "key": "story.card.era_line.line",
-      "value": "The next layer has... an ammonite! Let's place fossils on Earth's timeline."
-    },
-    {
-      "key": "card.era_line.title",
-      "value": "Earth's timeline"
-    },
-    {
-      "key": "card.era_line.bin.paleo",
-      "value": "Paleozoic (older)"
-    },
-    {
-      "key": "card.era_line.bin.meso",
-      "value": "Mesozoic"
-    },
-    {
-      "key": "card.era_line.bin.ceno",
-      "value": "Cenozoic (newer)"
-    },
-    {
-      "key": "card.era_line.dinosaur",
-      "value": "Dinosaur"
-    },
-    {
-      "key": "card.era_line.dinosaur.hint",
-      "value": "Dinosaurs thrived in the middle era."
-    },
-    {
-      "key": "card.era_line.naumann",
-      "value": "Naumann elephant"
-    },
-    {
-      "key": "card.era_line.naumann.hint",
-      "value": "This elephant lived in Japan until fairly recently."
-    },
-    {
-      "key": "card.era_line.ammonite",
-      "value": "Ammonite"
-    },
-    {
-      "key": "card.era_line.ammonite.hint",
-      "value": "Ammonites thrived in the same era as dinosaurs."
-    },
-    {
-      "key": "card.era_line.trilobite",
-      "value": "Trilobite"
-    },
-    {
-      "key": "card.era_line.trilobite.hint",
-      "value": "Trilobites lived long before the dinosaurs."
-    },
-    {
-      "key": "card.era_line.wrong",
-      "value": "Not that era."
-    },
-    {
-      "key": "card.era_line.done",
-      "value": "From oldest: Paleozoic, Mesozoic, Cenozoic. Fossils tell us how old a layer is."
-    },
-    {
-      "key": "story.card.key_bed.line",
-      "value": "Here are columns A, B and C. Tap the volcanic ash layer in each."
-    },
-    {
-      "key": "card.key_bed.title",
-      "value": "Columns at three sites"
-    },
-    {
-      "key": "card.key_bed.col.a",
-      "value": "A (west)"
-    },
-    {
-      "key": "card.key_bed.col.b",
-      "value": "B"
-    },
-    {
-      "key": "card.key_bed.col.c",
-      "value": "C (east)"
-    },
-    {
-      "key": "card.key_bed.sand",
-      "value": "Sandstone"
-    },
-    {
-      "key": "card.key_bed.mud",
-      "value": "Mudstone"
-    },
-    {
-      "key": "card.key_bed.tuff",
-      "value": "Volcanic ash"
-    },
-    {
-      "key": "card.key_bed.gravel",
-      "value": "Conglomerate"
-    },
-    {
-      "key": "card.key_bed.wrong",
-      "value": "That's not the ash layer. Look for the whitish one."
-    },
-    {
-      "key": "card.key_bed.done",
-      "value": "Connected, they make a slanted line! The same layer is a marker for comparing sites."
     },
     {
       "key": "story.evidence.got",
@@ -4297,42 +4041,6 @@
       "value": "An aftershock... Let's hurry. Last, we compare the columns from three sites!"
     },
     {
-      "key": "card.conclusion.title",
-      "value": "Mystery: what happened underground?"
-    },
-    {
-      "key": "card.conclusion.weather",
-      "value": "The quake was caused by the weather"
-    },
-    {
-      "key": "card.conclusion.weather.hint",
-      "value": "All the evidence is about what is underground."
-    },
-    {
-      "key": "card.conclusion.moved",
-      "value": "Deep under the west side of the school, the strata moved a lot"
-    },
-    {
-      "key": "card.conclusion.still",
-      "value": "The strata have never moved"
-    },
-    {
-      "key": "card.conclusion.still.hint",
-      "value": "Tilted, folded strata are a sign that they moved."
-    },
-    {
-      "key": "card.conclusion.wrong",
-      "value": "Look at the evidence cards again."
-    },
-    {
-      "key": "card.conclusion.done",
-      "value": "Exactly! Anyone who reads the strata can hear the voice of the earth."
-    },
-    {
-      "key": "story.s9.l06",
-      "value": "Now, time to solve the mystery! What does the evidence tell us?"
-    },
-    {
       "key": "story.s9.l09",
       "value": "Let's use what we found to keep the town safe. Write the report, then it's snack party time!"
     },
@@ -4359,6 +4067,366 @@
     {
       "key": "ui.idle.task",
       "value": "Dr.Kaede: \"Check Investigation at the top left!\""
+    },
+    {
+      "key": "slide.rock.lbl1",
+      "value": "Weathering"
+    },
+    {
+      "key": "slide.rock.lbl2",
+      "value": "Erosion"
+    },
+    {
+      "key": "slide.rock.lbl3",
+      "value": "Transport"
+    },
+    {
+      "key": "slide.rock.lbl4",
+      "value": "Deposition"
+    },
+    {
+      "key": "slide.rock.intro",
+      "value": "Strata are the Earth's diary. Let's see how they form."
+    },
+    {
+      "key": "slide.rock.s1",
+      "value": "Rain, wind, heat and cold make mountain rock crumble. This is weathering."
+    },
+    {
+      "key": "slide.rock.s2",
+      "value": "Rain and rivers wear the crumbling rock away. This is erosion."
+    },
+    {
+      "key": "slide.rock.s3",
+      "value": "The river carries the stones and sand away. This is transport."
+    },
+    {
+      "key": "slide.rock.s4",
+      "value": "They sink to the sea floor and pile up. This is deposition."
+    },
+    {
+      "key": "slide.rock.s5",
+      "value": "Over a long time these piles stack up and become strata."
+    },
+    {
+      "key": "slide.rock.done",
+      "value": "Weathering, erosion, transport, deposition. Remember this order!"
+    },
+    {
+      "key": "slide.grain.lbl_gravel",
+      "value": "Gravel: 2 mm+"
+    },
+    {
+      "key": "slide.grain.lbl_sand",
+      "value": "Sand: 0.06–2 mm"
+    },
+    {
+      "key": "slide.grain.lbl_mud",
+      "value": "Mud: under 0.06 mm"
+    },
+    {
+      "key": "slide.grain.rk_gravel",
+      "value": "Conglomerate"
+    },
+    {
+      "key": "slide.grain.rk_sand",
+      "value": "Sandstone"
+    },
+    {
+      "key": "slide.grain.rk_mud",
+      "value": "Mudstone"
+    },
+    {
+      "key": "slide.grain.intro",
+      "value": "Conglomerate, sandstone and mudstone are told apart by grain size."
+    },
+    {
+      "key": "slide.grain.s1",
+      "value": "The river brings grains both big and small."
+    },
+    {
+      "key": "slide.grain.s2",
+      "value": "Heavy gravel sinks right by the shore."
+    },
+    {
+      "key": "slide.grain.s3",
+      "value": "Sand is carried a little farther out."
+    },
+    {
+      "key": "slide.grain.s4",
+      "value": "The finest mud drifts all the way to the deep sea."
+    },
+    {
+      "key": "slide.grain.s5",
+      "value": "When they harden they become conglomerate, sandstone and mudstone."
+    },
+    {
+      "key": "slide.lime.lbl_lime",
+      "value": "Limestone"
+    },
+    {
+      "key": "slide.lime.lbl_chert",
+      "value": "Chert"
+    },
+    {
+      "key": "slide.lime.intro",
+      "value": "Next, let's look at two unusual rocks."
+    },
+    {
+      "key": "slide.lime.s1",
+      "value": "Let's drip on some dilute hydrochloric acid."
+    },
+    {
+      "key": "slide.lime.s2",
+      "value": "It fizzes! This is limestone."
+    },
+    {
+      "key": "slide.lime.s3",
+      "value": "Limestone is made from piled-up shells and coral."
+    },
+    {
+      "key": "slide.lime.s4",
+      "value": "Now let's scratch this one with a nail."
+    },
+    {
+      "key": "slide.lime.s5",
+      "value": "No scratch at all! This very hard rock is chert."
+    },
+    {
+      "key": "slide.coral.lbl_warm",
+      "value": "Warm"
+    },
+    {
+      "key": "slide.coral.lbl_shallow",
+      "value": "Shallow"
+    },
+    {
+      "key": "slide.coral.arrow",
+      "value": "→"
+    },
+    {
+      "key": "slide.coral.intro",
+      "value": "Let's look closely inside the core."
+    },
+    {
+      "key": "slide.coral.s1",
+      "value": "There's a coral fossil inside!"
+    },
+    {
+      "key": "slide.coral.s2",
+      "value": "Coral living today is found…"
+    },
+    {
+      "key": "slide.coral.s3",
+      "value": "only in warm, shallow seas."
+    },
+    {
+      "key": "slide.coral.s4",
+      "value": "This fossil tells us what it was like long ago."
+    },
+    {
+      "key": "slide.facies.lbl_shijimi",
+      "value": "Where river meets sea"
+    },
+    {
+      "key": "slide.facies.lbl_coral",
+      "value": "Warm, shallow sea"
+    },
+    {
+      "key": "slide.facies.term",
+      "value": "Facies fossil"
+    },
+    {
+      "key": "slide.facies.intro",
+      "value": "Fossils tell us about the distant past."
+    },
+    {
+      "key": "slide.facies.s1",
+      "value": "Coral lives in warm, shallow seas."
+    },
+    {
+      "key": "slide.facies.s2",
+      "value": "Corbicula clams live where rivers meet the sea."
+    },
+    {
+      "key": "slide.facies.s3",
+      "value": "A fossil that tells us where it lived is a facies fossil."
+    },
+    {
+      "key": "slide.era.lbl_paleo",
+      "value": "Paleozoic"
+    },
+    {
+      "key": "slide.era.lbl_meso",
+      "value": "Mesozoic"
+    },
+    {
+      "key": "slide.era.lbl_ceno",
+      "value": "Cenozoic"
+    },
+    {
+      "key": "slide.era.old",
+      "value": "Older"
+    },
+    {
+      "key": "slide.era.new",
+      "value": "Newer"
+    },
+    {
+      "key": "slide.era.term",
+      "value": "Index fossil"
+    },
+    {
+      "key": "slide.era.intro",
+      "value": "The next layer has… an ammonite! Let's look at Earth's history."
+    },
+    {
+      "key": "slide.era.s1",
+      "value": "Earth's history splits into three big eras."
+    },
+    {
+      "key": "slide.era.s2",
+      "value": "Trilobites lived only in the Paleozoic."
+    },
+    {
+      "key": "slide.era.s3",
+      "value": "Ammonites and dinosaurs lived in the Mesozoic."
+    },
+    {
+      "key": "slide.era.s4",
+      "value": "Naumann elephants lived in the Cenozoic."
+    },
+    {
+      "key": "slide.era.s5",
+      "value": "Fossils tell us when a layer formed."
+    },
+    {
+      "key": "slide.era.s6",
+      "value": "A fossil that tells the age is an index fossil."
+    },
+    {
+      "key": "slide.tuff.term",
+      "value": "Tuff"
+    },
+    {
+      "key": "slide.tuff.intro",
+      "value": "Let's see how volcanic ash becomes a layer."
+    },
+    {
+      "key": "slide.tuff.s1",
+      "value": "The volcano erupts!"
+    },
+    {
+      "key": "slide.tuff.s2",
+      "value": "Volcanic ash rides the wind a long way."
+    },
+    {
+      "key": "slide.tuff.s3",
+      "value": "Then it settles in a thin layer on the ground."
+    },
+    {
+      "key": "slide.tuff.s4",
+      "value": "Buried and pressed hard, it becomes tuff."
+    },
+    {
+      "key": "slide.keybed.lbl_A",
+      "value": "A"
+    },
+    {
+      "key": "slide.keybed.lbl_B",
+      "value": "B"
+    },
+    {
+      "key": "slide.keybed.lbl_C",
+      "value": "C"
+    },
+    {
+      "key": "slide.keybed.west",
+      "value": "West"
+    },
+    {
+      "key": "slide.keybed.east",
+      "value": "East"
+    },
+    {
+      "key": "slide.keybed.term",
+      "value": "Key bed"
+    },
+    {
+      "key": "slide.keybed.intro",
+      "value": "Let's trace the layers across the columns."
+    },
+    {
+      "key": "slide.keybed.s1",
+      "value": "Columns for sites A, B and C, from west to east."
+    },
+    {
+      "key": "slide.keybed.s2",
+      "value": "First, A's volcanic ash layer."
+    },
+    {
+      "key": "slide.keybed.s3",
+      "value": "The same layer is in B and C too."
+    },
+    {
+      "key": "slide.keybed.s4",
+      "value": "A layer you can match is a marker: a key bed."
+    },
+    {
+      "key": "slide.keybed.s5",
+      "value": "Join them up, and you can see which side is lower."
+    },
+    {
+      "key": "slide.fold.push_l",
+      "value": "→"
+    },
+    {
+      "key": "slide.fold.push_r",
+      "value": "←"
+    },
+    {
+      "key": "slide.fold.term",
+      "value": "Fold"
+    },
+    {
+      "key": "slide.fold.intro",
+      "value": "Why do layers bend?"
+    },
+    {
+      "key": "slide.fold.s1",
+      "value": "Layers are laid down flat at first."
+    },
+    {
+      "key": "slide.fold.s2",
+      "value": "When forces in the Earth push from both sides…"
+    },
+    {
+      "key": "slide.fold.s3",
+      "value": "they bend like waves!"
+    },
+    {
+      "key": "slide.fold.s4",
+      "value": "This bending is called a fold."
+    },
+    {
+      "key": "story.s9.c1",
+      "value": "All four clues are in! Time to solve the mystery."
+    },
+    {
+      "key": "story.s9.c2",
+      "value": "Warped, tilted and folded layers show the ground has moved."
+    },
+    {
+      "key": "story.s9.c3",
+      "value": "So the layers under the west side of the school moved a lot."
+    },
+    {
+      "key": "story.s9.c4",
+      "value": "Anyone who can read strata can hear the Earth speak."
+    },
+    {
+      "key": "ui.dialog.slides",
+      "value": "Tap the picture to continue"
     }
   ]
 }

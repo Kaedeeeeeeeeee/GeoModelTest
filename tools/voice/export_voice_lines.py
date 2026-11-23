@@ -54,6 +54,8 @@ def main() -> None:
             for choice in line.get('choices') or []:
                 add(choice.get('feedbackKey'), speaker)
             card = line.get('interaction') or {}
+            for step in card.get('steps') or []:  # slides: Kaede speaks each step
+                add(step.get('textKey'), speaker)
             add(card.get('doneKey'), speaker)
     out = Path(__file__).with_name('voice_lines.json')
     out.write_text(json.dumps(rows, ensure_ascii=False, indent=1) + '\n')

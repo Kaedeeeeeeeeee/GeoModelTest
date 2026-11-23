@@ -1027,8 +1027,84 @@ namespace StorySystem
                 advanceRequested = false;
                 yield return null; // 避免前一次点击连带跳过
 
+                // 知識スライド：図は変えずに、タップするたびに一歩ずつ変わる。Kaede が一歩ごとに一言。正解はない。
+                if (line.HasCard && line.Card.Type == KnowledgeCard.TypeSlides)
+                {
+                    var toast = canvasGO.transform.Find("EvidenceToast");
+                    if (toast != null) UnityEngine.Object.Destroy(toast.gameObject);
+                    bool backRequested = false;
+                    var slides = KnowledgeSlideSession.Build(canvasGO.transform, line.Card, ApplyTmpFont, RequestAdvance, () => backRequested = true);
+                    if (slides != null)
+                    {
+                        double slidesShownAt = GameInputState.ActiveTime;
+                        int backCount = 0;
+                        Backend.TelemetryClient.Instance?.Track("knowledge_card_shown", new Dictionary<string, object>
+                        {
+                            ["cardId"] = line.Card.Id,
+                            ["cardType"] = line.Card.Type
+                        });
+                        hintTxt.text = FuriganaProcessor.Process(LocalizedOr("ui.dialog.slides", "図（ず）をタップして、すすもう"));
+                        // 最初の一言（土台の図だけ）を読み終わるまで待つ
+                        SetDialogAdvanceEnabled(true);
+                        while (!advanceRequested)
+                        {
+                            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)) RequestAdvance();
+                            yield return null;
+                        }
+                        int step = 0;
+                        while (step < slides.StepCount)
+                        {
+                            var slideStep = line.Card.Steps[step];
+                            slides.ShowStep(step);
+                            ShowSpeaker(line.Speaker);
+                            pager.SetText(slideStep.Text);
+                            StoryVoice.Play(slideStep.Key);
+                            if (step + 1 < slides.StepCount) StoryVoice.Prefetch(line.Card.Steps[step + 1].Key);
+                            else StoryVoice.Prefetch(line.Card.DoneKey);
+                            StoryHistory.Append(line.Speaker, slideStep.Text, "dialogue", line.ContentId);
+                            advanceRequested = false;
+                            backRequested = false;
+                            yield return null;
+                            while (!advanceRequested && !backRequested)
+                            {
+                                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)) RequestAdvance();
+                                yield return null;
+                            }
+                            if (backRequested && step > 0) { step--; backCount++; }
+                            else if (advanceRequested) step++;
+                        }
+                        Backend.TelemetryClient.Instance?.Track("knowledge_card_done", new Dictionary<string, object>
+                        {
+                            ["cardId"] = line.Card.Id,
+                            ["cardType"] = line.Card.Type,
+                            ["wrongCount"] = 0,
+                            ["backCount"] = backCount,
+                            ["durationMs"] = Math.Max(0L, (long)Math.Round((GameInputState.ActiveTime - slidesShownAt) * 1000d))
+                        });
+                        if (!string.IsNullOrEmpty(line.Card.Done))
+                        {
+                            ShowSpeaker(line.Speaker);
+                            pager.SetText(line.Card.Done);
+                            StoryVoice.Play(line.Card.DoneKey);
+                            StoryHistory.Append(line.Speaker, line.Card.Done, "dialogue", line.ContentId);
+                            canFinish = true;
+                            RefreshAdvanceHint();
+                            advanceRequested = false;
+                            yield return null;
+                            while (!advanceRequested)
+                            {
+                                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)) RequestAdvance();
+                                yield return null;
+                            }
+                        }
+                        slides.Destroy();
+                        StoryCheckpoint.Acknowledge(line.ContentId);
+                        continue;
+                    }
+                }
+
                 // 知識カード：指示を読んだら自分で並べる・分ける・タップする。終わったら done の一言。
-                if (line.HasCard)
+                if (line.HasCard && line.Card.Type != KnowledgeCard.TypeSlides)
                 {
                     canFinish = false;
                     SetDialogAdvanceEnabled(true);
