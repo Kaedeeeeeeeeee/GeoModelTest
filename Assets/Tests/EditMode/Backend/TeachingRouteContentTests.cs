@@ -127,7 +127,7 @@ public class TeachingRouteContentTests
     [Serializable] private class CardLine { public string textKey; public string questionId; public string evidenceKey; public Card interaction; }
     [Serializable] private class Card { public string id; public string type; public string doneKey; public List<CardPart> parts; public List<CardStep> steps; }
     [Serializable] private class CardPart { public string id; public string textKey; public float x; public float y; public float w; public float h; }
-    [Serializable] private class CardStep { public string textKey; public List<string> show; public List<string> hide; public List<string> pulse; public List<CardMove> move; }
+    [Serializable] private class CardStep { public string textKey; public List<string> show; public List<string> hide; public List<string> pulse; public List<CardMove> move; public string sfx; public float sfxDelay; }
     [Serializable] private class CardMove { public string id; public float x; public float y; }
 
     // 2026-11-23: quiz-like cards (order, sort, columns) felt like extra tests. Teaching is now a tap-through
@@ -183,6 +183,14 @@ public class TeachingRouteContentTests
         }
         foreach (var step in c.steps)
             Assert.LessOrEqual(regex.Replace(Texts("ja-JP")[step.textKey], "").Length, 40, step.textKey + " fits one dialogue line.");
+
+        // 2026-11-23: each tap can play a small sound that matches the change (bubbles for acid, a rumble for folding).
+        var clips = new HashSet<string>(Resources.LoadAll<AudioClip>("Audio/SFX").Select(clip => clip.name));
+        foreach (var step in c.steps.Where(s => !string.IsNullOrEmpty(s.sfx)))
+        {
+            Assert.IsTrue(clips.Contains(step.sfx), step.textKey + " plays " + step.sfx + " from Resources/Audio/SFX");
+            Assert.That(step.sfxDelay, Is.InRange(0f, 3f), step.textKey + " sound starts during its animation");
+        }
     }
 
     [Test]

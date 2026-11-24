@@ -63,6 +63,8 @@ namespace StorySystem
         public List<string> hide;        // 消す部品
         public List<string> pulse;       // ぴょんと目立たせる部品
         public List<StoryInteractionMove> move;
+        public string sfx;               // この一歩で鳴らす効果音（Audio/SFX のファイル名）
+        public float sfxDelay;           // 効果音を鳴らすまでの秒数（アニメーションに合わせる）
     }
 
     [Serializable]
@@ -160,6 +162,8 @@ namespace StorySystem
             public readonly List<string> Hide = new List<string>();
             public readonly List<string> Pulse = new List<string>();
             public readonly List<KeyValuePair<string, Vector2>> Move = new List<KeyValuePair<string, Vector2>>();
+            public string Sfx;      // 効果音（無ければ鳴らさない）
+            public float SfxDelay;  // 秒
             public IEnumerable<string> Ids()
             {
                 foreach (var id in Show) yield return id;
@@ -262,7 +266,13 @@ namespace StorySystem
                 foreach (var s in source.steps)
                 {
                     if (s == null) continue;
-                    var step = new Step { Text = resolve(s.text, s.textKey), Key = s.textKey };
+                    var step = new Step
+                    {
+                        Text = resolve(s.text, s.textKey),
+                        Key = s.textKey,
+                        Sfx = string.IsNullOrWhiteSpace(s.sfx) ? null : s.sfx.Trim(),
+                        SfxDelay = Mathf.Max(0f, s.sfxDelay),
+                    };
                     if (s.show != null) step.Show.AddRange(s.show.FindAll(id => !string.IsNullOrWhiteSpace(id)));
                     if (s.hide != null) step.Hide.AddRange(s.hide.FindAll(id => !string.IsNullOrWhiteSpace(id)));
                     if (s.pulse != null) step.Pulse.AddRange(s.pulse.FindAll(id => !string.IsNullOrWhiteSpace(id)));

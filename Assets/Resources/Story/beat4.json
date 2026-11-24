@@ -188,33 +188,38 @@
                             "lbl_C",
                             "west",
                             "east"
-                        ]
+                        ],
+                        "sfx": "slide_swish"
                     },
                     {
                         "textKey": "slide.keybed.s2",
                         "pulse": [
                             "A_ash"
-                        ]
+                        ],
+                        "sfx": "slide_sparkle"
                     },
                     {
                         "textKey": "slide.keybed.s3",
                         "pulse": [
                             "B_ash",
                             "C_ash"
-                        ]
+                        ],
+                        "sfx": "slide_sparkle"
                     },
                     {
                         "textKey": "slide.keybed.s4",
                         "show": [
                             "line",
                             "term"
-                        ]
+                        ],
+                        "sfx": "slide_swish"
                     },
                     {
                         "textKey": "slide.keybed.s5",
                         "pulse": [
                             "line"
-                        ]
+                        ],
+                        "sfx": "slide_chime"
                     }
                 ]
             }
@@ -311,7 +316,8 @@
                         "textKey": "slide.fold.s1",
                         "show": [
                             "flat"
-                        ]
+                        ],
+                        "sfx": "slide_pop"
                     },
                     {
                         "textKey": "slide.fold.s2",
@@ -330,7 +336,8 @@
                                 "x": 0.83,
                                 "y": 0.45
                             }
-                        ]
+                        ],
+                        "sfx": "slide_rumble"
                     },
                     {
                         "textKey": "slide.fold.s3",
@@ -339,13 +346,15 @@
                         ],
                         "show": [
                             "folded"
-                        ]
+                        ],
+                        "sfx": "slide_bend"
                     },
                     {
                         "textKey": "slide.fold.s4",
                         "show": [
                             "term"
-                        ]
+                        ],
+                        "sfx": "slide_chime"
                     }
                 ]
             }
