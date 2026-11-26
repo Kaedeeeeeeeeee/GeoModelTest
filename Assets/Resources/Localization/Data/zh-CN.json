@@ -3813,6 +3813,30 @@
       "value": "知道了"
     },
     {
+      "key": "ui.fullscreen.title",
+      "value": "全屏游玩"
+    },
+    {
+      "key": "ui.fullscreen.lead",
+      "value": "点击“全屏”后，浏览器的地址栏和工具栏会隐藏，游戏画面会变大。"
+    },
+    {
+      "key": "ui.fullscreen.restore.keyboard",
+      "value": "想恢复时，按 Esc 键。"
+    },
+    {
+      "key": "ui.fullscreen.restore.touch",
+      "value": "想恢复时，从屏幕顶端向下滑，或使用“返回”操作。"
+    },
+    {
+      "key": "ui.fullscreen.go",
+      "value": "全屏"
+    },
+    {
+      "key": "ui.fullscreen.skip",
+      "value": "保持现状"
+    },
+    {
       "key": "ui.collection.site_progress",
       "value": "采集点 {0}/{1}"
     },

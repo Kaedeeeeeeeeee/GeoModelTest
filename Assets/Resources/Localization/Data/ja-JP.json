@@ -3993,6 +3993,30 @@
       "value": "わかった"
     },
     {
+      "key": "ui.fullscreen.title",
+      "value": "全画面で遊ぼう"
+    },
+    {
+      "key": "ui.fullscreen.lead",
+      "value": "「全画面にする」をおすと、ブラウザのバーがかくれて、ゲームの画面が大きくなります。"
+    },
+    {
+      "key": "ui.fullscreen.restore.keyboard",
+      "value": "もとに戻すときは、Esc キーをおします。"
+    },
+    {
+      "key": "ui.fullscreen.restore.touch",
+      "value": "もとに戻すときは、画面の上のはしから下へスワイプするか、「戻る」操作をします。"
+    },
+    {
+      "key": "ui.fullscreen.go",
+      "value": "全画面にする"
+    },
+    {
+      "key": "ui.fullscreen.skip",
+      "value": "このまま遊ぶ"
+    },
+    {
       "key": "ui.collection.site_progress",
       "value": "採集地点 {0}/{1}"
     },

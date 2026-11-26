@@ -3813,6 +3813,30 @@
       "value": "Got it"
     },
     {
+      "key": "ui.fullscreen.title",
+      "value": "Play in full screen"
+    },
+    {
+      "key": "ui.fullscreen.lead",
+      "value": "Press \"Full screen\" to hide the browser bars and make the game bigger."
+    },
+    {
+      "key": "ui.fullscreen.restore.keyboard",
+      "value": "To go back, press the Esc key."
+    },
+    {
+      "key": "ui.fullscreen.restore.touch",
+      "value": "To go back, swipe down from the top edge of the screen or use Back."
+    },
+    {
+      "key": "ui.fullscreen.go",
+      "value": "Full screen"
+    },
+    {
+      "key": "ui.fullscreen.skip",
+      "value": "Keep as is"
+    },
+    {
       "key": "ui.collection.site_progress",
       "value": "Site {0}/{1}"
     },
