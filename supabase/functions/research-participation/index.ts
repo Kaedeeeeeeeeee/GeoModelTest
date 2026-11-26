@@ -168,6 +168,8 @@ serve(async (req) => {
     console.error("Participant activation failed", error.code, error.message);
     if (error.code === "P0002") return fail(404, "参加コードを確認できませんでした。");
     if (error.code === "23505") return fail(409, "この参加コードは別の端末で有効化されています。");
+    // The browser still holds an identity from a study that has closed; the game starts a fresh one.
+    if (error.code === "GS410") return fail(410, "以前の研究の参加情報が残っています。");
     if (error.code === "42501") return fail(403, "研究参加の受付は現在停止しています。");
     if (error.code === "22023") return fail(409, "研究手順のバージョンが一致しません。");
     if (error.code === "GC001") return fail(428, "同意が必要です。");
