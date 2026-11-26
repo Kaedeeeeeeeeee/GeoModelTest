@@ -28,6 +28,9 @@ public class FullscreenPromptTests
     [SetUp]
     public void SetUp()
     {
+        // NUnit keeps one instance per fixture, so each test starts from "no browser feature".
+        _safari = 0;
+        _availability = 0;
         Reset();
         var stateType = T("Backend.StudentConsentPage+PageState");
         Func<int> read = () => 2; // the student already confirmed on the page
