@@ -95,7 +95,10 @@ namespace SceneSystem
         private void OnTitleReady()
         {
             _newGame.interactable = true;
-            if (!SafariToolbarGuide.TryShowOnce()) _newGame.Select();
+            // iPhone/iPad Safari: how to hide the toolbars. Elsewhere: one tap into fullscreen, when the browser allows it.
+            if (SafariToolbarGuide.TryShowOnce()) return;
+            if (FullscreenPrompt.TryShowOnce(() => { if (_newGame != null) _newGame.Select(); })) return;
+            _newGame.Select();
         }
 
         /// <summary>

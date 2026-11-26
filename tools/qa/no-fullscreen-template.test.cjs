@@ -3,8 +3,10 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-// 2026-09-29: fullscreen was dropped on purpose. iPadOS always exits it on a
+// 2026-09-29: automatic fullscreen was dropped on purpose. iPadOS always exits it on a
 // downward swipe, and switching between fullscreen and the page confused players.
+// 2026-11-26: fullscreen came back only as an opt-in 「全画面にする」 button on the title screen
+// (MobileDeviceDetection.jslib, see fullscreen-bridge.test.cjs). The page template itself still never asks.
 const template = path.resolve(__dirname, '../../Assets/WebGLTemplates/FixedAspect');
 
 function templateSources() {
