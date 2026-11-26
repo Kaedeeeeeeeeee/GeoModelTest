@@ -25,6 +25,7 @@ namespace Backend
         private string _installId;
         private string _sessionId;
         private bool _initialized;
+        private long _lastParticipationStatus;
         private bool _flushRunning;
         private bool _ending;
         private bool _snapshotDirty;
@@ -94,20 +95,31 @@ namespace Backend
                 yield break;
             }
 
-            bool signedIn = false;
-            yield return EnsureSignedIn(value => signedIn = value);
-            if (!signedIn)
-            {
-                completed?.Invoke(false, UISystem.GameUI.L("backend.network"));
-                yield break;
-            }
-
             ResearchParticipationResponse participation = null;
             string participationError = string.Empty;
-            yield return ValidateParticipationCode(
-                normalizedCode,
-                value => participation = value,
-                value => participationError = value);
+            for (int attempt = 0; ; attempt++)
+            {
+                bool signedIn = false;
+                yield return EnsureSignedIn(value => signedIn = value);
+                if (!signedIn)
+                {
+                    completed?.Invoke(false, UISystem.GameUI.L("backend.network"));
+                    yield break;
+                }
+
+                participation = null;
+                participationError = string.Empty;
+                _lastParticipationStatus = 0;
+                yield return ValidateParticipationCode(
+                    normalizedCode,
+                    value => participation = value,
+                    value => participationError = value);
+                // 2026-11-26: a browser that played during the Testee study still held that study's identity,
+                // and that study closed on 2026-11-11. The server answers 410 only in that case, so start a fresh
+                // anonymous identity for the study that is open now. The old participant's data stays on the server.
+                if (!openPlay || attempt > 0 || _lastParticipationStatus != 410) break;
+                DiscardClosedStudyIdentity();
+            }
 
             if (participation == null || !participation.ok ||
                 !Guid.TryParse(participation.participantId, out _) ||
@@ -651,6 +663,7 @@ namespace Backend
                     // Use the generic message below.
                 }
 
+                _lastParticipationStatus = request.responseCode;
                 failure(ParticipationErrorMessage(request.responseCode, errorResponse?.error));
                 yield break;
             }
@@ -688,7 +701,7 @@ namespace Backend
             string key = status switch
             {
                 400 or 404 => "backend.invalid_code",
-                403 => "backend.closed",
+                403 or 410 => "backend.closed",
                 409 => serverMessage != null && serverMessage.Contains("バージョン") ? "backend.version" : "backend.bound",
                 422 => "backend.consent_invalid",
                 428 => "backend.consent_required",
@@ -868,6 +881,19 @@ namespace Backend
         {
             PlayerPrefs.DeleteKey(PendingSnapshotPrefsKey);
             PlayerPrefs.Save();
+        }
+
+        /// <summary>
+        /// Forget the anonymous identity of a closed study. Its unsent events can never be accepted again
+        /// (the server refuses uploads once the study closes), so they would only block the new identity.
+        /// </summary>
+        internal static void DiscardClosedStudyIdentity()
+        {
+            Debug.LogWarning("[TelemetryClient] Saved identity belongs to a closed study; starting a new one.");
+            new TelemetryQueue(1000).Clear();
+            PlayerPrefs.DeleteKey(PendingSessionEndPrefsKey);
+            BackendSessionStore.ClearAuthSession();
+            BackendSessionStore.ClearResearchContext();
         }
 
         private static bool HasPendingDataForOtherParticipant(string participantId)

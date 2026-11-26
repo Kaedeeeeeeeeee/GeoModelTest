@@ -67,8 +67,9 @@ namespace Backend
                     while (coordinator.IsActivating) yield return null;
                     if (!activated)
                     {
-                        // Retrying cannot fix a missing guardian consent; say what to do instead.
-                        status?.Invoke(TelemetryClient.IsConsentError(activationError) ? activationError : GameUI.L("survey.retry"));
+                        // Retrying cannot fix a missing consent or a closed entry; say what happened instead of
+                        // blaming the network (2026-11-26: a closed-study identity showed 「接続を確認して…」 on every try).
+                        status?.Invoke(SurveyActivationMessage(activationError));
                         yield break;
                     }
                 }
@@ -131,6 +132,10 @@ namespace Backend
             }
             finally { IsBusy = false; }
         }
+
+        public static string SurveyActivationMessage(string activationError) =>
+            TelemetryClient.IsConsentError(activationError) || activationError == GameUI.L("backend.closed")
+                ? activationError : GameUI.L("survey.retry");
 
         public static bool IsValidTicket(string ticket) => ticket != null && Regex.IsMatch(ticket, "\\A[0-9a-f]{64}\\z");
         private static UnityWebRequest Post(string url, string body, BackendSettings settings)
