@@ -591,7 +591,7 @@ namespace SampleCuttingSystem
             if (sampleData.sourceToolID == "1002") // 地质锤
             {
                 singleModel = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                singleModel.transform.localScale = new Vector3(0.8f, 0.06f, 0.6f); // 薄片形状
+                singleModel.transform.localScale = new Vector3(0.22f, 0.09f, 0.18f); // 手标本大小的岩块
             }
             else
             {

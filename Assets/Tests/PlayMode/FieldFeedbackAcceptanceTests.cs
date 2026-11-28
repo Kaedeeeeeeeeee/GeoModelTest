@@ -272,7 +272,7 @@ public class FieldFeedbackAcceptanceTests
         yield return Press(Key.F);
         Check((bool)Get(tower, "isDrilling"), "F starts the actual drill coroutine.");
         yield return Capture("10-tower-drilling");
-        yield return new WaitForSeconds(2.3f);
+        yield return WaitForDrill(tower);
         var cores = (IList)Get(tower, "collectedSamples");
         Check(cores.Count > 0 && (GameObject)cores[0] != null, "Drilling generates an actual core sample.");
         yield return Capture("11-tower-core-pickup");
@@ -399,7 +399,7 @@ public class FieldFeedbackAcceptanceTests
         yield return CaptureTouchSizes("drill", (Canvas)Get(readyPrompt, "uiCanvas"), mobileUI);
         yield return TouchAction(mobileUI, "OnSecondaryInteractButtonDown", "OnSecondaryInteractButtonUp");
         Check((bool)Get(tower, "isDrilling"), "Virtual Use starts drilling.");
-        yield return new WaitForSeconds(2.3f);
+        yield return WaitForDrill(tower);
         cores = (IList)Get(tower, "collectedSamples");
         Check(cores.Count > 0 && (GameObject)cores[0] != null, "Touch-mode drilling generates a core.");
         core = (GameObject)cores[0];
@@ -417,7 +417,7 @@ public class FieldFeedbackAcceptanceTests
             yield return Frames(5);
             yield return TouchAction(mobileUI, "OnSecondaryInteractButtonDown", "OnSecondaryInteractButtonUp");
             Check((bool)Get(tower, "isDrilling"), "Virtual Use drills even after collecting the first core.");
-            yield return new WaitForSeconds(2.4f);
+            yield return WaitForDrill(tower);
         }
         var towerPrompt = Find("DrillTowerInteractionUI");
         PlaceAtTowerWithoutNearbyPickup(tower, towerPrompt);
@@ -700,6 +700,14 @@ public class FieldFeedbackAcceptanceTests
         Check(attempts.Count == count + 2, "Wrong then correct UI answers record two attempts.");
         Check(!(bool)Get(attempts[count], "isCorrect") && (bool)Get(attempts[count + 1], "isCorrect"), "Scoring follows the actual choice ID after fixed reordering.");
     }
+    /// <summary>One drilling cycle (drill, pull the rods, box the core) takes about six seconds.</summary>
+    private static IEnumerator WaitForDrill(Component tower)
+    {
+        float deadline = Time.realtimeSinceStartup + 20f;
+        while (tower != null && (bool)Get(tower, "isDrilling") && Time.realtimeSinceStartup < deadline) yield return null;
+        yield return null;
+    }
+
     private static IEnumerator Frames(int count) { for (int i = 0; i < count; i++) yield return null; }
     private IEnumerator Capture(string name)
     {

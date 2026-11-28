@@ -310,12 +310,14 @@ namespace GeoModel.AudioSystem
 
             var src = GetFreeSfxSource();
             src.transform.position = Vector3.zero;
+            src.pitch = 1f; // 池里的音源可能被 PlaySFX3D 改过音高
             src.spatialBlend = 0f;
             src.volume = volumeScale * EffectiveSfxVolume();
             src.PlayOneShot(clip);
         }
 
-        public void PlaySFX3D(string key, Vector3 position, float volumeScale = 1f)
+        /// <param name="pitch">1 = 原音高。同一音效用不同音高可以区分连续的几次敲击。</param>
+        public void PlaySFX3D(string key, Vector3 position, float volumeScale = 1f, float pitch = 1f)
         {
             if (!sfxCache.TryGetValue(key, out var clip))
             {
@@ -325,6 +327,7 @@ namespace GeoModel.AudioSystem
 
             var src = GetFreeSfxSource();
             src.transform.position = position;
+            src.pitch = pitch;
             src.spatialBlend = 1f;
             src.minDistance = sfx3DMinDistance;
             src.maxDistance = sfx3DMaxDistance;

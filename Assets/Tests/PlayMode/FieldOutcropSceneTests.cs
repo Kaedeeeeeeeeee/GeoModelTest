@@ -300,7 +300,7 @@ public class FieldOutcropSceneTests
             " ground_slope=" + Vector3.Angle(GroundAt(tower.transform.position).normal, Vector3.up).ToString("F2") + " deg");
         Assert.IsTrue((bool)Call(tower, "CanDrill"));
         Call(tower, "StartDrilling");
-        yield return new WaitForSecondsRealtime(2.5f);
+        yield return WaitForDrill(tower);
         Assert.AreEqual(1, (int)Get(tower, "currentDrillCount"), "One actual drilling operation completes.");
         var cores = (IList)Get(tower, "collectedSamples");
         Assert.AreEqual(1, cores.Count, "One actual drilling operation creates one core.");
@@ -383,6 +383,14 @@ public class FieldOutcropSceneTests
             Set(quest, "status", Enum.Parse(T("QuestSystem.QuestStatus"), (string)Get(quest, "id") == id ? "InProgress" : "NotStarted"));
         ((HashSet<string>)Get(quests, "_completedObjectives")).Clear();
         Call(T("QuestSystem.QuestUI"), "RefreshAll");
+    }
+
+    /// <summary>One drilling cycle (drill, pull the rods, box the core) takes about six seconds.</summary>
+    private static IEnumerator WaitForDrill(Component tower)
+    {
+        float deadline = Time.realtimeSinceStartup + 20f;
+        while (tower != null && (bool)Get(tower, "isDrilling") && Time.realtimeSinceStartup < deadline) yield return null;
+        yield return null;
     }
 
     private static IEnumerator Frames(int count)

@@ -27,6 +27,10 @@ public class HammerTool : CollectionTool
     // 锤子对象引用
     private GameObject equippedHammer;
     private Transform playerHand; // 玩家手部位置
+    private Vector3 hammerRestPosition;
+    private Quaternion hammerRestRotation = Quaternion.identity;
+    private Coroutine swingRoutine;
+    private HammerStrikeMarks strikeMarks; // 当前敲击点的裂纹
     
     // 采集状态
     private HammerCollectionState currentCollection;
@@ -191,6 +195,7 @@ public class HammerTool : CollectionTool
             targetName = hit.collider.gameObject.name,
             targetTag = hit.collider.gameObject.tag
         };
+        currentCollection.rockMaterial = ResolveRockMaterial(hit.collider, currentCollection.sourceLayer);
         ShowTargetMarker(hit.point);
         PlayHammerHit();
         Debug.Log($"开始采集 - 位置: {hit.point}, 需要敲击: {requiredHits}次");
@@ -307,8 +312,14 @@ public class HammerTool : CollectionTool
         if (currentCollection != null)
         {
             Debug.Log("取消采集");
+            // 没敲下来的岩石不留痕迹；敲下来的新鲜面留在露头上。
+            if (strikeMarks != null && currentCollection.currentHits < currentCollection.requiredHits)
+            {
+                strikeMarks.Dismiss();
+            }
             currentCollection = null;
         }
+        strikeMarks = null;
         
         // 隐藏目标标记
         HideTargetMarker();
@@ -330,109 +341,119 @@ public class HammerTool : CollectionTool
     }
     
     /// <summary>
-    /// 播放锤击效果
+    /// 播放锤击效果：三下各不相同（风化壳剥落 → 出现裂纹 → 岩块脱落）
     /// </summary>
     void PlayHammerHit()
     {
+        int stage = HitStage(currentCollection?.currentHits ?? 1, currentCollection?.requiredHits ?? requiredHits);
+        var audio = GeoModel.AudioSystem.AudioManager.Instance;
+
         // 播放音效（AudioManager 优先，旧 AudioSource 作为可选 fallback）
-        GeoModel.AudioSystem.AudioManager.Instance.PlaySFX3D(
-            GeoModel.AudioSystem.AudioKeys.SFX.HammerHit, transform.position);
+        audio.PlaySFX3D(GeoModel.AudioSystem.AudioKeys.SFX.HammerHit, transform.position, 1f, HitPitch(stage));
+        if (stage >= 2)
+        {
+            audio.PlaySFX3D(GeoModel.AudioSystem.AudioKeys.SFX.SampleSpawn, transform.position, 0.45f, 0.9f);
+        }
+        if (stage == 3)
+        {
+            audio.PlaySFX3D(GeoModel.AudioSystem.AudioKeys.SFX.RockBreak, transform.position, 0.8f);
+        }
         if (hammerHitSound != null && audioSource != null)
         {
             audioSource.PlayOneShot(hammerHitSound);
         }
 
+        if (currentCollection != null)
+        {
+            Vector3 point = currentCollection.targetPosition;
+            Vector3 normal = currentCollection.surfaceNormal;
+            // 碎屑用被敲地层自己的材质，颜色和岩石一致。
+            DebrisBurst.Emit(point, normal, currentCollection.rockMaterial, stage == 3 ? 10 : 4 + stage,
+                stage == 3 ? 2.6f : 1.8f, 0.022f);
+            if (strikeMarks == null)
+            {
+                strikeMarks = HammerStrikeMarks.Create(point, normal);
+            }
+            strikeMarks.ShowStage(stage, currentCollection.rockMaterial);
+        }
+
+        FieldToolFeedback.KickCamera(GetPlayerCamera(), stage == 3 ? 0.02f : 0.011f);
+        FieldToolFeedback.Vibrate(stage == 3 ? 60 : 25);
+
         // 播放锤击动画
         PlayHammerAnimation();
     }
-    
+
+    /// <summary>第几下对应哪种反馈：1 = 表面碎屑，2 = 裂纹，3 = 岩块脱落（最后一下）。</summary>
+    public static int HitStage(int hits, int required)
+    {
+        if (hits >= required) return 3;
+        return hits <= 1 ? 1 : 2;
+    }
+
+    public static float HitPitch(int stage)
+    {
+        return stage == 1 ? 0.92f : stage == 2 ? 1.0f : 1.1f;
+    }
+
+    static Material ResolveRockMaterial(Collider collider, GeologyLayer layer)
+    {
+        if (layer != null && layer.layerMaterial != null) return layer.layerMaterial;
+        Renderer rockRenderer = collider != null ? collider.GetComponent<Renderer>() : null;
+        return rockRenderer != null ? rockRenderer.sharedMaterial : null;
+    }
+
     /// <summary>
     /// 播放锤子动画
     /// </summary>
     void PlayHammerAnimation()
     {
-        if (equippedHammer != null)
+        if (equippedHammer == null) return;
+        if (swingRoutine != null)
         {
-            StartCoroutine(HammerSwingAnimation());
+            StopCoroutine(swingRoutine);
         }
+        swingRoutine = StartCoroutine(HammerSwingAnimation());
     }
-    
+
     /// <summary>
-    /// 锤子挥舞动画协程
+    /// 锤子挥舞动画协程：快速击打 → 反弹 → 回位。始终以装备时的静止姿态为基准，连续敲击不会累积偏移。
     /// </summary>
     IEnumerator HammerSwingAnimation()
     {
         if (equippedHammer == null) yield break;
-        
+
         Transform hammerTransform = equippedHammer.transform;
-        Vector3 startPos = hammerTransform.localPosition;
-        Vector3 startRot = hammerTransform.localEulerAngles;
-        
-        // 动画参数
-        float animationDuration = 0.6f;
-        float upPhase = 0.2f; // 抬起阶段
-        float downPhase = 0.3f; // 下挥阶段
-        float returnPhase = 0.1f; // 回位阶段
-        
+        Vector3 strikePosition = hammerRestPosition + new Vector3(-0.03f, -0.03f, 0.12f);
+        Quaternion strikeRotation = Quaternion.AngleAxis(38f, Vector3.right) * hammerRestRotation;
+        Vector3 recoilPosition = hammerRestPosition + new Vector3(0f, 0.03f, -0.03f);
+        Quaternion recoilRotation = Quaternion.AngleAxis(-14f, Vector3.right) * hammerRestRotation;
+
+        yield return MoveHammer(hammerTransform, hammerRestPosition, hammerRestRotation, strikePosition, strikeRotation, 0.07f);
+        yield return MoveHammer(hammerTransform, strikePosition, strikeRotation, recoilPosition, recoilRotation, 0.10f);
+        yield return MoveHammer(hammerTransform, recoilPosition, recoilRotation, hammerRestPosition, hammerRestRotation, 0.16f);
+        swingRoutine = null;
+    }
+
+    IEnumerator MoveHammer(Transform hammerTransform, Vector3 fromPosition, Quaternion fromRotation,
+        Vector3 toPosition, Quaternion toRotation, float duration)
+    {
         float elapsed = 0f;
-        
-        // 第一阶段：抬起
-        while (elapsed < upPhase)
+        while (elapsed < duration)
         {
             if (hammerTransform == null) yield break;
-            float t = elapsed / upPhase;
-            Vector3 upPos = startPos + Vector3.up * 0.2f + Vector3.back * 0.1f;
-            Vector3 upRot = startRot + Vector3.right * -30f;
-            
-            hammerTransform.localPosition = Vector3.Lerp(startPos, upPos, t);
-            hammerTransform.localEulerAngles = Vector3.Lerp(startRot, upRot, t);
-            
+            float k = Mathf.SmoothStep(0f, 1f, elapsed / duration);
+            hammerTransform.localPosition = Vector3.Lerp(fromPosition, toPosition, k);
+            hammerTransform.localRotation = Quaternion.Slerp(fromRotation, toRotation, k);
             elapsed += Time.deltaTime;
             yield return null;
         }
-        
-        // 第二阶段：下挥
-        if (hammerTransform == null) yield break;
-        Vector3 upPosition = hammerTransform.localPosition;
-        Vector3 upRotation = hammerTransform.localEulerAngles;
-        elapsed = 0f;
-        
-        while (elapsed < downPhase)
+
+        if (hammerTransform != null)
         {
-            if (hammerTransform == null) yield break;
-            float t = elapsed / downPhase;
-            Vector3 downPos = startPos + Vector3.down * 0.1f + Vector3.forward * 0.1f;
-            Vector3 downRot = startRot + Vector3.right * 20f;
-            
-            hammerTransform.localPosition = Vector3.Lerp(upPosition, downPos, t);
-            hammerTransform.localEulerAngles = Vector3.Lerp(upRotation, downRot, t);
-            
-            elapsed += Time.deltaTime;
-            yield return null;
+            hammerTransform.localPosition = toPosition;
+            hammerTransform.localRotation = toRotation;
         }
-        
-        // 第三阶段：回位
-        if (hammerTransform == null) yield break;
-        Vector3 downPosition = hammerTransform.localPosition;
-        Vector3 downRotation = hammerTransform.localEulerAngles;
-        elapsed = 0f;
-        
-        while (elapsed < returnPhase)
-        {
-            if (hammerTransform == null) yield break;
-            float t = elapsed / returnPhase;
-            
-            hammerTransform.localPosition = Vector3.Lerp(downPosition, startPos, t);
-            hammerTransform.localEulerAngles = Vector3.Lerp(downRotation, startRot, t);
-            
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        
-        // 确保回到初始位置
-        if (hammerTransform == null) yield break;
-        hammerTransform.localPosition = startPos;
-        hammerTransform.localEulerAngles = startRot;
     }
     
     /// <summary>
@@ -621,12 +642,19 @@ public class HammerTool : CollectionTool
         float radius = generator.baseRadius * (1f + Mathf.Abs(generator.irregularityFactor) * 0.5f);
         float clearance = radius * (Mathf.Abs(normal.x) + Mathf.Abs(normal.z)) +
                           (generator.thickness * 0.5f + Mathf.Abs(generator.noiseStrength)) * Mathf.Abs(normal.y) + 0.05f;
-        Vector3 spawnPosition = position + normal * clearance + Vector3.up * 0.5f;
+        // 岩块从被敲的位置脱落，而不是出现在半空中。
+        Vector3 spawnPosition = position + normal * clearance;
         GameObject slabSample = generator.GenerateSlabSampleWithMaterial(spawnPosition, originalMaterial, sourceLayer);
         
         if (slabSample != null)
         {
             PendingSample = slabSample;
+            SampleDropController drop = slabSample.GetComponent<SampleDropController>();
+            if (drop == null)
+            {
+                drop = slabSample.AddComponent<SampleDropController>();
+            }
+            drop.dropFromCurrentPosition = true;
             if (reconstructedSample == null && sourceLayer != null)
             {
                 var mesh = slabSample.GetComponent<MeshFilter>().sharedMesh;
@@ -813,6 +841,9 @@ public class HammerTool : CollectionTool
         
         // 显示锤子在手中
         ShowHammerInHand();
+
+        // 敲石头前先戴护目镜（野外安全习惯）
+        UISystem.SafetyGogglesOverlay.Flash();
         
         Debug.Log("装备地质锤");
     }
@@ -851,12 +882,15 @@ public class HammerTool : CollectionTool
             DestroyRuntimeObject(equippedHammer);
         }
 
-        bool usingPrefab = hammerPrefab != null;
-        equippedHammer = usingPrefab ? Instantiate(hammerPrefab) : CreateFallbackHammerVisual();
-        equippedHammer.name = usingPrefab ? "EquippedHammer" : "EquippedHammerFallback";
+        // 优先使用脚本生成的岩石锤模型；缺失时退回旧预制体，再退回方块占位。
+        GameObject rockHammer = FieldToolModels.Instantiate("RockHammer");
+        bool usingModel = rockHammer != null;
+        bool usingPrefab = !usingModel && hammerPrefab != null;
+        equippedHammer = usingModel ? rockHammer : usingPrefab ? Instantiate(hammerPrefab) : CreateFallbackHammerVisual();
+        equippedHammer.name = usingModel ? "EquippedRockHammer" : usingPrefab ? "EquippedHammer" : "EquippedHammerFallback";
 
         equippedHammer.transform.SetParent(playerHand, false);
-        ApplyEquippedHammerTransform(usingPrefab);
+        ApplyEquippedHammerTransform(usingModel, usingPrefab);
 
         Collider[] colliders = equippedHammer.GetComponentsInChildren<Collider>();
         foreach (var col in colliders)
@@ -864,21 +898,35 @@ public class HammerTool : CollectionTool
             col.enabled = false;
         }
 
-        if (usingPrefab)
+        foreach (var hammerRenderer in equippedHammer.GetComponentsInChildren<Renderer>())
+        {
+            // 手持模型离相机很近，自身投影会在岩面上晃动。
+            hammerRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        }
+
+        if (usingModel || usingPrefab)
         {
             Debug.Log("锤子已装备到手中");
         }
         else
         {
-            Debug.LogWarning("地质锤缺少运行时预制体，已使用备用可见模型");
+            Debug.LogWarning("地质锤缺少运行时模型，已使用备用可见模型");
         }
     }
 
-    void ApplyEquippedHammerTransform(bool usingPrefab)
+    void ApplyEquippedHammerTransform(bool usingModel, bool usingPrefab)
     {
         if (equippedHammer == null) return;
 
-        if (usingPrefab)
+        if (usingModel)
+        {
+            // 模型以握把中心为原点、锤柄沿 +Y、方头朝 +Z：稍向前倾，锤头在右上方、尖头斜指前方，握把落在右下角，
+            // 不遮挡画面中央（2026-11 实机截图比较了 -70°～+20° 的偏航，-10° 时轮廓最清楚且最不挡视线）。
+            equippedHammer.transform.localPosition = new Vector3(0.02f, -0.02f, 0f);
+            equippedHammer.transform.localRotation = Quaternion.Euler(15f, -10f, 12f);
+            equippedHammer.transform.localScale = Vector3.one;
+        }
+        else if (usingPrefab)
         {
             equippedHammer.transform.localPosition = new Vector3(0.12f, -0.05f, 0.18f);
             equippedHammer.transform.localRotation = Quaternion.Euler(-35.67f, -4.745f, -79.289f);
@@ -890,6 +938,9 @@ public class HammerTool : CollectionTool
             equippedHammer.transform.localRotation = Quaternion.Euler(15f, -15f, -65f);
             equippedHammer.transform.localScale = Vector3.one;
         }
+
+        hammerRestPosition = equippedHammer.transform.localPosition;
+        hammerRestRotation = equippedHammer.transform.localRotation;
     }
 
     GameObject CreateFallbackHammerVisual()
@@ -980,6 +1031,12 @@ public class HammerTool : CollectionTool
     /// </summary>
     void HideHammerInHand()
     {
+        if (swingRoutine != null)
+        {
+            StopCoroutine(swingRoutine);
+            swingRoutine = null;
+        }
+
         if (equippedHammer != null)
         {
             DestroyRuntimeObject(equippedHammer);
@@ -1033,6 +1090,7 @@ public class HammerCollectionState
     public Vector3 targetPosition;     // 敲击目标位置
     public GeologyLayer sourceLayer;   // The layer hit on the actual outcrop face.
     public Vector3 surfaceNormal;
+    public Material rockMaterial;      // 被敲岩石的材质（碎屑和新鲜面用）
     public int currentHits = 0;        // 当前敲击次数
     public int requiredHits = 3;       // 需要的敲击次数
     public float lastHitTime;          // 上次敲击时间

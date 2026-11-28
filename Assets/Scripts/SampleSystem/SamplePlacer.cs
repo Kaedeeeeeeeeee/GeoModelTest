@@ -217,10 +217,10 @@ public class SamplePlacer : MonoBehaviour
             preview = GameObject.CreatePrimitive(PrimitiveType.Cube);
             preview.name = $"SlabPreview_{itemToPlace.sampleID}";
             
-            // 薄片形状：宽度0.8m，厚度0.06m，长度0.6m
-            float width = 0.8f;
-            float thickness = 0.06f;
-            float length = 0.6f;
+            // 手标本大小的岩块（与 SlabSampleGenerator 的默认尺寸一致）
+            float width = 0.22f;
+            float thickness = 0.09f;
+            float length = 0.18f;
             preview.transform.localScale = new Vector3(width, thickness, length);
         }
         else
@@ -587,10 +587,10 @@ public class SamplePlacer : MonoBehaviour
             sampleObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
             sampleObj.name = $"PlacedSlabSample_{sampleData.sampleID}";
             
-            // 薄片形状：宽度0.8m，厚度0.06m，长度0.6m
-            float width = 0.8f;
-            float thickness = 0.06f;
-            float length = 0.6f;
+            // 手标本大小的岩块（与 SlabSampleGenerator 的默认尺寸一致）
+            float width = 0.22f;
+            float thickness = 0.09f;
+            float length = 0.18f;
             sampleObj.transform.localScale = new Vector3(width, thickness, length);
         }
         else
