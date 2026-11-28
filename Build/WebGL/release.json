@@ -1,27 +1,27 @@
 {
-  "version": "2026.11.23-slides-layout-sfx",
-  "gameVersion": "2026.11.23-slides-layout-sfx",
+  "version": "2026.11.26-survey-identity-fullscreen",
+  "gameVersion": "2026.11.26-survey-identity-fullscreen",
   "unity": "6000.0.51f1",
   "buildType": "release",
-  "builtAt": "2026-11-23T10:57:53.522Z",
-  "sourceCommit": "61ae27a909ca22570aae1567b1c49e287acb0e60",
+  "builtAt": "2026-11-26T05:32:41.668Z",
+  "sourceCommit": "e0a9b4dabdc3107c4dc3fbc532b7577f03770142",
   "sourceDirty": false,
   "assets": {
     "Build/WebGL.data.unityweb": {
-      "bytes": 124080408,
-      "sha256": "12cd37eb11f4fae787198a1ab370581370d3e9ddc5c05d505df995f364d3f823"
+      "bytes": 124080510,
+      "sha256": "6249d484ac5b1e11028a4ccf313f49f999ea5b1904e2898e048def5c4f89ee47"
     },
     "Build/WebGL.framework.js.unityweb": {
-      "bytes": 96679,
-      "sha256": "bed0158b5ceb3be1e3387079fd0c4a50ceaf85c62885096d0ffb251bc9ff2817"
+      "bytes": 97256,
+      "sha256": "151310a64d20676ec6a4b941cfea324b85156a5e45f355beeed7e2c4125c4069"
     },
     "Build/WebGL.loader.js": {
       "bytes": 47338,
-      "sha256": "0292caeb89638b6325d662371947b7df26d5693dacad50990b99e40e2099a182"
+      "sha256": "37347208423e84996166cc22fa7f85182a0d3f844f380d4f0bf9ba75f790bc49"
     },
     "Build/WebGL.wasm.unityweb": {
-      "bytes": 12143320,
-      "sha256": "9864e842f271d4e02573178ce4da0ac72c5a38671d6b350673b418df2131e3bb"
+      "bytes": 12143516,
+      "sha256": "ca5efe408cb5b3c625e018e6908fba1af3140e1ce74232554e73b135c33875b8"
     }
   },
   "webAssets": {
@@ -42,8 +42,8 @@
       "sha256": "9833c5a1676a83f8e4f1038da354a0c3be0548b406fb4898adf48ea8eadc9c22"
     },
     "index.html": {
-      "bytes": 10204,
-      "sha256": "d6416c7ed4fdebedcbbcaa29f742f7e972610ca98fa5f203d70f1e718c0e9e4f"
+      "bytes": 10213,
+      "sha256": "0b4f1ac3c3d352c6f4ee6fce035ffc8f336febe25a4df7c224c6df1d24cc2e8b"
     }
   },
   "surveyAssets": {
