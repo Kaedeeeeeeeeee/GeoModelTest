@@ -75,6 +75,27 @@ namespace UISystem
             if (_instance == this) _instance = null;
         }
 
+        /// <summary>
+        /// Superellipse distance of a screen point (u and v in -1..1) from the lens centre: below about
+        /// 0.78 is clear lens, above about 1.02 is frame. The notch lifts the lower rim in the middle
+        /// like a nose bridge.
+        /// </summary>
+        private static float LensDistance(float u, float v)
+        {
+            float notch = 0.22f * Mathf.Exp(-(u * u) / 0.03f);
+            float lower = v < 0f ? 0.90f - notch : 0.90f;
+            return Mathf.Pow(Mathf.Abs(u) / 0.955f, 4f) + Mathf.Pow(Mathf.Abs(v) / lower, 4f);
+        }
+
+        /// <summary>Opacity of the goggles mask at a screen point: nearly clear through the lens, dark on the frame.</summary>
+        public static float MaskAlpha(float u, float v)
+        {
+            // Mathf.SmoothStep interpolates between its first two arguments, so the distance is
+            // normalised between the two thresholds first.
+            float rim = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.78f, 1.02f, LensDistance(u, v)));
+            return Mathf.Lerp(0.03f, 0.9f, rim);
+        }
+
         /// <summary>Dark frame with one wide clear lens and a nose notch, generated once.</summary>
         private static Texture2D MaskTexture()
         {
@@ -88,12 +109,8 @@ namespace UISystem
                 {
                     float u = (x + 0.5f) / width * 2f - 1f;
                     float v = (y + 0.5f) / height * 2f - 1f;
-                    // Superellipse lens; the notch lifts the lower rim in the middle like a nose bridge.
-                    float notch = 0.22f * Mathf.Exp(-(u * u) / 0.03f);
-                    float lower = v < 0f ? 0.90f - notch : 0.90f;
-                    float d = Mathf.Pow(Mathf.Abs(u) / 0.955f, 4f) + Mathf.Pow(Mathf.Abs(v) / lower, 4f);
-                    float rim = Mathf.SmoothStep(0.78f, 1.02f, d);
-                    float alpha = Mathf.Lerp(0.03f, 0.9f, rim);
+                    float d = LensDistance(u, v);
+                    float alpha = MaskAlpha(u, v);
                     // A thin lighter band just inside the rim reads as the edge of the lens.
                     float edge = Mathf.Exp(-Mathf.Pow((d - 0.80f) / 0.05f, 2f)) * 0.5f;
                     byte shade = (byte)Mathf.Lerp(18f, 120f, edge);

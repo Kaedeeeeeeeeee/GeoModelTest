@@ -163,6 +163,16 @@ public class FieldToolRealismTests
         Assert.LessOrEqual(fadeIn + hold + fadeOut, 2f);
     }
 
+    [Test]
+    public void Goggles_ShouldLeaveTheViewThroughTheLensClear()
+    {
+        Assert.Less((float)Static("UISystem.SafetyGogglesOverlay", "MaskAlpha", 0f, 0f), 0.05f, "The lens centre stays clear.");
+        Assert.Less((float)Static("UISystem.SafetyGogglesOverlay", "MaskAlpha", 0.6f, 0.4f), 0.1f, "Most of the view stays clear.");
+        Assert.Less((float)Static("UISystem.SafetyGogglesOverlay", "MaskAlpha", -0.7f, 0.5f), 0.1f);
+        Assert.Greater((float)Static("UISystem.SafetyGogglesOverlay", "MaskAlpha", 0.99f, 0.99f), 0.85f, "The corners are frame.");
+        Assert.Greater((float)Static("UISystem.SafetyGogglesOverlay", "MaskAlpha", 0f, -0.8f), 0.85f, "The nose bridge is frame.");
+    }
+
     [TestCase(1, "A")]
     [TestCase(2, "B")]
     [TestCase(3, "C")]
