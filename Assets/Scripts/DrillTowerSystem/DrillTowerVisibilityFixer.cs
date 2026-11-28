@@ -44,6 +44,8 @@ public class DrillTowerVisibilityFixer : MonoBehaviour
         {
             foreach (DrillTower tower in towers)
             {
+                // 新的钻探装置故意隐藏了旧的基本体外观，不要再把它们打开。
+                if (tower.GetComponent<BoringRigVisual>() != null) continue;
                 FixTowerVisibility(tower.gameObject);
             }
         }

@@ -23,6 +23,10 @@ namespace GeoModel.AudioSystem
             public const string SceneTeleport = "sfx_scene_teleport";
             public const string DroneLoop     = "sfx_drone_loop";
             public const string DrillCarLoop  = "sfx_drillcar_loop";
+            // 与知识幻灯片共用的素材（Resources/Audio/SFX 下按文件名加载）
+            public const string RockBreak     = "slide_roll";   // 石头滚落：岩块被敲下来
+            public const string RockCrumble   = "slide_sand";   // 碎石簌簌落下：钻进时的岩屑
+            public const string MetalScrape   = "slide_scrape"; // 金属摩擦：架设三脚架、提钻
 
             public static readonly string[] Footsteps =
             {

@@ -487,6 +487,10 @@ public class SampleCollector : MonoBehaviour
         }
         
         fieldPickupFeedback = QuestSystem.QuestManager.Instance.FieldSampleFeedback(sampleData);
+        // 标签上的地点要在放进背包之前读取（放进去之后任务会推进到下一个地点）。
+        int bagSite = fieldPickupFeedback != null && !fieldPickupFeedback.IsWarning
+            ? QuestSystem.QuestManager.Instance.FieldCollectionSite
+            : 0;
 
         // 尝试添加到背包
         bool addSuccess = false;
@@ -506,6 +510,7 @@ public class SampleCollector : MonoBehaviour
             // 拾取已消费本次触摸，避免延后一帧的工具路由再次敲击岩石。
             CollectionTool.SuppressSelectionInput();
             ShowCollectionFeedback();
+            UISystem.SampleBagOverlay.Show(sampleData, bagSite, BagNumber(inventory));
             // 采集成功，销毁世界中的样本
             Destroy(gameObject);
         }
@@ -516,6 +521,20 @@ public class SampleCollector : MonoBehaviour
         }
     }
     
+    /// <summary>样本袋标签上的编号：岩芯用钻探的次序，其余用背包里同类样本的件数。</summary>
+    int BagNumber(SampleInventory inventory)
+    {
+        DepthSampleMarker depthMarker = GetComponent<DepthSampleMarker>();
+        if (depthMarker != null) return depthMarker.drillIndex + 1;
+
+        int sameKind = 0;
+        foreach (SampleItem item in inventory.GetAllSamples())
+        {
+            if (item != null && item.sourceToolID == sampleData.sourceToolID) sameKind++;
+        }
+        return Mathf.Max(1, sameKind);
+    }
+
     /// <summary>
     /// 显示采集反馈
     /// </summary>

@@ -9,5 +9,10 @@ mergeInto(LibraryManager.library, {
       window.GeoModelPerformance.quality = quality;
       window.GeoModelPerformance.manual = manual !== 0;
     }
+  },
+  GeoModel_Vibrate: function (milliseconds) {
+    try {
+      if (navigator.vibrate) navigator.vibrate(milliseconds);
+    } catch (e) {}
   }
 });

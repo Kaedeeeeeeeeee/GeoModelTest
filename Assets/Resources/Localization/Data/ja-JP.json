@@ -3878,27 +3878,27 @@
     },
     {
       "key": "ui.collection.drilling.desktop",
-      "value": "ボーリング中… 岩芯が出るまで待とう。"
+      "value": "ボーリング中… 岩芯が引き上げられるまで待とう。"
     },
     {
       "key": "ui.collection.drilling.touch",
-      "value": "ボーリング中… 岩芯が出るまで待とう。"
+      "value": "ボーリング中… 岩芯が引き上げられるまで待とう。"
     },
     {
       "key": "ui.collection.pickup_core.desktop",
-      "value": "岩芯ができました！装置の周りの岩芯に近づき、Eで拾おう。"
+      "value": "岩芯がコア箱に入りました！コア箱に近づき、Eで拾おう。"
     },
     {
       "key": "ui.collection.pickup_core.touch",
-      "value": "岩芯ができました！装置の周りの岩芯に近づき、「調べる」で拾おう。"
+      "value": "岩芯がコア箱に入りました！コア箱に近づき、「調べる」で拾おう。"
     },
     {
       "key": "ui.collection.finished.desktop",
-      "value": "最大の深さに達しました。周りの岩芯を拾ったら、Fでドリルタワーをしまおう。"
+      "value": "最大の深さに達しました。コア箱の岩芯を拾ったら、Fでドリルタワーをしまおう。"
     },
     {
       "key": "ui.collection.finished.touch",
-      "value": "最大の深さに達しました。周りの岩芯を拾ったら、「使う」でドリルタワーをしまおう。"
+      "value": "最大の深さに達しました。コア箱の岩芯を拾ったら、「使う」でドリルタワーをしまおう。"
     },
     {
       "key": "ui.dialog.zoom.desktop",
@@ -4619,6 +4619,30 @@
     {
       "key": "ui.dialog.slides",
       "value": "図（ず）をタップして、すすもう"
+    },
+    {
+      "key": "hammer.goggles.on",
+      "value": "保護メガネをつけました"
+    },
+    {
+      "key": "sample.bag.label.site",
+      "value": "地点{0}・No.{1}"
+    },
+    {
+      "key": "sample.bag.label.core",
+      "value": "ボーリングコア No.{0}"
+    },
+    {
+      "key": "sample.bag.label.free",
+      "value": "岩石試料 No.{0}"
+    },
+    {
+      "key": "sample.bag.label.depth",
+      "value": "深さ {0:0.#}〜{1:0.#} m"
+    },
+    {
+      "key": "drill_tower.gauge.depth",
+      "value": "深さ {0:0.0} m"
     }
   ]
 }

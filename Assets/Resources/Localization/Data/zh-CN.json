@@ -3698,27 +3698,27 @@
     },
     {
       "key": "ui.collection.drilling.desktop",
-      "value": "钻探中……等待岩芯生成。"
+      "value": "钻探中……等待岩芯被提上来。"
     },
     {
       "key": "ui.collection.drilling.touch",
-      "value": "钻探中……等待岩芯生成。"
+      "value": "钻探中……等待岩芯被提上来。"
     },
     {
       "key": "ui.collection.pickup_core.desktop",
-      "value": "岩芯已生成！靠近钻塔周围的岩芯，按 E 拾取。"
+      "value": "岩芯已放进岩芯箱！靠近岩芯箱，按 E 拾取。"
     },
     {
       "key": "ui.collection.pickup_core.touch",
-      "value": "岩芯已生成！靠近钻塔周围的岩芯，点击「交互」拾取。"
+      "value": "岩芯已放进岩芯箱！靠近岩芯箱，点击「交互」拾取。"
     },
     {
       "key": "ui.collection.finished.desktop",
-      "value": "已达最大深度。拾取周围的岩芯后，按 F 收起钻塔。"
+      "value": "已达最大深度。拾取岩芯箱里的岩芯后，按 F 收起钻塔。"
     },
     {
       "key": "ui.collection.finished.touch",
-      "value": "已达最大深度。拾取周围的岩芯后，点击「次操作」收起钻塔。"
+      "value": "已达最大深度。拾取岩芯箱里的岩芯后，点击「次操作」收起钻塔。"
     },
     {
       "key": "ui.dialog.zoom.desktop",
@@ -4451,6 +4451,30 @@
     {
       "key": "ui.dialog.slides",
       "value": "点一下图，继续往下看"
+    },
+    {
+      "key": "hammer.goggles.on",
+      "value": "已戴上护目镜"
+    },
+    {
+      "key": "sample.bag.label.site",
+      "value": "地点{0}・No.{1}"
+    },
+    {
+      "key": "sample.bag.label.core",
+      "value": "钻探岩芯 No.{0}"
+    },
+    {
+      "key": "sample.bag.label.free",
+      "value": "岩石样本 No.{0}"
+    },
+    {
+      "key": "sample.bag.label.depth",
+      "value": "深度 {0:0.#}–{1:0.#} m"
+    },
+    {
+      "key": "drill_tower.gauge.depth",
+      "value": "深度 {0:0.0} m"
     }
   ]
 }

@@ -312,7 +312,7 @@ public class TeacherReviewFlowCaptureTests
         yield return Capture("D02-tower-ready");
         yield return Press(Key.F);
         Check((bool)Get(tower, "isDrilling"), "F starts drilling.");
-        yield return new WaitForSeconds(2.4f);
+        yield return WaitForDrill(tower);
         var cores = (IList)Get(tower, "collectedSamples");
         Check(cores.Count > 0 && (GameObject)cores[0] != null, "Drilling produces a core.");
         var core = (GameObject)cores[0];
@@ -352,7 +352,7 @@ public class TeacherReviewFlowCaptureTests
             Check((bool)Get(tower, "isDrilling"), "F drills with the hammer equipped at depth " + depth + ".");
             yield return Press(Key.F);
             Check(Get(drill, "placedTower") != null, "F cannot put away a tower while drilling.");
-            yield return new WaitForSeconds(2.4f);
+            yield return WaitForDrill(tower);
             Check((int)Get(tower, "currentDrillCount") == depth + 1, "Actual drilling completes depth " + (depth + 1) + ".");
         }
         Call(towerPrompt, "ShowInteractionPrompt", tower);
@@ -662,6 +662,14 @@ public class TeacherReviewFlowCaptureTests
         yield return null;
         InputSystem.QueueStateEvent(_keyboard, new KeyboardState());
         yield return Frames(3);
+    }
+
+    /// <summary>One drilling cycle (drill, pull the rods, box the core) takes about six seconds.</summary>
+    private static IEnumerator WaitForDrill(Component tower)
+    {
+        float deadline = Time.realtimeSinceStartup + 20f;
+        while (tower != null && (bool)Get(tower, "isDrilling") && Time.realtimeSinceStartup < deadline) yield return null;
+        yield return null;
     }
 
     private static IEnumerator Frames(int count) { for (int i = 0; i < count; i++) yield return null; }

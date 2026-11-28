@@ -3698,27 +3698,27 @@
     },
     {
       "key": "ui.collection.drilling.desktop",
-      "value": "Drilling… Wait for the core sample."
+      "value": "Drilling… Wait for the core to be pulled up."
     },
     {
       "key": "ui.collection.drilling.touch",
-      "value": "Drilling… Wait for the core sample."
+      "value": "Drilling… Wait for the core to be pulled up."
     },
     {
       "key": "ui.collection.pickup_core.desktop",
-      "value": "Core ready! Approach a sample beside the tower and press E to collect."
+      "value": "The core is in the core box! Walk up to the box and press E to collect."
     },
     {
       "key": "ui.collection.pickup_core.touch",
-      "value": "Core ready! Approach a sample beside the tower and tap Use to collect."
+      "value": "The core is in the core box! Walk up to the box and tap Use to collect."
     },
     {
       "key": "ui.collection.finished.desktop",
-      "value": "Maximum depth reached. Pick up the nearby cores, then press F to put away the tower."
+      "value": "Maximum depth reached. Pick up the cores from the core box, then press F to put away the tower."
     },
     {
       "key": "ui.collection.finished.touch",
-      "value": "Maximum depth reached. Pick up the nearby cores, then tap Operate to put away the tower."
+      "value": "Maximum depth reached. Pick up the cores from the core box, then tap Operate to put away the tower."
     },
     {
       "key": "ui.dialog.zoom.desktop",
@@ -4451,6 +4451,30 @@
     {
       "key": "ui.dialog.slides",
       "value": "Tap the picture to continue"
+    },
+    {
+      "key": "hammer.goggles.on",
+      "value": "Safety goggles on"
+    },
+    {
+      "key": "sample.bag.label.site",
+      "value": "Site {0} · No.{1}"
+    },
+    {
+      "key": "sample.bag.label.core",
+      "value": "Drill core No.{0}"
+    },
+    {
+      "key": "sample.bag.label.free",
+      "value": "Rock sample No.{0}"
+    },
+    {
+      "key": "sample.bag.label.depth",
+      "value": "Depth {0:0.#}–{1:0.#} m"
+    },
+    {
+      "key": "drill_tower.gauge.depth",
+      "value": "Depth {0:0.0} m"
     }
   ]
 }

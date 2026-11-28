@@ -285,10 +285,41 @@ public class DrillTowerTool : PlaceableTool
         
         // 初始化钻塔
         placedTower.Initialize(this);
-        
-        // 立即修复可见性问题
-        FixTowerVisibility(placedObject);
-        
+
+        // 架设三脚架式钻探装置，旁边放好岩芯箱
+        BoringRigVisual rig = BoringRigVisual.Attach(placedObject, false);
+        if (rig != null)
+        {
+            rig.PlayUnfold();
+            placedTower.coreBox = CoreBox.Create(placedTower, depthPerDrill);
+            GeoModel.AudioSystem.AudioManager.Instance.PlaySFX3D(
+                GeoModel.AudioSystem.AudioKeys.SFX.MetalScrape, placedObject.transform.position, 0.6f);
+        }
+        else
+        {
+            // 没有装置模型时保留旧外观的可见性兜底
+            FixTowerVisibility(placedObject);
+        }
+    }
+
+    /// <summary>预览也显示完整的钻探装置和岩芯箱的位置。</summary>
+    protected override void SetupPreviewObject()
+    {
+        if (previewObject != null)
+        {
+            BoringRigVisual.Attach(previewObject, true);
+        }
+        base.SetupPreviewObject();
+    }
+
+    /// <summary>钻探装置总是垂直架设（各支脚再分别落到地面），不随坡面倾斜。</summary>
+    protected override Quaternion GetPlacementRotation(RaycastHit hit)
+    {
+        Vector3 forward = playerCamera != null
+            ? Vector3.ProjectOnPlane(playerCamera.transform.forward, Vector3.up)
+            : Vector3.forward;
+        if (forward.sqrMagnitude < 0.0001f) forward = Vector3.forward;
+        return Quaternion.LookRotation(forward.normalized, Vector3.up);
     }
     
     /// <summary>
@@ -317,37 +348,6 @@ public class DrillTowerTool : PlaceableTool
         if (towerObj.transform.localScale.magnitude < 0.1f)
         {
             towerObj.transform.localScale = Vector3.one;
-        }
-        
-        // 添加临时发光效果，确保可见
-        AddTemporaryGlow(towerObj);
-    }
-    
-    /// <summary>
-    /// 添加临时发光效果
-    /// </summary>
-    void AddTemporaryGlow(GameObject towerObj)
-    {
-        // 创建发光球体
-        GameObject glowSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        glowSphere.name = "TowerGlow";
-        glowSphere.transform.SetParent(towerObj.transform);
-        glowSphere.transform.localPosition = Vector3.up * 2f;
-        glowSphere.transform.localScale = Vector3.one * 0.5f;
-        
-        // 设置发光材质
-        Material glowMaterial = new Material(Shader.Find("Standard"));
-        glowMaterial.color = Color.yellow;
-        glowMaterial.EnableKeyword("_EMISSION");
-        glowMaterial.SetColor("_EmissionColor", Color.yellow * 2f);
-        
-        glowSphere.GetComponent<Renderer>().material = glowMaterial;
-        
-        // 移除碰撞器
-        Collider glowCollider = glowSphere.GetComponent<Collider>();
-        if (glowCollider != null)
-        {
-            DestroyImmediate(glowCollider);
         }
         
     }
@@ -420,6 +420,10 @@ public class DrillTower : MonoBehaviour
     
     public DrillTowerTool toolReference;
     public List<GameObject> collectedSamples = new List<GameObject>();
+    [Tooltip("岩芯箱：提上来的岩芯按深度顺序放进去；收起钻塔后仍留在原地")]
+    public CoreBox coreBox;
+    private GameObject pendingCore; // 已切出、正在提钻或入箱途中的岩芯
+    private int pendingCoreIndex;
     private Renderer towerRenderer;
     private AudioSource audioSource;
     private ParticleSystem drillingEffect;
@@ -500,46 +504,303 @@ public class DrillTower : MonoBehaviour
         // 播放钻探效果
         PlayDrillingEffects();
 
+        var audio = GeoModel.AudioSystem.AudioManager.Instance;
         // 钻探循环音（挂在钻塔上的 3D 循环）
-        var drillLoop = GeoModel.AudioSystem.AudioManager.Instance.StartLoopSFX3D(
+        var drillLoop = audio.StartLoopSFX3D(
             GeoModel.AudioSystem.AudioKeys.SFX.DrillLoop, transform);
 
         EnsureToolReference();
         if (toolReference == null)
         {
-            if (drillLoop != null) GeoModel.AudioSystem.AudioManager.Instance.StopLoop(drillLoop, 0.2f);
+            if (drillLoop != null) audio.StopLoop(drillLoop, 0.2f);
+            StopDrillingEffects();
+            isDrilling = false;
             yield break;
         }
 
         float currentDepthStart = currentDrillCount * toolReference.depthPerDrill;
         float currentDepthEnd = currentDepthStart + toolReference.depthPerDrill;
 
-
-        // 钻探动画延迟
-        yield return new WaitForSeconds(2.0f);
-
-        // 执行实际钻探
-        PerformDrilling(currentDepthStart, currentDepthEnd);
+        BoringRigVisual rig = GetComponent<BoringRigVisual>();
+        if (rig != null && rig.IsBuilt)
+        {
+            // 钻进 → 提钻 → 岩芯入箱
+            yield return StagedDrilling(rig, drillLoop, currentDepthStart, currentDepthEnd);
+        }
+        else
+        {
+            // 没有装置模型时沿用旧流程：等待后在钻塔周围生成岩芯
+            yield return new WaitForSeconds(2.0f);
+            PerformDrilling(currentDepthStart, currentDepthEnd, false);
+            if (drillLoop != null) audio.StopLoop(drillLoop, 0.3f);
+        }
 
         // 停止效果
         StopDrillingEffects();
-        if (drillLoop != null) GeoModel.AudioSystem.AudioManager.Instance.StopLoop(drillLoop, 0.3f);
-        GeoModel.AudioSystem.AudioManager.Instance.PlaySFX3D(
-            GeoModel.AudioSystem.AudioKeys.SFX.DrillComplete, transform.position);
+        audio.PlaySFX3D(GeoModel.AudioSystem.AudioKeys.SFX.DrillComplete, transform.position);
 
         currentDrillCount++;
         isDrilling = false;
         UpdateTowerAppearance();
 
     }
+
+    /// <summary>
+    /// 一次完整的钻探：钻杆旋转下钻并显示深度，随后提钻，岩芯从孔里吊出来放进岩芯箱。
+    /// 岩芯在开始时就切好（先不显示），所以深度计的颜色和孔口岩屑都跟着真实地层变化。
+    /// </summary>
+    IEnumerator StagedDrilling(BoringRigVisual rig, AudioSource drillLoop, float depthStart, float depthEnd)
+    {
+        var audio = GeoModel.AudioSystem.AudioManager.Instance;
+        int drillIndex = currentDrillCount;
+        rig.CompleteUnfold();
+        if (coreBox == null)
+        {
+            coreBox = CoreBox.Create(this, toolReference.depthPerDrill);
+        }
+
+        GameObject core = PerformDrilling(depthStart, depthEnd, true);
+        pendingCore = core;
+        pendingCoreIndex = drillIndex;
+
+        ReadCoreLayers(core, out Material[] layerMaterials, out Color[] layerColours, out float[] layerFractions);
+        UISystem.DrillDepthGauge.Begin(depthStart, depthEnd, layerColours, layerFractions);
+
+        // 1. 钻进
+        rig.SetRunning(true);
+        float loopPitch = drillLoop != null ? drillLoop.pitch : 1f;
+        float elapsed = 0f;
+        float nextCuttings = 0f;
+        int lastSegment = -1;
+        while (elapsed < BoringRigLayout.DrillSeconds)
+        {
+            float progress = elapsed / BoringRigLayout.DrillSeconds;
+            rig.SetSwivelTop(BoringRigLayout.SwivelTopWhileDrilling(progress));
+            UISystem.DrillDepthGauge.SetProgress(progress);
+
+            int segment = BoringRigLayout.SegmentAt(progress, layerFractions);
+            if (segment != lastSegment)
+            {
+                // 钻到新的地层：钻机声变调，并有碎石声
+                if (drillLoop != null) drillLoop.pitch = loopPitch * (segment % 2 == 0 ? 1f : 0.88f);
+                if (lastSegment >= 0)
+                {
+                    audio.PlaySFX3D(GeoModel.AudioSystem.AudioKeys.SFX.RockCrumble, rig.HoleWorldPosition, 0.5f);
+                }
+                lastSegment = segment;
+            }
+
+            if (elapsed >= nextCuttings)
+            {
+                // 孔口冒出当前地层颜色的岩屑
+                nextCuttings += 0.12f;
+                Material cuttings = segment >= 0 ? layerMaterials[segment] : null;
+                DebrisBurst.Emit(rig.HoleWorldPosition + Vector3.up * 0.05f, Vector3.up, cuttings, 2, 1.3f, 0.028f, 0.55f);
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        rig.SetSwivelTop(BoringRigLayout.SwivelDrilledTop);
+        rig.SetRunning(false);
+        UISystem.DrillDepthGauge.Finish();
+        if (drillLoop != null) audio.StopLoop(drillLoop, 0.3f);
+        audio.PlaySFX3D(GeoModel.AudioSystem.AudioKeys.SFX.MetalScrape, transform.position, 0.7f);
+
+        // 2. 提钻：先把钻杆提起、钻机头沿导轨退开，让出孔口
+        float liftSeconds = BoringRigLayout.PullSeconds * BoringRigLayout.RodLiftShare;
+        elapsed = 0f;
+        while (elapsed < liftSeconds)
+        {
+            float t = elapsed / liftSeconds;
+            rig.SetSwivelTop(Mathf.Lerp(BoringRigLayout.SwivelDrilledTop, BoringRigLayout.SwivelPulledTop, Mathf.SmoothStep(0f, 1f, t)));
+            rig.SetHeadRetract(t);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        rig.SetSwivelTop(BoringRigLayout.SwivelPulledTop);
+        rig.SetHeadRetract(1f);
+        rig.SetRodVisible(false);
+
+        float hoistSeconds = BoringRigLayout.PullSeconds - liftSeconds;
+        if (core != null)
+        {
+            // 岩芯从孔里被吊出来
+            SetCoreRenderersEnabled(core, true);
+            Vector3 hole = rig.HoleWorldPosition + Vector3.down * 0.05f;
+            elapsed = 0f;
+            while (elapsed < hoistSeconds && core != null)
+            {
+                float t = Mathf.Sin(Mathf.Clamp01(elapsed / hoistSeconds) * Mathf.PI * 0.5f);
+                Vector3 top = Vector3.Lerp(hole, rig.SwivelBottomWorld, t);
+                core.transform.SetPositionAndRotation(top, Quaternion.identity);
+                rig.SetSling(top);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            rig.SetSling(null);
+
+            // 3. 放倒，送进岩芯箱里对应深度的那一格
+            Vector3 from = rig.SwivelBottomWorld;
+            CoreRestPose(drillIndex, out Vector3 to, out Quaternion lying);
+            elapsed = 0f;
+            while (elapsed < BoringRigLayout.BoxSeconds && core != null)
+            {
+                float t = Mathf.SmoothStep(0f, 1f, elapsed / BoringRigLayout.BoxSeconds);
+                core.transform.SetPositionAndRotation(
+                    BoringRigLayout.CoreTransferPoint(from, to, t), Quaternion.Slerp(Quaternion.identity, lying, t));
+                rig.SetHeadRetract(1f - t);
+                rig.SetSwivelTop(Mathf.Lerp(BoringRigLayout.SwivelPulledTop, BoringRigLayout.SwivelIdleTop, t));
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
+        else
+        {
+            yield return new WaitForSeconds(hoistSeconds + BoringRigLayout.BoxSeconds);
+        }
+
+        rig.SetHeadRetract(0f);
+        rig.SetSwivelTop(BoringRigLayout.SwivelIdleTop);
+        rig.SetRodVisible(true);
+        FinishPendingCore();
+    }
+
+    /// <summary>岩芯在箱中的位置和朝向；没有岩芯箱模型时放在同一位置的地面上。</summary>
+    void CoreRestPose(int drillIndex, out Vector3 position, out Quaternion rotation)
+    {
+        if (coreBox != null)
+        {
+            position = coreBox.SlotPosition(drillIndex);
+            rotation = coreBox.CoreRotation;
+            return;
+        }
+
+        position = transform.TransformPoint(BoringRigLayout.CoreBoxOffset + BoringRigLayout.SlotLocalPosition(drillIndex));
+        rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * BoringRigLayout.CoreLocalRotation;
+    }
+
+    /// <summary>刚切出的岩芯先藏在孔里：不显示、不碰撞、不可拾取，也不走掉落物理。</summary>
+    void HidePendingCore(GameObject core)
+    {
+        GeometricSampleFloating floating = core.GetComponent<GeometricSampleFloating>();
+        if (floating != null)
+        {
+            // 在它的 Start 之前移除，避免给岩芯加上掉落控制器。
+            floating.enabled = false;
+            Destroy(floating);
+        }
+
+        Rigidbody body = core.GetComponent<Rigidbody>();
+        if (body != null)
+        {
+            body.useGravity = false;
+            body.isKinematic = true;
+        }
+
+        SetCoreRenderersEnabled(core, false);
+        foreach (Collider coreCollider in core.GetComponentsInChildren<Collider>(true))
+        {
+            coreCollider.enabled = false;
+        }
+    }
+
+    static void SetCoreRenderersEnabled(GameObject core, bool visible)
+    {
+        foreach (Renderer coreRenderer in core.GetComponentsInChildren<Renderer>(true))
+        {
+            coreRenderer.enabled = visible;
+        }
+    }
+
+    /// <summary>岩芯入箱：恢复显示和碰撞，成为可拾取的样本。</summary>
+    void FinishPendingCore()
+    {
+        GameObject core = pendingCore;
+        pendingCore = null;
+        if (core == null) return;
+
+        CoreRestPose(pendingCoreIndex, out Vector3 position, out Quaternion rotation);
+        core.transform.SetPositionAndRotation(position, rotation);
+        if (coreBox != null) coreBox.Place(core, pendingCoreIndex);
+
+        SetCoreRenderersEnabled(core, true);
+        foreach (Collider coreCollider in core.GetComponentsInChildren<Collider>(true))
+        {
+            coreCollider.enabled = true;
+        }
+
+        // 给根对象一个贴合岩芯的小触发器，SampleCollector 就不会再加一个半径数米的球形触发器。
+        if (core.GetComponent<Collider>() == null)
+        {
+            BoxCollider reach = core.AddComponent<BoxCollider>();
+            reach.isTrigger = true;
+            float length = toolReference != null ? toolReference.depthPerDrill : 2f;
+            reach.center = new Vector3(0f, -length * 0.5f, 0f);
+            reach.size = new Vector3(BoringRigLayout.CoreRadius * 2f, length, BoringRigLayout.CoreRadius * 2f);
+        }
+
+        SampleCollector collector = core.GetComponent<SampleCollector>();
+        if (collector == null)
+        {
+            collector = core.AddComponent<SampleCollector>();
+            collector.sourceToolID = "1001";
+        }
+        // 岩芯平放后有 2m 长，从箱子周围任何一侧都要能拾取。
+        collector.interactionRange = BoringRigLayout.BoxedCorePickupRange;
+        collector.enabled = true;
+
+        collectedSamples.Add(core);
+    }
+
+    /// <summary>岩芯各地层段（自上而下）的材质、颜色和所占比例。</summary>
+    static void ReadCoreLayers(GameObject core, out Material[] materials, out Color[] colours, out float[] fractions)
+    {
+        var materialList = new List<Material>();
+        var colourList = new List<Color>();
+        var lengthList = new List<float>();
+        if (core != null)
+        {
+            foreach (Transform segment in core.transform)
+            {
+                MeshRenderer segmentRenderer = segment.GetComponent<MeshRenderer>();
+                MeshFilter segmentMesh = segment.GetComponent<MeshFilter>();
+                if (segmentRenderer == null || segmentMesh == null || segmentMesh.sharedMesh == null) continue;
+                materialList.Add(segmentRenderer.sharedMaterial);
+                colourList.Add(FieldToolModels.ReadColor(segmentRenderer.sharedMaterial, new Color(0.6f, 0.55f, 0.5f)));
+                lengthList.Add(Mathf.Max(0.001f, segmentMesh.sharedMesh.bounds.size.y * segment.lossyScale.y));
+            }
+        }
+
+        float total = 0f;
+        foreach (float length in lengthList) total += length;
+        materials = materialList.ToArray();
+        colours = colourList.ToArray();
+        fractions = new float[lengthList.Count];
+        for (int i = 0; i < fractions.Length; i++)
+        {
+            fractions[i] = total > 0f ? lengthList[i] / total : 1f / fractions.Length;
+        }
+    }
+
+    void OnDestroy()
+    {
+        // 钻塔在提钻途中被移除（例如切换场景）时，岩芯直接入箱，不会丢失。
+        if (pendingCore != null) FinishPendingCore();
+        if (isDrilling) UISystem.DrillDepthGauge.Hide();
+    }
     
-    void PerformDrilling(float depthStart, float depthEnd)
+    /// <param name="intoCoreBox">true：岩芯先藏在孔里，由提钻动画送进岩芯箱；false：旧流程，在钻塔周围掉落。</param>
+    GameObject PerformDrilling(float depthStart, float depthEnd, bool intoCoreBox)
     {
         EnsureToolReference();
-        if (toolReference == null) return;
+        if (toolReference == null) return null;
 
-        // 计算样本位置（环形排列）
-        Vector3 samplePosition = toolReference.GetSamplePosition(drillingPosition, currentDrillCount);
+        // 计算样本位置（旧流程：环形排列）
+        Vector3 samplePosition = intoCoreBox
+            ? drillingPosition
+            : toolReference.GetSamplePosition(drillingPosition, currentDrillCount);
         
         // 🚀 使用集成了v1.3检测的几何重建系统进行钻探
         GeometricSampleReconstructor reconstructor = FindFirstObjectByType<GeometricSampleReconstructor>();
@@ -649,6 +910,11 @@ public class DrillTower : MonoBehaviour
         // 第2步：从真正的地表开始钻探
         actualDrillingStart = surfacePoint; // 🔧 关键修复：使用真正的地表位置
         actualDrillingDepth = depthEnd; // 使用目标深度
+        if (intoCoreBox)
+        {
+            // 岩芯就在孔里生成（顶端略低于地表），等提钻时再出现。
+            samplePosition = surfacePoint + Vector3.down * 0.05f;
+        }
         
         
         GeometricSampleReconstructor.ReconstructedSample geometricSample;
@@ -666,7 +932,14 @@ public class DrillTower : MonoBehaviour
         
         if (geometricSample != null && geometricSample.sampleContainer != null)
         {
-            collectedSamples.Add(geometricSample.sampleContainer);
+            if (intoCoreBox)
+            {
+                HidePendingCore(geometricSample.sampleContainer);
+            }
+            else
+            {
+                collectedSamples.Add(geometricSample.sampleContainer);
+            }
             
             // 统一的样本组成分析（所有层都使用）
             
@@ -698,8 +971,18 @@ public class DrillTower : MonoBehaviour
                 "1001", // DrillTowerTool的ID
                 $"钻塔钻探_{currentDrillCount}"
             );
-            
+
+            if (intoCoreBox)
+            {
+                // 入箱之前不可拾取（SampleCollector 的 Start 也推迟到那时）。
+                SampleCollector collector = geometricSample.sampleContainer.GetComponent<SampleCollector>();
+                if (collector != null) collector.enabled = false;
+            }
+
+            return geometricSample.sampleContainer;
         }
+
+        return null;
     }
     
     /// <summary>

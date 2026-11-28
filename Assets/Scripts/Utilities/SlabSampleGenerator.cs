@@ -2,15 +2,17 @@ using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
-/// 薄片样本生成器 - 生成不规则的地质薄片样本
+/// 手标本生成器 - 生成地质锤敲下来的不规则岩块（旧版是直径 80cm 的六边形薄片）
 /// </summary>
 public class SlabSampleGenerator : MonoBehaviour
 {
-    [Header("薄片设置")]
-    public float baseRadius = 0.4f; // 基础半径
-    public float thickness = 0.06f; // 薄片厚度
-    public int polygonSides = 6; // 多边形边数
+    [Header("岩块设置")]
+    public float baseRadius = 0.11f; // 最宽处半径：真实手标本约一个拳头大
+    public float thickness = 0.09f; // 岩块厚度
+    public int polygonSides = 7; // 多边形边数
     public float irregularityFactor = 0.3f; // 不规则度因子
+    [Tooltip("开启：上下收窄的块状手标本；关闭：旧版等厚薄片")]
+    public bool chunkShape = true;
     
     [Header("表面效果")]
     public bool addSurfaceNoise = true; // 添加表面噪声
@@ -167,11 +169,26 @@ public class SlabSampleGenerator : MonoBehaviour
         // 生成不规则多边形顶点
         Vector3[] topVertices = GenerateIrregularPolygon();
         Vector3[] bottomVertices = new Vector3[topVertices.Length];
-        
-        // 创建底面顶点（向下偏移）
-        for (int i = 0; i < topVertices.Length; i++)
+        Vector3[] beltVertices = null;
+
+        if (chunkShape)
         {
-            bottomVertices[i] = topVertices[i] - Vector3.up * thickness;
+            // 块状手标本：中间一圈最宽，上下两个破裂面各自收窄并略微起伏。
+            beltVertices = topVertices;
+            topVertices = ShrunkRing(beltVertices, 0.62f, thickness * 0.5f);
+            bottomVertices = ShrunkRing(beltVertices, 0.72f, -thickness * 0.5f);
+            for (int i = 0; i < beltVertices.Length; i++)
+            {
+                beltVertices[i].y = (Random.value - 0.5f) * thickness * 0.3f;
+            }
+        }
+        else
+        {
+            // 创建底面顶点（向下偏移）
+            for (int i = 0; i < topVertices.Length; i++)
+            {
+                bottomVertices[i] = topVertices[i] - Vector3.up * thickness;
+            }
         }
         
         // 组合所有顶点
@@ -187,10 +204,18 @@ public class SlabSampleGenerator : MonoBehaviour
         AddPolygonFace(vertices, triangles, uvs, normals, bottomVertices, Vector3.down, true);
         
         // 添加侧面
-        AddSideFaces(vertices, triangles, uvs, normals, topVertices, bottomVertices);
+        if (beltVertices != null)
+        {
+            AddSideFaces(vertices, triangles, uvs, normals, topVertices, beltVertices);
+            AddSideFaces(vertices, triangles, uvs, normals, beltVertices, bottomVertices);
+        }
+        else
+        {
+            AddSideFaces(vertices, triangles, uvs, normals, topVertices, bottomVertices);
+        }
         
-        // 应用噪声
-        if (addSurfaceNoise)
+        // 应用噪声（块状手标本的起伏已在各圈顶点里，不再叠加）
+        if (addSurfaceNoise && !chunkShape)
         {
             ApplySurfaceNoise(vertices);
         }
@@ -244,6 +269,23 @@ public class SlabSampleGenerator : MonoBehaviour
         return vertices;
     }
     
+    /// <summary>
+    /// 把一圈顶点向中心收窄并放到指定高度，带少量随机起伏
+    /// </summary>
+    Vector3[] ShrunkRing(Vector3[] source, float scale, float height)
+    {
+        Vector3[] ring = new Vector3[source.Length];
+        for (int i = 0; i < source.Length; i++)
+        {
+            float localScale = scale * (1f + (Random.value - 0.5f) * 0.25f);
+            ring[i] = new Vector3(
+                source[i].x * localScale,
+                height + (Random.value - 0.5f) * thickness * 0.18f,
+                source[i].z * localScale);
+        }
+        return ring;
+    }
+
     /// <summary>
     /// 添加多边形面
     /// </summary>

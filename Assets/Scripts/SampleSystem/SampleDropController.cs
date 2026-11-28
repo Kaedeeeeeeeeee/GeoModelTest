@@ -8,6 +8,8 @@ public class SampleDropController : MonoBehaviour
 {
     [Header("掉落设置")]
     public float dropHeight = 2.5f; // 初始掉落高度（地面上方2.5m）
+    [Tooltip("从生成位置直接下落（地质锤敲下的岩块），而不是先移到地面上方 dropHeight 处")]
+    public bool dropFromCurrentPosition = false;
     public float gravity = 9.8f; // 重力加速度
     public float additionalGravity = 15f; // 额外重力，防止漂浮
     public float bounceReduction = 0.3f; // 弹跳衰减
@@ -250,9 +252,12 @@ public class SampleDropController : MonoBehaviour
         hasGroundSurface = TryFindGround(initialPosition + Vector3.up * 0.1f, 100f, out groundSurface);
         if (hasGroundSurface)
         {
-            dropPos.y = groundSurface.point.y + Mathf.Max(dropHeight, BottomOffset() + SurfaceClearance);
+            float restingY = groundSurface.point.y + BottomOffset() + SurfaceClearance;
+            dropPos.y = dropFromCurrentPosition
+                ? Mathf.Max(initialPosition.y, restingY)
+                : groundSurface.point.y + Mathf.Max(dropHeight, BottomOffset() + SurfaceClearance);
         }
-        else
+        else if (!dropFromCurrentPosition)
         {
             // 如果找不到地面，使用当前位置上方
             dropPos.y = initialPosition.y + dropHeight;
