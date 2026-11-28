@@ -33,3 +33,6 @@ Build/*.gz filter=lfs diff=lfs merge=lfs -text
 
 # Keep this existing small YAML configuration reviewable.
 /ProjectSettings/GraphicsSettings.asset -filter diff merge=text text
+
+# Script-generated field-tool models are small text files; keep them out of LFS so they stay reviewable.
+/Assets/Resources/Models/FieldTools/*.obj -filter diff merge=text text
