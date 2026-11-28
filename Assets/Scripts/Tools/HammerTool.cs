@@ -920,9 +920,10 @@ public class HammerTool : CollectionTool
 
         if (usingModel)
         {
-            // 模型以握把中心为原点、锤柄沿 +Y、方头朝 +Z：稍向前倾并转向画面中央，让锤头的轮廓看得清。
+            // 模型以握把中心为原点、锤柄沿 +Y、方头朝 +Z：稍向前倾，锤头在右上方、尖头斜指前方，握把落在右下角，
+            // 不遮挡画面中央（2026-11 实机截图比较了 -70°～+20° 的偏航，-10° 时轮廓最清楚且最不挡视线）。
             equippedHammer.transform.localPosition = new Vector3(0.02f, -0.02f, 0f);
-            equippedHammer.transform.localRotation = Quaternion.Euler(15f, -40f, 12f);
+            equippedHammer.transform.localRotation = Quaternion.Euler(15f, -10f, 12f);
             equippedHammer.transform.localScale = Vector3.one;
         }
         else if (usingPrefab)

@@ -42,10 +42,11 @@ namespace UISystem
             frame.texture = MaskTexture();
             frame.raycastTarget = false;
 
+            // 画面中央の少し上：左上の課題カード・採集カードや上部の「新しい目標」ボタンと重ならない位置
             var caption = GameUI.Label(canvas.transform, "Caption", GameUI.L("hammer.goggles.on"), 30,
-                new Vector2(0.25f, 0.80f), new Vector2(0.75f, 0.88f), TextAnchor.MiddleCenter);
+                new Vector2(0.37f, 0.62f), new Vector2(0.63f, 0.70f), TextAnchor.MiddleCenter);
             caption.resizeTextForBestFit = true;
-            caption.resizeTextMinSize = 18;
+            caption.resizeTextMinSize = 14;
             caption.resizeTextMaxSize = 30;
             var shadow = caption.gameObject.AddComponent<Outline>();
             shadow.effectColor = new Color(0f, 0f, 0f, 0.75f);

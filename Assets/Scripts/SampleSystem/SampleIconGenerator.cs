@@ -87,7 +87,7 @@ public class SampleIconGenerator : MonoBehaviour
     public enum SampleShapeType
     {
         Cylinder,  // 圆柱形（钻探样本）
-        Slab       // 薄片形（地质锤样本）
+        Slab       // 岩块形（地质锤样本）
     }
     
     /// <summary>
@@ -98,7 +98,7 @@ public class SampleIconGenerator : MonoBehaviour
         // 根据源工具ID确定形状
         return sample.sourceToolID switch
         {
-            "1002" => SampleShapeType.Slab,      // 地质锤 - 薄片形
+            "1002" => SampleShapeType.Slab,      // 地质锤 - 岩块形
             "1000" => SampleShapeType.Cylinder,  // 简易钻探 - 圆柱形
             "1001" => SampleShapeType.Cylinder,  // 钻塔 - 圆柱形
             _ => SampleShapeType.Cylinder         // 默认圆柱形
@@ -370,58 +370,75 @@ public class SampleIconGenerator : MonoBehaviour
     }
     
     /// <summary>
-    /// 绘制薄片形图标
+    /// 绘制地质锤岩块图标：拳头大小的不规则岩块，上面的破裂面亮、侧面暗（旧版是一条红色薄片）
     /// </summary>
     void DrawSlabShape(Texture2D texture, Color color)
     {
-        int centerX = iconSize / 2;
-        int centerY = iconSize / 2;
-        
-        // 薄片参数
-        int slabWidth = (int)(iconSize * 0.7f);
-        int slabHeight = (int)(iconSize * 0.15f);  // 很薄的厚度
-        int slabDepth = (int)(iconSize * 0.6f);    // 深度感
-        
-        // 绘制薄片主体（3D效果）
+        // 外轮廓（逆时针，y 向上）与上破裂面，均以图标尺寸的比例给出
+        Vector2[] outline =
+        {
+            new Vector2(0.16f, 0.44f), new Vector2(0.27f, 0.25f), new Vector2(0.55f, 0.17f), new Vector2(0.80f, 0.27f),
+            new Vector2(0.88f, 0.49f), new Vector2(0.77f, 0.70f), new Vector2(0.50f, 0.78f), new Vector2(0.26f, 0.68f)
+        };
+        Vector2[] topFace =
+        {
+            new Vector2(0.26f, 0.55f), new Vector2(0.45f, 0.46f), new Vector2(0.70f, 0.49f),
+            new Vector2(0.77f, 0.66f), new Vector2(0.50f, 0.75f), new Vector2(0.29f, 0.66f)
+        };
+        Vector2[] rightFace =
+        {
+            new Vector2(0.45f, 0.46f), new Vector2(0.55f, 0.17f), new Vector2(0.80f, 0.27f),
+            new Vector2(0.88f, 0.49f), new Vector2(0.77f, 0.66f), new Vector2(0.70f, 0.49f)
+        };
+        Color top = Color.Lerp(color, Color.white, 0.22f);
+        Color left = color * 0.85f;
+        Color right = color * 0.62f;
+        top.a = left.a = right.a = 1f;
+        float edge = outlineWidth / iconSize;
+
         for (int y = 0; y < iconSize; y++)
         {
             for (int x = 0; x < iconSize; x++)
             {
-                int relativeX = x - centerX;
-                int relativeY = y - centerY;
-                
-                // 主薄片区域（正面）
-                bool inMainSlab = Mathf.Abs(relativeX) <= slabWidth / 2 && 
-                                 Mathf.Abs(relativeY) <= slabHeight / 2;
-                
-                // 薄片的侧面（右侧和底部，营造3D效果）
-                bool inRightSide = relativeX >= slabWidth / 2 && relativeX <= slabWidth / 2 + 8 &&
-                                  relativeY >= -slabHeight / 2 + 4 && relativeY <= slabHeight / 2 + 4;
-                
-                bool inBottomSide = relativeY >= slabHeight / 2 && relativeY <= slabHeight / 2 + 8 &&
-                                   relativeX >= -slabWidth / 2 + 4 && relativeX <= slabWidth / 2 + 4;
-                
-                if (inMainSlab)
+                Vector2 p = new Vector2((x + 0.5f) / iconSize, (y + 0.5f) / iconSize);
+                if (!InPolygon(p, outline)) continue;
+                if (DistanceToEdge(p, outline) <= edge)
                 {
-                    // 主体区域
-                    if (Mathf.Abs(relativeX) <= slabWidth / 2 - outlineWidth && 
-                        Mathf.Abs(relativeY) <= slabHeight / 2 - outlineWidth)
-                    {
-                        texture.SetPixel(x, y, color);
-                    }
-                    else
-                    {
-                        texture.SetPixel(x, y, outlineColor);
-                    }
+                    texture.SetPixel(x, y, outlineColor);
+                    continue;
                 }
-                else if (inRightSide || inBottomSide)
-                {
-                    // 侧面阴影效果
-                    Color shadowColor = new Color(color.r * 0.7f, color.g * 0.7f, color.b * 0.7f, color.a);
-                    texture.SetPixel(x, y, shadowColor);
-                }
+                Color shade = InPolygon(p, topFace) ? top : InPolygon(p, rightFace) ? right : left;
+                // 细微的颗粒感
+                float grain = 1f + (Mathf.PerlinNoise(x * 0.35f, y * 0.35f) - 0.5f) * 0.12f;
+                texture.SetPixel(x, y, new Color(shade.r * grain, shade.g * grain, shade.b * grain, 1f));
             }
         }
+    }
+
+    static bool InPolygon(Vector2 p, Vector2[] polygon)
+    {
+        bool inside = false;
+        for (int i = 0, j = polygon.Length - 1; i < polygon.Length; j = i++)
+        {
+            if ((polygon[i].y > p.y) != (polygon[j].y > p.y) &&
+                p.x < (polygon[j].x - polygon[i].x) * (p.y - polygon[i].y) / (polygon[j].y - polygon[i].y) + polygon[i].x)
+            {
+                inside = !inside;
+            }
+        }
+        return inside;
+    }
+
+    static float DistanceToEdge(Vector2 p, Vector2[] polygon)
+    {
+        float best = float.MaxValue;
+        for (int i = 0, j = polygon.Length - 1; i < polygon.Length; j = i++)
+        {
+            Vector2 a = polygon[j], b = polygon[i];
+            float t = Mathf.Clamp01(Vector2.Dot(p - a, b - a) / (b - a).sqrMagnitude);
+            best = Mathf.Min(best, Vector2.Distance(p, a + (b - a) * t));
+        }
+        return best;
     }
     
     /// <summary>

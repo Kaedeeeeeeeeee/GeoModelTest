@@ -21,8 +21,9 @@ public class CoreBox : MonoBehaviour
         var boxObject = new GameObject("DrillCoreBox");
         Transform rig = owner.transform;
         Vector3 position = rig.TransformPoint(BoringRigLayout.CoreBoxOffset);
-        position.y = GroundHeight(position, rig, rig.position.y);
-        boxObject.transform.SetPositionAndRotation(position, Quaternion.Euler(0f, rig.eulerAngles.y, 0f));
+        Quaternion yaw = Quaternion.Euler(0f, rig.eulerAngles.y, 0f);
+        boxObject.transform.SetPositionAndRotation(position, yaw);
+        SitOnGround(boxObject.transform, rig);
 
         GameObject model = FieldToolModels.Instantiate("CoreBox", boxObject.transform);
         if (model == null)
@@ -70,6 +71,40 @@ public class CoreBox : MonoBehaviour
     {
         // Once the rig is gone and the last core has been picked up, the empty box goes too.
         if (everHadTower && tower == null && IsEmpty) Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// Lays the box on the ground under its whole footprint: tilted to follow the slope (within a
+    /// sensible limit) and lifted so no corner of the terrain pokes through the floor of the troughs.
+    /// </summary>
+    private static void SitOnGround(Transform box, Transform rig)
+    {
+        const float halfWidth = BoringRigLayout.CoreSlots * BoringRigLayout.SlotPitch * 0.5f + 0.03f;
+        const float halfLength = BoringRigLayout.BoxInnerLength * 0.5f + 0.03f;
+        const float maxTilt = 18f;
+        Vector3 centre = box.position;
+        Vector3 right = box.right, forward = box.forward;
+        float fallback = rig.position.y;
+        float front = GroundHeight(centre - forward * halfLength, rig, fallback);
+        float back = GroundHeight(centre + forward * halfLength, rig, fallback);
+        float left = GroundHeight(centre - right * halfWidth, rig, fallback);
+        float rightSide = GroundHeight(centre + right * halfWidth, rig, fallback);
+        float pitch = Mathf.Clamp(Mathf.Atan2(front - back, halfLength * 2f) * Mathf.Rad2Deg, -maxTilt, maxTilt);
+        float roll = Mathf.Clamp(Mathf.Atan2(rightSide - left, halfWidth * 2f) * Mathf.Rad2Deg, -maxTilt, maxTilt);
+        box.rotation = Quaternion.Euler(0f, box.eulerAngles.y, 0f) * Quaternion.Euler(pitch, 0f, roll);
+
+        // Lift the tilted box until its floor clears the ground at every corner and edge midpoint.
+        float lift = float.NegativeInfinity;
+        box.position = new Vector3(centre.x, (front + back + left + rightSide) * 0.25f, centre.z);
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int z = -1; z <= 1; z++)
+            {
+                Vector3 floor = box.TransformPoint(new Vector3(x * halfWidth, 0f, z * halfLength));
+                lift = Mathf.Max(lift, GroundHeight(floor, rig, floor.y) - floor.y);
+            }
+        }
+        box.position += Vector3.up * Mathf.Max(0f, lift);
     }
 
     private static float GroundHeight(Vector3 position, Transform rig, float fallback)

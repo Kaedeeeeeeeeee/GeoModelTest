@@ -21,6 +21,7 @@ namespace UISystem
         private Text _title;
         private Text _detail;
         private float _shownAt;
+        private bool? _portrait;
 
         public static string LastTitle { get; private set; }
         public static string LastDetail { get; private set; }
@@ -86,6 +87,7 @@ namespace UISystem
             outline.effectColor = new Color(1f, 1f, 1f, 0.75f);
             outline.effectDistance = new Vector2(2f, -2f);
             overlay._card = bag.rectTransform;
+            overlay.ApplyLayout();
             overlay._group = bag.gameObject.AddComponent<CanvasGroup>();
             overlay._group.blocksRaycasts = false;
             overlay._group.interactable = false;
@@ -118,9 +120,39 @@ namespace UISystem
             return overlay;
         }
 
+        /// <summary>
+        /// The bag sits just above the screen centre. On a portrait phone a fifth of the width is too
+        /// narrow to read, so it widens and drops below the bag/tools buttons instead.
+        /// </summary>
+        public static void LayoutAnchors(bool portrait, out Vector2 min, out Vector2 max)
+        {
+            if (portrait)
+            {
+                min = new Vector2(0.08f, 0.37f);
+                max = new Vector2(0.92f, 0.555f);
+            }
+            else
+            {
+                min = new Vector2(0.39f, 0.49f);
+                max = new Vector2(0.61f, 0.675f);
+            }
+        }
+
+        private void ApplyLayout()
+        {
+            bool portrait = Screen.height > Screen.width;
+            if (_card == null || portrait == _portrait) return;
+            _portrait = portrait;
+            LayoutAnchors(portrait, out Vector2 min, out Vector2 max);
+            _card.anchorMin = min;
+            _card.anchorMax = max;
+            _card.offsetMin = _card.offsetMax = Vector2.zero;
+        }
+
         private void Update()
         {
             if (_card == null || !_card.gameObject.activeSelf) return;
+            ApplyLayout();
             float age = Time.unscaledTime - _shownAt;
             float appear = Mathf.Clamp01(age / SlideIn);
             float fade = Mathf.Clamp01((SlideIn + Hold + FadeOut - age) / FadeOut);

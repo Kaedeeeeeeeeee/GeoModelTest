@@ -12,7 +12,9 @@ namespace UISystem
         private const float LingerSeconds = 0.9f;
 
         private static DrillDepthGauge _instance;
+        private RectTransform _panel;
         private RectTransform _column;
+        private int _layout = -1;
         private RectTransform _bit;
         private Text _depth;
         private Text _top;
@@ -112,8 +114,10 @@ namespace UISystem
             var gauge = canvas.gameObject.AddComponent<DrillDepthGauge>();
 
             var panel = GameUI.Box(canvas.transform, "Panel", new Color(GameUI.Surface.r, GameUI.Surface.g, GameUI.Surface.b, 0.86f),
-                new Vector2(0.025f, 0.36f), new Vector2(0.125f, 0.80f));
+                Vector2.zero, Vector2.zero);
             panel.raycastTarget = false;
+            gauge._panel = panel.rectTransform;
+            gauge.ApplyLayout();
             gauge._depth = GameUI.Label(panel.transform, "Depth", "", 26, new Vector2(0.04f, 0.87f), new Vector2(0.96f, 0.99f),
                 TextAnchor.MiddleCenter);
             gauge._depth.resizeTextForBestFit = true;
@@ -133,8 +137,48 @@ namespace UISystem
             return gauge;
         }
 
+        /// <summary>
+        /// Screen region (anchors) of the gauge for each layout, chosen to stay clear of the existing HUD:
+        /// desktop sits below the task and collection cards on the left; on touch screens the left side
+        /// is taken by the bag/tools buttons and the joystick, so landscape uses the gap between the
+        /// centre prompt and the right-hand buttons and portrait the strip between the bag button and
+        /// the run button.
+        /// </summary>
+        public static void LayoutAnchors(bool touch, bool portrait, out Vector2 min, out Vector2 max)
+        {
+            if (touch && portrait)
+            {
+                min = new Vector2(0.026f, 0.27f);
+                max = new Vector2(0.25f, 0.585f);
+            }
+            else if (touch)
+            {
+                min = new Vector2(0.695f, 0.235f);
+                max = new Vector2(0.80f, 0.585f);
+            }
+            else
+            {
+                min = new Vector2(0.012f, 0.15f);
+                max = new Vector2(0.115f, 0.56f);
+            }
+        }
+
+        private void ApplyLayout()
+        {
+            bool touch = FirstControlGuide.UsesTouch();
+            bool portrait = Screen.height > Screen.width;
+            int layout = (touch ? 2 : 0) + (portrait ? 1 : 0);
+            if (layout == _layout || _panel == null) return;
+            _layout = layout;
+            LayoutAnchors(touch, portrait, out Vector2 min, out Vector2 max);
+            _panel.anchorMin = min;
+            _panel.anchorMax = max;
+            _panel.offsetMin = _panel.offsetMax = Vector2.zero;
+        }
+
         private void Update()
         {
+            ApplyLayout();
             if (_hideAt > 0f && Time.unscaledTime >= _hideAt)
             {
                 _hideAt = -1f;

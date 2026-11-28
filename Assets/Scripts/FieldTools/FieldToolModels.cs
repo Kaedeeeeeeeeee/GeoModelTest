@@ -163,8 +163,54 @@ public static class FieldToolModels
     public static Color ReadColor(Material material, Color fallback)
     {
         if (material == null) return fallback;
-        if (material.HasProperty("_BaseColor")) return material.GetColor("_BaseColor");
-        if (material.HasProperty("_Color")) return material.GetColor("_Color");
-        return fallback;
+        Color tint;
+        if (material.HasProperty("_BaseColor")) tint = material.GetColor("_BaseColor");
+        else if (material.HasProperty("_Color")) tint = material.GetColor("_Color");
+        else return fallback;
+
+        // Layer materials are mostly a white tint over a rock texture; the tint alone would turn
+        // every layer white on the depth gauge, so fold in the texture's average colour.
+        Texture texture = material.HasProperty("_MainTex") ? material.GetTexture("_MainTex") :
+            material.HasProperty("_BaseMap") ? material.GetTexture("_BaseMap") : null;
+        if (texture != null && TryAverageColour(texture, out Color average))
+        {
+            tint = new Color(tint.r * average.r, tint.g * average.g, tint.b * average.b, tint.a);
+        }
+        return tint;
+    }
+
+    private static readonly Dictionary<Texture, Color> averageCache = new Dictionary<Texture, Color>();
+
+    private static bool TryAverageColour(Texture texture, out Color average)
+    {
+        if (averageCache.TryGetValue(texture, out average)) return true;
+        average = Color.white;
+        if (!SystemInfo.supportsRenderTextures && !(texture is Texture2D)) return false;
+        const int size = 16;
+        RenderTexture target = RenderTexture.GetTemporary(size, size, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+        RenderTexture previous = RenderTexture.active;
+        var pixels = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        try
+        {
+            Graphics.Blit(texture, target);
+            RenderTexture.active = target;
+            pixels.ReadPixels(new Rect(0, 0, size, size), 0, 0, false);
+            Color sum = Color.clear;
+            foreach (Color pixel in pixels.GetPixels()) sum += pixel;
+            average = sum / (size * size);
+            average.a = 1f;
+        }
+        catch (System.Exception)
+        {
+            return false;
+        }
+        finally
+        {
+            RenderTexture.active = previous;
+            RenderTexture.ReleaseTemporary(target);
+            if (Application.isPlaying) Object.Destroy(pixels); else Object.DestroyImmediate(pixels);
+        }
+        averageCache[texture] = average;
+        return true;
     }
 }

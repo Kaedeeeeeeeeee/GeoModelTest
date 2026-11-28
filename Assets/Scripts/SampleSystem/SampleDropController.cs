@@ -379,7 +379,14 @@ public class SampleDropController : MonoBehaviour
                 OnLanded();
             }
         }
+        else if (isGrounded && groundedTime > SlopeSettleSeconds && rb.linearVelocity.magnitude < settleThreshold * 2f && !hasLanded)
+        {
+            // 岩块从陡崖脚下滚落时可能卡在坡面上，持续以很低的速度抖动；贴地足够久就算落稳。
+            OnLanded();
+        }
     }
+
+    private const float SlopeSettleSeconds = 2.5f;
     
     void OnCollisionEnter(Collision collision)
     {
